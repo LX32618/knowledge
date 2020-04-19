@@ -1,0 +1,79 @@
+{
+  "id": "1739126",
+  "name": "custom_icon",
+  "font_family": "element-icons",
+  "css_prefix_text": "el-custom-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "924735",
+      "name": "share",
+      "font_class": "share",
+      "unicode": "e631",
+      "unicode_decimal": 58929
+    },
+    {
+      "icon_id": "1061038",
+      "name": "edit",
+      "font_class": "batchedit",
+      "unicode": "e60b",
+      "unicode_decimal": 58891
+    },
+    {
+      "icon_id": "5833057",
+      "name": "transfer",
+      "font_class": "transfer",
+      "unicode": "e733",
+      "unicode_decimal": 59187
+    },
+    {
+      "icon_id": "6360722",
+      "name": "import",
+      "font_class": "import",
+      "unicode": "e656",
+      "unicode_decimal": 58966
+    },
+    {
+      "icon_id": "6360851",
+      "name": "export",
+      "font_class": "export",
+      "unicode": "e677",
+      "unicode_decimal": 58999
+    },
+    {
+      "icon_id": "12578993",
+      "name": "transfer",
+      "font_class": "transfer1",
+      "unicode": "e706",
+      "unicode_decimal": 59142
+    },
+    {
+      "icon_id": "9000793",
+      "name": "book",
+      "font_class": "book",
+      "unicode": "e607",
+      "unicode_decimal": 58887
+    },
+    {
+      "icon_id": "897396",
+      "name": "file",
+      "font_class": "file",
+      "unicode": "e66d",
+      "unicode_decimal": 58989
+    },
+    {
+      "icon_id": "7205823",
+      "name": "Files",
+      "font_class": "files",
+      "unicode": "e61b",
+      "unicode_decimal": 58907
+    },
+    {
+      "icon_id": "1196827",
+      "name": "database-3",
+      "font_class": "db",
+      "unicode": "e61a",
+      "unicode_decimal": 58906
+    }
+  ]
+}
