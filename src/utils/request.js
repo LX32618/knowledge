@@ -2,7 +2,6 @@ import axios from 'axios'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
 import { errorMsg } from '@/utils/msg'
-// import { Message } from 'element-ui'
 
 const service = axios.create({
   withCredentials: true,
@@ -12,7 +11,7 @@ const service = axios.create({
 service.interceptors.request.use(
   config => {
     if (store.getters.token) {
-      config.xsrfCookieName = getToken()
+      config.headers.Authorization = getToken()
     }
     return config
   },
