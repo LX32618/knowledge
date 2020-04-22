@@ -53,7 +53,7 @@
               ><i class="el-icon-user" />个人中心</el-dropdown-item
             >
             <el-dropdown-item command="logout"
-              ><i class="el-icon-back"></i>退出登录</el-dropdown-item
+              ><i class="fa fa-reply" />退出登录</el-dropdown-item
             >
           </el-dropdown-menu>
         </el-dropdown>
