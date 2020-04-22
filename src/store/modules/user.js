@@ -3,19 +3,15 @@ import { login, logout, getInfo } from '@/api/user'
 
 const state = {
   token: getToken(),
-  name: 'user',
-  roles: []
+  userInfo: {}
 }
 
 const mutations = {
   SET_TOKEN: (state, token) => {
     state.token = token
   },
-  SET_NAME: (state, name) => {
-    state.name = name
-  },
-  SET_ROLES: (state, roles) => {
-    state.roles = roles
+  SET_INFO: (state, info) => {
+    state.userInfo = info
   }
 }
 
@@ -39,7 +35,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       logout().then(_ => {
         commit('SET_TOKEN', '')
-        commit('SET_ROLES', [])
+        commit('SET_INFO', {})
         removeToken()
         resolve()
       }).catch(error => {
@@ -52,8 +48,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       getInfo(state.token).then(response => {
         const data = response.data
-        commit('SET_NAME', data.name)
-        commit('SET_ROLES', data.roles)
+        commit('SET_INFO', data)
         resolve(data)
       }).catch(error => {
         reject(error)

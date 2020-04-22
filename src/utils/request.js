@@ -1,7 +1,8 @@
 import axios from 'axios'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
-import { Message } from 'element-ui'
+import { errorMsg } from '@/utils/msg'
+// import { Message } from 'element-ui'
 
 const service = axios.create({
   withCredentials: true,
@@ -23,19 +24,16 @@ service.interceptors.request.use(
 
 service.interceptors.response.use(
   response => {
-    if (response.status === 200) {
+    if (response.status === 200 && response.data.status === 0) {
       return response.data
     } else {
+      errorMsg(response.data.msg)
       return Promise.reject(response.data.msg || 'error')
     }
   },
   error => {
     console.log(error)
-    Message({
-      type: 'error',
-      message: error.message,
-      duration: 5 * 1000
-    })
+    errorMsg(error.message)
     return Promise.reject(error)
   }
 )

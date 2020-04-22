@@ -1,6 +1,7 @@
 import { getToken } from '@/utils/auth'
+import store from '@/store'
 
-const routerGuide = (to, from, next) => {
+const routerGuide = async (to, from, next) => {
   // 设置网站title
   document.title = `${to.meta.title} | 知识工程`
 
@@ -10,7 +11,10 @@ const routerGuide = (to, from, next) => {
     if (to.path === '/login') {
       next({ path: '/' })
     } else {
-      // const { role } = await store.dispatch('user/getInfo')
+      const user = await store.dispatch('user/getInfo')
+      if (!user) {
+        next({ path: '/login' })
+      }
       // const routes = store.getters.routes
       // if (!routes || routes.length === 0) {
       //   store.commit('app/SET_ROUTES')
