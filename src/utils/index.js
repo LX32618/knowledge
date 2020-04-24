@@ -1,3 +1,4 @@
+import Cookies from 'js-cookie'
 /**
  * @param {string} url
  * @returns {Object}
@@ -16,4 +17,13 @@ export function param2Obj (url) {
       .replace(/\+/g, ' ') +
     '"}'
   )
+}
+
+export function cookieSetJson (key, jsonObj) {
+  Cookies.set(key, JSON.stringify(jsonObj))
+}
+
+export function cookieGetJson (key) {
+  const data = Cookies.get(key)
+  return data == null ? null : JSON.parse(data)
 }

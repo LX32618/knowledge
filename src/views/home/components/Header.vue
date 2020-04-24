@@ -6,10 +6,19 @@
       </el-col>
       <el-col :span="3" class="search-select">
         <!-- 搜索库筛选 -->
-        <el-select v-model="searchFilter" placeholder="知识库" size="large">
-          <el-option label="餐厅名" value="1"></el-option>
-          <el-option label="订单号" value="2"></el-option>
-          <el-option label="用户电话" value="3"></el-option>
+        <el-select
+          v-model="searchFilter"
+          placeholder="知识库"
+          size="large"
+          v-loading="isCategoriesLoading"
+          value-key="id"
+        >
+          <el-option
+            v-for="category of docCategories"
+            :key="category.id"
+            :label="category.categoryName"
+            :value="category.id"
+          ></el-option>
         </el-select>
       </el-col>
       <el-col :span="9" class="search-input">
@@ -24,7 +33,6 @@
       </el-col>
       <el-col :span="2" :offset="2">
         <a href="#" class="header-help">帮助</a>
-        <!-- <el-link class="header-help">帮助</el-link> -->
         <el-tooltip placement="bottom">
           <el-badge value="+0">
             <i class="el-icon-bell header-bell"></i>
@@ -66,9 +74,16 @@
 import { mapGetters } from 'vuex'
 export default {
   name: 'HomeHeader',
+  props: {
+    isCategoriesLoading: {
+      type: Boolean,
+      default: false
+    }
+  },
   computed: {
     ...mapGetters([
-      'userInfo'
+      'userInfo',
+      'docCategories'
     ])
   },
   data () {
@@ -80,9 +95,11 @@ export default {
   methods: {
     async handleCommand (cmd) {
       switch (cmd) {
+        // 进入后台管理
         case 'manage':
           this.$router.push('/bms')
           break
+        // 登出
         case 'logout':
           await this.$store.dispatch('user/logout')
           this.$router.push(`/login?redirect=${this.$route.fullPath}`)
