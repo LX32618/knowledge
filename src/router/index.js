@@ -7,11 +7,6 @@ import { homeRouter } from './module/home'
 import { routerGuide } from './permission'
 
 const routes = [
-  {
-    path: '/tree',
-    name: "Tree",
-    component: () => import("@/components/Tree")
-  },
   sidebarRouter,
   ...homeRouter,
   {

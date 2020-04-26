@@ -1,13 +1,13 @@
 <template>
     <div class="box">
         <div class="sidebar">
-            <cs-tree :tree-options="treeOptions" :tree-data="treeData" @treeNodeClick="treeNodeClick" @append_tree_node="append_tree_node"></cs-tree>
+            <cs-lazytree :settings="treeSettings" :dataFormat="treeDataFormat" @treeNodeClick="treeNodeClick" @append_tree_node="append_tree_node"></cs-lazytree>
         </div>
         <div class="main">
             <el-tabs v-model="activeName" type="border-card" v-if="basicFormData.catalogType!='root'" :style="{height:'100%'}">
                 <el-tab-pane :key="0" label="基本信息" name="basic">
                     <div>
-                        <basic :form-option="basicFormOption" :form-data="basicFormData"></basic>
+                        <basic :settings="basicFormSettings" :form-data="basicFormData"></basic>
                     </div>
                 </el-tab-pane>
                 <el-tab-pane :key="1" v-if="basicFormData.catalogType=='catalog'" label="模板配置" name="template">模板配置</el-tab-pane>
@@ -17,7 +17,7 @@
             </el-tabs>
         </div>
         <el-dialog title="新增知识目录" :visible.sync="dialogFormVisible">
-            <basic :form-option="appendFormOption" :form-data="appendFormData"></basic>
+            <basic :settings="appendFormSettings" :form-data="appendFormData"></basic>
         </el-dialog>
     </div>
 </template>
@@ -25,6 +25,9 @@
 
 <script>
     import basic from "./Form/Basic"
+    import _ from 'lodash'
+
+    let rootUrl = '/api/tree/';
 
     export default {
         name: "KnowledgeList",
@@ -32,81 +35,24 @@
             return {
                 activeName:'basic',
                 dialogFormVisible:false,
-                treeOptions:{
+                treeSettings:{
+                    expand_root:true,//是否默认展开根节点
+                    check_strictly:true,//在显示复选框的情况下，是否严格的遵循父子不互相关联的做法，默认为 false
                     default_expand_all:false,//是否默认展开所层级
                     show_checkbox:false,//是否有checkbox
+                    show_radio: false,//是否有单选radio
                     expand_on_click_node:false,//点击接点是否进行展开收缩
-                    right_click:true//是否具有右键功能
+                    right_click:true,//是否具有右键功能
+                    request:{//访问路径设置
+                        url:`${rootUrl}getnodes`,
+                        method:"post"
+                    }
                 },
-                treeData:[{
-                    id: 1,
-                    label: '知识目录',
-                    type:"root",
-                    icon:'element-icons el-custom-book',
-                    right_click_option:{
-                        append:true,
-                        edit:false,
-                        remove:false,
-                    },
-                    children: [{
-                        id: 2,
-                        label: "机械产品知识库",
-                        type:"repository",
-                        icon:'element-icons el-custom-db',
-                        right_click_option:{
-                            append:true,
-                            edit:false,
-                            remove:true,
-                        },
-                        children: [{
-                            id: 3,
-                            type:"catalog",
-                            label: "设计知识",
-                            icon:'element-icons el-custom-file',
-                            right_click_option:{
-                                append:false,
-                                edit:false,
-                                remove:true,
-                            }
-                        }, {
-                            id: 4,
-                            label:"产品分类",
-                            type:"sort",
-                            icon:'element-icons el-custom-files',
-                            right_click_option:{
-                                append:true,
-                                edit:false,
-                                remove:true,
-                            },
-                            children:[{
-                                id: 5,
-                                type:"catalog",
-                                label: "目录一",
-                                icon:'element-icons el-custom-file',
-                                right_click_option:{
-                                    append:false,
-                                    edit:false,
-                                    remove:true,
-                                }
-                            },{
-                                id: 6,
-                                type:"catalog",
-                                label: "目录二",
-                                icon:'element-icons el-custom-file',
-                                right_click_option:{
-                                    append:false,
-                                    edit:false,
-                                    remove:true,
-                                }
-                            }]
-                        }]
-                    }]
-                }],
-                basicFormOption:{
+                basicFormSettings:{
                     lableWidth:"120px",
                     formType:"basic"
                 },
-                appendFormOption:{
+                appendFormSettings:{
                     lableWidth:"120px",
                     formType:"append"
                 },
@@ -142,8 +88,53 @@
                 this.$set(this.basicFormData, 'catalogType', data.type);
             },
             append_tree_node(node){
+                console.log(node);
                 this.$set(this.appendFormData, 'catalogType', node.object.type);
                 this.dialogFormVisible = true;
+            },
+            treeDataFormat(data){
+                const temp = _.cloneDeep(data);
+                let formatData = temp.map((item,index,arr)=>{
+                    item.isLeaf = item.isPa
+                    if(item.type=="root")
+                    {
+                        item.icon = "element-icons el-custom-book";
+                        item.right_click_option={
+                            append:true,
+                            edit:false,
+                            remove:false,
+                        };
+
+                    }
+                    else if(item.type=="repository"){
+                        item.icon = "element-icons el-custom-db";
+                        item.right_click_option={
+                            append:true,
+                            edit:false,
+                            remove:true,
+                        };
+                    }
+                    else if(item.type=="sort"){
+                        item.icon = "element-icons el-custom-files";
+                        item.right_click_option={
+                            append:true,
+                            edit:false,
+                            remove:true,
+                        };
+                    }
+                    else if(item.type=="catalog"){
+                        item.icon = "element-icons el-custom-file";
+                        item.right_click_option={
+                            append:false,
+                            edit:false,
+                            remove:true,
+                        };
+                    }
+                    else{}
+                    item.showCheckbox = true;
+                    return item;
+                })
+                return formatData;
             }
         },
         components:{

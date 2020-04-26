@@ -14,15 +14,18 @@ const sidebar = {
             children: [{
                 name: 'Keywords',
                 path: "keywords",
-                type:"menu",
                 meta:{title:"检索关键字统计",paths:[]},
                 component:()=>import('@/views/Home')
             }, {
                 name: 'Interface',
                 path: "interface",
-                type:"menu",
                 meta:{title:"接口测试"},
                 component:()=>import('@/views/About')
+            },{
+                name: 'Dictionary',
+                path: "dictionary",
+                meta:{title:"字典数据"},
+                component:()=>import('@/views/bms/DictionaryData')
             }]
         }, {
             name: "Repository",

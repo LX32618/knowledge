@@ -1,11 +1,11 @@
 <template>
-    <el-form :model="data" :rules="rules" ref="basicForm" :label-width="formOption.lableWidth">
+    <el-form :model="data" :rules="rules" ref="basicForm" :label-width="settings.lableWidth">
         <el-form-item label="名称"   prop="name">
             <el-input autocomplete="off" v-model="data.name" placeholder="请输入名称"></el-input>
         </el-form-item>
         <el-form-item label="目录类型" v-if="data.catalogType!='root'" >
-            <el-select  placeholder="请选择目录类型" v-model="data.catalogType" :disabled="formOption.formType=='basic'">
-                <el-option label="知识库" value="repository" v-if="formOption.formType=='basic'"></el-option>
+            <el-select  placeholder="请选择目录类型" v-model="data.catalogType" :disabled="settings.formType=='basic'">
+                <el-option label="知识库" value="repository" v-if="settings.formType=='basic'"></el-option>
                 <el-option label="分类" value="sort"></el-option>
                 <el-option label="目录" value="catalog"></el-option>
             </el-select>
@@ -46,13 +46,12 @@
 </template>
 
 <script>
+    import _ from 'lodash'
     export default {
         name: "Basic",
         props:{
-            formOption:{
-                type: Object,
-                default:{},
-                required:true
+            settings:{
+                type: Object
             },
             formData:{
                 type:Object,
@@ -72,7 +71,7 @@
         },
         data(){
             return {
-                data: this.formData,
+                data: _.cloneDeep(this.formData),
                 rules: {
                     name: [
                         {required: true, message: "请输入名称", trigger: "blur"}
@@ -86,8 +85,8 @@
         },
         watch:{
             formData:{
-                handler(newVal){
-                    this.data=newVal;
+                handler(newVal,oldVal){
+                    this.data = _.cloneDeep(newVal);
                 },
                 deep:true
             }
