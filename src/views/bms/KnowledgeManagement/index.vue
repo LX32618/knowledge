@@ -55,41 +55,43 @@
                 exportAttach:false,
                 keywords:"",
                 treeOptions:{
+                    flatData:false,//是否采用打平的数据
+                    check_strictly:true,//在显示复选框的情况下，是否严格的遵循父子不互相关联的做法，默认为 false
                     default_expand_all:false,//是否默认展开所层级
                     show_checkbox:false,//是否有checkbox
+                    show_radio: false,//是否有单选radio
                     expand_on_click_node:false,//点击接点是否进行展开收缩
                     right_click:false//是否具有右键功能
                 },
                 treeData:[{
                     id: 1,
-                    label: '知识目录',
+                    name: '知识目录',
                     type:"root",
-                    icon:'element-icons el-custom-book',
                     children: [{
                         id: 2,
-                        label: "机械产品知识库",
+                        name: "机械产品知识库",
                         type:"repository",
-                        icon:'element-icons el-custom-db',
+                        showCheckbox:true,
                         children: [{
                             id: 3,
                             type:"catalog",
-                            label: "设计知识",
-                            icon:'element-icons el-custom-file'
+                            name: "设计知识",
+
                         }, {
                             id: 4,
-                            label:"产品分类",
+                            name:"产品分类",
                             type:"sort",
-                            icon:'element-icons el-custom-files',
+
                             children:[{
                                 id: 5,
                                 type:"catalog",
-                                label: "目录一",
-                                icon:'element-icons el-custom-file'
+                                name: "目录一",
+
                             },{
                                 id: 6,
                                 type:"catalog",
-                                label: "目录二",
-                                icon:'element-icons el-custom-file'
+                                name: "目录二",
+
                             }]
                         }]
                     }]
