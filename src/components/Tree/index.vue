@@ -29,6 +29,7 @@
 <script>
     import Tree2 from "../Tree2"
     import _ from 'lodash'
+    import util from '@/utils/tree.js'
 
     export default {
         name: "Tree",
@@ -49,35 +50,13 @@
         props:["treeOptions","treeData"],
         mounted() {
             if(this.treeOptions.flatData){//如果使用的是打平的数据
-                this.data = this.treeDataConvert(this.treeData,"");
+                this.data = this.unflatTree(this.treeData,"");
             }
             else{
                 this.data = _.cloneDeep(this.treeData);
             }
         },
         methods: {
-            //将打平数据转换为层级数据
-            treeDataConvert(nodes,rootId){
-                let items = {};
-                nodes.forEach(n=>{
-                    let key = n.pid;
-                    if(!items[key])
-                        items[key] = [];
-                    items[key].push(n);
-                });
-                return this.formatTree(items,rootId);
-            },
-            formatTree(items, pid) {
-                let result = [];
-                if (!items[pid]) {
-                    return result;
-                }
-                items[pid].forEach(i=>{
-                    i.children = this.formatTree(items,i.id);
-                    result.push(i);
-                })
-                return result;
-            },
             //右键点击事件
             rightClick(MouseEvent, object, Node, VueComponent){
                 if(this.settings.right_click)
