@@ -28,7 +28,8 @@
             :key="item.id"
             :value="item.id"
             :label="item.categoryName"
-          ></el-option>
+            ><i class="fa fa-database"></i> {{ item.categoryName }}</el-option
+          >
         </el-select>
       </el-form-item>
       <el-form-item label="知识目录" prop="baseid">
@@ -48,7 +49,7 @@
           <span
             slot="option-label"
             slot-scope="{ node, count, shouldShowCount }"
-            ><i class="fa" :class="iconClass(node)"></i>
+            ><i class="fa" :class="baseIdIconClass(node)"></i>
             {{ node.label }}
             <span v-if="shouldShowCount"> ({{ count }})</span></span
           >
@@ -64,8 +65,17 @@
           noResultsText="未找到目录"
           :disabled="!knowledge.baseid"
           disable-branch-nodes
+          show-count
           v-loading="isLoading"
-        ></treeselect>
+        >
+          <span
+            slot="option-label"
+            slot-scope="{ node, count, shouldShowCount }"
+            ><i class="fa" :class="labelIconClass(node)"></i>
+            {{ node.label }}
+            <span v-if="shouldShowCount"> ({{ count }})</span></span
+          ></treeselect
+        >
         <span v-if="!knowledge.baseid" class="form-tip-danger"
           >请先选择知识库与知识目录</span
         >
@@ -224,11 +234,17 @@ export default {
       }
     },
     // 知识目录选择树图标显示
-    iconClass (node) {
+    baseIdIconClass (node) {
       if (node.raw.type < 2) {
         return node.isExpanded ? 'fa-folder-open' : 'fa-folder'
       }
       return 'fa-book'
+    },
+    labelIconClass (node) {
+      if (node.isBranch) {
+        return node.isExpanded ? 'fa-folder-open' : 'fa-folder'
+      }
+      return 'fa-bookmark'
     }
   },
   async mounted () {

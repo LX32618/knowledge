@@ -11,7 +11,10 @@ const routerGuide = async (to, from, next) => {
     if (to.path === '/login') {
       next({ path: '/' })
     } else {
-      const user = await store.dispatch('user/getInfo')
+      let user = store.getters.userInfo
+      if (!user) {
+        user = await store.dispatch('user/getInfo')
+      }
       if (!user) {
         next({ path: '/login' })
       }

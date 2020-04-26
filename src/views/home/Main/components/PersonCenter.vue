@@ -45,7 +45,7 @@ export default {
   },
   data () {
     return {
-      headUrl: require('../../../assets/img/home/head.jpg'),
+      headUrl: require('../../../../assets/img/home/head.jpg'),
       isLoading: false,
       knowledgeCount: 0, // 发布知识总条数
       collectKnowledgeCount: 0, // 收藏知识总条数
@@ -101,7 +101,7 @@ export default {
 .head-box {
   width: 100%;
   height: 112px;
-  background: url(../../../assets/img/home/user_background.png) no-repeat;
+  background: url(../../../../assets/img/home/user_background.png) no-repeat;
   background-size: auto;
   background-size: 100% 112px;
 }
