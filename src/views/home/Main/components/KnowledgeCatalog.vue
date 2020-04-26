@@ -13,10 +13,16 @@
         v-for="(slicedArray, index) of slicedCategories"
         :key="index"
       >
-        <div class="catalog-item" v-for="item of slicedArray" :key="item.id">
+        <router-link
+          :to="`/knoweldgeBase/${item.id}`"
+          tag="div"
+          class="catalog-item"
+          v-for="item of slicedArray"
+          :key="item.id"
+        >
           <i :class="`fa fa-${item.picture}`"></i>
           <p>{{ item.categoryName }}</p>
-        </div>
+        </router-link>
       </el-carousel-item>
     </el-carousel>
   </div>
@@ -55,7 +61,7 @@ export default {
   height: auto;
   min-height: 500px;
   min-width: 1200px;
-  background: url(../../../assets/img/home/backgroundImg.png) no-repeat;
+  background: url(../../../../assets/img/home/backgroundImg.png) no-repeat;
   background-size: 100% 100%;
   overflow: hidden;
 }

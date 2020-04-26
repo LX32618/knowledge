@@ -3,7 +3,7 @@ import { login, logout, getInfo } from '@/api/user'
 
 const state = {
   token: getToken(),
-  userInfo: {}
+  userInfo: undefined
 }
 
 const mutations = {

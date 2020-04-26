@@ -1,11 +1,23 @@
 const homeRouter = [
   {
     path: '/',
-    name: 'homePage',
     component: () => import("@/views/home/index"),
-    meta: {
-      title: '主页'
-    }
+    children: [{
+      path: '/',
+      name: 'mainPage',
+      component: () => import("@/views/home/Main"),
+      meta: {
+        title: '主页'
+      },
+    }, {
+      path: '/knoweldgeBase/:id',
+      name: 'knowledgeBase',
+      props: true,
+      component: () => import("@/views/home/KnowledgeBase"),
+      meta: {
+        title: '知识库'
+      }
+    }]
   },
   {
     path: '/knowledgeForm/:id',
