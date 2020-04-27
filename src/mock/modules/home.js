@@ -6,10 +6,11 @@ const list = []
 for (let i = 0; i < 20; ++i) {
   list.push(Mock.mock({
     id: '@increment',
-    categoryName: '@ctitle',
+    name: '@ctitle',
     'picture|1': ['tv', 'fighter-jet', 'rocket', 'github', 'key', 'gears', 'random', 'sitemap', 'sliders', 'book'],
     type: 0,
-    pid: 0
+    pid: 0,
+    'knowNum|0-10': 0
   }))
 }
 
@@ -18,9 +19,10 @@ const secondList = []
 for (let i = 0; i < 100; ++i) {
   secondList.push(Mock.mock({
     id: '@increment',
-    categoryName: '@ctitle',
+    name: '@ctitle',
     'pid|1': list,
-    type: 1
+    type: 1,
+    'knowNum|0-10': 0
   }))
 }
 
@@ -29,9 +31,10 @@ const thirdList = []
 for (let i = 0; i < 100; ++i) {
   thirdList.push(Mock.mock({
     id: '@increment',
-    categoryName: '@ctitle',
+    name: '@ctitle',
     'pid|1': secondList,
-    type: 2
+    type: 2,
+    'knowNum|0-10': 0
   }))
 }
 
@@ -60,6 +63,12 @@ for (let i = 0; i < 1000; ++i) {
   knowledgeList.push(Mock.mock({
     id: '@increment',
     name: '@ctitle',
+    code: '@word(8)',
+    'classification|1': thirdList.map(item => item.name),
+    'lables|0-3': [{
+      'label|+1': labelList2.map(item => item.label)
+    }],
+    keyword: '@cword(2,5)',
     'hasPermission|1-2': true,
     describe: '@csentence',
     'creator|1': ['系统管理员', '安全管理员', '安全审计员', '普通用户', '访客'],
@@ -82,21 +91,31 @@ export default [
     // url: '/knowledge/find',
     url: /\/knowledge\/find.*/,
     response: config => {
-      const { creator, type } = config.query
+      const { creator, type, id, rows, page } = config.query
       let data
+      let length
       if (type == 0) {
         data = knowledgeList.sort((a, b) => {
           return new Date(b.createDate) - new Date(a.createDate)
         })
+        data = data.slice(0, 12)
       } else if (type == 1) {
         data = knowledgeList.filter(item => item.creator === creator)
-      } else {
+        data = data.slice(0, 12)
+      } else if (type == 2) {
         data = knowledgeList.filter(item => item.hot)
+        data = data.slice(0, 12)
+      } else {
+        data = knowledgeList.filter(item => item.id % id === 0)
+        length = data.length
+        data = data.slice((page - 1) * rows, page * rows)
       }
-      data = data.slice(0, 10)
       return {
         status: 0,
-        data
+        data: {
+          list: data,
+          length
+        }
       }
     }
   },

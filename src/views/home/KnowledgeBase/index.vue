@@ -9,16 +9,22 @@
             >首页</el-breadcrumb-item
           >
           <el-breadcrumb-item class="breadcurmb-text">{{
-            this.currentKnowledgeBase.categoryName
+            this.currentKnowledgeBase.name
           }}</el-breadcrumb-item>
         </el-breadcrumb>
       </div>
       <el-row :gutter="20">
         <el-col :span="6">
-          <side-nav></side-nav>
+          <side-nav
+            :knowledgeBase="currentKnowledgeBase"
+            @selectCategory="handleCategoryChange"
+          ></side-nav>
         </el-col>
         <el-col :span="18">
-          <detail-area></detail-area>
+          <detail-area
+            :selectedCategory="selectedCategory"
+            :currentKnowledgeBase="currentKnowledgeBase"
+          ></detail-area>
         </el-col>
       </el-row>
     </div>
@@ -30,6 +36,7 @@ import { mapGetters } from 'vuex'
 import { errorMsg } from '@/utils/msg'
 import SideNav from './components/SideNav'
 import DetailArea from './components/DetailArea'
+import _ from 'lodash'
 
 export default {
   name: 'KnowledgeBase',
@@ -46,7 +53,8 @@ export default {
   data () {
     return {
       currentKnowledgeBase: {},
-      isLoading: false
+      isLoading: false,
+      selectedCategory: {}
     }
   },
   computed: {
@@ -60,12 +68,18 @@ export default {
     await this.$store.dispatch('docCategory/fetchCategories')
     this.isLoading = false
     this.currentKnowledgeBase = this.docCategories.find(item => item.id == this.id)
+    this.selectedCategory = _.pick(this.currentKnowledgeBase, ['id', 'name', 'type'])
     if (!this.currentKnowledgeBase) {
       this.$router.push('/')
       errorMsg('知识库不存在，请刷新再尝试')
       return
     }
-    document.title = `${this.currentKnowledgeBase.categoryName} | 知识工程`
+    document.title = `${this.currentKnowledgeBase.name} | 知识工程`
+  },
+  methods: {
+    handleCategoryChange (data) {
+      this.selectedCategory = data
+    }
   }
 }
 </script>
@@ -76,7 +90,7 @@ export default {
   width: 100%;
   overflow: auto;
   background-color: #ecf0f1;
-  margin-top: 90px;
+  margin-top: 70px;
 }
 .wrapper {
   width: 1200px;

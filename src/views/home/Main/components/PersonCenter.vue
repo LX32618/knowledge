@@ -78,8 +78,11 @@ export default {
     openAddKnowledgePage () {
       const routeData = this.$router.resolve({
         name: "knowledgeForm",
-        params: { id: 0 }
-      });
+        params: {
+          id: '0',
+          baseid: '0'
+        }
+      })
       window.open(routeData.href, '_blank');
     }
   },

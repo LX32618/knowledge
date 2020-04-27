@@ -7,13 +7,14 @@ export function fetchKnowledges (option) {
     url: `${rootUrl}find`,
     method: 'get',
     params: {
-      page: 1,
-      rows: 10,
+      page: option.page || 1,
+      rows: option.rows || 10,
       sort: 0,
       order: 0,
       auditing: 0,
       creator: option.creator,
-      type: option.type
+      type: option.type,
+      id: option.id,
     }
   })
 }

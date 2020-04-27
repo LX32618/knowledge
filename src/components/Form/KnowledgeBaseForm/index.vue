@@ -27,8 +27,8 @@
             v-for="item of docCategories"
             :key="item.id"
             :value="item.id"
-            :label="item.categoryName"
-            ><i class="fa fa-database"></i> {{ item.categoryName }}</el-option
+            :label="item.name"
+            ><i class="fa fa-database"></i> {{ item.name }}</el-option
           >
         </el-select>
       </el-form-item>
@@ -121,6 +121,10 @@ export default {
     id: {
       type: String,
       default: '0'
+    },
+    baseid: {
+      type: String,
+      default: '0'
     }
   },
   data () {
@@ -177,7 +181,7 @@ export default {
         data = unflatTree(data, 0) // 生成树
         // 格式化节点
         walkTree(data, item => {
-          item.label = item.categoryName
+          item.label = item.name
           if (!item.children || item.children.length === 0) {
             item.children = undefined
             // 叶子结点中类型为知识库或分类的不可选择
@@ -240,6 +244,7 @@ export default {
       }
       return 'fa-book'
     },
+    // 知识标签选择树图标显示
     labelIconClass (node) {
       if (node.isBranch) {
         return node.isExpanded ? 'fa-folder-open' : 'fa-folder'
@@ -248,14 +253,24 @@ export default {
     }
   },
   async mounted () {
+    this.reset()
     this.pageLoading = true
     // 加载知识库
     await this.$store.dispatch('docCategory/fetchCategories')
     if (this.id == 0) {
-      this.reset()
       this.pageLoading = false
       return
     }
+
+    /* 连接后端后用
+    this.category = this.id
+    this.knowledge.baseid = this.baseid
+    */
+
+    // 测试专用
+    this.category = parseInt(this.id)
+
+    this.pageLoading = false
   }
 }
 </script>

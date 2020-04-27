@@ -13,9 +13,11 @@ const modules = modulesFiles.keys().reduce((modules, modulePath) => {
 // 根据引入模块生成路由
 Object.keys(modules).forEach(key => {
   const mockModule = modules[key]
-  mockModule.forEach(item => {
-    Mock.mock(item.url, item.type || 'get', XHR2ExpressReqWrap(item.response))
-  })
+  if (mockModule) {
+    mockModule.forEach(item => {
+      Mock.mock(item.url, item.type || 'get', XHR2ExpressReqWrap(item.response))
+    })
+  }
 })
 
 function XHR2ExpressReqWrap (respond) {

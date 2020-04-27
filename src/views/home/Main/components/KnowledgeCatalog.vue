@@ -21,7 +21,7 @@
           :key="item.id"
         >
           <i :class="`fa fa-${item.picture}`"></i>
-          <p>{{ item.categoryName }}</p>
+          <p>{{ item.name }}</p>
         </router-link>
       </el-carousel-item>
     </el-carousel>

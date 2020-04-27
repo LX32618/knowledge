@@ -55,7 +55,7 @@ export default {
         creator: this.userInfo.name,
         type
       }).then(res => {
-        this.list = res.data
+        this.list = res.data.list
         this.isLoading = false
       }).catch(error => {
         console.log(error)
