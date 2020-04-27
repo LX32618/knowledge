@@ -185,7 +185,7 @@ let nodes = [
 
 export default [
     {
-        url: `${rootPath}getdictionary`,
+        url: `${rootPath}get`,
         type: 'post',
         response: config => {
             const { pid } = config.body;
@@ -199,7 +199,7 @@ export default [
         }
     },
     {
-        url: `${rootPath}appenddictionary`,
+        url: `${rootPath}append`,
         type: 'post',
         response: config => {
             let node = config.body;
@@ -224,7 +224,7 @@ export default [
 
         }
     },    {
-        url: `${rootPath}editdictionary`,
+        url: `${rootPath}edit`,
         type: 'post',
         response: config => {
             let node = config.body;
@@ -249,7 +249,7 @@ export default [
         }
     },
     {
-        url: `${rootPath}removedictionary`,
+        url: `${rootPath}remove`,
         type: 'post',
         response: config => {
             const {id} = config.body;

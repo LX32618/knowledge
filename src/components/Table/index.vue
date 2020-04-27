@@ -80,12 +80,11 @@ export default {
       this.$emit('pageChange', val);
     }
   }
-
 }
 
 </script>
 
-<style scoped>
+<style>
 .el-radio__label {
   display: none;
 }

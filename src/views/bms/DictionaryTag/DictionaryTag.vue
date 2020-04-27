@@ -6,14 +6,14 @@
         <div class="dict main">
             <dic-form :settings="viewFormSettings" :form-data="viewFormData" v-if="isNodeClick"></dic-form>
         </div>
-        <el-dialog title="新增字典 " :visible.sync="appendFormVisible">
+        <el-dialog title="新增" :visible.sync="appendFormVisible">
             <dic-form :settings="appendFormSettings" :form-data="appendFormData"  ref="append" @submitSuccess="submitSuccess">
                 <template v-slot:operation>
                     <el-button type="primary" :style="{float:'right',marginTop:'-10px'}" @click="submitForm('append')">保存</el-button>
                 </template>
             </dic-form>
         </el-dialog>
-        <el-dialog title="编辑字典 " :visible.sync="editFormVisible">
+        <el-dialog title="编辑" :visible.sync="editFormVisible">
             <dic-form :settings="editFormSettings" :form-data="editFormData" ref="edit" @submitSuccess="submitSuccess">
                 <template v-slot:operation>
                     <el-button type="primary" :style="{float:'right',marginTop:'-10px'}" @click="submitForm('edit')">保存</el-button>
@@ -28,10 +28,16 @@
     import dicForm from "./Form";
     import request from '@/utils/request'
 
-    const url = '/api/dictionary/';
-
     export default {
         name: "Dictionary",
+        props:{
+            rooturl:{
+                type:String
+            },
+            category:{
+                type:String
+            }
+        },
         data(){
             return {
                 isNodeClick:false,//是否已经点击了树节点
@@ -47,7 +53,7 @@
                     expand_on_click_node:false,//点击接点是否进行展开收缩
                     right_click:true,//是否具有右键功能
                     request:{//访问路径设置
-                        url:`${url}getdictionary`,
+                        url:`${this.rooturl}get`,
                         method:"post"
                     }
                 },
@@ -59,7 +65,7 @@
                     lableWidth:"120px",
                     type:"append",
                     request:{
-                        url:`${url}appenddictionary`,
+                        url:`${this.rooturl}append`,
                         method:'post'
                     }
                 },
@@ -77,7 +83,7 @@
                     lableWidth:"120px",
                     type:"edit",
                     request:{
-                        url:`${url}editdictionary`,
+                        url:`${this.rooturl}edit`,
                         method:'post'
                     }
                 },
@@ -122,7 +128,7 @@
                     type: 'warning'
                 }).then(() => {
                     request({
-                        url: `${url}removedictionary`,
+                        url: `${url}remove`,
                         method: 'post',
                         data:node.object,
                     }).then(data=>{
@@ -149,7 +155,6 @@
                 let formatData = temp.map((item,index,arr)=>{
                     let pid = item.pid;
                     item.right_click_option={
-                        append:true,
                         edit:true
                     };
                     if(this.treeSettings.root_id == pid){//如果是根节点
@@ -157,6 +162,19 @@
                     }
                     else{
                         item.right_click_option.remove = true;
+                    }
+                    if(this.category=="dictionary"){//对于字典操作
+                        item.right_click_option.append = true;
+                    }
+                    else{//对于标签操作，子节点不能添加
+                        if(item.isLeaf)
+                        {
+                            item.right_click_option.append = false;
+                        }
+                        else
+                        {
+                            item.right_click_option.append = true;
+                        }
                     }
                     return item;
                 })
@@ -167,7 +185,7 @@
             }
         },
         mounted() {
-
+          console.log(this.category);
         },
         components:{
             dicForm
