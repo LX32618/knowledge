@@ -25,7 +25,12 @@ const sidebar = {
                 name: 'Dictionary',
                 path: "dictionary",
                 meta:{title:"字典数据"},
-                component:()=>import('@/views/bms/DictionaryData')
+                component:()=>import('@/views/bms/DictionaryTag/Dictionary')
+            },{
+                name: 'Tag',
+                path: "tag",
+                meta:{title:"标签管理"},
+                component:()=>import('@/views/bms/DictionaryTag/Tag')
             }]
         }, {
             name: "Repository",

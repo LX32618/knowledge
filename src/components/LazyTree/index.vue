@@ -15,7 +15,7 @@
                   @node-click="nodeClick">
                  <span slot-scope="{ node, data }">
                     <span>
-                        <i :class="data.icon?data.icon:data.isLeaf?'el-icon-document':'el-icon-folder'"></i>
+                        <i :class="data.icon?data.icon:data.isLeaf?'el-icon-document':node.expanded?'el-icon-folder-opened':'el-icon-folder'"></i>
                         <span :style="{fontSize:'14px'}"> {{ node.label }}</span>
                     </span>
                 </span>
@@ -33,7 +33,7 @@
     import request from '@/utils/request'
 
     export default {
-        name: "Tree",
+        name: "LazyTree",
         props:{
             settings:{
                 type:Object
@@ -76,14 +76,11 @@
                 this.show_right_click = false;
                 document.removeEventListener('click', this.vanish); // 要及时关掉监听
             },
-            nodeClick(data,node){
-                this.$emit("treeNodeClick",{data,node});
-            },
             loadNodes(node,resolve){
                 let pid;
                 if(node.level == 0)
                 {
-                    pid="";
+                    pid=this.settings.root_id;
                 }
                 else
                 {
@@ -94,35 +91,45 @@
                     method: this.settings.request.method,
                     data:{pid:pid}
                 }).then(data=>{
-                    let formatData = this.dataFormat(data.data);
+                    let formatData = this.dataFormat({node:node,data:data.content});
                     resolve(formatData);
                     if(this.settings.expand_root && node.level == 0)//如果默认需要展开第一层根节点
                     {
                         this.defaultExpandedKey = formatData.map(d=>{return d.id});
                     }
                 });
-
-
+            },
+            nodeClick(data,node){
+                this.$emit("treeNodeClick",{data,node});
             },
             append(e) {
-                this.$emit("append_tree_node",this.right_click_node);
-         /*       let object = this.right_click_node.object;
-                const newChild = { id: 100, label: 'testtest', children: [] };
-                if (!object.children) {
-                    this.$set(object, 'children', []);
-                }
-                object.children.push(newChild);
-                this.$refs.tree.store.nodesMap[object.id].expanded = true;*/
+                this.$emit("appendTreeNode",this.right_click_node);
+            },
+            appendSuccess(id){//新增成功
+                let node = this.$refs.tree.getNode(id); //获得当前添加的node
+                this.$set(node,'loaded',false);//无论当前节点是否展开加载，都将其设置为未加载
+                this.$set(node.data,"isLeaf",false);//如果是叶子节点，将其变为非叶子节点
+                node.expand();//展开
             },
             remove(e) {
-                let node = this.right_click_node.Node;
-                let object = this.right_click_node.object;
-                const parent = node.parent;
-                const children = parent.data.children || parent.data;
-                const index = children.findIndex(d => d.id === object.id);
-                children.splice(index, 1);
+                this.$emit("removeTreeNode",this.right_click_node);
+            },
+            removeSuccess(pid){//删除成功
+                let pNode = this.$refs.tree.getNode(pid); //获取当前删除node的父节点
+                this.$set(pNode,'loaded',false);//无论当前节点是否展开加载，都将其设置为未加载
+                pNode.expand();//展开
+                if(pNode.childNodes.length<=1){//如果父节点还有子节点
+                    this.$set(pNode.data,'isLeaf',true);
+                }
             },
             edit(e) {
+                this.$emit("editTreeNode",this.right_click_node);
+            },
+            editSuccess(id){
+                let node = this.$refs.tree.getNode(id); // 通过节点id找到对应树节点对象
+                let pNode = this.$refs.tree.getNode(node.data.pid); // 通过节点id找到对应树节点对象
+                this.$set(pNode,'loaded',false);//无论当前节点是否展开加载，都将其设置为未加载
+                pNode.expand();//展开
             },
             checkChange(data, checked, indeterminate) {
                 if(!this.settings.show_checkbox && this.settings.show_radio)//只有在单选的情况下
@@ -142,7 +149,6 @@
             "el-tree2":Tree2
         },
         mounted() {
-            //this.loadNodes();
 
         }
     }
