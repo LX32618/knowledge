@@ -38,7 +38,7 @@ export default {
       if (!this.knowledgeBase || !this.knowledgeBase.id) return
       this.categoriesLoading = true
       getCategoryTree({ id: this.knowledgeBase.id }).then(res => {
-        let data = res.data
+        let data = res.content
         this.categories = (unflatTree(data, 0))[0].children
         this.categoriesLoading = false
       })

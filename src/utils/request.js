@@ -23,11 +23,11 @@ service.interceptors.request.use(
 
 service.interceptors.response.use(
   response => {
-    if (response.status === 200 && response.data.status === 0) {
+    if (response.status === 200 && response.data.status === 'success') {
       return response.data
     } else {
-      errorMsg(response.data.msg)
-      return Promise.reject(response.data.msg || 'error')
+      errorMsg(response.data.message)
+      return Promise.reject(response.data.message || 'error')
     }
   },
   error => {

@@ -27,14 +27,14 @@ export default [
 
       if (!user) {
         return {
-          status: -1,
-          msg: '用户名或密码错误'
+          status: 'fail',
+          message: '用户名或密码错误'
         }
       }
 
       return {
-        status: 0,
-        data: { token: user.token }
+        status: 'success',
+        content: { token: user.token }
       }
     }
   },
@@ -44,7 +44,7 @@ export default [
     type: 'get',
     response: _ => {
       return {
-        status: 0
+        status: 'success'
       }
     }
   },
@@ -58,13 +58,13 @@ export default [
 
       if (!user) {
         return {
-          status: -1,
-          msg: '登录已过期'
+          status: 'fail',
+          message: '登录已过期'
         }
       }
       return {
-        status: 0,
-        data: user
+        status: 'success',
+        content: user
       }
     }
   }

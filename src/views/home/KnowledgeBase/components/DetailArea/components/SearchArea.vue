@@ -110,7 +110,7 @@ export default {
       }
       this.isLoading = true
       getLablesTree({ classificationid: this.selectedCategory.id }).then(res => {
-        let data = res.data
+        let data = res.content
         data = unflatTree(data, 0) // 生成树
         // 格式化节点
         walkTree(data, item => {

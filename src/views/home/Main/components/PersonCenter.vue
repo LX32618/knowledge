@@ -63,7 +63,7 @@ export default {
       fetchKnowledgeCount({
         creator: this.userInfo.name
       }).then(res => {
-        this.knowledgeCount = res.data
+        this.knowledgeCount = res.content
       }).catch(e => errorMsg(e))
     },
     // 获取收藏知识总条数
@@ -71,7 +71,7 @@ export default {
       fetchCollectKnowledgeCount({
         creator: this.userInfo.name
       }).then(res => {
-        this.collectKnowledgeCount = res.data
+        this.collectKnowledgeCount = res.content
       }).catch(e => errorMsg(e))
     },
     // 打开新增知识页面

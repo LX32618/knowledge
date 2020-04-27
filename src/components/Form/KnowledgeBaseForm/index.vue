@@ -177,7 +177,7 @@ export default {
       // 更新知识目录选择集
       this.isLoading = true
       getCategoryTree({ id: this.category }).then(res => {
-        let data = res.data
+        let data = res.content
         data = unflatTree(data, 0) // 生成树
         // 格式化节点
         walkTree(data, item => {
@@ -206,7 +206,7 @@ export default {
       // 更新知识标签选择集
       this.isLoading = true
       getLablesTree({ classificationid: this.knowledge.baseid }).then(res => {
-        let data = res.data
+        let data = res.content
         data = unflatTree(data, 0) // 生成树
         // 格式化节点
         walkTree(data, item => {

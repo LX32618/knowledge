@@ -124,8 +124,8 @@ export default {
     updateKnowledges () {
       this.isLoading = true
       fetchKnowledges({ id: this.selectedCategory.id, type: 3, ...this.searchOption, rows: this.rows, page: this.page }).then(res => {
-        this.knowledges = res.data.list
-        this.total = res.data.length
+        this.knowledges = res.content.list
+        this.total = res.content.length
         this.isLoading = false
       })
     },
@@ -139,16 +139,26 @@ export default {
       this.updateKnowledges()
     },
     // 查看知识详情
-    handleView (row) { },
+    handleView (row) {
+      const routeData = this.$router.resolve({
+        name: "knowledgeDetail",
+        params: {
+          id: row.id,
+        }
+      });
+      window.open(routeData.href, '_blank');
+    },
     // 订阅 / 取消订阅知识
     handleSubscribe (row, index) {
       row.isSubscribe = !row.isSubscribe
       this.knowledges.splice(index, 1, row)
     },
+    // 每页数量变化
     sizeChange (rows) {
       this.rows = rows
       this.updateKnowledges()
     },
+    // 当前页面变化
     pageChange (page) {
       this.page = page
       this.updateKnowledges()

@@ -15,7 +15,7 @@ const actions = {
   fetchCategories ({ commit }) {
     return new Promise((resolve, reject) => {
       findAllKnowlibrary().then(response => {
-        const data = response.data
+        const data = response.content
         commit('FETCH_CATEGORIES', data)
         resolve()
       }).catch(error => {

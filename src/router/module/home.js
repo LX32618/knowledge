@@ -27,6 +27,15 @@ const homeRouter = [
     meta: {
       title: '新增知识'
     }
+  },
+  {
+    path: '/knowledgeDetail/:id',
+    name: 'knowledgeDetail',
+    props: true,
+    component: () => import("@/views/home/KnowledgeDetail"),
+    meta: {
+      title: '知识详情'
+    }
   }
 ]
 

@@ -82,8 +82,8 @@ export default [
     url: '/doc/docCategory/findAllKnowlibrary',
     response: _ => {
       return {
-        status: 0,
-        data: list
+        status: 'success',
+        content: list
       }
     }
   },
@@ -111,8 +111,8 @@ export default [
         data = data.slice((page - 1) * rows, page * rows)
       }
       return {
-        status: 0,
-        data: {
+        status: 'success',
+        content: {
           list: data,
           length
         }
@@ -125,8 +125,8 @@ export default [
       const { creator } = config.query
       const data = knowledgeList.filter(item => item.creator === creator)
       return {
-        status: 0,
-        data: data.length
+        status: 'success',
+        content: data.length
       }
     }
   },
@@ -134,8 +134,8 @@ export default [
     url: /\/collectKnowledge\/count.*/,
     response: _ => {
       return {
-        status: 0,
-        data: Math.floor(Math.random() * 100)
+        status: 'success',
+        content: Math.floor(Math.random() * 100)
       }
     }
   },
@@ -166,8 +166,8 @@ export default [
         }
       })
       return {
-        status: 0,
-        data: data
+        status: 'success',
+        content: data
       }
     }
   }, {
@@ -175,8 +175,8 @@ export default [
     response: _ => {
       const data = [...lableList, ...labelList2]
       return {
-        status: 0,
-        data
+        status: 'success',
+        content: data
       }
     }
   }, {
@@ -188,8 +188,8 @@ export default [
         data = false
       }
       return {
-        status: 0,
-        data: data
+        status: 'success',
+        content: data
       }
     }
   }
