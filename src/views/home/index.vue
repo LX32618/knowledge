@@ -26,12 +26,12 @@ export default {
       'docCategories'
     ])
   },
-  methods: {
-    async logout () {
-      await this.$store.dispatch('user/logout')
-      this.$router.push(`/login?redirect=${this.$route.fullPath}`)
-    }
-  },
+  // methods: {
+  //   async logout () {
+  //     await this.$store.dispatch('user/logout')
+  //     this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+  //   }
+  // },
   async mounted () {
     this.isLoading = true
     await this.$store.dispatch('docCategory/fetchCategories')

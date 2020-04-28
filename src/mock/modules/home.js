@@ -66,7 +66,8 @@ for (let i = 0; i < 1000; ++i) {
     code: '@word(8)',
     'classification|1': thirdList.map(item => item.name),
     'lables|0-3': [{
-      'label|+1': labelList2.map(item => item.label)
+      'label|+1': labelList2.map(item => item.label),
+      'id|+1': labelList2.map(item => item.id)
     }],
     keyword: '@cword(2,5)',
     'hasPermission|1-2': true,
@@ -76,6 +77,108 @@ for (let i = 0; i < 1000; ++i) {
     'hot|1-2': true
   }))
 }
+
+const subForm1 = Mock.mock({
+  id: '10',
+  formType: 1,
+  formName: '测试子表1',
+  fields: [{
+    fieldName: 's1',
+    displayName: '测试属性1',
+    htmlType: 0,
+    fieldType: '',
+  },
+  {
+    fieldName: 's2',
+    displayName: '测试属性2',
+    htmlType: 0,
+    fieldType: '',
+  },
+  {
+    fieldName: 's3',
+    displayName: '测试属性3',
+    htmlType: 0,
+    fieldType: '',
+  }]
+})
+
+const subForm2 = Mock.mock({
+  id: '20',
+  formType: 1,
+  formName: '测试子表2',
+  fields: [{
+    fieldName: 's21',
+    displayName: '测试属性1',
+    htmlType: 0,
+    fieldType: '',
+  },
+  {
+    fieldName: 's22',
+    displayName: '测试属性2',
+    htmlType: 0,
+    fieldType: '',
+  },
+  {
+    fieldName: 's23',
+    displayName: '测试属性3',
+    htmlType: 0,
+    fieldType: '',
+  }]
+})
+
+const entityForm = Mock.mock({
+  id: '100',
+  formType: 1,
+  formName: '测试实体表单',
+  fields: [{
+    fieldName: 't1',
+    displayName: '专利名称',
+    htmlType: 0,
+    fieldType: '',
+    span: 24,
+  },
+  {
+    fieldName: 't2',
+    displayName: '专利获利',
+    htmlType: 0,
+    fieldType: 'int',
+  },
+  {
+    fieldName: 't3',
+    displayName: '专利申请时间',
+    htmlType: 10,
+    fieldType: 'YYYY/MM/DD',
+  }],
+  subForms: [subForm1]
+})
+
+const entityForm2 = Mock.mock({
+  id: '101',
+  formType: 1,
+  formName: '测试实体表单2',
+  fields: [
+    {
+      fieldName: 't21',
+      displayName: '姓名',
+      htmlType: 0,
+      fieldType: '',
+    },
+    {
+      fieldName: 't22',
+      displayName: '年龄',
+      htmlType: 0,
+      fieldType: 'int',
+    }
+  ],
+  subForms: [subForm1, subForm2]
+})
+
+const vitualForm = Mock.mock({
+  id: '200',
+  formType: 0,
+  formName: '测试虚拟表单',
+  relationForms: [entityForm, entityForm2]
+})
 
 export default [
   {
@@ -190,6 +293,23 @@ export default [
       return {
         status: 'success',
         content: data
+      }
+    }
+  }, {
+    url: /\/knowledge\/dataView.*/,
+    response: config => {
+      const { id } = config.query
+      let data = knowledgeList.find(item => item.id == id)
+      data.baseid = '180'
+      data.secretLevel = 10
+
+      return {
+        status: 'success',
+        content: {
+          baseData: data,
+          formConfig: vitualForm,
+          // formConfig: entityForm
+        }
       }
     }
   }

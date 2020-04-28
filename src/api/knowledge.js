@@ -70,3 +70,13 @@ export function validateKnowledgeName (name) {
     }
   })
 }
+
+export function fetchKnowledgeDetail (option) {
+  return request({
+    url: `${rootUrl}dataView`,
+    method: 'get',
+    params: {
+      id: option.id
+    }
+  })
+}

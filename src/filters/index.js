@@ -7,3 +7,7 @@ export function dateTime (time) {
 export function date (time) {
   return moment(time).format('YYYY-MM-DD')
 }
+
+export function dateFormat (time, format) {
+  return moment(time).format(format)
+}
