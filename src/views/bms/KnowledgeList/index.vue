@@ -1,9 +1,9 @@
 <template>
-    <div class="box">
-        <div class="sidebar">
-            <cs-lazytree :settings="treeSettings" :dataFormat="treeDataFormat" @treeNodeClick="treeNodeClick" @append_tree_node="append_tree_node"></cs-lazytree>
+    <div class="knowlist box">
+        <div class="knowlist sidebar">
+            <cs-lazytree :settings="treeSettings" :dataFormat="treeDataFormat" @treeNodeClick="treeNodeClick" @appendTreeNode="appendTreeNode" @editTreeNode="editTreeNode"></cs-lazytree>
         </div>
-        <div class="main">
+        <div class="knowlist main">
             <el-tabs v-model="activeName" type="border-card" v-if="basicFormData.catalogType!='root'" :style="{height:'100%'}">
                 <el-tab-pane :key="0" label="基本信息" name="basic">
                     <div>
@@ -27,7 +27,7 @@
     import basic from "./Form/Basic"
     import _ from 'lodash'
 
-    let rootUrl = '/api/tree/';
+    const rootUrl = '/api/tree/';
 
     export default {
         name: "KnowledgeList",
@@ -36,6 +36,7 @@
                 activeName:'basic',
                 dialogFormVisible:false,
                 treeSettings:{
+                    root_id:"",//根节点id
                     expand_root:true,//是否默认展开根节点
                     check_strictly:true,//在显示复选框的情况下，是否严格的遵循父子不互相关联的做法，默认为 false
                     default_expand_all:false,//是否默认展开所层级
@@ -87,15 +88,16 @@
             {
                 this.$set(this.basicFormData, 'catalogType', data.type);
             },
-            append_tree_node(node){
-                console.log(node);
+            appendTreeNode(node){
                 this.$set(this.appendFormData, 'catalogType', node.object.type);
                 this.dialogFormVisible = true;
             },
-            treeDataFormat(data){
+            editTreeNode(node){
+
+            },
+            treeDataFormat({node,data}){
                 const temp = _.cloneDeep(data);
                 let formatData = temp.map((item,index,arr)=>{
-                    item.isLeaf = item.isPa
                     if(item.type=="root")
                     {
                         item.icon = "element-icons el-custom-book";
@@ -144,16 +146,16 @@
 </script>
 
 <style scoped>
-    .box{
+    .knowlist.box{
         display: flex;
         flex-direction: row;
         height: 100%;
         width: 100%;
     }
-    .sidebar{
+    .knowlist.sidebar{
         flex-basis: 15%;
     }
-    .main{
+    .knowlist.main{
         flex-basis:85%;
     }
     .el-tabs--border-card{

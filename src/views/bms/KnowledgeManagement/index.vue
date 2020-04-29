@@ -1,9 +1,9 @@
 <template>
-    <div class="box">
-        <div class="sidebar">
+    <div class="knowmgt box">
+        <div class="knowmgt sidebar">
             <cs-tree :tree-options="treeOptions" :tree-data="treeData" @treeNodeClick="treeNodeClick"></cs-tree>
         </div>
-        <div class="main">
+        <div class="knowmgt main">
             <cs-table :table-id="'tb'"
                       ref="tb"
                       :table-options="tableOptions"
@@ -13,7 +13,7 @@
                       @sizeChange="sizeChange"
                       @pageChange="pageChange">
                 <template v-slot:horizontalSlot>
-                    <div class="operationNav">
+                    <div class="knowmgt operationNav">
                         <el-button-group>
                             <el-button type="primary" icon="el-icon-delete" @click.native="remove">删除</el-button>
                             <el-button type="primary" icon="element-icons el-custom-transfer1" size="mini">权限转移</el-button>
@@ -28,7 +28,7 @@
                             </el-switch>
                             导出附件
                         </div>
-                        <el-button-group class="search">
+                        <el-button-group class="knowmgt search">
                             <el-input  placeholder="请输入关键字" prefix-icon="el-icon-search" v-model="keywords"></el-input>
                             <el-button type="primary" >搜索</el-button>
                             <el-button type="primary" @click.native="search">高级搜索</el-button>
@@ -137,8 +137,7 @@
                 console.log(val);
             },
             remove(){
-                console.log(this.$refs.tb)
-                console.log(12345);
+
             },
             search(){
                 this.drawer = true;
@@ -196,16 +195,16 @@
 </script>
 
 <style scoped>
-    .box{
+    .knowmgt.box{
         display: flex;
         flex-direction: row;
         height: 100%;
         width: 100%;
     }
-    .sidebar{
+    .knowmgt.sidebar{
         flex-basis: 15%;
     }
-    .main{
+    .knowmgt.main{
         flex-basis:85%;
     }
     .el-tabs--border-card{

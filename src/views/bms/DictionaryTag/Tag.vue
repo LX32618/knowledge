@@ -1,43 +1,36 @@
 <template>
-    <div class="dict box">
-        <div class="dict sidebar">
-
-        </div>
-        <div class="dict main">
-
-        </div>
-
-    </div>
+    <DictionaryTag :rooturl="url" :category="category"></DictionaryTag>
 </template>
 
 <script>
+    import DictionaryTag from "./DictionaryTag";
     export default {
-        name: "DictionaryData",
+        name: "Tag",
+        components:{
+            DictionaryTag
+        },
         data(){
-            return{
-
+            return {
+                url:'/api/tag/',
+                category:'tag'
             }
-        },
-        methods:{
-        },
-        mounted() {
-
         }
     }
 </script>
 
 <style scoped>
-    .dict.box{
+    .tag.box{
         display: flex;
         flex-direction: row;
         height: 100%;
         width: 100%;
     }
-    .dict.sidebar{
+    .tag.sidebar{
         flex-basis: 15%;
     }
-    .dict.main{
+    .tag.main{
         flex-basis:85%;
+        margin-top:20px;
     }
     .el-tabs--border-card{
         width:100%;

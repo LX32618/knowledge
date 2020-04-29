@@ -1,11 +1,11 @@
 import _ from 'lodash';
-const rootPath = '/api/dictionary/'
+const rootPath = '/api/tag/'
 
 let nodes = [
     {
         pid:"",
         id: "1",
-        name: '字典库',
+        name: '标签库',
         type:"",
         isLeaf:false,
         data: {
@@ -19,7 +19,7 @@ let nodes = [
     {
         pid: "1",
         id: "2",
-        name: "工艺工具",
+        name: "性质",
         type: "",
         isLeaf:false,
         data: {
@@ -34,7 +34,7 @@ let nodes = [
         pid: "1",
         id: "3",
         type:"",
-        name: "组织资产库",
+        name: "雷达功能",
         isLeaf:false,
         data: {
             describe: "c1",
@@ -47,7 +47,7 @@ let nodes = [
     {
         pid:"2",
         id: "4",
-        name: "射频电缆最高工作频率",
+        name: "质量",
         type: "",
         isLeaf:false,
         data: {
@@ -61,7 +61,7 @@ let nodes = [
     {
         pid:"2",
         id: "5",
-        name: "低频导线材料系列",
+        name: "实验",
         type: "",
         isLeaf:false,
         data: {
@@ -73,9 +73,9 @@ let nodes = [
         }
     },
     {
-        pid:"4",
+        pid:"2",
         id: "6",
-        name: "2",
+        name: "优化",
         type: "",
         isLeaf:true,
         data: {
@@ -86,9 +86,9 @@ let nodes = [
             field_902: "f4"
         }
     },{
-        pid:"4",
+        pid:"2",
         id: "7",
-        name: "18",
+        name: "设计",
         type: "",
         isLeaf:true,
         data: {
@@ -100,9 +100,9 @@ let nodes = [
         }
     },
     {
-        pid:"5",
+        pid:"3",
         id: "8",
-        name: "JTW",
+        name: "跟踪",
         type: "",
         isLeaf:true,
         data: {
@@ -113,9 +113,9 @@ let nodes = [
             field_902: "h4"
         }
     },   {
-        pid:"5",
+        pid:"3",
         id: "9",
-        name: "JYSO",
+        name: "搜索",
         type: "",
         isLeaf:true,
         data: {
@@ -125,61 +125,7 @@ let nodes = [
             field_901: "i3",
             field_902: "i4"
         }
-    },
-    {
-        pid:"3",
-        id: "10",
-        type:"",
-        name: "资产项目类型",
-        isLeaf:false,
-        data: {
-            describe: "j1",
-            sort: "0",
-            field_900: "j2",
-            field_901: "j3",
-            field_902: "j4"
-        }
-    },    {
-        pid:"10",
-        id: "11",
-        type:"",
-        name: "情报指控",
-        isLeaf:true,
-        data: {
-            describe: "k1",
-            sort: "0",
-            field_900: "k2",
-            field_901: "k3",
-            field_902: "k4"
-        }
-    },  {
-        pid:"10",
-        id: "12",
-        type:"",
-        name: "嵌入式",
-        isLeaf:true,
-        data: {
-            describe: "l1",
-            sort: "0",
-            field_900: "l2",
-            field_901: "l3",
-            field_902: "l4"
-        }
-    }, {
-        pid:"10",
-        id: "13",
-        type:"",
-        name: "系统显控",
-        isLeaf:true,
-        data: {
-            describe: "m1",
-            sort: "0",
-            field_900: "m2",
-            field_901: "m3",
-            field_902: "m4"
-        }
     }
-
 ]
 
 
