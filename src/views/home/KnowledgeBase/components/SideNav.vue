@@ -19,7 +19,7 @@
 
 <script>
 import { getCategoryTree, getLablesTree } from '@/api/knowledge'
-import { unflatTree } from '@/utils/tree.js'
+import { unflatTree, walkTree } from '@/utils/tree.js'
 import _ from 'lodash'
 
 export default {
@@ -38,11 +38,20 @@ export default {
   },
   watch: {
     knowledgeBase () {
+      // 如果知识库id为空不更新树
       if (!this.knowledgeBase || !this.knowledgeBase.id) return
+      // 更新树数据
       this.categoriesLoading = true
       getCategoryTree({ id: this.knowledgeBase.id }).then(res => {
         let data = res.content
-        this.categories = (unflatTree(data, 0))[0].children
+        data = (unflatTree(data, 0))[0].children
+        // 类型为2的节点为叶子节点
+        walkTree(data, item => {
+          if (item.type === 2) {
+            item.isLeaf = true
+          }
+        })
+        this.categories = data
         this.categoriesLoading = false
       })
     }

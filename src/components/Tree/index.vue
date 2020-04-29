@@ -13,22 +13,22 @@
       @node-contextmenu="rightClick"
       @node-click="nodeClick"
     >
-      <span slot-scope="scope">
+      <span slot-scope="{ data, node }">
         <span>
           <i
             :class="
-              scope.data.icon
-                ? scope.data.icon
-                : scope.data.children
-                ? 'el-icon-folder'
-                : 'el-icon-document'
+              data.icon
+                ? data.icon
+                : data.isLeaf
+                ? 'el-icon-document'
+                : node.expanded
+                ? 'el-icon-folder-opened'
+                : 'el-icon-folder'
             "
           ></i>
           <span :style="{ fontSize: '14px' }">
-            {{ scope.node.label }}
-            <span v-if="treeOptions.showCount"
-              >({{ scope.data.knowNum }})</span
-            ></span
+            {{ node.label }}
+            <span v-if="treeOptions.showCount">({{ data.knowNum }})</span></span
           >
         </span>
       </span>
