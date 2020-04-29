@@ -56,39 +56,20 @@
         </treeselect>
         <span v-if="!category" class="form-tip-danger">请先选择知识库</span>
       </el-form-item>
-      <el-form-item label="知识标签" prop="lables">
-        <treeselect
-          v-model="knowledge.lables"
-          multiple
-          :options="labels"
-          placeholder="请选择知识标签"
-          noResultsText="未找到目录"
+      <el-form-item label="知识标签" prop="labels">
+        <knowledge-labels-input
+          v-model="knowledge.labels"
+          :classificationid="knowledge.baseid"
           :disabled="!knowledge.baseid"
-          disable-branch-nodes
-          show-count
-          v-loading="isLoading"
-        >
-          <span
-            slot="option-label"
-            slot-scope="{ node, count, shouldShowCount }"
-            ><i class="fa" :class="labelIconClass(node)"></i>
-            {{ node.label }}
-            <span v-if="shouldShowCount"> ({{ count }})</span></span
-          ></treeselect
-        >
+        />
         <span v-if="!knowledge.baseid" class="form-tip-danger"
           >请先选择知识库与知识目录</span
         >
       </el-form-item>
       <el-form-item label="密级" prop="secretLevel">
-        <el-select v-model="knowledge.secretLevel" value-key="value">
-          <el-option
-            v-for="item of secretLevels"
-            :key="item.value"
-            :value="item.value"
-            :label="item.label"
-          ></el-option>
-        </el-select>
+        <secret-level-input
+          v-model="knowledge.secretLevel"
+        ></secret-level-input>
       </el-form-item>
       <el-form-item label="描述" prop="describe">
         <el-input
@@ -112,11 +93,17 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { getCategoryTree, getLablesTree, validateKnowledgeName } from '@/api/knowledge'
+import { getCategoryTree, validateKnowledgeName } from '@/api/knowledge'
 import { unflatTree, walkTree } from '@/utils/tree'
+import KnowledgeLabelsInput from '@/components/Input/KnowledgeLabelsInput'
+import SecretLevelInput from '@/components/Input/SecretLevelInput'
 
 export default {
   name: 'KnowledgeBaseForm',
+  components: {
+    KnowledgeLabelsInput,
+    SecretLevelInput
+  },
   props: {
     id: {
       type: String,
@@ -142,12 +129,13 @@ export default {
       })
     }
     return {
-      knowledge: {},
+      knowledge: {
+        labels: []
+      },
       pageLoading: false,
       isLoading: false,
       category: '', // 选中知识库
       subCategories: [], // 知识目录选择集
-      labels: [], // 知识标签选择集
       rules: {
         name: [
           { validator: checkName, trigger: 'blur' },
@@ -166,10 +154,9 @@ export default {
     category () {
       // 重置已选择知识目录与知识标签
       this.$set(this.knowledge, 'baseid', undefined)
-      this.$set(this.knowledge, 'lables', [])
-      // 重置知识目录与知识标签选择集
+      this.$set(this.knowledge, 'labels', [])
+      // 重置知识目录
       this.subCategories = []
-      this.labels = []
       // 若未选择知识库直接返回
       if (!this.category) {
         return
@@ -196,28 +183,9 @@ export default {
       })
     },
     'knowledge.baseid': function () {
-      // 重置已选择知识标签与知识标签选择集
-      this.$set(this.knowledge, 'lables', [])
+      // 重置已选择知识标签
+      this.$set(this.knowledge, 'labels', [])
       this.labels = []
-      // 若未选择知识目录直接返回
-      if (!this.knowledge.baseid) {
-        return
-      }
-      // 更新知识标签选择集
-      this.isLoading = true
-      getLablesTree({ classificationid: this.knowledge.baseid }).then(res => {
-        let data = res.content
-        data = unflatTree(data, 0) // 生成树
-        // 格式化节点
-        walkTree(data, item => {
-          if (!item.children || item.children.length === 0) {
-            item.children = undefined
-          }
-          return item
-        })
-        this.labels = data
-        this.isLoading = false
-      })
     }
   },
   methods: {
@@ -234,7 +202,7 @@ export default {
     reset () {
       this.knowledge = {
         secretLevel: 10,
-        lables: []
+        labels: []
       }
     },
     // 知识目录选择树图标显示
@@ -243,13 +211,6 @@ export default {
         return node.isExpanded ? 'fa-folder-open' : 'fa-folder'
       }
       return 'fa-book'
-    },
-    // 知识标签选择树图标显示
-    labelIconClass (node) {
-      if (node.isBranch) {
-        return node.isExpanded ? 'fa-folder-open' : 'fa-folder'
-      }
-      return 'fa-bookmark'
     }
   },
   async mounted () {

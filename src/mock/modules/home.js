@@ -85,20 +85,33 @@ const subForm1 = Mock.mock({
   fields: [{
     fieldName: 's1',
     displayName: '测试属性1',
-    htmlType: 0,
-    fieldType: '',
+    htmlType: 1,
+    fieldType: '1',
   },
   {
     fieldName: 's2',
     displayName: '测试属性2',
-    htmlType: 0,
-    fieldType: '',
+    htmlType: 3,
+    fieldType: '1',
   },
   {
     fieldName: 's3',
     displayName: '测试属性3',
-    htmlType: 0,
+    htmlType: 8,
+    fieldType: '1',
+  },
+  {
+    fieldName: 's4',
+    displayName: '测试属性4',
+    htmlType: 2,
     fieldType: '',
+  },
+  {
+    fieldName: 's5',
+    displayName: '测试属性5',
+    htmlType: 0,
+    fieldType: 'float',
+    precision: 2
   }]
 })
 
@@ -179,6 +192,15 @@ const vitualForm = Mock.mock({
   formName: '测试虚拟表单',
   relationForms: [entityForm, entityForm2]
 })
+
+const dicts = []
+
+for (let i = 0; i < 3; ++i) {
+  dicts.push(Mock.mock({
+    id: '@guid',
+    name: '@word'
+  }))
+}
 
 export default [
   {
@@ -310,6 +332,25 @@ export default [
           formConfig: vitualForm,
           // formConfig: entityForm
         }
+      }
+    }
+  }, {
+    url: /\/knowledge\/pushList.*/,
+    response: config => {
+      // const { id } = config.query
+      let data = _.shuffle(knowledgeList).slice(0, 5)
+
+      return {
+        status: 'success',
+        content: data
+      }
+    }
+  }, {
+    url: /\/sysDic\/dictTree.*/,
+    response: _ => {
+      return {
+        status: 'success',
+        content: dicts
       }
     }
   }

@@ -29,9 +29,10 @@
             />
           </el-tab-pane>
         </template>
-        <!-- 知识评论（后续开发） -->
+        <!-- 知识评论 -->
         <el-tab-pane>
           <span slot="label">知识评论</span>
+          <knowledge-comment></knowledge-comment>
         </el-tab-pane>
       </el-tabs>
     </div>
@@ -42,12 +43,14 @@
 import { fetchKnowledgeDetail } from '@/api/knowledge'
 import ToolBar from './components/ToolBar'
 import ContentContainer from './components/ContentContainer'
+import KnowledgeComment from './components/KnowledgeComment'
 
 export default {
   name: 'KnowledgeDetail',
   components: {
     ToolBar,
-    ContentContainer
+    ContentContainer,
+    KnowledgeComment
   },
   props: {
     id: String

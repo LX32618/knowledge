@@ -5,11 +5,10 @@
         <!-- 功能按钮 -->
         <el-button-group>
           <template v-if="isViewMode">
-            <el-button type="primary" icon="el-icon-share">分享</el-button>
-            <el-button
-              type="warning"
-              icon="el-icon-edit"
-              @click="isViewMode = false"
+            <el-button type="primary" icon="el-icon-share" @click="share"
+              >分享</el-button
+            >
+            <el-button type="warning" icon="el-icon-edit" @click="edit"
               >编辑</el-button
             >
           </template>
@@ -29,12 +28,14 @@
           :config="baseFormConfig"
           :formData="baseData"
           :isViewMode="isViewMode"
+          @save="handleSubFormSave"
         ></dynamic-form>
         <!-- 主表 -->
         <dynamic-form
           ref="mainForm"
           :config="formConfig"
           :isViewMode="isViewMode"
+          @save="handleSubFormSave"
         ></dynamic-form>
         <!-- 子表 -->
         <dynamic-form
@@ -43,12 +44,17 @@
           :ref="`Form-${subForm.id}`"
           :config="subForm"
           :isViewMode="isViewMode"
+          @save="handleSubFormSave"
         ></dynamic-form>
       </el-card>
     </el-col>
     <el-col :offset="1" :span="4">
       <knowledge-push />
     </el-col>
+    <!-- 分享对话框 -->
+    <el-dialog :visible.sync="dialogShow" title="知识分享">
+      <knowledge-share-form></knowledge-share-form>
+    </el-dialog>
   </el-row>
 </template>
 
@@ -56,11 +62,13 @@
 import { mapGetters } from 'vuex'
 import KnowledgePush from './components/KnowledgePush'
 import DynamicForm from '@/components/Form/DynamicForm'
+import KnowledgeShareForm from './components/KnowledgeShareForm'
 
 export default {
   name: 'KnoweledgeDetailContentContainer',
   components: {
     KnowledgePush,
+    KnowledgeShareForm,
     DynamicForm
   },
   props: {
@@ -70,7 +78,9 @@ export default {
   },
   data () {
     return {
-      isViewMode: true // ture: 查看视图  false：编辑视图
+      isViewMode: true, // ture: 查看视图  false：编辑视图
+      dialogShow: false,
+      editFormData: {},
     }
   },
   computed: {
@@ -79,6 +89,10 @@ export default {
     ])
   },
   methods: {
+    edit () {
+      this.editFormData = {} // 将所有表单验证状态设置为 false
+      this.isViewMode = false
+    },
     save () {
       // 提交基础信息表
       if (this.showBase) {
@@ -93,6 +107,13 @@ export default {
           refs[0].save()
         }
       })
+      for (let key of Object.keys(this.editFormData)) {
+        if (!this.editFormData[key]) {
+          this.$error('输入有误，请检查')
+          return
+        }
+      }
+      this.$success('保存成功')
       this.isViewMode = true
     },
     cancel () {
@@ -110,6 +131,12 @@ export default {
         }
       })
       this.isViewMode = true
+    },
+    share () {
+      this.dialogShow = true
+    },
+    handleSubFormSave (data) {
+      this.editFormData[data.key] = data.value
     }
   }
 }

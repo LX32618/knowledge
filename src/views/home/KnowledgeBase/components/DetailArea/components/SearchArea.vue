@@ -29,26 +29,13 @@
       <el-form-item
         label="标签选择"
         label-width="80px"
-        v-if="labels && labels.length > 0"
+        v-if="selectedCategory.type === 2 && labelAreaShow"
       >
-        <treeselect
-          v-model="searchOption.lables"
-          multiple
-          :options="labels"
-          placeholder="请选择知识标签"
-          noResultsText="未找到目录"
-          disable-branch-nodes
-          show-count
-          v-loading="isLoading"
-        >
-          <span
-            slot="option-label"
-            slot-scope="{ node, count, shouldShowCount }"
-            ><i class="fa" :class="labelIconClass(node)"></i>
-            {{ node.label }}
-            <span v-if="shouldShowCount"> ({{ count }})</span></span
-          ></treeselect
-        >
+        <knowledge-labels-input
+          v-model="searchOption.labels"
+          :classificationid="selectedCategory.id"
+          @loadingSuccess="handleLabelsLoad"
+        />
       </el-form-item>
       <!-- 功能按钮组 -->
       <el-form-item class="button-area">
@@ -78,11 +65,13 @@
 </template>
 
 <script>
-import { getLablesTree } from '@/api/knowledge'
-import { unflatTree, walkTree } from '@/utils/tree'
+import KnowledgeLabelsInput from '@/components/Input/KnowledgeLabelsInput'
 
 export default {
   name: 'KnowledgeBaseSearchArea',
+  components: {
+    KnowledgeLabelsInput
+  },
   props: {
     selectedCategory: {
       type: Object,
@@ -95,33 +84,20 @@ export default {
   },
   data () {
     return {
-      searchOption: {}, // 查询选项
+      searchOption: {
+        labels: []
+      }, // 查询选项
       labels: [],
       isLoading: false,
       isSubscribe: false,
+      labelAreaShow: true
     }
   },
   watch: {
     selectedCategory () {
-      this.searchOption = {}
-      // 如果当前选择目录id不存在不用更新可选标签集
-      if (!this.selectedCategory || !this.selectedCategory.id) {
-        return
+      this.searchOption = {
+        labels: []
       }
-      this.isLoading = true
-      getLablesTree({ classificationid: this.selectedCategory.id }).then(res => {
-        let data = res.content
-        data = unflatTree(data, 0) // 生成树
-        // 格式化节点
-        walkTree(data, item => {
-          if (!item.children || item.children.length === 0) {
-            item.children = undefined
-          }
-          return item
-        })
-        this.labels = data
-        this.isLoading = false
-      })
     }
   },
   methods: {
@@ -154,6 +130,11 @@ export default {
         return node.isExpanded ? 'fa-folder-open' : 'fa-folder'
       }
       return 'fa-bookmark'
+    },
+    handleLabelsLoad (data) {
+      if (!data || data.length == 0) {
+        this.labelAreaShow = false
+      }
     }
   }
 }

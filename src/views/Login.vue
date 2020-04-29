@@ -47,7 +47,6 @@
 </template>
 
 <script>
-import { successMsg } from '@/utils/msg'
 export default {
   name: 'Login',
   data () {
@@ -70,7 +69,7 @@ export default {
         if (valid) {
           this.isLoading = true
           this.$store.dispatch('user/login', this.loginInfo).then(() => {
-            successMsg('登录成功')
+            this.$sucess('登录成功')
             const redirect = this.$route.query && this.$route.query.redirect
             this.$router.push(redirect || '/')
             this.isLoading = false

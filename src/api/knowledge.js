@@ -80,3 +80,24 @@ export function fetchKnowledgeDetail (option) {
     }
   })
 }
+
+export function fetchPushList (option) {
+  return request({
+    url: `${rootUrl}pushList`,
+    method: 'get',
+    params: {
+      id: option.id
+    }
+  })
+}
+
+// 字典接口，测试用
+export function fetchDictTree (option) {
+  return request({
+    url: '/sysDic/dictTree',
+    method: 'get',
+    params: {
+      id: option.id
+    }
+  })
+}

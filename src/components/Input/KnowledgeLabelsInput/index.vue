@@ -37,7 +37,7 @@ export default {
     },
     // 知识库目录
     classificationid: {
-      type: String,
+      type: [String, Number],
       default: '0'
     }
   },
@@ -73,6 +73,7 @@ export default {
             return item
           })
           this.labels = data
+          this.$emit('loadingSuccess', data) // 向上发出加载成功事件
           this.isLoading = false
         })
       },

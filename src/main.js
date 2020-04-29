@@ -4,6 +4,7 @@ import router from './router'
 import store from './store'
 
 import '@/plugins/element'
+import '@/plugins/notify'
 import '@/components'
 
 import './assets/iconfont/iconfont.css'

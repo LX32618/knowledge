@@ -1,7 +1,10 @@
 <template>
   <el-card>
     <span slot="header">
-      <i class="fa fa-database"></i> {{ knowledgeBase.name }}
+      <i class="fa fa-database"></i>
+      <span class="base-name" @click="handleTitleClick">
+        {{ knowledgeBase.name }}</span
+      >
     </span>
     <div class="tree-container" v-loading="categoriesLoading">
       <cs-tree
@@ -45,12 +48,20 @@ export default {
     }
   },
   methods: {
+    // 树节点被点击
     handleTreeNodeClick ({ data }) {
       this.$emit('selectCategory', _.pick(data, ['id', 'name', 'type']))
+    },
+    // 标题被点击
+    handleTitleClick () {
+      this.$emit('selectCategory', this.knowledgeBase)
     }
   }
 }
 </script>
 
 <style scoped>
+.base-name {
+  cursor: pointer;
+}
 </style>
