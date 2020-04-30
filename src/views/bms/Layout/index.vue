@@ -1,26 +1,7 @@
 <template>
     <div class="box">
         <div class="top-nav">
-            <div>
-                <img src="@/assets/img/bms/logo.png"/>
-            </div>
-            <div>
-                <el-badge is-dot class="item nav-badge">
-                    <i class="el-icon-message-solid nav-icon"></i>
-                </el-badge>
-                <el-dropdown >
-                    <el-button type="text" class="nav-btn">
-                        <i class="el-icon-s-custom nav-icon"></i>
-                    </el-button>
-                    <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item>黄金糕</el-dropdown-item>
-                        <el-dropdown-item>狮子头</el-dropdown-item>
-                        <el-dropdown-item>螺蛳粉</el-dropdown-item>
-                        <el-dropdown-item>双皮奶</el-dropdown-item>
-                        <el-dropdown-item>蚵仔煎</el-dropdown-item>
-                    </el-dropdown-menu>
-                </el-dropdown>
-            </div>
+            <v-header></v-header>
         </div>
         <div class="body">
             <div class="sidebar">
@@ -30,7 +11,7 @@
             </div>
             <div class="main">
                 <div class="top">
-                    <cs-breadcrumb :style="{marginTop:'8px',marginBottom:'8px'}"></cs-breadcrumb>
+                    <cs-breadcrumb></cs-breadcrumb>
                 </div>
                 <div class="content">
                     <transition name="el-fade-in">
@@ -44,6 +25,8 @@
 
 <script>
     import {sidebar} from "@/router/module/sidebar"
+    import vHeader from "./components/Header"
+
 
     export default {
         name: "LayOut",
@@ -53,6 +36,9 @@
                 basePath:sidebar.path,
                 items:sidebar.items
             };
+        },
+        components:{
+            vHeader
         }
     }
 </script>

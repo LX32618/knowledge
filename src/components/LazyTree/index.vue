@@ -143,6 +143,7 @@
                 {
                     this.checkedNodes = this.$refs.tree.getCheckedNodes();
                 }
+                this.$emit("checkChange",this.checkedNodes);
             }
         },
         components:{

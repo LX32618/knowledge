@@ -4,14 +4,12 @@
             <cs-tree :tree-options="treeOptions" :tree-data="treeData" @treeNodeClick="treeNodeClick"></cs-tree>
         </div>
         <div class="knowmgt main">
-            <cs-table :table-id="'tb'"
-                      ref="tb"
-                      :table-options="tableOptions"
+            <cs-table ref="tb"
+                      :settings="tableSettings"
                       :table-data="tableData"
                       @currentChange="currentChange"
                       @selectionChange="selectionChange"
-                      @sizeChange="sizeChange"
-                      @pageChange="pageChange">
+                      @pageSizeChange="pageSizeChange">
                 <template v-slot:horizontalSlot>
                     <div class="knowmgt operationNav">
                         <el-button-group>
@@ -96,13 +94,13 @@
                         }]
                     }]
                 }],
-                tableOptions: {
-                    radio:false,//是否显示单选框
-                    checkbox: true,//是否显示checkbox
+                tableSettings: {
+                    radio:false,//是否单选
+                    checkbox: true,//是否多选，单选和多选同一时间只能存在一个
                     pagination:true,//是否显示分页
-                    pageSize:10,//默认每页多少条数据
-                    pageList:[10,20,50],//设置每页显示多少条数据
-                    total:100,//一共有多少条数据
+                    pageSize:2,//默认每页多少条数据
+                    pageSizes:[1,2,3],//设置每页显示多少条数据
+                    currentPage:1,//默认显示第几页
                     fields: [
                         {prop: "id", label: "id", sortable: false, visible: false},
                         {prop: "name", label: "名称", sortable: true},
@@ -128,13 +126,9 @@
             selectionChange(val){//行多选事件
                 console.log(val)
             },
-            sizeChange(pageSize)//每页显示数量变化
+            pageSizeChange({page,rows})//每页显示数量、页码变化
             {
-                console.log(val)
-            },
-            pageChange(currentPage)//当前显示页面变化
-            {
-                console.log(val);
+
             },
             remove(){
 

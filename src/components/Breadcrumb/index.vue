@@ -1,6 +1,6 @@
 <template>
-    <div class="box">
-        <i class="el-icon-location" :style="{color:'#606266'}"></i>
+    <div class="bread-crumb box">
+        <i class="el-icon-location"></i>
         <el-breadcrumb separator-class="el-icon-arrow-right" :style="{marginLeft:'3px'}">
             <el-breadcrumb-item
                     v-for="path in data.meta.paths"
@@ -35,9 +35,12 @@
 </script>
 
 <style scoped>
-    .box{
+    .bread-crumb.box{
         display: flex;
         flex-direction: row;
-        justify-items: center;
+        align-items: center;
+    }
+    .el-icon-location{
+        color:#606266;
     }
 </style>

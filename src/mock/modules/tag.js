@@ -49,7 +49,7 @@ let nodes = [
         id: "4",
         name: "质量",
         type: "",
-        isLeaf:false,
+        isLeaf:true,
         data: {
             describe: "d1",
             sort: "0",
@@ -63,7 +63,7 @@ let nodes = [
         id: "5",
         name: "实验",
         type: "",
-        isLeaf:false,
+        isLeaf:true,
         data: {
             describe: "e1",
             sort: "0",
