@@ -24,3 +24,13 @@ export function logout () {
     method: 'get'
   })
 }
+
+export function fetchMessages (option) {
+  return request({
+    url: `${rootUrl}messages`,
+    method: 'get',
+    params: {
+      id: option.id
+    }
+  })
+}

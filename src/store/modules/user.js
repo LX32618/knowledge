@@ -26,6 +26,7 @@ const actions = {
         setToken(data.token)
         resolve()
       }).catch(error => {
+        console.log('error')
         reject(error)
       })
     })
@@ -35,7 +36,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       logout().then(_ => {
         commit('SET_TOKEN', '')
-        commit('SET_INFO', {})
+        commit('SET_INFO', undefined)
         removeToken()
         resolve()
       }).catch(error => {

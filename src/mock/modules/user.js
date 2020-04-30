@@ -1,3 +1,4 @@
+import Mock from 'mockjs'
 const rootPath = '/api/users/'
 
 const users = [
@@ -14,6 +15,17 @@ const users = [
     roles: [1]
   }
 ]
+
+const messageList = []
+
+for (let i = 0; i < 3; ++i) {
+  messageList.push(Mock.mock({
+    id: '@increment',
+    title: '@title',
+    content: '@sentence',
+    createDate: +Mock.Random.date('T')
+  }))
+}
 
 export default [
   // 登录
@@ -67,5 +79,17 @@ export default [
         content: user
       }
     }
-  }
+  },
+  // 消息列表
+  {
+    url: /\/users\/messages.*/,
+    type: 'get',
+    response: config => {
+      // const { id } = config.query
+      return {
+        status: 'success',
+        content: messageList
+      }
+    }
+  },
 ]

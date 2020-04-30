@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="userInfo">
     <home-header :isCategoriesLoading="isLoading"></home-header>
     <router-view />
   </div>

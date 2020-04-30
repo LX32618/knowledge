@@ -32,14 +32,35 @@
         </el-input>
       </el-col>
       <el-col :span="2" :offset="2">
-        <a href="#" class="header-help">帮助</a>
+        <!-- <a href="#" class="header-help">帮助</a> -->
+        <span class="header-placeholder"></span>
+        <!-- 帮助 -->
         <el-tooltip placement="bottom">
-          <el-badge value="+0">
-            <i class="el-icon-bell header-bell"></i>
+          <i class="el-icon-help header-icon" @click="handleHelpIconClick"></i>
+          <div slot="content">帮助</div>
+        </el-tooltip>
+        <!-- 全屏显示 -->
+        <!-- <el-tooltip placement="bottom">
+          <i class="el-icon-rank header-icon" @click="handleFullScreen"></i>
+          <div slot="content">{{ fullScreen ? "取消全屏" : "全屏" }}</div>
+        </el-tooltip> -->
+        <!-- 消息提示 -->
+        <el-tooltip placement="bottom" :disabled="toolTipDisable">
+          <el-badge :value="`+${messages.length}`">
+            <i class="el-icon-bell header-icon"></i>
           </el-badge>
           <div slot="content">
             <i class="el-icon-warning"></i>
-            +0条消息
+            +{{ messages.length }}条消息 <br />
+            <div
+              class="message-content"
+              v-for="(message, index) of messages"
+              :key="message.id"
+              @click="handleMessageClick(index, message)"
+            >
+              <i class="el-icon-message"></i>
+              {{ message.title }}
+            </div>
           </div>
         </el-tooltip>
       </el-col>
@@ -67,11 +88,24 @@
         </el-dropdown>
       </el-col>
     </el-row>
+    <!-- 消息对话框 -->
+    <el-dialog
+      id="message-dialog"
+      :visible.sync="dialogShow"
+      :title="currentMessage.title"
+    >
+      <div>{{ currentMessage.createDate | dateTime }}</div>
+      <div>{{ currentMessage.content }}</div>
+      <span slot="footer">
+        <el-button type="primary" @click="dialogShow = false"> 确定</el-button>
+      </span>
+    </el-dialog>
   </header>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
+import { fetchMessages } from '@/api/user'
 export default {
   name: 'HomeHeader',
   props: {
@@ -89,7 +123,12 @@ export default {
   data () {
     return {
       searchStr: '',
-      searchFilter: ''
+      searchFilter: '',
+      fullScreen: false, // 是否全屏,
+      messages: [],
+      dialogShow: false,
+      currentMessage: {},
+      toolTipDisable: false
     }
   },
   methods: {
@@ -104,7 +143,53 @@ export default {
           await this.$store.dispatch('user/logout')
           this.$router.push(`/login?redirect=${this.$route.fullPath}`)
       }
+    },
+    // 进入帮助页面
+    handleHelpIconClick () {
+      const routeData = this.$router.resolve({
+        name: 'Working'
+      })
+      window.open(routeData.href, '_blank')
+    },
+    // 全屏事件（兼容各浏览器版本）
+    handleFullScreen () {
+      const element = document.documentElement
+      if (this.fullScreen) {
+        if (document.exitFullscreen) {
+          document.exitFullscreen()
+        } else if (document.webkitCancelFullScreen) {
+          document.webkitCancelFullScreen()
+        } else if (document.mozCancelFullScreen) {
+          document.mozCancelFullScreen()
+        } else if (document.msExitFullscreen) {
+          document.msExitFullscreen()
+        }
+      } else {
+        if (element.requestFullscreen) {
+          element.requestFullscreen()
+        } else if (element.webkitRequestFullScreen) {
+          element.webkitRequestFullScreen()
+        } else if (element.mozRequestFullScreen) {
+          element.mozRequestFullScreen()
+        } else if (element.msRequestFullscreen) {
+          // IE11
+          element.msRequestFullscreen()
+        }
+      }
+      this.fullScreen = !this.fullScreen
+    },
+    handleMessageClick (index, message) {
+      // this.toolTipDisable = true
+      // this.currentMessage = message
+      // this.messages.splice(index, 1)
+      // this.toolTipDisable = false
+      // this.dialogShow = true
     }
+  },
+  mounted () {
+    fetchMessages({ id: this.userInfo.id }).then(res => {
+      this.messages = res.content
+    })
   }
 }
 </script>
@@ -134,18 +219,17 @@ export default {
 .search-input {
   margin: 15px 0 0;
 }
-.header-help {
-  font-size: 18px;
+.header-placeholder {
   height: 100%;
   line-height: 70px;
   position: relative;
-  margin-right: 20px;
 }
-.header-bell {
-  font-size: 18px;
+.header-icon {
+  font-size: 20px;
   height: 100%;
   cursor: pointer;
   position: relative;
+  margin-left: 20px;
 }
 .user-avator {
   width: 46px;
@@ -158,6 +242,10 @@ export default {
   line-height: 70px;
 }
 .el-dropdown-link {
+  cursor: pointer;
+}
+.message-content {
+  margin-top: 10px;
   cursor: pointer;
 }
 </style>

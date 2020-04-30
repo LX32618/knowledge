@@ -4,6 +4,7 @@ Vue.use(VueRouter)
 
 import { sidebarRouter } from "./module/sidebar";
 import { homeRouter } from './module/home'
+import { errorRouter } from './module/error'
 import { routerGuide } from './permission'
 
 const routes = [
@@ -16,7 +17,8 @@ const routes = [
     meta: {
       title: '登录'
     }
-  }
+  },
+  ...errorRouter // 错误处理必须放最后
 ]
 
 const router = new VueRouter({

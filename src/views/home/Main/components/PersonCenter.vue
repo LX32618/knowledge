@@ -83,7 +83,7 @@ export default {
           baseid: '0'
         }
       })
-      window.open(routeData.href, '_blank');
+      window.open(routeData.href, '_blank')
     }
   },
   mounted () {
