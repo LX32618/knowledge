@@ -9,7 +9,7 @@
     ></search-area>
     <!-- 知识显示列表 -->
     <div>
-      <cs-table :tableOptions="tableOptions" :tableData="knowledges">
+      <cs-table :settings="tableOptions" :tableData="knowledges">
         <!-- 操作列 -->
         <template slot="prefix-column">
           <el-table-column label="操作" width="200" fixed>
@@ -61,6 +61,7 @@
 <script>
 import { fetchKnowledges } from '@/api/knowledge'
 import SearchArea from './components/SearchArea'
+import { dateTime } from '@/filters'
 
 export default {
   name: 'KnowledgeBaseDetailArea',
@@ -100,8 +101,10 @@ export default {
         }, {
           label: '创建时间',
           prop: 'createDate',
-          type: 1,
-          width: 100
+          width: 100,
+          formatter (index, row) {
+            return dateTime(row.createDate)
+          }
         }, {
           label: '关键字',
           prop: 'keyword'
