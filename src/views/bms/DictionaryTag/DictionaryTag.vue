@@ -31,7 +31,7 @@
     export default {
         name: "Dictionary",
         props:{
-            rooturl:{
+            rootUrl:{
                 type:String
             },
             category:{
@@ -53,7 +53,7 @@
                     expand_on_click_node:false,//点击接点是否进行展开收缩
                     right_click:true,//是否具有右键功能
                     request:{//访问路径设置
-                        url:`${this.rooturl}get`,
+                        url:`${this.rootUrl}get`,
                         method:"post"
                     }
                 },
@@ -65,7 +65,7 @@
                     lableWidth:"120px",
                     type:"append",
                     request:{
-                        url:`${this.rooturl}append`,
+                        url:`${this.rootUrl}append`,
                         method:'post'
                     }
                 },
@@ -83,7 +83,7 @@
                     lableWidth:"120px",
                     type:"edit",
                     request:{
-                        url:`${this.rooturl}edit`,
+                        url:`${this.rootUrl}edit`,
                         method:'post'
                     }
                 },
@@ -128,7 +128,7 @@
                     type: 'warning'
                 }).then(() => {
                     request({
-                        url: `${url}remove`,
+                        url: `${this.rootUrl}remove`,
                         method: 'post',
                         data:node.object,
                     }).then(data=>{

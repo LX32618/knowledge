@@ -172,13 +172,6 @@ let forms = [ {
         "knowledgeDir": ""
     }, {
         "formType": 0,
-        "formName": "工艺案例",
-        "id": "712FB279F265438F9A131540BE250B06",
-        "sort": 0,
-        "tableName": "PROCESS_CASES",
-        "knowledgeDir": ""
-    }, {
-        "formType": 0,
         "formName": "故障案例",
         "id": "7169A992CA9243A6A8981699652E2966",
         "sort": 0,
@@ -287,10 +280,21 @@ export default [
             const {formName,sort,order,mainForm,page,rows } = config.body;
             let start = rows*(page-1);
             let end = start+rows;
-            const filterForms = forms.splice(start,end);
+            let temp = _.cloneDeep(forms);
+            let result = {};
+            if(formName != "")
+            {
+                const filterForms = temp.filter(t=>t.formName.includes(formName));
+                result = {total:filterForms.length,rows:filterForms};
+            }
+            else
+            {
+                const filterForms = temp.splice(start,end);
+                result = {total:forms.length,rows:filterForms};
+            }
             return {
                 status: "success",
-                content:filterForms,
+                content:result,
                 message: 'success'
             }
 

@@ -2,21 +2,22 @@
   <div>
     <slot name="horizontalSlot"></slot>
     <el-table ref="tb"
-      :data="tableData"
-      stripe
-      border
-      style="width: 100%"
-      @current-change="currentChange"
-      @selection-change="selectionChange"
-      @sort-change="sortChange">
+              stripe
+              border
+              style="width: 100%;"
+              :data="tableData"
+              :height="settings.height"
+              @current-change="currentChange"
+              @selection-change="selectionChange"
+              @sort-change="sortChange">
       <el-table-column
-        v-if="settings.checkbox"
-        type="selection"
-        fixed
+              v-if="settings.checkbox"
+              type="selection"
+              fixed
       ></el-table-column>
       <el-table-column width="40px" v-if="settings.radio" fixed>
         <template slot-scope="scope">
-          <el-radio v-model="radioChecked" :label="scope.row.id"> </el-radio>
+          <el-radio v-model="radioChecked" :label="scope.row.id"></el-radio>
         </template>
       </el-table-column>
       <el-table-column type="index" label="序号" fixed></el-table-column>
@@ -24,17 +25,17 @@
       <slot name="prefix-column"></slot>
       <template v-for="item in settings.fields">
         <el-table-column
-          v-if="item.visible == false ? false : true"
-          :sortable="item.sortable"
-          :key="item.id"
-          :prop="item.prop"
-          :label="item.label"
-          :min-width="item.width ? item.width : 50"
-        >
+                v-if="item.visible == false ? false : true"
+                :sortable="item.sortable"
+                :key="item.id"
+                :prop="item.prop"
+                :label="item.label"
+                :min-width="item.width ? item.width : 50">
           <template slot-scope="scope">
             <template v-if="item.formatter">{{
               item.formatter(scope.$index,scope.row)
-            }}</template>
+              }}
+            </template>
             <template v-else>{{ scope.row[item.prop] }}</template>
           </template>
         </el-table-column>
@@ -43,14 +44,14 @@
       <slot name="suffix-column"></slot>
     </el-table>
     <el-pagination
-      v-if="settings.pagination"
-      :page-sizes="settings.pageSizes"
-      :page-size.sync="settings.pageSize"
-      :current-page.sync="settings.currentPage"
-      :total="this.tableData.length"
-      @size-change="sizeChange"
-      @current-change="pageChange"
-      layout="total, sizes, prev, pager, next"
+            v-if="settings.pagination"
+            :page-sizes="settings.pageSizes"
+            :page-size.sync="settings.pageSize"
+            :current-page.sync="settings.currentPage"
+            :total="this.settings.total"
+            @size-change="sizeChange"
+            @current-change="pageChange"
+            layout="total, sizes, prev, pager, next"
     >
     </el-pagination>
   </div>
@@ -81,7 +82,8 @@
       },
       sizeChange(val) {
         this.pageSize = val;
-        this.$emit('pageSizeChange', {page:this.currentPage,rows:this.pageSize});
+        if((this.currentPage-1)*this.pageSize<this.settings.total)//防止页码变化时会触发pageChange事件，那么此次不该emit
+          this.$emit('pageSizeChange', {page:this.currentPage,rows:this.pageSize});
       },
       pageChange(val) {
         this.currentPage = val;

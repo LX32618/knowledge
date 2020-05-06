@@ -1,5 +1,5 @@
 <template>
-    <DictionaryTag :rooturl="url" :category="type"></DictionaryTag>
+    <DictionaryTag :rootUrl="url" :category="type"></DictionaryTag>
 </template>
 
 <script>

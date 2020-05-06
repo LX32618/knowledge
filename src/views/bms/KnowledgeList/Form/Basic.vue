@@ -10,23 +10,52 @@
                 <el-option label="目录" value="catalog"></el-option>
             </el-select>
         </el-form-item>
-        <el-form-item label="关联表单"  v-if="data.catalogType=='catalog'">
-            <el-select v-model = "data.associatedForm" @click.native="associatedFormClick">
-                <el-option value="data.associatedForm"  v-loading="associatedFormLoading" label="data.associatedForm" style="width:760px;height:200px;overflow:auto;background-color:#fff">
+        <el-form-item label="关联表单"  v-if="data.catalogType=='catalog'"  >
+            <div ref="associatedForm" >
+                <el-input
+                        placeholder="请选择"
+                        v-model="data.associatedForm"
+                        size="small"
+                        readonly="readonly"
+                        :suffix-icon="showAssociatedFormTable?'el-icon-arrow-up':'el-icon-arrow-down'"
+                        @click.native="toggleAssociatedFormTable()">
+                </el-input>
+                <div class="associatedFormTable" v-show="showAssociatedFormTable">
                     <cs-table :settings="tableSettings"
                               :table-data="tableData"
+                              v-loading="associatedFormLoading"
                               @currentChange="associatedFormCurrentChange"
                               @pageSizeChange="associatedFormPageSizeChange">
+                        <template v-slot:horizontalSlot>
+                            <div class="operationNav" style="display: flex;justify-content: space-between;
+        align-items: center;">
+                                <div></div>
+                                <el-button-group class="search" style="display: flex;margin:5px 5px 5px 0px">
+                                    <el-input placeholder="请输入表单名称" prefix-icon="el-icon-search"
+                                              v-model="searchKeyWord"></el-input>
+                                    <el-button type="primary" @click="searchAssociatedForm">搜索</el-button>
+                                </el-button-group>
+                            </div>
+                        </template>
                     </cs-table>
-                </el-option>
-            </el-select>
+                </div>
+            </div>
         </el-form-item>
         <el-form-item label="标签分类选择" v-if="data.catalogType=='catalog'">
-            <el-select v-model = "data.labelClassification">
-                <el-option value="data.labelClassification" label="data.labelClassification"  style="width:360px;height:200px;overflow:auto;background-color:#fff">
-                    <cs-lazytree :settings="treeSettings" :dataFormat="treeDataFormat" @checkChange="checkChange"></cs-lazytree>
-                </el-option>
-            </el-select>
+            <div ref="labelClassification">
+                <el-input
+                        placeholder="请选择"
+                        v-model="data.labelClassification"
+                        size="small"
+                        readonly="readonly"
+                        :suffix-icon="showLabelClassification?'el-icon-arrow-up':'el-icon-arrow-down'"
+                        @click.native="toggleLabelClassification()">
+                </el-input>
+                <div class="labelClassification" v-show="showLabelClassification">
+                    <cs-lazytree :settings="treeSettings" :dataFormat="treeDataFormat"
+                                 @checkChange="checkChange"></cs-lazytree>
+                </div>
+            </div>
         </el-form-item>
         <el-form-item label="显示顺序" prop="viewSort">
             <el-input autocomplete="off" v-model.number="data.viewSort" placeholder="请输入显示顺序"></el-input>
@@ -39,7 +68,13 @@
             </el-select>
         </el-form-item>
         <el-form-item label="知识库图片" v-if="data.catalogType=='root' || data.catalogType=='repository'">
-            <el-input autocomplete="off" v-model="data.repositoryPicture"></el-input>
+            <div class="pic">
+                <el-popover placement="bottom-end" trigger="click">
+                    <icon-wall @selectIconChange="selectIconChange"></icon-wall>
+                    <el-button type="primary" icon="el-icon-picture" circle slot="reference"></el-button>
+                </el-popover>
+                <i :class="selectedIcon" style="font-size: 40px;margin-left: 5px;"></i>
+            </div>
         </el-form-item>
         <el-form-item label="是否启用">
             <el-switch v-model="data.isEnabled"></el-switch>
@@ -48,7 +83,7 @@
             <el-switch v-model="data.isMailEnabled"></el-switch>
         </el-form-item>
         <el-form-item label="说明">
-            <el-input type="textarea" v-model="data.description"></el-input>
+            <el-input type="textarea" :autosize="{ minRows: 4}" v-model="data.description"></el-input>
         </el-form-item>
         <el-divider></el-divider>
         <p :style="{textIndent:'2em'}"><i class="element-icons el-custom-files"></i>(分类)：表示该目录类型下还可以添加子分类和目录，不能挂知识文档</p>
@@ -59,6 +94,7 @@
 
 <script>
     import _ from 'lodash'
+    import iconWall from '@/views/bms/components/IconWall'
     import request from '@/utils/request'
 
     let tagUrl = "/api/tag/";
@@ -91,6 +127,10 @@
                 data: _.cloneDeep(this.formData),
                 showTagTree:false,
                 associatedFormLoading:false,
+                showAssociatedFormTable:false,
+                showLabelClassification:false,
+                searchKeyWord:"",
+                selectedIcon:"",//选中的icon
                 treeSettings:{
                     root_id:"",//根节点id
                     expand_root:true,//是否默认展开根节点
@@ -108,15 +148,17 @@
                 tableSettings: {
                     radio:true,//是否单选
                     checkbox: false,//是否多选，单选和多选同一时间只能存在一个
+                    height:250,//是否固定表头，表头的高度
                     pagination:true,//是否显示分页
+                    total:0,//一共有多少条数据
                     pageSize:10,//默认每页多少条数据
                     pageSizes:[10,20,50],//设置每页显示多少条数据
                     currentPage:1,//默认显示第几页
                     fields: [
-                        {prop: "id", label: "id", sortable: false, visible: false},
-                        {prop: "formName", label: "表单名称", sortable: true},
-                        {prop: "tableName", label: "数据库表名"},
-                        {prop: "formType", label: "表单类型",
+                        {prop: "id", label: "id",  visible: false},
+                        {prop: "formName", label: "表单名称",width:200, sortable: true},
+                        {prop: "tableName", label: "数据库表名",width:200},
+                        {prop: "formType", label: "表单类型",width:200,
                             formatter(index,row)
                             {
                                 return row.formType==0?"实体表单":"虚拟表单";
@@ -127,11 +169,11 @@
                 tableData:[],
                 rules: {
                     name: [
-                        {required: true, message: "请输入名称", trigger: "blur"}
+                        {required: true, message: "名称不能为空", trigger: "blur"}
                     ],
                     viewSort: [
-                        {required: true, message: "请输入显示顺序", trigger: "blur"},
-                        {type: 'number', message: '请输入整数', trigger: 'blur'}
+                        {required: true, message: "显示顺序不能为空", trigger: "blur"},
+                        {type: 'number', message: '显示顺序只能为整数', trigger: 'blur'}
                     ]
                 }
             }
@@ -140,8 +182,17 @@
             formData:{
                 handler(newVal,oldVal){
                     this.data = _.cloneDeep(newVal);
+                    let data = {
+                        formName:"",
+                        sort:"",
+                        order:"",
+                        page:this.tableSettings.currentPage,
+                        rows:this.tableSettings.pageSize
+                    };
+                    this.loadAssociatedFormData(data);
                 },
-                deep:true
+                deep:true,
+                immediate:true
             }
         },
         methods:{
@@ -180,18 +231,8 @@
             checkChange(data){
                 this.data.labelClassification = data[0].name;
             },
-            associatedFormClick(){
-                let data = {
-                    formName:"",
-                    sort:"",
-                    order:"",
-                    page:this.tableSettings.currentPage,
-                    rows:this.tableSettings.pageSize
-                };
-                this.loadAssociatedFormData(data);
-            },
             associatedFormCurrentChange(currentRow){
-                console.log(currentRow);
+                this.$set(this.data,"associatedForm",currentRow.formName);
             },
             associatedFormPageSizeChange({page,rows}){
                 let data = {
@@ -200,6 +241,40 @@
                     order:"",
                     page:page,
                     rows:rows
+                };
+                this.loadAssociatedFormData(data);
+            },
+            toggleAssociatedFormTable(){
+                this.showAssociatedFormTable = !this.showAssociatedFormTable;
+                document.addEventListener('click', this.vanishAssociatedFormTable); // 给整个document添加监听鼠标事件，点击任何位置执行vanish方法
+            },
+            vanishAssociatedFormTable(e) { // 取消鼠标监听事件
+                if (!this.$refs.associatedForm.contains(e.target))//如果当前点击位置是table
+                {
+                    this.showAssociatedFormTable = false;
+                    document.removeEventListener('click', this.vanishAssociatedFormTable);
+                }
+
+            },
+            toggleLabelClassification(){
+                this.showLabelClassification = !this.showLabelClassification;
+                document.addEventListener('click', this.vanishLabelClassification);
+            },
+            vanishLabelClassification(e) { // 取消鼠标监听事件
+                if (!this.$refs.labelClassification.contains(e.target))//如果当前点击位置是当前tree
+                {
+                    this.showLabelClassification = false;
+                    document.removeEventListener('click', this.vanishLabelClassification);
+                }
+            },
+            searchAssociatedForm(){
+                let keyWord = this.searchKeyWord;
+                let data = {
+                    formName:keyWord,
+                    sort:"",
+                    order:"",
+                    page:this.tableSettings.currentPage,
+                    rows:this.tableSettings.pageSize
                 };
                 this.loadAssociatedFormData(data);
             },
@@ -214,15 +289,42 @@
                     let fileds = this.tableSettings.fields.map(f=>{
                         return f.prop;
                     });
-                    this.tableData =  data.content.map(d=>{
+                    this.$set(this.tableSettings,"total",data.content.total);
+                    this.tableData =  data.content.rows.map(d=>{
                         return _.pick(d,fileds);
                     });
                 });
+            },
+            selectIconChange(val){
+                this.selectedIcon = val;
             }
+        },
+        components:{
+            iconWall
         }
     }
 </script>
 
 <style scoped>
-
+    .associatedFormTable,.labelClassification{
+        position:absolute;
+        top:40px;
+        left:-1px;
+        z-index:999;
+        max-height: 500px;
+        border: 1px solid #E4E7ED;
+        background-color:#fff
+    }
+    .labelClassification{
+        overflow: auto;
+        width: 300px;
+    }
+    .el-input{
+        width: 203px;
+    }
+    .pic{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
 </style>

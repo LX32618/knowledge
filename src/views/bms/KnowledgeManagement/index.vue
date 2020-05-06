@@ -95,11 +95,13 @@
                     }]
                 }],
                 tableSettings: {
+                    x1:200,
                     radio:false,//是否单选
                     checkbox: true,//是否多选，单选和多选同一时间只能存在一个
                     pagination:true,//是否显示分页
-                    pageSize:2,//默认每页多少条数据
-                    pageSizes:[1,2,3],//设置每页显示多少条数据
+                    total:50,//一共有多少条数据
+                    pageSize:10,//默认每页多少条数据
+                    pageSizes:[10,20,50],//设置每页显示多少条数据
                     currentPage:1,//默认显示第几页
                     fields: [
                         {prop: "id", label: "id", sortable: false, visible: false},

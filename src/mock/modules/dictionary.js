@@ -254,6 +254,7 @@ export default [
         response: config => {
             const {id} = config.body;
             nodes = nodes.filter(node => node.id != id);
+            console.log(nodes)
             return {
                 status: "success",
                 message: 'success'

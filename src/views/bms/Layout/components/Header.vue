@@ -1,5 +1,5 @@
 <template>
-    <div class="header-content">
+    <div class="header-content" v-if="userInfo">
         <div class="header-logo" >
             <img src="@/assets/img/bms/logo.png" />
         </div>

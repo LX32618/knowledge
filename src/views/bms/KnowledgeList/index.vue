@@ -63,7 +63,7 @@
                     associatedForm:"",
                     labelClassification:"",
                     viewSort:"",
-                    secrectLevel:"secret",
+                    secrectLevel:"10",
                     repositoryPicture:"",
                     isEnabled:"",
                     isMailEnabled:"",
