@@ -5,7 +5,7 @@ import getters from './getters'
 // 测试环境用
 import docCategory from './modules/docCategory'
 import user from './modules/user'
-import utils from './modules/user'
+import utils from './modules/utils'
 
 Vue.use(Vuex)
 
