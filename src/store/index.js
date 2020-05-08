@@ -2,8 +2,14 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import getters from './getters'
 
+// 测试环境用
+import docCategory from './modules/docCategory'
+import user from './modules/user'
+import utils from './modules/utils'
+
 Vue.use(Vuex)
 
+/* 正式环境用
 // https://webpack.js.org/guides/dependency-management/#requirecontext
 const modulesFiles = require.context('./modules', false, /\.js$/)
 
@@ -20,4 +26,15 @@ const modules = modulesFiles.keys().reduce((modules, modulePath) => {
 export default new Vuex.Store({
   getters,
   modules
+})
+*/
+
+// 测试环境用
+export default new Vuex.Store({
+  getters,
+  modules: {
+    docCategory,
+    user,
+    utils
+  }
 })
