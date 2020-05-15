@@ -279,7 +279,6 @@ export default [
         response: config => {
             const {formName,sort,order,mainForm,page,rows } = config.body;
             let start = rows*(page-1);
-            let end = start+rows;
             let temp = _.cloneDeep(forms);
             let result = {};
             if(formName != "")
@@ -289,7 +288,7 @@ export default [
             }
             else
             {
-                const filterForms = temp.splice(start,end);
+                const filterForms = temp.splice(start,rows);
                 result = {total:forms.length,rows:filterForms};
             }
             return {

@@ -1,78 +1,77 @@
 <template>
-    <div class="box" style="width: 100%">
-        <cs-table :table-id="'tb'"
-                  ref="tb"
-                  :table-options="tableOptions"
+    <div class="model box" style="width: 100%">
+        <cs-table ref="tb"
+                  :settings="tableSettings"
                   :table-data="tableData"
+                  v-loading="tableLoading"
                   @currentChange="currentChange"
-                  @selectionChange="selectionChange"
-                  @sizeChange="sizeChange"
-                  @pageChange="pageChange">
+                  @pageSizeChange="pageSizeChange">
             <template v-slot:horizontalSlot>
-                <div class="operationNav">
+                <div class="model operationNav">
                     <el-button-group>
                         <el-button type="primary" icon="el-icon-circle-plus" @click.native="append">添加</el-button>
                         <el-button type="primary" icon="el-icon-edit" @click.native="edit">编辑</el-button>
                         <el-button type="primary" icon="el-icon-delete" @click.native="remove">删除</el-button>
                     </el-button-group>
-                    <el-button-group class="search">
-                        <el-input  placeholder="请输入关键字" prefix-icon="el-icon-search" v-model="keywords"></el-input>
+                    <el-button-group class="model search">
+                        <el-input  placeholder="请输入关键字" prefix-icon="el-icon-search" v-model="searchKeyword"></el-input>
                         <el-button type="primary" @click="search">搜索</el-button>
                     </el-button-group>
                 </div>
             </template>
         </cs-table>
 
-        <el-dialog title="表单添加" :visible.sync="appendFormVisible">
-            <cs-form :form-type="'append'" :form-data="appendFormData"></cs-form>
+        <el-dialog title="表单添加" :visible.sync="appendFormVisible" width="60%">
+            <cs-form :form-data="appendFormData" @submitSuccess="submitSuccess"></cs-form>
         </el-dialog>
 
-        <el-dialog title="表单编辑" :visible.sync="editFormVisible">
-            <cs-form :form-type="'edit'" :form-data="editFormData"></cs-form>
+        <el-dialog title="表单编辑" :visible.sync="editFormVisible" width="60%">
+            <cs-form :form-data="editFormData" @submitSuccess="submitSuccess"></cs-form>
         </el-dialog>
     </div>
 </template>
 
 <script>
-
     import form from "./Form"
+    import request from '@/utils/request'
+
+    let modelUrl = "/api/model/";
 
     export default {
         name: "ModelForm",
         data(){
             return {
-                keywords:"",
+                tableLoading:false,
+                searchKeyword:"",
                 appendFormVisible:false,
                 editFormVisible:false,
-                tableOptions: {
+                tableSettings: {
                     radio:true,//是否显示单选框
                     checkbox: false,//是否显示checkbox
                     pagination:true,//是否显示分页
                     pageSize:10,//默认每页多少条数据
-                    pageList:[10,20,50],//设置每页显示多少条数据
-                    total:100,//一共有多少条数据
+                    pageSizes:[10,20,50],//设置每页显示多少条数据
+                    currentPage:1,//默认显示第几页
+                    total:0,//一共有多少条数据
                     fields: [
                         {prop: "id", label: "id", sortable: false, visible: false},
                         {prop: "formName", label: "表单名称", sortable: true},
-                        {prop: "formType", label: "表单类型", sortable: true},
-                        {prop: "tableName", label: "数据库表名", sortable: true},
-                        {prop: "base", label: "知识库", sortable: true}
+                        {prop: "formType", label: "表单类型", sortable: false,
+                            formatter(index,row)
+                            {
+                                return row.formType==0?"实体表单":"虚拟表单";
+                            }},
+                        {prop: "sortTable", label: "表单顺序", visible:false},
+                        {prop: "tableName", label: "数据库表名", sortable: false},
+                        {prop: "knowledgeDir", label: "知识库", sortable: false},
+                        {prop: "associatedForm", label: "关联表单", visible:false},
                     ]
                 },
                 tableData:[],
                 appendFormData:{
-                    formName:"",
-                    formType:"entity",
-                    tableName:"",
-                    base:"",
-                    sort:"0"
+
                 },
                 editFormData:{
-                    formName:"test",
-                    formType:"entity",
-                    tableName:"testTable",
-                    base:"dbs",
-                    sort:"0"
                 }
             }
         },
@@ -81,61 +80,118 @@
         },
         methods:{
             currentChange(val){//单选事件
-                console.log(val);
+                this.$set(this,"editFormData",val);
             },
-            selectionChange(val){//多选事件
-                console.log(val)
-            },
-            sizeChange(pageSize)//每页显示数量变化
+            pageSizeChange({page,rows})
             {
-                console.log(val)
-            },
-            pageChange(currentPage)//当前显示页面变化
-            {
-                console.log(val);
+                let data = {
+                    condition:{
+                        mainForm:"",
+                        formName:"",
+                        sort:"",
+                        order:"",
+                    },
+                    page:page,
+                    rows:rows
+                };
+                this.loadTableData(data);
             },
             append(){
+                this.appendFormData= {
+                    mainId:"",
+                    id:"",
+                    formName:"",
+                    formType:"0",
+                    tableName:"",
+                    knowledgeDir:"",
+                    sortTable:"0",
+                    associatedForm:[]
+                },
                 this.appendFormVisible = true;
             },
             edit(){
-                this.editFormVisible = true;
+                if(this.editFormData.id)
+                {
+                    this.editFormVisible = true;
+                }
+                else{
+                    this.$error("请先选择要编辑的数据");
+                }
+
+            },
+            submitSuccess({type,data}){
+                if(type=="append")
+                {
+                    this.$set(this,"appendFormData",data);
+                    this.tableData.unshift(data);
+                }
+                else if(type=="edit"){
+                    this.editFormVisible = false;
+                    let index = this.tableData.findIndex(d=>d.id==data.id);
+                    this.tableData.splice(index,1,data);
+
+                }
             },
             remove(){
-                console.log(this.$refs.tb)
             },
             search(){
-                this.drawer = true;
-            }
+                let data = {
+                    condition:{
+                        mainForm:"",
+                        formName:this.searchKeyword,
+                        sort:"ID",
+                        order:"",
+                    },
+                    page:this.tableSettings.currentPage,
+                    rows:this.tableSettings.pageSize
+                };
+                this.loadTableData(data);
+            },
+            loadTableData(data) {
+                this.tableLoading = true;
+                request({
+                    url: `${modelUrl}get`,
+                    method: 'post',
+                    data:data,
+                }).then(data=>{
+                    this.tableLoading = false;
+                    let fileds = this.tableSettings.fields.map(f=>{
+                        return f.prop;
+                    });
+                    this.$set(this.tableSettings,"total",data.content.total);
+                    this.tableData =  data.content.datas.map(d=>{
+                        return _.pick(d,fileds);
+                    });
+                });
+            },
         },
         mounted() {
-            this.tableData=[{
-                id:1,
-                formName:"模型表单",
-                formType:"虚拟表单",
-                tableName:"table",
-                base:"作战需求知识库"
-            },{
-                id:2,
-                formName:"经验教训",
-                formType:"实体表单",
-                tableName:"table1",
-                base:"作战需求知识库"
-            }]
+            let data = {
+                condition:{
+                    mainForm:"",
+                    formName:"",
+                    sort:"ID",
+                    order:"",
+                },
+                page:this.tableSettings.currentPage,
+                rows:this.tableSettings.pageSize
+            };
+            this.loadTableData(data);
         }
     }
 </script>
 
 <style scoped>
-    .box{
+    .model.box{
         display: flex;
     }
-    .operationNav{
+    .model.operationNav{
         display: flex;
         justify-content: space-between;
         align-items: center;
         margin:5px;
     }
-    .search{
+    .model.search{
         display: flex;
     }
 </style>

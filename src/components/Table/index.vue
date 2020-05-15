@@ -30,7 +30,8 @@
                 :key="item.id"
                 :prop="item.prop"
                 :label="item.label"
-                :min-width="item.width ? item.width : 50">
+                :min-width="item.width ? item.width : 50"
+                align="center">
           <template slot-scope="scope">
             <template v-if="item.formatter">{{
               item.formatter(scope.$index,scope.row)
@@ -58,8 +59,6 @@
 </template>
 
 <script>
-  import request from '@/utils/request'
-
   export default {
     name: "Table",
     data() {
@@ -72,10 +71,13 @@
     props: ["settings", "tableData"],
     methods: {
       currentChange(currentRow, oldCurrentRow) {
-        if (this.settings.radio) {//如果是单选模式
-          this.radioChecked = currentRow.id;
+        if(currentRow)
+        {
+          if (this.settings.radio) {//如果是单选模式
+            this.radioChecked = currentRow.id;
+          }
+          this.$emit("currentChange", currentRow);
         }
-        this.$emit("currentChange", currentRow);
       },
       selectionChange(val) {
         this.$emit("selectionChange", val);

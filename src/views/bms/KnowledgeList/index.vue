@@ -1,23 +1,23 @@
 <template>
     <div class="knowlist box">
         <div class="knowlist sidebar">
-            <cs-lazytree :settings="treeSettings" :dataFormat="treeDataFormat" @treeNodeClick="treeNodeClick" @appendTreeNode="appendTreeNode" @editTreeNode="editTreeNode"></cs-lazytree>
+            <cs-lazytree ref="lazytree" :settings="treeSettings" :dataFormat="treeDataFormat" @treeNodeClick="treeNodeClick" @appendTreeNode="appendTreeNode"  @removeTreeNode="removeTreeNode"></cs-lazytree>
         </div>
         <div class="knowlist main">
-            <el-tabs v-model="activeName" type="border-card" v-if="basicFormData.catalogType!='root'" :style="{height:'100%'}">
+            <el-tabs v-model="activeName" type="border-card" v-if="basicFormData.pid!=''" :style="{height:'100%'}">
                 <el-tab-pane :key="0" label="基本信息" name="basic">
                     <div>
-                        <basic :settings="basicFormSettings" :form-data="basicFormData"></basic>
+                        <basic :settings="basicFormSettings" :form-data="basicFormData" @submitSuccess="submitSuccess"></basic>
                     </div>
                 </el-tab-pane>
-                <el-tab-pane :key="1" v-if="basicFormData.catalogType=='catalog'" label="模板配置" name="template">模板配置</el-tab-pane>
-                <el-tab-pane :key="2" v-if="basicFormData.catalogType=='catalog'" label="列表配置" name="list">列表配置</el-tab-pane>
-                <el-tab-pane :key="3" v-if="basicFormData.catalogType!='repository'" label="权限配置" name="permission">权限配置</el-tab-pane>
-                <el-tab-pane :key="4" v-if="basicFormData.catalogType=='catalog'" label="接口配置" name="interface">接口配置</el-tab-pane>
+                <el-tab-pane :key="1" v-if="basicFormData.type=='2'" label="模板配置" name="template">模板配置</el-tab-pane>
+                <el-tab-pane :key="2" v-if="basicFormData.type=='2'" label="列表配置" name="list">列表配置</el-tab-pane>
+                <el-tab-pane :key="3" v-if="basicFormData.type!='0'" label="权限配置" name="permission">权限配置</el-tab-pane>
+                <el-tab-pane :key="4" v-if="basicFormData.type=='2'" label="接口配置" name="interface">接口配置</el-tab-pane>
             </el-tabs>
         </div>
-        <el-dialog title="新增知识目录" :visible.sync="dialogFormVisible">
-            <basic :settings="appendFormSettings" :form-data="appendFormData"></basic>
+        <el-dialog title="新增知识目录" :visible.sync="appendFormVisible">
+            <basic :settings="appendFormSettings" :form-data="appendFormData" @submitSuccess="submitSuccess"></basic>
         </el-dialog>
     </div>
 </template>
@@ -26,15 +26,16 @@
 <script>
     import basic from "./Form/Basic"
     import _ from 'lodash'
+    import request from '@/utils/request'
 
-    const rootUrl = '/api/tree/';
+    const rootUrl = '/api/knowlist/';
 
     export default {
         name: "KnowledgeList",
         data(){
             return {
                 activeName:'basic',
-                dialogFormVisible:false,
+                appendFormVisible:false,
                 treeSettings:{
                     root_id:"",//根节点id
                     expand_root:true,//是否默认展开根节点
@@ -58,47 +59,65 @@
                     formType:"append"
                 },
                 basicFormData:{
-                    name:"",
-                    catalogType:"root",
-                    associatedForm:"",
-                    labelClassification:"",
-                    viewSort:"",
-                    secrectLevel:"10",
-                    repositoryPicture:"",
-                    isEnabled:"",
-                    isMailEnabled:"",
-                    description:""
+                    pid:"",
+                    id:"",
+                    type:""
                 },
                 appendFormData:{
-                    name:"",
-                    catalogType:"",
-                    associatedForm:"",
-                    labelClassification:"",
-                    viewSort:0,
-                    secrectLevel:"internal",
-                    repositoryPicture:"",
-                    isEnabled:true,
-                    isMailEnabled:false,
-                    description:""
+                    pid:"",
+                    id:"",
+                    type:""
                 }
             }
         },
         methods:{
             treeNodeClick({data,node})
             {
-                this.$set(this.basicFormData, 'catalogType', data.type);
+                this.$set(this.basicFormData, 'pid', data.pid);
+                this.$set(this.basicFormData, 'id', data.id);
+                this.$set(this.basicFormData, 'type', data.type);
             },
             appendTreeNode(node){
-                this.$set(this.appendFormData, 'catalogType', node.object.type);
-                this.dialogFormVisible = true;
+                let data = {};
+                data.id = "";
+                data.pid = node.object.id;
+                data.type = node.object.type;
+                this.$set(this, 'appendFormData', data);
+                this.appendFormVisible = true;
             },
-            editTreeNode(node){
-
+            removeTreeNode(node)
+            {
+                this.$confirm('此操作将删除该节点及其子节点, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    request({
+                        url: `${rootUrl}remove`,
+                        method: 'post',
+                        data:node.object,
+                    }).then(data=>{
+                        this.$refs.lazytree.removeSuccess(node.object.pid);
+                    });
+                }).catch(() => {
+                });
+            },
+            submitSuccess({type,data}){
+                if(type == "append")
+                {
+                    console.log("append");
+                    this.appendFormVisible = false;
+                    this.$refs.lazytree.appendSuccess(data.pid);
+                }
+                else if(type == "basic")
+                {
+                    this.$refs.lazytree.editSuccess(data);
+                }
             },
             treeDataFormat({node,data}){
                 const temp = _.cloneDeep(data);
                 let formatData = temp.map((item,index,arr)=>{
-                    if(item.type=="root")
+                    if(item.pid=="")
                     {
                         item.icon = "element-icons el-custom-book";
                         item.right_click_option={
@@ -108,7 +127,7 @@
                         };
 
                     }
-                    else if(item.type=="repository"){
+                    else if(item.type=="0"){
                         item.icon = "element-icons el-custom-db";
                         item.right_click_option={
                             append:true,
@@ -116,7 +135,7 @@
                             remove:true,
                         };
                     }
-                    else if(item.type=="sort"){
+                    else if(item.type=="1"){
                         item.icon = "element-icons el-custom-files";
                         item.right_click_option={
                             append:true,
@@ -124,7 +143,7 @@
                             remove:true,
                         };
                     }
-                    else if(item.type=="catalog"){
+                    else if(item.type=="2"){
                         item.icon = "element-icons el-custom-file";
                         item.right_click_option={
                             append:false,

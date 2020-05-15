@@ -148,7 +148,6 @@
                     this.editFormVisible = false;
                      this.$refs.lazytree.editSuccess(data);
                 }
-
             },
             treeDataFormat({node,data}){
                 const temp = _.cloneDeep(data);
