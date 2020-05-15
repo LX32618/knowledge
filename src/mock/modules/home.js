@@ -162,7 +162,7 @@ const entityForm = Mock.mock({
     htmlType: 10,
     fieldType: 'YYYY/MM/DD',
   }],
-  subForms: [subForm1]
+  subForms: [subForm2]
 })
 
 const entityForm2 = Mock.mock({
@@ -329,8 +329,8 @@ export default [
         status: 'success',
         content: {
           baseData: data,
-          formConfig: vitualForm,
-          // formConfig: entityForm
+          // formConfig: vitualForm,
+          formConfig: entityForm
         }
       }
     }
