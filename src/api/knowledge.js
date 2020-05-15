@@ -29,14 +29,13 @@ export function fetchKnowledgeCount (option) {
     }
   })
 }
-
+// 获取收藏知识总条数
 export function fetchCollectKnowledgeCount (option) {
   return request({
-    url: '/collectKnowledge/count',
+    url: '/api1/knowledgeCollect/count',
     method: 'get',
     params: {
-      auditing: 0,
-      creator: option.creator,
+      userId: option.userId,
     }
   })
 }

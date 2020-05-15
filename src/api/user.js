@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-const rootUrl = '/api/users/'
+const rootUrl = '/api3/users/'
 
 export function login (data) {
   return request({

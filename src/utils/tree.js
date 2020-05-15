@@ -22,6 +22,7 @@ function formatTree (items, pid, convert) {
   return result
 }
 
+// 遍历树
 export function walkTree (forest, func) {
   forest.forEach(tree => {
     func(tree)
@@ -29,4 +30,22 @@ export function walkTree (forest, func) {
       walkTree(tree.children, func)
     }
   })
+}
+
+export function unflatCategoryTree (nodes, rootId, makeRoot = false) {
+  const data = unflatTree(nodes, rootId)
+  walkTree(data, item => {
+    if (item.type === 2) {
+      item.isLeaf = true
+    }
+  })
+  if (makeRoot) {
+    const root = {
+      id: '0',
+      name: '知识工程',
+      children: data
+    }
+    return [root]
+  }
+  return data
 }

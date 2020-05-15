@@ -14,7 +14,6 @@ const localVue = createLocalVue()
 // 创建模拟store
 export function createStore () {
   const defaultStoreConfig = {
-    state: {},
     getters,
     modules: {
       docCategory,
