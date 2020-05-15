@@ -129,6 +129,8 @@
                 let subFormId = this.activeName;
                 let subForm = this.data.subForm.filter(f=>f.id == subFormId);
                 this.editSubFormData = subForm[0];
+                this.editSubFormData.mainId = this.data.id;
+                console.log(this.editSubFormData);
                 this.editSubFormVisible = true;
             },
             appendMainFormFiled(){
