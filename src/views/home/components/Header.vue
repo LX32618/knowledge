@@ -138,6 +138,13 @@ export default {
         case 'manage':
           this.$router.push('/bms')
           break
+        // 进入个人中心
+        case 'center':
+          // 页面变化才进行跳转
+          if (this.$route.name !== 'myKnowledge') {
+            this.$router.push('/personCenter')
+          }
+          break
         // 登出
         case 'logout':
           await this.$store.dispatch('user/logout')

@@ -6,12 +6,16 @@ const users = [
     username: 'admin',
     name: '系统管理员',
     token: 'admin-token',
+    department: '流程与信息化部',
+    email: 'admin@mei29.scgb.com',
+    phone: '028-87552252',
     roles: [0, 1]
   },
   {
     username: 'user',
     name: '普通用户',
     token: 'user-token',
+    department: '流程与信息化部',
     roles: [1]
   }
 ]

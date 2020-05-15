@@ -256,7 +256,7 @@ export default [
     }
   },
   {
-    url: /\/collectKnowledge\/count.*/,
+    url: /\/knowledgeCollect\/count.*/,
     response: _ => {
       return {
         status: 'success',
@@ -270,12 +270,12 @@ export default [
       const { id: rootId } = config.query
       let data = []
       list.forEach(item => {
-        if (item.id == rootId) {
+        if (!rootId || item.id == rootId) {
           data.push(item)
         }
       })
       secondList.forEach(item => {
-        if (item.pid.id == rootId) {
+        if (!rootId || item.pid.id == rootId) {
           const tmp = {}
           _.assign(tmp, item)
           tmp.pid = tmp.pid.id
@@ -283,7 +283,7 @@ export default [
         }
       })
       thirdList.forEach(item => {
-        if (item.pid.pid.id == rootId) {
+        if (!rootId || item.pid.pid.id == rootId) {
           const tmp = {}
           _.assign(tmp, item)
           tmp.pid = tmp.pid.id

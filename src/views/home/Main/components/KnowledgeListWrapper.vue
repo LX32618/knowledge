@@ -32,6 +32,7 @@
 
 <script>
 import { fetchKnowledges } from '@/api/knowledge'
+// import { fetchCollectKnowledge } from '@/api/knowledgeCollect'
 import { mapGetters } from 'vuex'
 
 export default {

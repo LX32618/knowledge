@@ -1,3 +1,71 @@
+// 个人中心路由
+const personCenterRouter = [
+  {
+    path: 'personalInfo',
+    name: 'personalInfo',
+    component: () => import("@/views/home/PersonCenter/components/PersonalInfo"),
+    meta: {
+      title: '个人信息',
+      icon: 'user'
+    }
+  },
+  {
+    path: 'myKnowledge',
+    name: 'myKnowledge',
+    component: () => import("@/views/home/PersonCenter/components/MyKnowledge"),
+    meta: {
+      title: '我的知识',
+      icon: 'book'
+    }
+  },
+  {
+    path: 'myCollect',
+    name: 'myCollect',
+    component: () => import("@/views/home/PersonCenter/components/MyCollect"),
+    meta: {
+      title: '我的收藏',
+      icon: 'star'
+    }
+  },
+  {
+    path: 'myApplication',
+    name: 'myApplication',
+    component: () => import("@/views/home/PersonCenter/components/MyApplication"),
+    meta: {
+      title: '我的申请',
+      icon: 'file-text-o'
+    }
+  },
+  {
+    path: 'myShare',
+    name: 'myShare',
+    component: () => import("@/views/home/PersonCenter/components/MyShare"),
+    meta: {
+      title: '我的分享',
+      icon: 'share-alt'
+    }
+  },
+  {
+    path: 'mySubscribe',
+    name: 'mySubscribe',
+    component: () => import("@/views/home/PersonCenter/components/MySubscribe"),
+    meta: {
+      title: '我的订阅',
+      icon: 'bookmark'
+    }
+  },
+  {
+    path: 'recycleBin',
+    name: 'recycleBin',
+    component: () => import("@/views/home/PersonCenter/components/RecycleBin"),
+    meta: {
+      title: '回 收 站',
+      icon: 'recycle'
+    }
+  }
+]
+
+// 用户路由
 const homeRouter = [
   {
     path: '/',
@@ -17,6 +85,14 @@ const homeRouter = [
       meta: {
         title: '知识库'
       }
+    }, {
+      path: '/personCenter',
+      component: () => import("@/views/home/PersonCenter"),
+      meta: {
+        title: '个人中心'
+      },
+      children: personCenterRouter,
+      redirect: '/personCenter/myKnowledge'
     }]
   },
   {
@@ -39,6 +115,9 @@ const homeRouter = [
   }
 ]
 
+
+
 export {
-  homeRouter
+  homeRouter,
+  personCenterRouter
 }
