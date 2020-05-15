@@ -4,7 +4,7 @@
             <el-input autocomplete="off" placeholder="请输入名称" v-model="data.formName"></el-input>
         </el-form-item>
         <el-form-item label="表单类型">
-            <el-select placeholder="--请选择--" v-model="data.formType" :disabled="data.id!=''">
+            <el-select placeholder="--请选择--" v-model="data.formType" :disabled="data.id!='' || data.mainId!=''"><!--编辑或者子表新增时不能修改-->
                 <el-option label="实体表单" value="0"></el-option>
                 <el-option label="虚拟表单" value="1"></el-option>
             </el-select>
@@ -45,7 +45,7 @@
             </div>
         </el-form-item>
         <el-form-item label="所属知识库">
-            <el-select placeholder="--请选择--" v-model="data.knowledgeDir">
+            <el-select placeholder="--请选择--" v-model="data.knowledgeDir" :disabled="data.id != '' && data.mainId != ''">
                 <el-option label="dsa" value="dsa"></el-option>
                 <el-option label="test" value="test"></el-option>
             </el-select>
@@ -65,7 +65,7 @@
 
     export default {
         name: "Basic",
-        props:["formData","formType"],
+        props:["formData"],
         data(){
             return{
                 showAssociatedForm:false,
@@ -111,7 +111,6 @@
                         }
                         let formType = data.mainId==""?"mainForm":"subForm";//判断本次操作是子表还是主表
                         let type = data.id==""?"append":"edit";//判断本次操作是新增还是编辑
-                        console.log(data);
                         request({
                             url: `${modelUrl}save`,
                             method: 'post',

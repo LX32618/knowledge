@@ -80,6 +80,7 @@
         },
         methods:{
             currentChange(val){//单选事件
+                val.mainId = "";
                 this.$set(this,"editFormData",val);
             },
             pageSizeChange({page,rows})

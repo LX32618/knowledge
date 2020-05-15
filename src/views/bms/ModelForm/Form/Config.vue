@@ -72,6 +72,14 @@
         <el-dialog title="编辑子表" :visible.sync="editSubFormVisible" append-to-body>
             <basic :formData="editSubFormData" @submitSuccess="submitSuccess"></basic>
         </el-dialog>
+
+        <el-dialog title="添加字段" :visible.sync="appendFieldVisible" append-to-body>
+            <field></field>
+        </el-dialog>
+
+        <el-dialog title="添加编辑字段" :visible.sync="editFieldVisible" append-to-body>
+            <field></field>
+        </el-dialog>
     </div>
 </template>
 
@@ -79,11 +87,12 @@
     import _ from 'lodash'
     import request from '@/utils/request'
     import Basic from "./Basic";
+    import Field from "./Field"
 
     let modelSubFormUrl = "/api/model/subform/";
     export default {
         name: "Config",
-        components: {Basic},
+        components: {Field, Basic},
         props:["id"],
         data(){
             return {
@@ -91,6 +100,8 @@
                 loading:false,
                 appendSubFormVisible:false,
                 editSubFormVisible:false,
+                appendFieldVisible:false,
+                editFieldVisible:false,
                 tableSettings: {
                     radio:false,//是否单选
                     checkbox: false,//是否多选，单选和多选同一时间只能存在一个
@@ -127,10 +138,9 @@
             },
             editSubForm(){
                 let subFormId = this.activeName;
-                let subForm = this.data.subForm.filter(f=>f.id == subFormId);
-                this.editSubFormData = subForm[0];
-                this.editSubFormData.mainId = this.data.id;
-                console.log(this.editSubFormData);
+                let subForm = this.data.subForm.filter(f=>f.id == subFormId)[0];
+                subForm.mainId =  this.data.id;
+                this.$set(this,"editSubFormData",subForm);
                 this.editSubFormVisible = true;
             },
             appendMainFormFiled(){
@@ -158,7 +168,8 @@
 
         },
         watch:{
-            Basic
+            Basic,
+            Field
         }
     }
 </script>

@@ -116,7 +116,7 @@ let forms = [ {
     "subForm": [
         {
 
-            "formType": 0,
+            "formType": "0",
             "formName": "子表1",
             "id": "309B62EC98FF47ABBC026BC58189D111",
             "sortTable": 0,
@@ -190,7 +190,7 @@ let forms = [ {
             ]
         },
         {
-            "formType": 0,
+            "formType": "0",
             "formName": "子表2",
             "id": "AB413A9FBD3148A18081DEB071E85C3F",
             "sortTable": 0,
@@ -248,7 +248,7 @@ let forms = [ {
         {
             "id": "98CE15C1B2444049B778E7C9F3F046E7",
             "formName": "子表3",
-            "formType": 0,
+            "formType": "0",
             "sortTable": 1,
             "tableName": "aa-3",
             "knowledgeDir": "",
