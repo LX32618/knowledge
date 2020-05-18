@@ -10,9 +10,9 @@ module.exports = {
                     '^/api1': '/'
                 }
             },
-            // '/api2': {
-            //     target: 'http://192.168.0.110:8083' // 王夏冰 api
-            // },
+            '/api2': {
+                target: 'http://192.168.0.110:8083' // 王夏冰 api
+            },
             '/api3': {
                 target: 'http://192.168.0.114:3000', // 夏添 api
                 changeOrigin: true,
