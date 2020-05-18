@@ -1,5 +1,5 @@
 import Mock from 'mockjs'
-const rootPath = '/api/users/'
+const rootPath = '/api3/users/'
 
 const users = [
   {

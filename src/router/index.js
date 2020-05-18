@@ -24,7 +24,11 @@ const routes = [
 const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
-  routes
+  routes,
+  // 切换路由时滚动到最顶部
+  scrollBehavior () {
+    return { x: 0, y: 0 }
+  }
 })
 
 // 路由拦截器

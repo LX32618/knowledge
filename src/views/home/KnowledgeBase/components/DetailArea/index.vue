@@ -49,6 +49,7 @@
         :page-sizes="[5, 10, 15, 20]"
         :page-size="rows"
         :total="total"
+        :current-page.sync="page"
         @size-change="sizeChange"
         @current-change="pageChange"
         layout="total, prev, pager, next, sizes, jumper"
@@ -119,6 +120,8 @@ export default {
         return
       }
       this.searchOption = {}
+      this.page = 1
+      this.rows = 10
       this.updateKnowledges()
     }
   },
@@ -149,7 +152,7 @@ export default {
           id: row.id,
         }
       });
-      window.open(routeData.href, '_blank');
+      window.open(routeData.href, '_blank')
     },
     // 订阅 / 取消订阅知识
     handleSubscribe (row, index) {

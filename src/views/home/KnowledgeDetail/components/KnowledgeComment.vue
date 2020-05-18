@@ -24,11 +24,12 @@
         <el-radio-group v-model="knowledgeAssess.rank">
           <el-radio
             v-for="(rank, index) of ranks"
-            :key="rank.id"
-            :label="rank"
-            :value="index"
-          ></el-radio> </el-radio-group
-        ><br /><br />
+            :key="index"
+            :label="index"
+            >{{ rank }}</el-radio
+          ></el-radio-group
+        >
+        <br /><br />
         <el-button type="primary" icon="fa fa-save"> 保存</el-button>
       </el-card>
     </el-col>
@@ -76,5 +77,8 @@ export default {
 }
 .input-container {
   min-height: 300px;
+}
+.el-radio {
+  color: black;
 }
 </style>
