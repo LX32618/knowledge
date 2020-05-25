@@ -35,8 +35,9 @@
 import { mapGetters } from 'vuex'
 import axios from 'axios'
 // import { fetchKnowledgeCount, fetchCollectKnowledgeCount } from '@/api/knowledge'
-import { fetchKnowledgeCount } from '@/api/knowledge'
+// import { fetchKnowledgeCount } from '@/api/knowledge'
 import { fetchCollectKnowledgeCount } from '@/api/knowledgeCollect'
+import { fetchKnowledgeCount } from '@/api/knowledgeBase'
 import { errorMsg } from '@/utils/msg'
 import KnowledgeBaseForm from '@/components/Form/KnowledgeBaseForm'
 
@@ -63,7 +64,7 @@ export default {
     // 获取发布知识总条数
     getknowledgeCount () {
       fetchKnowledgeCount({
-        creator: this.userInfo.name
+        createId: this.userInfo.id
       }).then(res => {
         this.knowledgeCount = res.content
       }).catch(e => errorMsg(e))

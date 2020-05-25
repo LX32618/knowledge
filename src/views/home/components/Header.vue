@@ -194,9 +194,9 @@ export default {
     }
   },
   mounted () {
-    fetchMessages({ id: this.userInfo.id }).then(res => {
-      this.messages = res.content
-    })
+    // fetchMessages({ id: this.userInfo.id }).then(res => {
+    //   this.messages = res.content
+    // })
   }
 }
 </script>

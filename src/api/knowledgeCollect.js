@@ -6,10 +6,10 @@ const rootUrl = '/api1/knowledgeCollect/'
 export function fetchCollectKnowledgeCount (option) {
   return request({
     url: `${rootUrl}count`,
-    method: 'get',
-    params: {
-      userId: option.userId,
-    }
+    method: 'post',
+    data: {
+      userId: option.userId
+    } 
   })
 }
 

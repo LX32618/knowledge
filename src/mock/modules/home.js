@@ -162,7 +162,7 @@ const entityForm = Mock.mock({
     htmlType: 10,
     fieldType: 'YYYY/MM/DD',
   }],
-  subForms: [subForm2]
+  subForms: [subForm1]
 })
 
 const entityForm2 = Mock.mock({
@@ -245,7 +245,8 @@ export default [
     }
   },
   {
-    url: /\/knowledge\/count.*/,
+    url: /\/system\/knowledge\/count.*/,
+    type: 'post',
     response: config => {
       const { creator } = config.query
       const data = knowledgeList.filter(item => item.creator === creator)
@@ -329,8 +330,8 @@ export default [
         status: 'success',
         content: {
           baseData: data,
-          // formConfig: vitualForm,
-          formConfig: entityForm
+          formConfig: vitualForm,
+          // formConfig: entityForm
         }
       }
     }
