@@ -84,17 +84,7 @@ export default {
       show_remove_btn: true//控制右键中的删除按钮的显隐
     }
   },
-  //   props: ["treeOptions", "treeData"],
   props: ["treeOptions", "data"],
-  //   watch: {
-  //     treeData: {
-  //       handler (newValue, oldValue) {
-  //         console.log(newValue)
-  //         this.updateTreeData()
-  //       },
-  //       deep: true
-  //     }
-  //   },
   methods: {
     show (node) {
       console.log(node)

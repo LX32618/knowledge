@@ -18,7 +18,36 @@ private String picture; //知识库图片
 private Integer isDelete; //是否删除（0.未删除、1.已删除）
 private int secretLevel;//密级（10、非密，20、内部，30、秘密，40、机密）
 isSentMail//是否开启邮件（0否1是）
-enable//是否启用（0否1是）*/
+enable//是否启用（0否1是）
+{
+      "id": "1440581BB0B5444789F0C10DD4E73BBF",
+      "pid": "8874D41FBF44437E8DBC900DAE3A5F24",
+      "categoryName": "test0420",
+      "categoryCode": "",
+      "remark": "",
+      "createDate": "2020-04-20 10:48:57",
+      "createUser": "EFB3BCDFBC0B4B5B91991B49B96D26CF",
+      "pids": "E91AE12C441D468F875A236FFB034A98,8874D41FBF44437E8DBC900DAE3A5F24",
+      "type": 2,
+      "sort": "0",
+      "formId": "30014F05BE3242478282AB8F9E4324DF",
+      "formName": "CBB模块",
+      "picture": "",
+      "isDelete": "0",
+      "secretLevel": "20",
+      "isSentMail": 1,
+      "labelInfo": [
+        {
+          "id": "0562E451564242E8B8AAC1372D4DB277",
+          "name": "性质"
+        }
+      ],
+      "isLeaf": "true"
+    },
+
+
+
+*/
 
 
 let datas = [
@@ -35,8 +64,7 @@ let datas = [
         sort:"",
         formId:"",
         formName:"",
-        labelId:"",
-        labelName:"",
+        labelInfo: [],
         picture:"",
         secretLevel:"",
         isSentMail:"",//是否开启邮件（0否1是）
@@ -56,8 +84,12 @@ let datas = [
         sort:"0",
         formId:"6776CA76C6C24519ACE0785B39184593",
         formName:"组织资产",
-        labelId:"2",
-        labelName:"性质",
+        labelInfo: [
+            {
+                id: "2",
+                name: "性质"
+            }
+        ],
         picture:"fa fa-microchip",
         secretLevel:"20",
         isSentMail:"0",//是否开启邮件（0否1是）
@@ -77,8 +109,12 @@ let datas = [
         sort:"0",
         formId:"",
         formName:"",
-        labelId:"3",
-        labelName:"雷达功能",
+        labelInfo: [
+            {
+                id: "3",
+                name: "雷达功能"
+            }
+        ],
         picture:"",
         secretLevel:"20",
         isSentMail:"0",//是否开启邮件（0否1是）
@@ -98,8 +134,8 @@ let datas = [
         sort:"0",
         formId:"",
         formName:"",
-        labelId:"",
-        labelName:"",
+        labelInfo: [
+        ],
         picture:"",
         secretLevel:"30",
         isSentMail:"0",//是否开启邮件（0否1是）
@@ -119,8 +155,12 @@ let datas = [
         sort:"0",
         formId:"709BDC9CF1DF47939C679907958CBD51",
         formName:"规范",
-        labelId:"4",
-        labelName:"质量",
+        labelInfo: [
+            {
+                id: "4",
+                name: "质量"
+            }
+        ],
         picture:"fa fa-bar-chart-o",
         secretLevel:"10",
         isSentMail:"1",//是否开启邮件（0否1是）
@@ -140,8 +180,12 @@ let datas = [
         sort:"0",
         formId:"7169A992CA9243A6A8981699652E2966",
         formName:"故障案例",
-        labelId:"7",
-        labelName:"设计",
+        labelInfo: [
+            {
+                id: "7",
+                name: "设计"
+            }
+        ],
         picture:"",
         secretLevel:"10",
         isSentMail:"1",//是否开启邮件（0否1是）

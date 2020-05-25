@@ -1,8 +1,9 @@
 <template>
-    <DictionaryTag :rootUrl="url" :category="type"></DictionaryTag>
+    <DictionaryTag :get-url="getUrl" :edit-url="editUrl" :category="type"></DictionaryTag>
 </template>
 
 <script>
+
     import DictionaryTag from "./DictionaryTag";
     export default {
         name: "Dictionary",
@@ -11,7 +12,8 @@
         },
         data(){
             return {
-                url:'/api/dictionary/',
+                getUrl:'/api2/dicTree/',
+                editUrl:'/api2/treeNode/',
                 type:'dictionary'
             }
         }

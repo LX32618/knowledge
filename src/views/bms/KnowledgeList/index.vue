@@ -16,7 +16,7 @@
                 <el-tab-pane :key="4" v-if="basicFormData.type=='2'" label="接口配置" name="interface">接口配置</el-tab-pane>
             </el-tabs>
         </div>
-        <el-dialog title="新增知识目录" :visible.sync="appendFormVisible">
+        <el-dialog title="新增知识目录" :visible.sync="appendFormVisible" :close-on-click-modal="false">
             <basic :settings="appendFormSettings" :form-data="appendFormData" @submitSuccess="submitSuccess"></basic>
         </el-dialog>
     </div>
@@ -97,7 +97,15 @@
                         method: 'post',
                         data:node.object,
                     }).then(data=>{
-                        this.$refs.lazytree.removeSuccess(node.object.pid);
+                        if(data.status == "success")
+                        {
+                            this.$success("删除成功");
+                            this.$refs.lazytree.removeSuccess(node.object.pid);
+                        }
+                        else{
+                            this.$error(data.message);
+                        }
+
                     });
                 }).catch(() => {
                 });
@@ -105,7 +113,6 @@
             submitSuccess({type,data}){
                 if(type == "append")
                 {
-                    console.log("append");
                     this.appendFormVisible = false;
                     this.$refs.lazytree.appendSuccess(data.pid);
                 }

@@ -9,14 +9,12 @@
                     <cs-table :settings="tableSettings"
                               :table-data="data.datas">
                         <template v-slot:horizontalSlot>
-                                <el-button type="primary" class="appendBtn" size="mini" round @click.native="appendMainFormFiled()">添加字段</el-button>
+                                <el-button type="primary" class="appendBtn" size="mini" round @click.native="appendFormFiled(data.id)">添加字段</el-button>
                         </template>
                        <template v-slot:suffix-column>
-                            <el-table-column
-                                    label="编辑"
-                                    width="50">
+                            <el-table-column label="编辑" width="50">
                                 <template slot-scope="scope">
-                                    <el-button type="text" icon="el-icon-edit" size="mini"  @click.native.prevent="editRow(scope.$index,scope.row)">
+                                    <el-button type="text" icon="el-icon-edit" size="mini"  @click.native.prevent="editFormFiled(scope.$index,scope.row,data.id)">
                                     </el-button>
                                 </template>
                             </el-table-column>
@@ -44,14 +42,14 @@
                             <cs-table :settings="tableSettings"
                                       :table-data="tab.datas">
                                 <template v-slot:horizontalSlot>
-                                    <el-button type="primary"  class="appendBtn" size="small" round @click.native="appendMainFormFiled()">添加字段</el-button>
+                                    <el-button type="primary"  class="appendBtn" size="small" round @click.native="appendFormFiled(activeName)">添加字段</el-button>
                                 </template>
                                 <template v-slot:suffix-column>
                                     <el-table-column
                                             label="编辑"
                                             width="50">
                                         <template slot-scope="scope">
-                                            <el-button type="text" icon="el-icon-edit" size="small" @click.native.prevent="editRow(scope.$index,scope.row)">
+                                            <el-button type="text" icon="el-icon-edit" size="small" @click.native.prevent="editFormFiled(scope.$index,scope.row,activeName)">
                                             </el-button>
                                         </template>
                                     </el-table-column>
@@ -65,20 +63,20 @@
                 </div>
             </el-card>
         </div>
-        <el-dialog title="添加子表" :visible.sync="appendSubFormVisible" append-to-body>
-            <basic :formData="appendSubFormData" @submitSuccess="submitSuccess"></basic>
+        <el-dialog title="添加子表" :visible.sync="appendSubFormVisible" :close-on-click-modal="false" append-to-body>
+            <basic :formData="appendSubFormData" @submitSuccess="submitSubFormSuccess"></basic>
         </el-dialog>
 
-        <el-dialog title="编辑子表" :visible.sync="editSubFormVisible" append-to-body>
-            <basic :formData="editSubFormData" @submitSuccess="submitSuccess"></basic>
+        <el-dialog title="编辑子表" :visible.sync="editSubFormVisible" :close-on-click-modal="false" append-to-body>
+            <basic :formData="editSubFormData" @submitSuccess="submitSubFormSuccess"></basic>
         </el-dialog>
 
-        <el-dialog title="添加字段" :visible.sync="appendFieldVisible" append-to-body>
-            <field></field>
+        <el-dialog title="添加字段" :visible.sync="appendFieldVisible" :close-on-click-modal="false" append-to-body>
+            <field :field-data="appendFormFiledData" @submitSuccess="submitFiledSuccess"></field>
         </el-dialog>
 
-        <el-dialog title="添加编辑字段" :visible.sync="editFieldVisible" append-to-body>
-            <field></field>
+        <el-dialog title="添加编辑字段" :visible.sync="editFieldVisible" :close-on-click-modal="false" append-to-body>
+            <field :field-data="editFormFiledData" @submitSuccess="submitFiledSuccess"></field>
         </el-dialog>
     </div>
 </template>
@@ -89,7 +87,7 @@
     import Basic from "./Basic";
     import Field from "./Field"
 
-    let modelSubFormUrl = "/api/model/subform/";
+    let modelSubFormUrl = "/api/model/";
     export default {
         name: "Config",
         components: {Field, Basic},
@@ -110,17 +108,23 @@
                         {prop: "id", label: "id",  visible: false},
                         {prop: "displayName", label: "显示名称"},
                         {prop: "fieldName", label: "字段名称"},
-                        {prop: "htmlType", label: "显示类型"},
-                        {prop: "htmlTypeId", label: "显示类型Id",visible:false},
-                        {prop: "fieldType", label: "字段类型"},
-                        {prop: "fieldTypeId", label: "字段类型Id",visible:false},
+                        {prop: "htmlTypeName", label: "显示类型"},
+                        {prop: "htmlType", label: "显示类型Id",visible:false},
+                        {prop: "fieldTypeName", label: "字段类型"},
+                        {prop: "fieldType", label: "字段类型Id",visible:false},
                         {prop: "fieldLength", label: "字段长度"},
                         {prop: "fieldFixed", label: "精度"},
+                        {prop: "isMulti", label: "是否多选",visible:false},
+                        {prop: "fieldCheck", label: "字段验证",visible:false},
+                        {prop: "height", label: "高度",visible:false},
+                        {prop: "width", label: "宽度",visible:false}
                     ]
                 },
                 data:{},
                 appendSubFormData:{},
-                editSubFormData:{}
+                editSubFormData:{},
+                appendFormFiledData:{},
+                editFormFiledData:{}
             }
         },
         methods:{
@@ -143,17 +147,33 @@
                 this.$set(this,"editSubFormData",subForm);
                 this.editSubFormVisible = true;
             },
-            appendMainFormFiled(){
-
+            appendFormFiled(id){
+                let data = {
+                    formId:id,
+                    id: "",//新增为空
+                    fieldName: "",
+                    displayName: "",
+                    htmlType: "",
+                    fieldType: "",//
+                    fieldCheck: "yyyy-MM-dd",//日期的时候的校验
+                    fieldLength: "128",
+                    fieldFixed: "2",//浮点数，精度
+                    isMulti: "",//是否多选
+                    height: "95",
+                    width: "95"
+                };
+                this.$set(this,"appendFormFiledData",data);
+                this.appendFieldVisible = true;
             },
-            editRow(index, row) {
-                console.log(index);
-                console.log(row);
+            editFormFiled(index, row,formId) {
+                this.editFormFiledData = row;
+                this.editFormFiledData.formId = formId;
+                this.editFieldVisible = true;
             },
             loadData(id) {
                 this.loading = true;
                 request({
-                    url: `${modelSubFormUrl}get`,
+                    url: `${modelSubFormUrl}getbyid`,
                     method: 'post',
                     data: {id: id},
                 }).then(({status, content, message}) => {
@@ -163,11 +183,54 @@
                         this.activeName = content.subForm[0].id;
                 });
             },
-            submitSuccess({type,data}){
+            submitSubFormSuccess({type,data}){
+                if(type =="append")
+                {
+                    this.appendSubFormVisible = false;
+                    this.data.subForm.push(data);
+                }
+                else if(type == "edit")
+                {
+                    this.editSubFormVisible = false;
+                    let index = this.data.subForm.findIndex(d=>d.id==data.id);
+                    this.data.subForm.splice(index,1,data);
+                }
+            },
+            submitFiledSuccess({type,data}){
+                let formId = data.formId;
+                let id = data.id;
+                if(type =="append")
+                {
+                    this.appendFieldVisible = false;
+                    if(this.data.id == formId){
+                        this.data.datas.push(data);
+                    }
+                    else{
+                        this.data.subForm.forEach(s=>{
+                            if(s.id == formId){
+                                s.datas.push(data);
+                            }
+                        })
+                    }
+                }
+                else if(type == "edit"){
+                    this.editFieldVisible = false;
+                    if(this.data.id == formId){
+                        let index = this.data.datas.findIndex(d=>d.id==id);
+                        this.data.datas.splice(index,1,data);
+                    }
+                    else{
+                        this.data.subForm.forEach(s=>{
+                            if(s.id == formId){
+                                let index = s.datas.findIndex(d=>d.id==id);
+                                s.datas.splice(index,1,data);
+                            }
+                        })
+                    }
+                }
             }
-
         },
-        watch:{
+        components:{
             Basic,
             Field
         }
@@ -194,5 +257,8 @@
     .appendBtn{
         float: right;
         margin:5px 0px 5px 0px;
+    }
+    .gutter{
+        display: table-cell !important;
     }
 </style>
