@@ -4,17 +4,21 @@ module.exports = {
     devServer: {
         proxy: {
             '/api1': {
-                target: 'http://192.168.0.104:8082', // 刘珏先 api
+                target: 'http://192.168.0.90:8083', // 刘珏先 api
                 changeOrigin: true,
                 pathRewrite: {
                     '^/api1': '/'
                 }
             },
             '/api2': {
-                target: 'http://192.168.0.110:8083' // 王夏冰 api
+                target: 'http://192.168.0.99:8088', // 王夏冰 api
+                changeOrigin: true,
+                pathRewrite: {
+                    '^/api2': '/app/authcenter/api'
+                }
             },
             '/api3': {
-                target: 'http://192.168.0.114:3000', // 夏添 api
+                target: 'http://192.168.0.111:3000', // 夏添 api
                 changeOrigin: true,
                 pathRewrite: {
                     '^/api3': '/api'
