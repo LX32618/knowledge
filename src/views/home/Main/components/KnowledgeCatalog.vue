@@ -20,8 +20,8 @@
           v-for="item of slicedArray"
           :key="item.id"
         >
-          <i :class="`fa fa-${item.picture}`"></i>
-          <p>{{ item.name }}</p>
+          <i :class="iconClass(item.picture)"></i>
+          <p>{{ item.categoryName }}</p>
         </router-link>
       </el-carousel-item>
     </el-carousel>
@@ -34,7 +34,9 @@ export default {
   name: 'KnowledgeCatalog',
   computed: {
     ...mapGetters([
-      'docCategories'
+      'docCategories',
+      'defaultIcon',
+      'icons'
     ]),
     slicedCategories () {
       const result = []
@@ -50,6 +52,11 @@ export default {
         result.push(tmp)
       }
       return result
+    }
+  },
+  methods: {
+    iconClass (picture) {
+      return this.icons.indexOf(picture) > -1 ? picture : this.defaultIcon
     }
   }
 }

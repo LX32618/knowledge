@@ -9,7 +9,8 @@
               :height="settings.height"
               @current-change="currentChange"
               @selection-change="selectionChange"
-              @sort-change="sortChange">
+              @sort-change="sortChange"
+              class="cs-table">
       <el-table-column
               v-if="settings.checkbox"
               type="selection"
@@ -104,7 +105,7 @@
 </script>
 
 <style>
-.el-radio__label {
+.cs-table .el-radio__label {
   display: none;
 }
 </style>

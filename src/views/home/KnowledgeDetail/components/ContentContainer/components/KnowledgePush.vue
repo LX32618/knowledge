@@ -3,7 +3,7 @@
     <span slot="header">知识推送</span>
     <ul v-loading="isLoading">
       <li v-for="item of pushList" :key="item.id">
-        <el-link @click="handleLinkClick(item.id)">{{ item.name }}</el-link>
+        <el-link @click="handleLinkClick(item.id)">{{ item.NAME }}</el-link>
       </li>
     </ul>
   </el-card>
@@ -32,12 +32,12 @@ export default {
     }
   },
   mounted () {
-    this.isLoading = true
-    fetchPushList({ id: this.$route.params.id }).then(res => {
-      const data = res.content
-      this.pushList = data
-      this.isLoading = false
-    })
+    // this.isLoading = true
+    // fetchPushList({ id: this.$route.params.id }).then(res => {
+    //   const data = res.content
+    //   this.pushList = data
+    //   this.isLoading = false
+    // })
   }
 }
 </script>

@@ -4,13 +4,14 @@
     <div v-loading="isLoading">
       <el-tabs v-if="formConfig" type="card">
         <!-- 实体表单 -->
-        <template v-if="formConfig.formType">
+        <template v-if="formConfig.formType === 0">
           <el-tab-pane>
             <span slot="label">{{ formConfig.formName }}</span>
             <content-container
               :formConfig="formConfig"
               :showBase="true"
               :baseData="baseData"
+              :formData="formData"
             />
           </el-tab-pane>
         </template>
@@ -40,7 +41,8 @@
 </template>
 
 <script>
-import { fetchKnowledgeDetail } from '@/api/knowledge'
+// import { fetchKnowledgeDetail } from '@/api/knowledge'
+import { getModelAndData } from '@/api/knowledgeData'
 import ToolBar from './components/ToolBar'
 import ContentContainer from './components/ContentContainer'
 import KnowledgeComment from './components/KnowledgeComment'
@@ -59,14 +61,16 @@ export default {
     return {
       isLoading: false,
       baseData: {},
+      formData: {},
       formConfig: undefined
     }
   },
   mounted () {
     this.isLoading = true
-    fetchKnowledgeDetail({ id: this.id }).then(res => {
-      this.baseData = res.content.baseData
-      this.formConfig = res.content.formConfig
+    getModelAndData({ id: this.id }).then(res => {
+      this.baseData = res.content.knowledgeData.knowledgeBase
+      this.formData = res.content.knowledgeData.formData
+      this.formConfig = res.content.knowledgeModel.formModel
       this.isLoading = false
     })
   }

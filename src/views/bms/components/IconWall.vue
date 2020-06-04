@@ -2,7 +2,7 @@
   <div>
     <el-row
       type="flex"
-      v-for="(i, index) in Math.ceil(items.length / 6)"
+      v-for="(i, index) in Math.ceil(icons.length / 6)"
       :key="index"
     >
       <el-col
@@ -18,31 +18,22 @@
 </template>
 
 <script>
+import {mapGetters} from 'vuex'
+
 export default {
   name: "IconWall",
   data () {
     return {
-      iconSelected: "",
-      items: [
-        "fa fa-microchip",
-        "fa fa-tv",
-        "fa fa-anchor",
-        "fa fa-bar-chart-o",
-        "fa fa-fighter-jet",
-        "fa fa-feed",
-        "fa fa-plane",
-        "fa fa-rocket",
-        "fa fa-random",
-        "fa fa-gears",
-        "fa fa-wifi",
-        "fa fa-magnet"
-      ]
+      iconSelected: ""
     }
   },
   computed: {
+    ...mapGetters([
+      'icons'
+    ]),
     spliceItems () {
       return function (n) {
-        return this.items.slice((n - 1) * 6, n * 6);
+        return this.icons.slice((n - 1) * 6, n * 6);
       }
     },
     selectItems () {

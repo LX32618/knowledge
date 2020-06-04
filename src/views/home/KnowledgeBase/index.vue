@@ -9,7 +9,7 @@
             >首页</el-breadcrumb-item
           >
           <el-breadcrumb-item class="breadcurmb-text">{{
-            this.currentKnowledgeBase.name
+            this.currentKnowledgeBase.categoryName
           }}</el-breadcrumb-item>
         </el-breadcrumb>
       </div>
@@ -68,13 +68,13 @@ export default {
     await this.$store.dispatch('docCategory/fetchCategories')
     this.isLoading = false
     this.currentKnowledgeBase = this.docCategories.find(item => item.id == this.id)
-    this.selectedCategory = _.pick(this.currentKnowledgeBase, ['id', 'name', 'type'])
+    this.selectedCategory = _.pick(this.currentKnowledgeBase, ['id', 'categoryName', 'type'])
     if (!this.currentKnowledgeBase) {
       this.$router.push('/')
       errorMsg('知识库不存在，请刷新再尝试')
       return
     }
-    document.title = `${this.currentKnowledgeBase.name} | 知识工程`
+    document.title = `${this.currentKnowledgeBase.categoryName} | 知识工程`
   },
   methods: {
     handleCategoryChange (data) {

@@ -5,8 +5,8 @@ const rootUrl = '/knowledge/'
 export function fetchKnowledges (option) {
   return request({
     url: `${rootUrl}find`,
-    method: 'get',
-    params: {
+    method: 'post',
+    data: {
       page: option.page || 1,
       rows: option.rows || 10,
       sort: 0,

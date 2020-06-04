@@ -65,6 +65,7 @@ export default {
         getLablesTree({ classificationid: this.classificationid }).then(res => {
           let data = res.content
           data = unflatTree(data, 0) // 生成树
+          console.log(data)
           // 格式化节点
           walkTree(data, item => {
             if (!item.children || item.children.length === 0) {
