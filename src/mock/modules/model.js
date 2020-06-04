@@ -403,5 +403,33 @@ export default [
             }
 
         }
+    },
+    {
+        url: `${rootPath}checktablename`,
+        type: 'post',
+        response: config => {
+            let {tableName} = config.body;
+            console.log(tableName);
+            let result = Math.random()>0.5?"true":"false";
+            return {
+                status: "success",
+                content:{result:result},
+                message: 'success'
+            }
+
+        }
+    },{
+        url: `${rootPath}checkfieldname`,
+        type: 'post',
+        response: config => {
+            let {filedName} = config.body;
+            let result = Math.random()>0.5?"true":"false";
+            return {
+                status: "success",
+                content:{result:result},
+                message: 'success'
+            }
+
+        }
     }
 ]

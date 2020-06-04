@@ -36,6 +36,7 @@
                                     <el-input placeholder="请输入表单名称" prefix-icon="el-icon-search"
                                               v-model="searchKeyWord"></el-input>
                                     <el-button type="primary" @click="searchAssociatedForm">搜索</el-button>
+                                    <el-button type="primary" @click="certainAssociatedForm">确定</el-button>
                                 </el-button-group>
                             </div>
                         </template>
@@ -44,18 +45,20 @@
             </div>
         </el-form-item>
         <el-form-item label="标签分类选择" v-if="data.type=='2'">
-            <div ref="labelClassification" style="width:203px;">
-                <el-input
-                        placeholder="请选择"
-                        v-model="data.labelName"
-                        size="small"
-                        readonly="readonly"
-                        :suffix-icon="showLabelClassification?'el-icon-arrow-up':'el-icon-arrow-down'"
-                        @click.native="toggleLabelClassification()">
-                </el-input>
+            <div ref="labelClassification">
+                <el-button type="primary" icon="el-icon-search" circle
+                           @click.native="toggleLabelClassification()"></el-button>
+                <el-tag v-for="tag in data.labelInfo"
+                        :key="tag.id"
+                        closable
+                        @close="tagClose(tag)"
+                        type="danger" size="mini" style="margin-left: 3px">
+                    {{tag.name}}
+                </el-tag>
                 <div class="labelClassification" v-show="showLabelClassification">
                     <cs-lazytree :settings="treeSettings" :dataFormat="treeDataFormat"
                                  @checkChange="labelCheckChange"></cs-lazytree>
+                    <el-button type="primary" size="mini" style="float: right;margin:0px 3px 3px 0px" @click="certainLabel">确定</el-button>
                 </div>
             </div>
         </el-form-item>
@@ -143,13 +146,15 @@
                 showLabelClassification:false,
                 searchKeyWord:"",
                 selectedIcon:"",//选中的icon
+                selectedLabel:[],//选中的label\
+                selectedAssociatedFormTable:{},
                 treeSettings:{
                     root_id:"",//根节点id
                     expand_root:true,//是否默认展开根节点
                     check_strictly:true,//在显示复选框的情况下，是否严格的遵循父子不互相关联的做法，默认为 false
                     default_expand_all:false,//是否默认展开所层级
-                    show_checkbox:false,//是否有checkbox
-                    show_radio: true,//是否有单选radio
+                    show_checkbox:true,//是否有checkbox
+                    show_radio: false,//是否有单选radio
                     expand_on_click_node:false,//点击接点是否进行展开收缩
                     right_click:false,//是否具有右键功能
                     request:{//访问路径设置
@@ -173,7 +178,7 @@
                         {prop: "formType", label: "表单类型",width:200,
                             formatter(index,row)
                             {
-                                return row.formType==0?"实体表单":"虚拟表单";
+                                return row.formType=="0"?"实体表单":"虚拟表单";
                             }
                         }
                     ]
@@ -225,8 +230,16 @@
                             method: 'post',
                             data:this.data,
                         }).then(data=>{
-                            this.$emit("submitSuccess",{type:this.settings.formType,data:this.data});
-                            this.basicFormLoading = false;
+                            if(data.status == "success")
+                            {
+                                this.$success("保存成功");
+                                this.$emit("submitSuccess",{type:this.settings.formType,data:this.data});
+                                this.basicFormLoading = false;
+                            }
+                            else
+                            {
+                                this.$error(data.message);
+                            }
                         }).catch()
                         {
 
@@ -253,14 +266,14 @@
                 let formatData = temp.map((item,index,arr)=>{
                     let pid = item.pid;
                     if(this.treeSettings.root_id == pid){//如果是根节点
-                        item.showCheckbox = false;
+                        item.showCheckBox = false;
                     }
                     else if(item.isLeaf)
                     {
-                        item.showCheckbox = false;
+                        item.showCheckBox = false;
                     }
                     else{
-                        item.showCheckbox = true;
+                        item.showCheckBox = true;
                     }
                     return item;
                 })
@@ -268,8 +281,10 @@
             },
             //region 关联表单方法
             associatedFormCurrentChange(currentRow){
-                this.$set(this.data,"formId",currentRow.formId);
-                this.$set(this.data,"formName",currentRow.formName);
+                this.selectedAssociatedFormTable.formId = currentRow.formId;
+                this.selectedAssociatedFormTable.formName = currentRow.formName;
+               /* this.$set(this.data,"formId",currentRow.formId);
+                this.$set(this.data,"formName",currentRow.formName);*/
             },
             associatedFormPageSizeChange({page,rows}){
                 let data = {
@@ -283,15 +298,19 @@
             },
             toggleAssociatedFormTable(){
                 this.showAssociatedFormTable = !this.showAssociatedFormTable;
-                document.addEventListener('click', this.vanishAssociatedFormTable); // 给整个document添加监听鼠标事件，点击任何位置执行vanish方法
+                //document.addEventListener('click', this.vanishAssociatedFormTable); // 给整个document添加监听鼠标事件，点击任何位置执行vanish方法
             },
-            vanishAssociatedFormTable(e) { // 取消鼠标监听事件
+   /*         vanishAssociatedFormTable(e) { // 取消鼠标监听事件
                 if (!this.$refs.associatedForm.contains(e.target))//如果当前点击位置不是table
                 {
                     this.showAssociatedFormTable = false;
                     document.removeEventListener('click', this.vanishAssociatedFormTable);
                 }
-
+            },*/
+            certainAssociatedForm(){
+                this.$set(this.data,"formId",this.selectedAssociatedFormTable.formId);
+                this.$set(this.data,"formName", this.selectedAssociatedFormTable.formName);
+                this.showAssociatedFormTable = false;
             },
             searchAssociatedForm(){
                 let keyWord = this.searchKeyWord;
@@ -325,23 +344,29 @@
             //region 标签选择方法
             toggleLabelClassification(){
                 this.showLabelClassification = !this.showLabelClassification;
-                document.addEventListener('click', this.vanishLabelClassification);
             },
-            vanishLabelClassification(e) { // 取消鼠标监听事件
-                if (!this.$refs.labelClassification.contains(e.target))//如果当前点击位置是当前tree
-                {
-                    this.showLabelClassification = false;
-                    document.removeEventListener('click', this.vanishLabelClassification);
-                }
+            certainLabel(){
+                let selection = _.concat(this.data.labelInfo,this.selectedLabel);//合并
+                this.data.labelInfo = _.uniqBy(selection,"id");//去重
+                this.showLabelClassification = !this.showLabelClassification;
             },
             labelCheckChange(data){
-                this.data.labelId = data[0].id;
-                this.data.labelName = data[0].name;
+                let temp = data.map(d=>{
+                    return _.pick(d,['id','name']);
+                });
+                this.$set(this,"selectedLabel",temp);
             },
             //endregion
             selectIconChange(val){
                 this.data.picture = val;
+            },
+            tagClose(tag){
+                let filterTags = this.data.labelInfo.filter(d=>{
+                    return d.id!=tag.id;
+                })
+                this.$set(this.data,"labelInfo",filterTags);
             }
+
         },
         components:{
             iconWall

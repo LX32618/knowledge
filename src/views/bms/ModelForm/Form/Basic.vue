@@ -1,10 +1,10 @@
 <template>
     <el-form :model="data" :rules="rules" ref="basicForm" label-width="100px"  >
         <el-form-item label="表单名称" prop="formName">
-            <el-input autocomplete="off" placeholder="请输入名称" v-model="data.formName"></el-input>
+            <el-input autocomplete="off" placeholder="请输入表单名称" v-model="data.formName"></el-input>
         </el-form-item>
         <el-form-item label="表单类型">
-            <el-select placeholder="--请选择--" v-model="data.formType" :disabled="data.id!=''">
+            <el-select placeholder="--请选择--" v-model="data.formType" :disabled="data.id!='' || data.mainId!=''"><!--编辑或者子表新增时不能修改-->
                 <el-option label="实体表单" value="0"></el-option>
                 <el-option label="虚拟表单" value="1"></el-option>
             </el-select>
@@ -23,7 +23,7 @@
                         type="danger" size="mini" style="margin-left: 3px">
                     {{tag.formName}}
                 </el-tag>
-                <div class="associatedForm" v-show="showAssociatedForm">
+                <div class="associatedForm" v-show="showAssociatedForm" >
                     <cs-table :settings="tableSettings"
                               :table-data="tableData"
                               v-loading="associatedFormLoading"
@@ -45,7 +45,7 @@
             </div>
         </el-form-item>
         <el-form-item label="所属知识库">
-            <el-select placeholder="--请选择--" v-model="data.knowledgeDir">
+            <el-select placeholder="--请选择--" v-model="data.knowledgeDir" :disabled="data.id != '' && data.mainId != ''">
                 <el-option label="dsa" value="dsa"></el-option>
                 <el-option label="test" value="test"></el-option>
             </el-select>
@@ -65,8 +65,23 @@
 
     export default {
         name: "Basic",
-        props:["formData","formType"],
+        props:["formData"],
         data(){
+            const tableNameVlidator = ((rule, value, callback)=>{
+                request({
+                    url: `${modelUrl}checktablename`,
+                    method: 'post',
+                    data:{tableName:this.data.tableName},
+                }).then(data=>{
+                    if(data.status =="success")
+                    {
+                        if(data.content.result == "false"){
+                            callback(new Error('数据库表名已存在！'));
+                        }
+                    }
+                }).catch(()=>{
+                })
+            })
             return{
                 showAssociatedForm:false,
                 associatedFormLoading:false,
@@ -79,7 +94,8 @@
                     ],
                     tableName:[
                         {required: true, message: "请输入数据库表名", trigger: "blur"},
-                        {required: true, message: "数据表必须以字母开头，只可包含字母、数字和下划线", trigger: "blur"}
+                        {required: true, pattern:/(^[a-zA-Z][a-zA-Z0-9_]*$)/, message: "数据库表名必须以字母开头，只可包含字母、数字和下划线", trigger: "blur"},
+                        {required: true, validator:tableNameVlidator, trigger: "blur"}
                     ]
                 },
                 tableSettings: {
@@ -111,7 +127,6 @@
                         }
                         let formType = data.mainId==""?"mainForm":"subForm";//判断本次操作是子表还是主表
                         let type = data.id==""?"append":"edit";//判断本次操作是新增还是编辑
-                        console.log(data);
                         request({
                             url: `${modelUrl}save`,
                             method: 'post',
@@ -149,16 +164,16 @@
                     }
                 };
                 this.loadAssociatedFormData(data);
-                document.addEventListener('click', this.vanishAssociatedForm); // 给整个document添加监听鼠标事件，点击任何位置执行vanish方法
+               /* document.addEventListener('click', this.vanishAssociatedForm); // 给整个document添加监听鼠标事件，点击任何位置执行vanish方法*/
             },
-            vanishAssociatedForm(e) { // 取消鼠标监听事件
+ /*           vanishAssociatedForm(e) { // 取消鼠标监听事件
                 if (!this.$refs.associatedForm.contains(e.target))//如果当前点击位置不是table
                 {
                     this.showAssociatedForm = false;
                     document.removeEventListener('click', this.vanishAssociatedForm);
                 }
 
-            },
+            },*/
             searchAssociatedForm(){
                 let data = {
                     page:"1",
@@ -174,12 +189,13 @@
             },
             certainAssociatedForm(){
                 let selection = _.concat(this.associatedFormSelection,this.data.associatedForm);//合并
+                console.log(selection);
                 this.data.associatedForm = _.uniqBy(selection,"id");//去重
+                console.log( this.data.associatedForm);
                 this.showAssociatedForm = false;
             },
             associatedFormSelectionChange(selection){
                 this.associatedFormSelection = selection;
-
             },
             associatedFormPageSizeChange({page,rows}){
                 let data = {

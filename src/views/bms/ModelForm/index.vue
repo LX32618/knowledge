@@ -21,11 +21,11 @@
             </template>
         </cs-table>
 
-        <el-dialog title="表单添加" :visible.sync="appendFormVisible" width="60%">
+        <el-dialog title="表单添加" :visible.sync="appendFormVisible" :close-on-click-modal="false" width="60%">
             <cs-form :form-data="appendFormData" @submitSuccess="submitSuccess"></cs-form>
         </el-dialog>
 
-        <el-dialog title="表单编辑" :visible.sync="editFormVisible" width="60%">
+        <el-dialog title="表单编辑" :visible.sync="editFormVisible" :close-on-click-modal="false" width="60%">
             <cs-form :form-data="editFormData" @submitSuccess="submitSuccess"></cs-form>
         </el-dialog>
     </div>
@@ -80,6 +80,7 @@
         },
         methods:{
             currentChange(val){//单选事件
+                val.mainId = "";
                 this.$set(this,"editFormData",val);
             },
             pageSizeChange({page,rows})

@@ -18,7 +18,7 @@
       ></el-table-column>
       <el-table-column width="40px" v-if="settings.radio" fixed>
         <template slot-scope="scope">
-          <el-radio v-model="radioChecked" :label="scope.row.id"></el-radio>
+          <el-radio class="table-radio" v-model="radioChecked" :label="scope.row.id"></el-radio>
         </template>
       </el-table-column>
       <el-table-column type="index" label="序号" fixed></el-table-column>
@@ -105,7 +105,7 @@
 </script>
 
 <style>
-.cs-table .el-radio__label {
+.table-radio .el-radio__label {
   display: none;
 }
 </style>

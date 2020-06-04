@@ -89,7 +89,7 @@
                 request({
                     url: this.settings.request.url,
                     method: this.settings.request.method,
-                    data:{pid:pid}
+                    data:{id:pid}
                 }).then(data=>{
                     let formatData = this.dataFormat({node:node,data:data.content});
                     resolve(formatData);

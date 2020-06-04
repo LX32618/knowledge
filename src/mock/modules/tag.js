@@ -188,7 +188,7 @@ export default [
             })
 
             return {
-                status: 0,
+                status: "success",
                 message: 'success'
             }
 

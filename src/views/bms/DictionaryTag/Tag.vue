@@ -1,5 +1,5 @@
 <template>
-    <DictionaryTag :rootUrl="url" :category="category"></DictionaryTag>
+    <DictionaryTag :get-url="getUrl" :edit-url="editUrl" :category="category"></DictionaryTag>
 </template>
 
 <script>
@@ -11,7 +11,8 @@
         },
         data(){
             return {
-                url:'/api/tag/',
+                getUrl:'/api2/labelTree/',
+                editUrl:'/api2/treeNode/',
                 category:'tag'
             }
         }
