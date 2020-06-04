@@ -3,6 +3,7 @@ const rootPath = '/api3/users/'
 
 const users = [
   {
+    id: 'EFB3BCDFBC0B4B5B91991B49B96D26CF',
     username: 'admin',
     name: '系统管理员',
     token: 'admin-token',

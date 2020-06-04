@@ -3,7 +3,7 @@
     <span slot="header">
       <i class="fa fa-database"></i>
       <span class="base-name" @click="handleTitleClick">
-        {{ knowledgeBase.name }}</span
+        {{ knowledgeBase.categoryName }}</span
       >
     </span>
     <div class="tree-container" v-loading="categoriesLoading">
@@ -19,6 +19,7 @@
 
 <script>
 import { getCategoryTree, getLablesTree } from '@/api/knowledge'
+import { fetchCategoryTreeAndNum } from '@/api/docCategory'
 import { unflatTree, walkTree } from '@/utils/tree.js'
 import _ from 'lodash'
 
@@ -42,9 +43,9 @@ export default {
       if (!this.knowledgeBase || !this.knowledgeBase.id) return
       // 更新树数据
       this.categoriesLoading = true
-      getCategoryTree({ id: this.knowledgeBase.id }).then(res => {
+      fetchCategoryTreeAndNum({ id: this.knowledgeBase.id }).then(res => {
         let data = res.content
-        data = (unflatTree(data, 0))[0].children
+        data = (unflatTree(data, this.knowledgeBase.id))
         // 类型为2的节点为叶子节点
         walkTree(data, item => {
           if (item.type === 2) {

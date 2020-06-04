@@ -24,6 +24,13 @@ module.exports = {
                     '^/api3': '/api'
                 }
             },
+            '/api4': {
+                target: 'http://192.168.0.99:8083', // 王夏冰 api2
+                changeOrigin: true,
+                pathRewrite: {
+                    '^/api4': '/'
+                }
+            }
         }
     },
     //webpack 链式配置   默认已经配置好了  node_moudles/@vue

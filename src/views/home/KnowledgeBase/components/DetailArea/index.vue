@@ -89,7 +89,7 @@ export default {
       tableOptions: { // 表格选项
         fields: [{
           label: '知识名称',
-          prop: 'name'
+          prop: 'NAME'
         }, {
           label: '知识编号',
           prop: 'code'
@@ -98,7 +98,7 @@ export default {
           prop: 'classification'
         }, {
           label: '创建人',
-          prop: 'creator'
+          prop: 'CREATOR'
         }, {
           label: '创建时间',
           prop: 'createDate',
@@ -130,7 +130,7 @@ export default {
     updateKnowledges () {
       this.isLoading = true
       fetchKnowledges({ id: this.selectedCategory.id, type: 3, ...this.searchOption, rows: this.rows, page: this.page }).then(res => {
-        this.knowledges = res.content.list
+        this.knowledges = res.content.datas
         this.total = res.content.length
         this.isLoading = false
       })

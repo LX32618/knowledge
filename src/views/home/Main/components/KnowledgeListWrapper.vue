@@ -15,12 +15,12 @@
       <el-tab-pane label="热点知识" name="2"></el-tab-pane>
       <div class="knowledge-list">
         <div v-for="item of list" :key="item.id" class="knowledge-item">
-          <el-link type="primary" :disabled="!item.hasPermission"
-            ><span>{{ item.name }}</span></el-link
-          >
-          <div class="item-content">{{ item.describe }}</div>
+          <el-link type="primary" @click="handleLinkClick(item.ID)">
+            <span>{{ item.NAME }}</span>
+          </el-link>
+          <div class="item-content">{{ item.DESCRIBE }}</div>
           <div class="item-footer">
-            <span>{{ item.creator }}</span
+            <span>{{ item.CREATOR }}</span
             >&nbsp;&nbsp;&nbsp;&nbsp;
             <span>{{ item.createDate | dateTime }}</span>
           </div>
@@ -31,8 +31,7 @@
 </template>
 
 <script>
-import { fetchKnowledges } from '@/api/knowledge'
-// import { fetchCollectKnowledge } from '@/api/knowledgeCollect'
+import { findKnowledges, findHotKnowledges } from '@/api/knowledgeBase'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -52,20 +51,39 @@ export default {
   methods: {
     update (type) {
       this.isLoading = true
-      fetchKnowledges({
-        creator: this.userInfo.name,
-        type
-      }).then(res => {
-        this.list = res.content.list
-        this.isLoading = false
-      }).catch(error => {
-        console.log(error)
-        this.isLoading = false
-      })
+      if (type < 2) {
+        const creator = (type == 0 ? undefined : this.userInfo.id)
+        findKnowledges({
+          creator
+        }).then(res => {
+          this.list = res.content.datas
+          this.isLoading = false
+        }).catch(error => {
+          this.$error('获取知识列表失败, 请刷新重试！')
+          this.isLoading = false
+        })
+      } else {
+        findHotKnowledges({}).then(res => {
+          this.list = res.content.datas
+          this.isLoading = false
+        }).catch(error => {
+          this.$error('获取知识列表失败, 请刷新重试！')
+          this.isLoading = false
+        })
+      }
     },
     handleClick (tab) {
       this.nowTabIndex = tab.name
       this.update(tab.name)
+    },
+    handleLinkClick (id) {
+      const routeData = this.$router.resolve({
+        name: 'knowledgeDetail',
+        params: {
+          id
+        }
+      })
+      window.open(routeData.href, '_blank')
     }
   },
   mounted () {

@@ -27,8 +27,8 @@
             v-for="item of docCategories"
             :key="item.id"
             :value="item.id"
-            :label="item.name"
-            ><i class="fa fa-database"></i> {{ item.name }}</el-option
+            :label="item.categoryName"
+            ><i class="fa fa-database"></i> {{ item.categoryName }}</el-option
           >
         </el-select>
       </el-form-item>
@@ -38,6 +38,7 @@
           :options="subCategories"
           placeholder="请选择知识目录"
           noResultsText="未找到目录"
+          noOptionsText="无可选择的知识目录"
           :disabled="!category"
           :clearable="false"
           :default-expand-level="1"
@@ -58,9 +59,9 @@
       </el-form-item>
       <el-form-item label="知识标签" prop="labels">
         <knowledge-labels-input
+          v-if="knowledge.baseid"
           v-model="knowledge.labels"
           :classificationid="knowledge.baseid"
-          :disabled="!knowledge.baseid"
         />
         <span v-if="!knowledge.baseid" class="form-tip-danger"
           >请先选择知识库与知识目录</span
@@ -94,6 +95,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import { getCategoryTree, validateKnowledgeName } from '@/api/knowledge'
+import { fetchCategoryTreeAndNum } from '@/api/docCategory'
 import { unflatTree, walkTree } from '@/utils/tree'
 import KnowledgeLabelsInput from '@/components/Input/KnowledgeLabelsInput'
 import SecretLevelInput from '@/components/Input/SecretLevelInput'
@@ -163,9 +165,10 @@ export default {
       }
       // 更新知识目录选择集
       this.isLoading = true
-      getCategoryTree({ id: this.category }).then(res => {
+      fetchCategoryTreeAndNum({ id: this.category }).then(res => {
         let data = res.content
-        data = unflatTree(data, 0) // 生成树
+        console.log(data)
+        data = unflatTree(data, this.category) // 生成树
         // 格式化节点
         walkTree(data, item => {
           item.label = item.name
@@ -178,6 +181,7 @@ export default {
           }
           return item
         })
+        console.log(data)
         this.subCategories = data
         this.isLoading = false
       })

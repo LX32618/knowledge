@@ -1,15 +1,16 @@
 import Mock from 'mockjs'
 import _ from 'lodash'
+import store from '@/store'
 
 const list = []
 
 for (let i = 0; i < 20; ++i) {
   list.push(Mock.mock({
     id: '@increment',
-    name: '@ctitle',
-    'picture|1': ['tv', 'fighter-jet', 'rocket', 'github', 'key', 'gears', 'random', 'sitemap', 'sliders', 'book'],
+    categoryName: '@ctitle',
+    'picture|1': store.getters.icons,
     type: 0,
-    pid: 0,
+    pId: 0,
     'knowNum|0-10': 0
   }))
 }
@@ -19,8 +20,8 @@ const secondList = []
 for (let i = 0; i < 100; ++i) {
   secondList.push(Mock.mock({
     id: '@increment',
-    name: '@ctitle',
-    'pid|1': list,
+    categoryName: '@ctitle',
+    'pId|1': list,
     type: 1,
     'knowNum|0-10': 0
   }))
@@ -31,8 +32,8 @@ const thirdList = []
 for (let i = 0; i < 100; ++i) {
   thirdList.push(Mock.mock({
     id: '@increment',
-    name: '@ctitle',
-    'pid|1': secondList,
+    categoryName: '@ctitle',
+    'pId|1': secondList,
     type: 2,
     'knowNum|0-10': 0
   }))
@@ -45,7 +46,7 @@ for (let i = 0; i < 10; ++i) {
   lableList.push(Mock.mock({
     id: '@increment',
     label: '@cword(2,5)',
-    pid: 0
+    pId: 0
   }))
 }
 
@@ -53,7 +54,7 @@ for (let i = 0; i < 50; ++i) {
   labelList2.push(Mock.mock({
     id: '@increment',
     label: '@cword(2,5)',
-    'pid|1': lableList.map(item => item.id)
+    'pId|1': lableList.map(item => item.id)
   }))
 }
 
@@ -62,17 +63,17 @@ const knowledgeList = []
 for (let i = 0; i < 1000; ++i) {
   knowledgeList.push(Mock.mock({
     id: '@increment',
-    name: '@ctitle',
+    NAME: '@ctitle',
     code: '@word(8)',
-    'classification|1': thirdList.map(item => item.name),
+    'classification|1': thirdList.map(item => item.categoryName),
     'lables|0-3': [{
       'label|+1': labelList2.map(item => item.label),
       'id|+1': labelList2.map(item => item.id)
     }],
     keyword: '@cword(2,5)',
     'hasPermission|1-2': true,
-    describe: '@csentence',
-    'creator|1': ['系统管理员', '安全管理员', '安全审计员', '普通用户', '访客'],
+    DESCRIBE: '@csentence',
+    'CREATOR|1': ['系统管理员', '安全管理员', '安全审计员', '普通用户', '访客'],
     createDate: +Mock.Random.date('T'),
     'hot|1-2': true
   }))
@@ -204,7 +205,8 @@ for (let i = 0; i < 3; ++i) {
 
 export default [
   {
-    url: '/doc/docCategory/findAllKnowlibrary',
+    url: /\/categoryTree\/get.*/,
+    type: 'post',
     response: _ => {
       return {
         status: 'success',
@@ -213,32 +215,36 @@ export default [
     }
   },
   {
-    // url: '/knowledge/find',
     url: /\/knowledge\/find.*/,
+    type: 'post',
     response: config => {
-      const { creator, type, id, rows, page } = config.query
-      let data
+      // const { creator, type, id, rows, page } = config.query
+      let datas
       let length
-      if (type == 0) {
-        data = knowledgeList.sort((a, b) => {
-          return new Date(b.createDate) - new Date(a.createDate)
-        })
-        data = data.slice(0, 12)
-      } else if (type == 1) {
-        data = knowledgeList.filter(item => item.creator === creator)
-        data = data.slice(0, 12)
-      } else if (type == 2) {
-        data = knowledgeList.filter(item => item.hot)
-        data = data.slice(0, 12)
-      } else {
-        data = knowledgeList.filter(item => item.id % id === 0)
-        length = data.length
-        data = data.slice((page - 1) * rows, page * rows)
-      }
+      // if (type == 0) {
+      //   data = knowledgeList.sort((a, b) => {
+      //     return new Date(b.createDate) - new Date(a.createDate)
+      //   })
+      //   data = data.slice(0, 12)
+      // } else if (type == 1) {
+      //   data = knowledgeList.filter(item => item.creator === creator)
+      //   data = data.slice(0, 12)
+      // } else if (type == 2) {
+      //   data = knowledgeList.filter(item => item.hot)
+      //   data = data.slice(0, 12)
+      // } else {
+      //   data = knowledgeList.filter(item => item.id % id === 0)
+      //   length = data.length
+      //   data = data.slice((page - 1) * rows, page * rows)
+      // }
+      datas = knowledgeList.sort((a, b) => {
+        return new Date(b.createDate) - new Date(a.createDate)
+      })
+      datas = datas.slice(0, 10)
       return {
         status: 'success',
         content: {
-          list: data,
+          datas,
           length
         }
       }
@@ -247,17 +253,6 @@ export default [
   {
     url: /\/system\/knowledge\/count.*/,
     type: 'post',
-    response: config => {
-      const { creator } = config.query
-      const data = knowledgeList.filter(item => item.creator === creator)
-      return {
-        status: 'success',
-        content: data.length
-      }
-    }
-  },
-  {
-    url: /\/knowledgeCollect\/count.*/,
     response: _ => {
       return {
         status: 'success',
@@ -266,7 +261,18 @@ export default [
     }
   },
   {
-    url: /\/knowledge\/getCategoryTree.*/,
+    url: /\/knowledgeCollect\/count.*/,
+    type: 'post',
+    response: _ => {
+      return {
+        status: 'success',
+        content: Math.floor(Math.random() * 100)
+      }
+    }
+  },
+  {
+    url: /\/categoryTreeAndNum\/get.*/,
+    type: 'post',
     response: config => {
       const { id: rootId } = config.query
       let data = []
@@ -276,24 +282,27 @@ export default [
         }
       })
       secondList.forEach(item => {
-        if (!rootId || item.pid.id == rootId) {
+        if (!rootId || item.pId.id == rootId) {
           const tmp = {}
           _.assign(tmp, item)
-          tmp.pid = tmp.pid.id
+          tmp.pId = tmp.pId.id
           data.push(tmp)
         }
       })
       thirdList.forEach(item => {
-        if (!rootId || item.pid.pid.id == rootId) {
+        if (!rootId || item.pId.pId.id == rootId) {
           const tmp = {}
           _.assign(tmp, item)
-          tmp.pid = tmp.pid.id
+          tmp.pId = tmp.pId.id
           data.push(tmp)
         }
       })
       return {
         status: 'success',
-        content: data
+        content: data.map(item => {
+          item.name = item.categoryName
+          return item
+        })
       }
     }
   }, {

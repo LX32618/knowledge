@@ -74,7 +74,8 @@ export default {
   props: {
     formConfig: Object,
     showBase: Boolean,
-    baseData: Object
+    baseData: Object,
+    formData: Object
   },
   data () {
     return {

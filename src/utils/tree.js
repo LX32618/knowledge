@@ -2,7 +2,7 @@
 export function unflatTree (nodes, rootId, convert = n => n) {
   let items = {}
   nodes.forEach(n => {
-    let key = n.pid
+    let key = n.pId
     if (!items[key])
       items[key] = []
     items[key].push(convert(n))
@@ -10,12 +10,12 @@ export function unflatTree (nodes, rootId, convert = n => n) {
   return formatTree(items, rootId, convert);
 }
 
-function formatTree (items, pid, convert) {
+function formatTree (items, pId, convert) {
   let result = []
-  if (!items[pid]) {
+  if (!items[pId]) {
     return result
   }
-  items[pid].forEach(i => {
+  items[pId].forEach(i => {
     i.children = formatTree(items, i.id, convert)
     result.push(convert(i))
   })

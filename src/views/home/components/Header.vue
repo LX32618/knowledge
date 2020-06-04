@@ -16,7 +16,7 @@
           <el-option
             v-for="category of docCategories"
             :key="category.id"
-            :label="category.name"
+            :label="category.categoryName"
             :value="category.id"
           ></el-option>
         </el-select>
