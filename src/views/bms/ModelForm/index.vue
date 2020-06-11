@@ -5,7 +5,8 @@
                   :table-data="tableData"
                   v-loading="tableLoading"
                   @currentChange="currentChange"
-                  @pageSizeChange="pageSizeChange">
+                  @pageSizeChange="pageSizeChange"
+                  @sortChange="sortChange">
             <template v-slot:horizontalSlot>
                 <div class="model operationNav">
                     <el-button-group>
@@ -35,7 +36,7 @@
     import form from "./Form"
     import request from '@/utils/request'
 
-    let modelUrl = "/api/model/";
+    let modelUrl = "/api1/system/knowledgeFormController/";
 
     export default {
         name: "ModelForm",
@@ -62,7 +63,7 @@
                                 return row.formType==0?"实体表单":"虚拟表单";
                             }},
                         {prop: "sortTable", label: "表单顺序", visible:false},
-                        {prop: "tableName", label: "数据库表名", sortable: false},
+                        {prop: "tableName", label: "数据库表名", sortable: true},
                         {prop: "knowledgeDir", label: "知识库", sortable: false},
                         {prop: "associatedForm", label: "关联表单", visible:false},
                     ]
@@ -81,19 +82,35 @@
         methods:{
             currentChange(val){//单选事件
                 val.mainId = "";
+                val.formType = val.formType.toString();
                 this.$set(this,"editFormData",val);
             },
             pageSizeChange({page,rows})
             {
                 let data = {
                     condition:{
-                        mainForm:"",
+                        mainForm:"mainForm",
+                        formType:"",
                         formName:"",
                         sort:"",
                         order:"",
                     },
                     page:page,
                     rows:rows
+                };
+                this.loadTableData(data);
+            },
+            sortChange({sort, order}){
+                let data = {
+                    condition:{
+                        mainForm:"mainForm",
+                        formType:"",
+                        formName:"",
+                        sort:sort,
+                        order:order,
+                    },
+                    page:this.tableSettings.currentPage,
+                    rows:this.tableSettings.pageSize
                 };
                 this.loadTableData(data);
             },
@@ -138,10 +155,11 @@
             search(){
                 let data = {
                     condition:{
-                        mainForm:"",
+                        mainForm:"mainForm",
+                        formType:"",
                         formName:this.searchKeyword,
                         sort:"ID",
-                        order:"",
+                        order:"desc",
                     },
                     page:this.tableSettings.currentPage,
                     rows:this.tableSettings.pageSize
@@ -151,7 +169,7 @@
             loadTableData(data) {
                 this.tableLoading = true;
                 request({
-                    url: `${modelUrl}get`,
+                    url: `${modelUrl}loadData`,
                     method: 'post',
                     data:data,
                 }).then(data=>{
@@ -169,7 +187,7 @@
         mounted() {
             let data = {
                 condition:{
-                    mainForm:"",
+                    mainForm:"mainForm",
                     formName:"",
                     sort:"ID",
                     order:"",

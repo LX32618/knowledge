@@ -95,7 +95,22 @@ const state = {
     "fa fa-random",
     "fa fa-gears",
     "fa fa-wifi",
-    "fa fa-magnet"
+    "fa fa-magnet",
+    "fa fa-motorcycle",
+    "fa fa-envira",
+    "fa fa-keyboard-o",
+    "fa fa-cubes",
+    "fa fa-car",
+    "fa fa-mobile-phone",
+    "fa fa-bolt",
+    "fa fa-bluetooth",
+    "fa fa-diamond",
+    "fa fa-fax",
+    "fa fa-recycle",
+    "fa fa-subway",
+    "fa fa-usb",
+    "fa fa-database",
+    "fa fa-dashboard"
   ]
 }
 

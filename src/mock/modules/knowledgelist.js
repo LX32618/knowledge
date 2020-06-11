@@ -60,7 +60,7 @@ let datas = [
         categoryCode:"1",
         createDate:"2020-5-6",
         createUser:"lisy1",
-        type:"",//目录类型 (0.知识库，1.分类，2.目录)
+        type:"-1",//目录类型 (0.知识库，1.分类，2.目录)
         sort:"",
         formId:"",
         formName:"",
@@ -199,8 +199,9 @@ export default [
         url: `${rootPath}getnodes`,
         type: 'post',
         response: config => {
-            const { pid } = config.body;
-            const filterDatas = datas.filter(node => node.pid === pid);
+            const { id } = config.body;
+            console.log(id);
+            const filterDatas = datas.filter(node => node.pid === id);
             return {
                 status: "success",
                 content:filterDatas,

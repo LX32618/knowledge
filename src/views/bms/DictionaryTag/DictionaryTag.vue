@@ -9,14 +9,14 @@
         <el-dialog title="新增" :visible.sync="appendFormVisible" :close-on-click-modal="false">
             <dic-form :settings="appendFormSettings" :form-data="appendFormData"  ref="append" @submitSuccess="submitSuccess">
                 <template v-slot:operation>
-                    <el-button type="primary" :style="{float:'right',marginTop:'-10px'}" @click="submitForm('append')">保存</el-button>
+                    <el-button type="primary" :style="{float:'right',marginTop:'-10px'}" :loading="submitBtnLoading" @click="submitForm('append')">保存</el-button>
                 </template>
             </dic-form>
         </el-dialog>
         <el-dialog title="编辑" :visible.sync="editFormVisible" :close-on-click-modal="false">
             <dic-form :settings="editFormSettings" :form-data="editFormData" ref="edit" @submitSuccess="submitSuccess">
                 <template v-slot:operation>
-                    <el-button type="primary" :style="{float:'right',marginTop:'-10px'}" @click="submitForm('edit')">保存</el-button>
+                    <el-button type="primary" :style="{float:'right',marginTop:'-10px'}" :loading="submitBtnLoading" @click="submitForm('edit')">保存</el-button>
                 </template>
             </dic-form>
         </el-dialog>
@@ -43,11 +43,12 @@
         },
         data(){
             return {
+                submitBtnLoading:false,
                 isNodeClick:false,//是否已经点击了树节点
                 editFormVisible:false,
                 appendFormVisible:false,
                 treeSettings:{
-                    root_id:"",//根节点id
+                    root_id:"0",//根节点id
                     expand_root:true,//是否默认展开根节点
                     check_strictly:true,//在显示复选框的情况下，是否严格的遵循父子不互相关联的做法，默认为 false
                     default_expand_all:false,//是否默认展开所层级
@@ -176,7 +177,9 @@
                 return formatData;
             },
             submitForm(form){
+                this.submitBtnLoading = true;
                 this.$refs[form].submitForm();
+                this.submitBtnLoading = false;
             }
         },
         mounted() {

@@ -87,7 +87,7 @@
     import Basic from "./Basic";
     import Field from "./Field"
 
-    let modelSubFormUrl = "/api/model/";
+    let modelSubFormUrl = "/api4/app/authcenter/api/knowledgeModel/knowledgeFormField/";
     export default {
         name: "Config",
         components: {Field, Basic},
@@ -144,6 +144,7 @@
                 let subFormId = this.activeName;
                 let subForm = this.data.subForm.filter(f=>f.id == subFormId)[0];
                 subForm.mainId =  this.data.id;
+                subForm.formType = subForm.formType.toString();
                 this.$set(this,"editSubFormData",subForm);
                 this.editSubFormVisible = true;
             },
@@ -168,14 +169,15 @@
             editFormFiled(index, row,formId) {
                 this.editFormFiledData = row;
                 this.editFormFiledData.formId = formId;
+                this.editFormFiledData.htmlType = this.editFormFiledData.htmlType.toString();
                 this.editFieldVisible = true;
             },
             loadData(id) {
                 this.loading = true;
                 request({
-                    url: `${modelSubFormUrl}getbyid`,
+                    url: `${modelSubFormUrl}get`,
                     method: 'post',
-                    data: {id: id},
+                    data: {formId: id},
                 }).then(({status, content, message}) => {
                     this.loading = false;
                     this.data = content;
@@ -195,6 +197,7 @@
                     let index = this.data.subForm.findIndex(d=>d.id==data.id);
                     this.data.subForm.splice(index,1,data);
                 }
+                this.activeName = data.id;
             },
             submitFiledSuccess({type,data}){
                 let formId = data.formId;
