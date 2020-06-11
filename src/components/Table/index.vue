@@ -93,9 +93,7 @@
         this.$emit('pageSizeChange', {page:this.currentPage,rows:this.pageSize});
       },
       sortChange({column, prop, order}) {
-        console.log(column);
-        console.log(prop);
-        console.log(order);
+        this.$emit("sortChange",{sort:prop,order:order == "descending"?"desc":"asc"});
       },
     },
     mounted() {

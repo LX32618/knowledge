@@ -4,7 +4,7 @@
             <cs-lazytree ref="lazytree" :settings="treeSettings" :dataFormat="treeDataFormat" @treeNodeClick="treeNodeClick" @appendTreeNode="appendTreeNode"  @removeTreeNode="removeTreeNode"></cs-lazytree>
         </div>
         <div class="knowlist main">
-            <el-tabs v-model="activeName" type="border-card" v-if="basicFormData.pid!=''" :style="{height:'100%'}">
+            <el-tabs v-model="activeName" type="border-card" v-if="basicFormData.pid!='0' && Object.keys(basicFormData).length != 0" :style="{height:'100%'}">
                 <el-tab-pane :key="0" label="基本信息" name="basic">
                     <div>
                         <basic :settings="basicFormSettings" :form-data="basicFormData" @submitSuccess="submitSuccess"></basic>
@@ -27,8 +27,9 @@
     import basic from "./Form/Basic"
     import _ from 'lodash'
     import request from '@/utils/request'
+    import {mapGetters} from "vuex";
 
-    const rootUrl = '/api/knowlist/';
+    const rootUrl = '/api4/app/authcenter/api/categoryTree/';
 
     export default {
         name: "KnowledgeList",
@@ -37,7 +38,7 @@
                 activeName:'basic',
                 appendFormVisible:false,
                 treeSettings:{
-                    root_id:"",//根节点id
+                    root_id:"0",//根节点id
                     expand_root:true,//是否默认展开根节点
                     check_strictly:true,//在显示复选框的情况下，是否严格的遵循父子不互相关联的做法，默认为 false
                     default_expand_all:false,//是否默认展开所层级
@@ -46,7 +47,7 @@
                     expand_on_click_node:false,//点击接点是否进行展开收缩
                     right_click:true,//是否具有右键功能
                     request:{//访问路径设置
-                        url:`${rootUrl}getnodes`,
+                        url:`${rootUrl}get`,
                         method:"post"
                     }
                 },
@@ -59,29 +60,36 @@
                     formType:"append"
                 },
                 basicFormData:{
-                    pid:"",
-                    id:"",
-                    type:""
                 },
                 appendFormData:{
-                    pid:"",
-                    id:"",
-                    type:""
                 }
             }
         },
         methods:{
             treeNodeClick({data,node})
             {
-                this.$set(this.basicFormData, 'pid', data.pid);
-                this.$set(this.basicFormData, 'id', data.id);
-                this.$set(this.basicFormData, 'type', data.type);
+                this.$set(this, 'basicFormData', data);
             },
             appendTreeNode(node){
-                let data = {};
-                data.id = "";
-                data.pid = node.object.id;
-                data.type = node.object.type;
+                let data = {
+                    id:"",
+                    pid: node.object.id,
+                    type:node.object.type,
+                    createUser:this.userInfo.id,
+                    name:"",
+                    categoryName:"",
+                    categoryCode:"",
+                    sort:0,
+                    formId:"",
+                    formName:"",
+                    labelInfo: [],
+                    picture:"",
+                    secretLevel:"20",
+                    isSentMail:"0",//是否开启邮件（0否1是）
+                    enable:"0",//是否开启邮件（0否1是）
+                    remark:""
+
+                };
                 this.$set(this, 'appendFormData', data);
                 this.appendFormVisible = true;
             },
@@ -92,10 +100,11 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
+                    console.log(node.object);
                     request({
-                        url: `${rootUrl}remove`,
+                        url: `${rootUrl}delete`,
                         method: 'post',
-                        data:node.object,
+                        data:{id:node.object.id},
                     }).then(data=>{
                         if(data.status == "success")
                         {
@@ -124,22 +133,22 @@
             treeDataFormat({node,data}){
                 const temp = _.cloneDeep(data);
                 let formatData = temp.map((item,index,arr)=>{
-                    if(item.pid=="")
+                    item.sort = parseInt(item.sort);
+                    if(item.pid==this.treeSettings.root_id)
                     {
                         item.icon = "element-icons el-custom-book";
                         item.right_click_option={
                             append:true,
                             edit:false,
-                            remove:false,
+                            remove:false
                         };
-
                     }
                     else if(item.type=="0"){
                         item.icon = "element-icons el-custom-db";
                         item.right_click_option={
                             append:true,
                             edit:false,
-                            remove:true,
+                            remove:true
                         };
                     }
                     else if(item.type=="1"){
@@ -147,7 +156,7 @@
                         item.right_click_option={
                             append:true,
                             edit:false,
-                            remove:true,
+                            remove:true
                         };
                     }
                     else if(item.type=="2"){
@@ -155,11 +164,11 @@
                         item.right_click_option={
                             append:false,
                             edit:false,
-                            remove:true,
+                            remove:true
                         };
                     }
                     else{}
-                    item.showCheckbox = true;
+                    item.showCheckBox = true;
                     return item;
                 })
                 return formatData;
@@ -167,6 +176,11 @@
         },
         components:{
             basic
+        },
+        computed: {
+            ...mapGetters([
+                'userInfo'
+            ])
         }
     }
 </script>
@@ -189,3 +203,4 @@
         border:0px;
     }
 </style>
+

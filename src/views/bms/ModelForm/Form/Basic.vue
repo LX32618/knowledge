@@ -1,5 +1,5 @@
 <template>
-    <el-form :model="data" :rules="rules" ref="basicForm" label-width="100px"  >
+    <el-form :model="data" :rules="rules" ref="basicForm" label-width="100px" v-loading="formLoading" >
         <el-form-item label="表单名称" prop="formName">
             <el-input autocomplete="off" placeholder="请输入表单名称" v-model="data.formName"></el-input>
         </el-form-item>
@@ -46,8 +46,7 @@
         </el-form-item>
         <el-form-item label="所属知识库">
             <el-select placeholder="--请选择--" v-model="data.knowledgeDir" :disabled="data.id != '' && data.mainId != ''">
-                <el-option label="dsa" value="dsa"></el-option>
-                <el-option label="test" value="test"></el-option>
+                <el-option v-for="dir in knowledgeDirs" :key="dir.id" :label="dir.categoryName" :value="dir.id"></el-option>
             </el-select>
         </el-form-item>
         <el-form-item label="表单排序">
@@ -61,28 +60,40 @@
     import _ from 'lodash'
     import request from '@/utils/request'
 
-    let modelUrl = "/api/model/";
+    let modelUrl = "/api1/system/knowledgeFormController/";
+    let formUrl = "/api4//app/authcenter/api/categoryTree/";
 
     export default {
         name: "Basic",
         props:["formData"],
         data(){
             const tableNameVlidator = ((rule, value, callback)=>{
-                request({
-                    url: `${modelUrl}checktablename`,
-                    method: 'post',
-                    data:{tableName:this.data.tableName},
-                }).then(data=>{
-                    if(data.status =="success")
-                    {
-                        if(data.content.result == "false"){
-                            callback(new Error('数据库表名已存在！'));
+                if(this.data.id=="")//新增时才做重复校验
+                {
+                    request({
+                        url: `${modelUrl}findByTableName`,
+                        method: 'post',
+                        data:{tableName:this.data.tableName},
+                    }).then(data=>{
+                        if(data.status =="success")
+                        {
+                            if(data.content == "true"){
+                                callback(new Error('数据库表名已存在！'));
+                            }
+                            else{
+                                return callback();
+                            }
                         }
-                    }
-                }).catch(()=>{
-                })
+                    }).catch(()=>{
+                    })
+                }
+                else{
+                    return callback();
+                }
             })
             return{
+                formLoading:false,
+                knowledgeDirs:[],
                 showAssociatedForm:false,
                 associatedFormLoading:false,
                 associatedFormSelection:[],
@@ -120,6 +131,7 @@
             submitForm() {
                 this.$refs['basicForm'].validate((valid) => {
                     if (valid) {
+                        this.formLoading = true;
                         let data = _.cloneDeep(this.data);
                         if(this.data.formType=="0")//实体表单
                         {
@@ -140,14 +152,20 @@
                                 }
                                 else if(type=="append")
                                 {
-                                    this.$success("新增成功,请开始表单配置");
+                                    if(formType == "mainForm")
+                                        this.$success("新增成功,请开始表单配置");
+                                    else{
+                                        this.$success("新增子表成功");
+                                    }
                                 }
                                 this.$emit("submitSuccess",{type:type,data:data.content});
                             }
                         });
+                        this.formLoading = false;
                     } else {
                         return false;
                     }
+
                 });
             },
             //region 关联表单
@@ -157,7 +175,8 @@
                     page:this.tableSettings.currentPage,
                     rows:this.tableSettings.pageSize,
                     condition:{
-                        mainForm:"",
+                        mainForm:"mainForm",
+                        formType:"0",
                         formName:"",
                         sort:"",
                         order:"",
@@ -179,7 +198,8 @@
                     page:"1",
                     rows:this.tableSettings.pageSize,
                     condition:{
-                        mainForm:"",
+                        mainForm:"mainForm",
+                        formType:"0",
                         formName:this.searchKeyWord,
                         sort:"",
                         order:"",
@@ -202,7 +222,8 @@
                     page:page,
                     rows:rows,
                     condition:{
-                        mainForm:"",
+                        mainForm:"mainForm",
+                        formType:"0",
                         formName:"",
                         sort:"",
                         order:"",
@@ -213,7 +234,7 @@
             loadAssociatedFormData(data) {
                 this.associatedFormLoading = true;
                 request({
-                    url: `${modelUrl}get`,
+                    url: `${modelUrl}loadData`,
                     method: 'post',
                     data:data,
                 }).then(data=>{
@@ -257,6 +278,27 @@
                 },
                 deep:true
             }
+        },
+        mounted() {
+            request({
+                url: `${formUrl}get`,
+                method: 'post',
+                data:{id:""},
+            }).then(data=>{
+                return new Promise(resolve => {
+                    request({
+                        url: `${formUrl}get`,
+                        method: 'post',
+                        data:{id:data.content[0].id},
+                    }).then(res=>{
+                       resolve(res)
+                    })
+                })
+            }).then(res=>{
+                this.knowledgeDirs = res.content.map(r=>{
+                    return  _.pick(r,["id","categoryName"]);
+                })
+            })
         }
     }
 </script>

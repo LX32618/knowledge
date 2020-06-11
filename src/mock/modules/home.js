@@ -1,3 +1,4 @@
+/*
 import Mock from 'mockjs'
 import _ from 'lodash'
 import store from '@/store'
@@ -204,8 +205,8 @@ for (let i = 0; i < 3; ++i) {
 }
 
 export default [
-  {
-    url: /\/categoryTree\/get.*/,
+/!*  {
+    url: /\/categoryTree\/get.*!/,
     type: 'post',
     response: _ => {
       return {
@@ -213,9 +214,9 @@ export default [
         content: list
       }
     }
-  },
+  },*!/
   {
-    url: /\/knowledge\/find.*/,
+    url: /\/knowledge\/find.*!/,
     type: 'post',
     response: config => {
       // const { creator, type, id, rows, page } = config.query
@@ -251,7 +252,7 @@ export default [
     }
   },
   {
-    url: /\/system\/knowledge\/count.*/,
+    url: /\/system\/knowledge\/count.*!/,
     type: 'post',
     response: _ => {
       return {
@@ -261,7 +262,7 @@ export default [
     }
   },
   {
-    url: /\/knowledgeCollect\/count.*/,
+    url: /\/knowledgeCollect\/count.*!/,
     type: 'post',
     response: _ => {
       return {
@@ -271,7 +272,7 @@ export default [
     }
   },
   {
-    url: /\/categoryTreeAndNum\/get.*/,
+    url: /\/categoryTreeAndNum\/get.*!/,
     type: 'post',
     response: config => {
       const { id: rootId } = config.query
@@ -306,7 +307,7 @@ export default [
       }
     }
   }, {
-    url: /\/knowledge\/getLablesTree.*/,
+    url: /\/knowledge\/getLablesTree.*!/,
     response: _ => {
       const data = [...lableList, ...labelList2]
       return {
@@ -315,7 +316,7 @@ export default [
       }
     }
   }, {
-    url: /\/knowledge\/validateKnowledgeName.*/,
+    url: /\/knowledge\/validateKnowledgeName.*!/,
     response: config => {
       const { name } = config.query
       let data = true
@@ -328,7 +329,7 @@ export default [
       }
     }
   }, {
-    url: /\/knowledge\/dataView.*/,
+    url: /\/knowledge\/dataView.*!/,
     response: config => {
       const { id } = config.query
       let data = knowledgeList.find(item => item.id == id)
@@ -345,7 +346,7 @@ export default [
       }
     }
   }, {
-    url: /\/knowledge\/pushList.*/,
+    url: /\/knowledge\/pushList.*!/,
     response: config => {
       // const { id } = config.query
       let data = _.shuffle(knowledgeList).slice(0, 5)
@@ -356,7 +357,7 @@ export default [
       }
     }
   }, {
-    url: /\/sysDic\/dictTree.*/,
+    url: /\/sysDic\/dictTree.*!/,
     response: _ => {
       return {
         status: 'success',
@@ -365,3 +366,4 @@ export default [
     }
   }
 ]
+*/

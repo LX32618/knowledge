@@ -29,7 +29,7 @@
                     </el-tag>
                 </div>
                 <div class="dictionary" v-if="showDictionary" style="width: 60%;">
-                    <cs-lazytree ref="dictTree" :settings="dictTreeSettings" :dataFormat="dictDataFormat" @checkChange="dictCheckChange"></cs-lazytree>
+                    <cs-lazytree ref="dictTree" :settings="dictTreeSettings" :dataFormat="dictDataFormat" @checkChange="dictCheckChange" style="overflow: auto;height: 250px;"></cs-lazytree>
                     <div style="width: 100%;text-align: right">
                         <el-button type="primary" size="mini" style="margin:0px 3px 3px 0px" @click="certainDict">确定</el-button>
                     </div>
@@ -73,14 +73,14 @@
         <el-form-item label="字段验证" v-if="data.htmlType == '11'">
             <el-input autocomplete="off"  v-model="data.fieldCheck"></el-input>
         </el-form-item>
-        <el-button type="primary" class="saveBtn"  @click="submitForm">保存</el-button>
+        <el-button type="primary" class="saveBtn"  @click="submitForm" :loading="submitBtnLoading">保存</el-button>
     </el-form>
 </template>
 
 <script>
-    let dictUrl = '/api/dictionary/';
-    let modelUrl = '/api/model/';
-    let viewBtnUrl = '/api/viewbtn/';
+    let dictUrl = '/api2/dicTree/';
+    let modelUrl = '/api4/app/authcenter/api/knowledgeModel/knowledgeFormField/';
+    let viewBtnUrl = '/api4/app/authcenter/api/SysRefObjServer/';
     import request from '@/utils/request';
 
 
@@ -89,22 +89,32 @@
         props:["fieldData"],
         data(){
             const fieldNameVlidator = ((rule, value, callback)=>{
-                request({
-                    url: `${modelUrl}checkfieldname`,
-                    method: 'post',
-                    data:{fieldName:this.data.fieldName},
-                }).then(data=>{
-                    if(data.status =="success")
-                    {
-                        if(data.content.result == "false"){
-                            callback(new Error('该字段名称已存在！'));
+                if(this.data.id == ""){//新增是才进行重复校验
+                    request({
+                        url: `${modelUrl}check`,
+                        method: 'post',
+                        data:{fieldName:this.data.fieldName},
+                    }).then(data=>{
+                        if(data.status =="success")
+                        {
+                            if(data.content){
+                                callback(new Error('该字段名称已存在！'));
+                            }
+                            else
+                            {
+                                return callback();
+                            }
                         }
-                    }
-                }).catch(()=>{
-                })
+                    }).catch(()=>{
+                    })
+                }
+                else{
+                    return callback();
+                }
             })
             return {
                 data:_.cloneDeep(this.fieldData),
+                submitBtnLoading:false,
                 showDictionary:false,
                 showBrowseBtn:false,
                 browseBtnLoading:false,
@@ -189,6 +199,7 @@
         watch:{
             fieldData:{
                 handler(newVal){
+
                     this.data= _.cloneDeep(newVal);
                     if(this.$refs['fieldForm'])//排除第一次加载组件时的情形
                         this.$refs['fieldForm'].clearValidate();//切换的时候清空校验规则
@@ -207,8 +218,7 @@
                 if(data == "2")
                 {
                     this.data.fieldType = "";
-                    this.data.fieldTypeName = "是、否";
-                }
+                    this.data.fieldTypeName = "是、否";                }
                 else /*if(data == "4" || data == "5" || data == "9" || data == "11" || data == "13")*/
                 {
                     this.data.fieldType = "";
@@ -223,11 +233,11 @@
             submitForm(){
                 this.$refs['fieldForm'].validate((valid) => {
                     if (valid) {
+                        this.submitBtnLoading = true;
                         let data = _.cloneDeep(this.data);
-                        console.log(data);
                         let type = data.id==""?"append":"edit";//判断本次操作是新增还是编辑
                         request({
-                            url: `${modelUrl}fieldsave`,
+                            url: `${modelUrl}save`,
                             method: 'post',
                             data:data,
                         }).then(data=>{
@@ -244,6 +254,7 @@
                                 this.$emit("submitSuccess",{type:type,data:data.content});
                             }
                         });
+                        this.submitBtnLoading = false;
                     } else {
                         return false;
                     }
@@ -253,15 +264,16 @@
               this.showDictionary = !this.showDictionary;
             },
             toggleBrowseBtn(){
+                console.log(this.data.htmlType);
                 let data = {
                     page:this.browseBtnTableSettings.currentPage,
                     rows:this.browseBtnTableSettings.pageSize,
                     condition:{
-                        formName:"",
-                        sort:"",
-                        order:"",
+                        refName:"",
+                        isMulti:this.data.htmlType == "6"?"0":this.data.htmlType=="7"?"1":""
                     }
                 };
+                console.log(data);
                 this.loadBrowseBtnData(data);
                 this.browseBtnKeyWord = "";
                 this.showBrowseBtn = !this.showBrowseBtn;
@@ -298,9 +310,8 @@
                     page:page,
                     rows:rows,
                     condition:{
-                        formName:"",
-                        sort:"",
-                        order:"",
+                        refName:"",
+                        isMulti:this.data.htmlType == "6"?"0":this.data.htmlType=="7"?"1":""
                     }
                 };
                 this.loadBrowseBtnData(data);
@@ -310,9 +321,8 @@
                     page:"1",
                     rows:this.browseBtnTableSettings.pageSize,
                     condition:{
-                        formName:this.browseBtnKeyWord,
-                        sort:"",
-                        order:"",
+                        refName:this.browseBtnKeyWord,
+                        isMulti:this.data.htmlType == "6"?"0":this.data.htmlType=="7"?"1":""
                     }
                 };
                 this.loadBrowseBtnData(data);

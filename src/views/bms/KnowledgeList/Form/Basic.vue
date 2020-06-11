@@ -56,8 +56,7 @@
                     {{tag.name}}
                 </el-tag>
                 <div class="labelClassification" v-show="showLabelClassification">
-                    <cs-lazytree :settings="treeSettings" :dataFormat="treeDataFormat"
-                                 @checkChange="labelCheckChange"></cs-lazytree>
+                    <cs-lazytree  :settings="treeSettings" :dataFormat="treeDataFormat" @checkChange="labelCheckChange" style="overflow: auto;height: 250px;"></cs-lazytree>
                     <el-button type="primary" size="mini" style="float: right;margin:0px 3px 3px 0px" @click="certainLabel">确定</el-button>
                 </div>
             </div>
@@ -90,7 +89,7 @@
         <el-divider></el-divider>
         <p :style="{textIndent:'2em'}"><i class="element-icons el-custom-files"></i>(分类)：表示该目录类型下还可以添加子分类和目录，不能挂知识文档</p>
         <p :style="{textIndent:'2em'}"><i class="element-icons el-custom-file"></i>(目录)：表示该目录类型下不能再添加子目录和分类了，能够挂知识文档</p>
-        <el-button type="primary" :style="{float:'right',marginTop:'-10px'}" @click="submitForm">保存</el-button>
+        <el-button type="primary" :style="{float:'right',marginTop:'-10px'}" :loading="submitBtnLoading" @click="submitForm">保存</el-button>
     </el-form>
 </template>
 
@@ -98,10 +97,11 @@
     import _ from 'lodash'
     import iconWall from '@/views/bms/components/IconWall'
     import request from '@/utils/request'
+    import {mapGetters} from "vuex";
 
-    let knowListUrl = "/api/knowlist/";
-    let labelUrl = "/api/tag/";
-    let formUrl = "/api/form/";
+    let labelUrl = "/api2/labelTree/";
+    let formUrl = "/api1/system/knowledgeFormController/";
+    let knowListUrl = "/api4/app/authcenter/api/categoryTree/";
 
 
     export default {
@@ -121,25 +121,8 @@
         },
         data(){
             return {
-                data:{
-                    pid: this.formData.pid,
-                    id: this.formData.id,
-                    categoryName: "",
-                    categoryCode:"",
-                    createDate:"",
-                    createUser:"",
-                    type:this.formData.type,//目录类型 (0.知识库，1.分类，2.目录)
-                    sort:0,
-                    formId:"",
-                    formName:"",
-                    labelId:"",
-                    labelName:"",
-                    picture:"",
-                    secretLevel:"20",
-                    isSentMail:"",//是否开启邮件（0否1是）
-                    enable:"",//是否开启邮件（0否1是）
-                    remark:""
-                },
+                data:_.cloneDeep(this.formData),
+                submitBtnLoading:false,
                 basicFormLoading:false,
                 associatedFormLoading:false,
                 showAssociatedFormTable:false,
@@ -198,21 +181,26 @@
         watch:{
             formData:{
                 handler(newVal,oldVal){
+
                     this.data = _.cloneDeep(newVal);
-                    if(this.settings.type="append")
+                    if(this.settings.formType=="append")
                         this.data.type = "1";//新增默認是分類
                     let data = {
-                        formName:"",
-                        sort:"",
-                        order:"",
                         page:this.tableSettings.currentPage,
-                        rows:this.tableSettings.pageSize
+                        rows:this.tableSettings.pageSize,
+                        condition:{
+                            mainForm:"mainForm",
+                            formType:"",
+                            formName:"",
+                            sort:"",
+                            order:"desc"
+                        }
                     };
                     this.loadAssociatedFormData(data);
-                    if(this.settings.formType == "basic")//新增的时候不加载数据
+               /*     if(this.settings.formType == "basic")//新增的时候不加载数据
                     {
                         this.loadFormData(this.data.id);
-                    }
+                    }*/
                     if(this.$refs['basicForm'])//排除第一次加载组件时的情形
                         this.$refs['basicForm'].clearValidate();//切换的时候清空校验规则
                 },
@@ -222,8 +210,10 @@
         },
         methods:{
             submitForm() {
+                this.data.name = this.data.categoryName;
                 this.$refs['basicForm'].validate((valid) => {
                     if (valid) {
+                        this.submitBtnLoading = true;
                         this.basicFormLoading = true;
                         request({
                             url: `${knowListUrl}save`,
@@ -242,23 +232,12 @@
                             }
                         }).catch()
                         {
-
-                        };
+                            this.basicFormLoading = false;
+                        }
+                        this.submitBtnLoading = false;
                     } else {
                         return false;
                     }
-                });
-            },
-            loadFormData(){
-                this.associatedFormLoading = true;
-                request({
-                    url: `${knowListUrl}get`,
-                    method: 'post',
-                    data:{id:this.data.id},
-                }).then(data=>{
-                    this.data = data.content
-                    this.data.sort = Number(this.data.sort);
-                    this.associatedFormLoading = false;
                 });
             },
             treeDataFormat({node,data}){
@@ -283,16 +262,18 @@
             associatedFormCurrentChange(currentRow){
                 this.selectedAssociatedFormTable.formId = currentRow.formId;
                 this.selectedAssociatedFormTable.formName = currentRow.formName;
-               /* this.$set(this.data,"formId",currentRow.formId);
-                this.$set(this.data,"formName",currentRow.formName);*/
             },
             associatedFormPageSizeChange({page,rows}){
                 let data = {
-                    formName:"",
-                    sort:"",
-                    order:"",
                     page:page,
-                    rows:rows
+                    rows:rows,
+                    condition:{
+                        mainForm:"mainForm",
+                        formType:"",
+                        formName:"",
+                        sort:"",
+                        order:"desc"
+                    }
                 };
                 this.loadAssociatedFormData(data);
             },
@@ -300,13 +281,6 @@
                 this.showAssociatedFormTable = !this.showAssociatedFormTable;
                 //document.addEventListener('click', this.vanishAssociatedFormTable); // 给整个document添加监听鼠标事件，点击任何位置执行vanish方法
             },
-   /*         vanishAssociatedFormTable(e) { // 取消鼠标监听事件
-                if (!this.$refs.associatedForm.contains(e.target))//如果当前点击位置不是table
-                {
-                    this.showAssociatedFormTable = false;
-                    document.removeEventListener('click', this.vanishAssociatedFormTable);
-                }
-            },*/
             certainAssociatedForm(){
                 this.$set(this.data,"formId",this.selectedAssociatedFormTable.formId);
                 this.$set(this.data,"formName", this.selectedAssociatedFormTable.formName);
@@ -315,18 +289,22 @@
             searchAssociatedForm(){
                 let keyWord = this.searchKeyWord;
                 let data = {
-                    formName:keyWord,
-                    sort:"",
-                    order:"",
                     page:this.tableSettings.currentPage,
-                    rows:this.tableSettings.pageSize
+                    rows:this.tableSettings.pageSize,
+                    condition:{
+                        mainForm:"mainForm",
+                        formType:"",
+                        formName:keyWord,
+                        sort:"",
+                        order:"desc"
+                    }
                 };
                 this.loadAssociatedFormData(data);
             },
             loadAssociatedFormData(data) {
                 this.associatedFormLoading = true;
                 request({
-                    url: `${formUrl}get`,
+                    url: `${formUrl}loadData`,
                     method: 'post',
                     data:data,
                 }).then(data=>{
@@ -335,7 +313,7 @@
                         return f.prop;
                     });
                     this.$set(this.tableSettings,"total",data.content.total);
-                    this.tableData =  data.content.rows.map(d=>{
+                    this.tableData =  data.content.datas.map(d=>{
                         return _.pick(d,fileds);
                     });
                 });
