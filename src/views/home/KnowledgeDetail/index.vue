@@ -68,7 +68,10 @@ export default {
   mounted () {
     this.isLoading = true
     getModelAndData({ id: this.id }).then(res => {
-      this.baseData = res.content.knowledgeData.knowledgeBase
+      const baseData = res.content.knowledgeData.knowledgeBase
+      baseData.classificationName = baseData.classificationEnt.categoryname
+      baseData.creatorName = baseData.creatorEnt.username
+      this.baseData = baseData
       this.formData = res.content.knowledgeData.formData
       this.formConfig = res.content.knowledgeModel.formModel
       this.isLoading = false

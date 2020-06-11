@@ -34,12 +34,13 @@
         <dynamic-form
           ref="mainForm"
           :config="formConfig"
+          :formData="formData.mainForm"
           :isViewMode="isViewMode"
           @save="handleSubFormSave"
         ></dynamic-form>
         <!-- 子表 -->
         <dynamic-form
-          v-for="subForm of formConfig.subForms"
+          v-for="subForm of formConfig.subForm"
           :key="subForm.id"
           :ref="`Form-${subForm.id}`"
           :config="subForm"
@@ -102,7 +103,7 @@ export default {
       // 提交主表
       this.$refs.mainForm.save()
       // 提交子表
-      this.formConfig.subForms.forEach(subForm => {
+      this.formConfig.subForm.forEach(subForm => {
         const refs = this.$refs[`Form-${subForm.id}`]
         if (refs && refs.length > 0) {
           refs[0].save()
@@ -125,7 +126,7 @@ export default {
       // 重置主表
       this.$refs.mainForm.resetView()
       // 重置子表
-      this.formConfig.subForms.forEach(subForm => {
+      this.formConfig.subForm.forEach(subForm => {
         const refs = this.$refs[`Form-${subForm.id}`]
         if (refs && refs.length > 0) {
           refs[0].resetView()

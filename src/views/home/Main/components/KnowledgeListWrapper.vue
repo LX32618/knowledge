@@ -15,12 +15,12 @@
       <el-tab-pane label="热点知识" name="2"></el-tab-pane>
       <div class="knowledge-list">
         <div v-for="item of list" :key="item.id" class="knowledge-item">
-          <el-link type="primary" @click="handleLinkClick(item.ID)">
-            <span>{{ item.NAME }}</span>
+          <el-link type="primary" @click="handleLinkClick(item.id)">
+            <span>{{ item.name }}</span>
           </el-link>
-          <div class="item-content">{{ item.DESCRIBE }}</div>
+          <div class="item-content">{{ item.describe }}</div>
           <div class="item-footer">
-            <span>{{ item.CREATOR }}</span
+            <span>{{ item.creator }}</span
             >&nbsp;&nbsp;&nbsp;&nbsp;
             <span>{{ item.createDate | dateTime }}</span>
           </div>

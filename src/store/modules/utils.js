@@ -16,66 +16,66 @@ const state = {
       {
         fieldName: 'name',
         displayName: '知识名称',
-        htmlTypeId: 0,
+        htmlType: 0,
         fieldType: '',
       },
       {
         fieldName: 'code',
         displayName: '知识编码',
-        htmlTypeId: 0,
+        htmlType: 0,
         fieldType: '',
         fieldfixed: 1
       },
       {
         fieldName: 'secretLevel',
         displayName: '密级',
-        htmlTypeId: 98,
+        htmlType: 98,
         fieldType: secretLevels,
       },
       {
         fieldName: 'abbrev',
         displayName: '缩略语',
-        htmlTypeId: 0,
+        htmlType: 0,
         fieldType: '',
       },
       {
-        fieldName: 'classification',
+        fieldName: 'classificationName',
         displayName: '类别',
-        htmlTypeId: 0,
+        htmlType: 0,
+        fieldType: '',
+        fieldfixed: 1
+      },
+      {
+        fieldName: 'creatorName',
+        displayName: '创建人',
+        htmlType: 0,
         fieldType: '',
         fieldfixed: 1
       },
       {
         fieldName: 'lables',
         displayName: '标签',
-        htmlTypeId: 99,
+        htmlType: 99,
         fieldType: '',
-      },
-      {
-        fieldName: 'creator',
-        displayName: '创建人',
-        htmlTypeId: 0,
-        fieldType: '',
-        fieldfixed: 1
       },
       {
         fieldName: 'createDate',
         displayName: '创建时间',
-        htmlTypeId: 10,
+        htmlType: 11,
         fieldType: 'YYYY-MM-DD hh:mm:ss',
         fieldfixed: 1
       },
       {
         fieldName: 'keyword',
         displayName: '关键字',
-        htmlTypeId: 0,
+        htmlType: 0,
         fieldType: '',
         span: 24
       },
       {
         fieldName: 'describe',
         displayName: '描述',
-        htmlTypeId: 9,
+        htmlType: 9,
         fieldType: '',
         span: 24,
       }

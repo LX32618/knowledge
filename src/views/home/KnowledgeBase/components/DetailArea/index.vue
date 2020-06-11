@@ -60,7 +60,8 @@
 </template>
 
 <script>
-import { fetchKnowledges } from '@/api/knowledge'
+// import { fetchKnowledges } from '@/api/knowledge'
+import { getKnowledgeByClassifications } from '@/api/docCategory'
 import SearchArea from './components/SearchArea'
 import { dateTime } from '@/filters'
 
@@ -89,16 +90,16 @@ export default {
       tableOptions: { // 表格选项
         fields: [{
           label: '知识名称',
-          prop: 'NAME'
+          prop: 'name'
         }, {
           label: '知识编号',
           prop: 'code'
         }, {
           label: '目录',
-          prop: 'classification'
+          prop: 'classificationName'
         }, {
           label: '创建人',
-          prop: 'CREATOR'
+          prop: 'creatorName'
         }, {
           label: '创建时间',
           prop: 'createDate',
@@ -129,14 +130,22 @@ export default {
     // 更新知识
     updateKnowledges () {
       this.isLoading = true
-      fetchKnowledges({ id: this.selectedCategory.id, type: 3, ...this.searchOption, rows: this.rows, page: this.page }).then(res => {
-        this.knowledges = res.content.datas
-        this.total = res.content.length
+      getKnowledgeByClassifications({ id: this.selectedCategory.id, ...this.searchOption, rows: this.rows, page: this.page }).then(res => {
+        this.knowledges = res.content.datas.map(item => {
+          const result = item.knowledgeBase
+          result.classificationName = result.classificationEnt.categoryname
+          result.creatorName = result.creatorEnt.username
+          return result
+        })
+        this.total = res.content.total
         this.isLoading = false
       })
     },
     // 标签显示
     handleLabelsShow (lables) {
+      if (!lables || !Array.isArray(lables)) {
+        return ''
+      }
       return lables.map(item => item.label).join(',')
     },
     // 查询知识

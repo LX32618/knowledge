@@ -5,7 +5,7 @@ import { errorMsg } from '@/utils/msg'
 
 const service = axios.create({
   withCredentials: true,
-  timeout: 5000
+  timeout: 30000
 })
 
 service.interceptors.request.use(

@@ -61,7 +61,7 @@
         <knowledge-labels-input
           v-if="knowledge.baseid"
           v-model="knowledge.labels"
-          :classificationid="knowledge.baseid"
+          :data="labels"
         />
         <span v-if="!knowledge.baseid" class="form-tip-danger"
           >请先选择知识库与知识目录</span
@@ -138,9 +138,10 @@ export default {
       isLoading: false,
       category: '', // 选中知识库
       subCategories: [], // 知识目录选择集
+      labels: [], // 知识标签选择集
       rules: {
         name: [
-          { validator: checkName, trigger: 'blur' },
+          // { validator: checkName, trigger: 'blur' },
           { required: true, message: '请输入知识名称', trigger: 'change' }],
         baseid: [{ required: true, message: '请选择知识目录', trigger: 'change' }]
       }
@@ -167,7 +168,6 @@ export default {
       this.isLoading = true
       fetchCategoryTreeAndNum({ id: this.category }).then(res => {
         let data = res.content
-        console.log(data)
         data = unflatTree(data, this.category) // 生成树
         // 格式化节点
         walkTree(data, item => {
@@ -181,15 +181,24 @@ export default {
           }
           return item
         })
-        console.log(data)
+        if (this.category === this.id && !this.knowledge.baseid && this.baseid !== '0') {
+              this.knowledge.baseid = this.baseid
+        }
         this.subCategories = data
         this.isLoading = false
       })
     },
-    'knowledge.baseid': function () {
+    'knowledge.baseid': function (val) {
       // 重置已选择知识标签
       this.$set(this.knowledge, 'labels', [])
-      this.labels = []
+      if (!val) {
+        this.labels = []
+        return
+      }
+      const subCategory = this.subCategories.find(item => item.id === val)
+      if (subCategory) {
+        this.labels = subCategory.labelInfo
+      }
     }
   },
   methods: {
@@ -227,13 +236,11 @@ export default {
       return
     }
 
-    /* 连接后端后用
+    // 连接后端后用
     this.category = this.id
-    this.knowledge.baseid = this.baseid
-    */
 
     // 测试专用
-    this.category = parseInt(this.id)
+    // this.category = parseInt(this.id)
 
     this.pageLoading = false
   }

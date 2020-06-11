@@ -33,7 +33,7 @@
       >
         <knowledge-labels-input
           v-model="searchOption.labels"
-          :classificationid="selectedCategory.id"
+          :data="selectedCategory.labelInfo"
           @loadingSuccess="handleLabelsLoad"
         />
       </el-form-item>

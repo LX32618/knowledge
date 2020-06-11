@@ -39,12 +39,17 @@ export default {
     classificationid: {
       type: [String, Number],
       default: '0'
+    },
+    // 标签数据
+    data: {
+      type: Array,
+      default: () => ({})
     }
   },
   data () {
     return {
       model: this.convertObjectToId(this.value),
-      labels: [],
+      labels: this.convertLabelTree(this.data),
       isLoading: false
     }
   },
@@ -58,7 +63,7 @@ export default {
     // 根据知识库目录生成可选标签集
     classificationid: {
       handler (val) {
-        if (!val) {
+        if (!val || val === '0') {
           return
         }
         this.isLoading = true
@@ -92,6 +97,20 @@ export default {
         return node.isExpanded ? 'fa-folder-open' : 'fa-folder'
       }
       return 'fa-bookmark'
+    },
+    // 转化标签树
+    convertLabelTree (data) {
+      const result = data.slice(0)
+      result.forEach(item => {
+        item.label = item.name
+        item.children = item.data
+        if (item.children) {
+          item.children.forEach(subItem => {
+            subItem.label = subItem.name
+          })
+        }
+      })
+      return result
     }
   }
 }

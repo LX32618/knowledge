@@ -60,7 +60,7 @@ export default {
   methods: {
     // 树节点被点击
     handleTreeNodeClick ({ data }) {
-      this.$emit('selectCategory', _.pick(data, ['id', 'name', 'type']))
+      this.$emit('selectCategory', _.pick(data, ['id', 'name', 'type', 'labelInfo']))
     },
     // 标题被点击
     handleTitleClick () {

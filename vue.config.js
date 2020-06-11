@@ -18,7 +18,7 @@ module.exports = {
                 }
             },
             '/api3': {
-                target: 'http://192.168.0.111:3000', // 夏添 api
+                target: 'http://192.168.0.120:3000', // 夏添 api
                 changeOrigin: true,
                 pathRewrite: {
                     '^/api3': '/api'

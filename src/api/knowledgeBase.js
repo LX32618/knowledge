@@ -1,6 +1,7 @@
 import request from '@/utils/request'
 
 const rootUrl = '/api1/system/knowledge/'
+const rootUrl2 = '/api4/system/knowledge/'
 
 // 获取我的知识总数
 export function fetchKnowledgeCount (option) {
@@ -34,7 +35,7 @@ export function findKnowledges (option) {
 }
 
 // 获取热点知识列表
-export function findHotKnowledges (option) {
+export function findHotKnowledges (option={}) {
   return request({
     url: `${rootUrl}findKnowledgeCount`,
     method: 'post',

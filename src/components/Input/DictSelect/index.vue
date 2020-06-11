@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { fetchDictTree } from '@/api/knowledge'
+import { fetchDictTree } from '@/api/treeRest'
 export default {
   name: 'DictSelect',
   props: ['dictId', 'value', 'type'],
