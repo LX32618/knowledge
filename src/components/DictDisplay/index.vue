@@ -3,11 +3,11 @@
 </template>
 
 <script>
-import { fetchDictTree } from '@/api/knowledge'
+import { fetchDictTree } from '@/api/treeRest'
 
 export default {
   name: 'DictDisplay',
-  props: ['value', 'dictId'],
+  props: ['value', 'dictId', 'isArray'],
   data () {
     return {
       isLoading: false,
@@ -17,17 +17,19 @@ export default {
   },
   methods: {
     handleValue () {
-      if (!this.options || this.options.length === 0) {
+      if (!this.options || !this.value || this.options.length === 0) {
         return this.value
       }
-      if (typeof this.value == 'string') {
-
+      if (!this.isArray) {
         const data = this.options.find(item => item.id === this.value)
-        return data.name
-      } else if (typeof this.value == 'object') {
-        return this.value.map(data => {
-          return this.options.find(item => item.id === data).name
-        }).join(', ')
+        return data ? data.name : this.value
+      } else {
+        return this.value.split(',').map(data => {
+          const option = this.options.find(item => item.id === data)
+          return option ? option.name : ''
+        })
+        .filter(item => item !== '')
+        .join(', ')
       }
     }
   },

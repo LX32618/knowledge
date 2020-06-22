@@ -65,6 +65,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import { subscribe, cancelSubscribe } from '@/api/knowledgeSubscribe'
 import KnowledgeLabelsInput from '@/components/Input/KnowledgeLabelsInput'
 
 export default {
@@ -93,11 +95,17 @@ export default {
       labelAreaShow: true
     }
   },
+  computed: {
+    ...mapGetters([
+      'userInfo'
+    ])
+  },
   watch: {
-    selectedCategory () {
+    selectedCategory (val) {
       this.searchOption = {
         labels: []
       }
+      this.isSubscribe = val.isSubscribe
     }
   },
   methods: {
@@ -122,7 +130,37 @@ export default {
     },
     // 订阅 / 取消订阅目录
     handleSubscribe () {
-      this.isSubscribe = !this.isSubscribe
+      const id = this.selectedCategory.id
+      const userId = this.userInfo.id
+      const text = `${this.isSubscribe ? '取消' : ''}订阅`
+      if (this.isSubscribe) {
+        cancelSubscribe({
+          ids: `${id}-0`,
+          userId
+        }).then(() => {
+          this.isSubscribe = false
+          this.$emit('subscribeChange', {
+            id: this.selectedCategory.id
+          })
+          this.$success(`${text}成功`)
+        }).catch(() => {
+          this.$error(`${text}失败`)
+        })
+      } else {
+        subscribe({
+          id,
+          userId,
+          type: '0'
+        }).then(() => {
+          this.isSubscribe = true
+          this.$emit('subscribeChange', {
+            id: this.selectedCategory.id
+          })
+          this.$success(`${text}成功`)
+        }).catch(() => {
+          this.$error(`${text}失败`)
+        })
+      }
     },
     // 知识标签选择树图标显示
     labelIconClass (node) {

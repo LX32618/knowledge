@@ -44,15 +44,19 @@ export default {
   },
   watch: {
     value (val) {
-      this.model = val
+      this.model = this.type === 'checkbox' ? val.split(',') : val
     },
     model (val) {
-      this.$emit('input', val)
+      const value = this.type === 'checkbox' ? val.join(',') : val
+      this.$emit('input', value)
     }
   },
   created () {
-    if (this.type === 'checkbox' && !this.value) {
-      this.model = []
+    if (this.type === 'checkbox') {
+      const model = (this.value) ? this.value.split(',') : []
+      this.model = Array.isArray(model) ? model : [model]
+    } else {
+      this.model = this.value
     }
   },
   mounted () {

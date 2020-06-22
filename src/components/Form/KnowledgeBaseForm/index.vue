@@ -32,9 +32,9 @@
           >
         </el-select>
       </el-form-item>
-      <el-form-item label="知识目录" prop="baseid">
+      <el-form-item label="知识目录" prop="classification">
         <treeselect
-          v-model="knowledge.baseid"
+          v-model="knowledge.classification"
           :options="subCategories"
           placeholder="请选择知识目录"
           noResultsText="未找到目录"
@@ -59,11 +59,11 @@
       </el-form-item>
       <el-form-item label="知识标签" prop="labels">
         <knowledge-labels-input
-          v-if="knowledge.baseid"
+          v-if="knowledge.classification"
           v-model="knowledge.labels"
           :data="labels"
         />
-        <span v-if="!knowledge.baseid" class="form-tip-danger"
+        <span v-if="!knowledge.classification" class="form-tip-danger"
           >请先选择知识库与知识目录</span
         >
       </el-form-item>
@@ -81,7 +81,7 @@
         ></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="save">
+        <el-button type="primary" @click="save" :loading="saveButtonLoading">
           <i class="fa fa-save" /> 保存</el-button
         >
         <el-button type="danger" @click="close">
@@ -96,6 +96,7 @@
 import { mapGetters } from 'vuex'
 import { getCategoryTree, validateKnowledgeName } from '@/api/knowledge'
 import { fetchCategoryTreeAndNum } from '@/api/docCategory'
+import { saveBaseData } from '@/api/knowledgeData'
 import { unflatTree, walkTree } from '@/utils/tree'
 import KnowledgeLabelsInput from '@/components/Input/KnowledgeLabelsInput'
 import SecretLevelInput from '@/components/Input/SecretLevelInput'
@@ -111,7 +112,7 @@ export default {
       type: String,
       default: '0'
     },
-    baseid: {
+    classification: {
       type: String,
       default: '0'
     }
@@ -143,12 +144,14 @@ export default {
         name: [
           // { validator: checkName, trigger: 'blur' },
           { required: true, message: '请输入知识名称', trigger: 'change' }],
-        baseid: [{ required: true, message: '请选择知识目录', trigger: 'change' }]
-      }
+        classification: [{ required: true, message: '请选择知识目录', trigger: 'change' }]
+      },
+      saveButtonLoading: false
     }
   },
   computed: {
     ...mapGetters([
+      'userInfo',
       'docCategories',
       'secretLevels'
     ]),
@@ -156,7 +159,7 @@ export default {
   watch: {
     category () {
       // 重置已选择知识目录与知识标签
-      this.$set(this.knowledge, 'baseid', undefined)
+      this.$set(this.knowledge, 'classification', undefined)
       this.$set(this.knowledge, 'labels', [])
       // 重置知识目录
       this.subCategories = []
@@ -181,14 +184,14 @@ export default {
           }
           return item
         })
-        if (this.category === this.id && !this.knowledge.baseid && this.baseid !== '0') {
-              this.knowledge.baseid = this.baseid
+        if (this.category === this.id && !this.knowledge.classification && this.classification !== '0') {
+              this.knowledge.classification = this.classification
         }
         this.subCategories = data
         this.isLoading = false
       })
     },
-    'knowledge.baseid': function (val) {
+    'knowledge.classification': function (val) {
       // 重置已选择知识标签
       this.$set(this.knowledge, 'labels', [])
       if (!val) {
@@ -205,7 +208,13 @@ export default {
     save () {
       this.$refs.knowledgeBaseForm.validate(valid => {
         if (!valid) return
-        window.close()
+        this.saveButtonLoading = true
+        saveBaseData(this.knowledge, this.userInfo.id, this.category).then(res => {
+          const knowledgeId = res.content
+          this.$router.push(`/knowledgeDetail/${knowledgeId}`)
+        }).catch(() => {
+          this.saveButtonLoading = false
+        })
       })
     },
     close () {

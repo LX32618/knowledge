@@ -6,7 +6,7 @@ const rootUrl2 = '/api4/system/knowledge/'
 // 获取我的知识总数
 export function fetchKnowledgeCount (option) {
   return request({
-    url: `${rootUrl}count`,
+    url: `${rootUrl2}count`,
     method: 'post',
     data: {
       auditStatus: '1',
@@ -19,7 +19,7 @@ export function fetchKnowledgeCount (option) {
 // 获取最新知识列表/获取我的知识列表
 export function findKnowledges (option) {
   return request({
-    url: `${rootUrl}find`,
+    url: `${rootUrl2}find`,
     method: 'post',
     data: {
       page: option.page || 1,
@@ -37,7 +37,7 @@ export function findKnowledges (option) {
 // 获取热点知识列表
 export function findHotKnowledges (option={}) {
   return request({
-    url: `${rootUrl}findKnowledgeCount`,
+    url: `${rootUrl2}findKnowledgeCount`,
     method: 'post',
     data: {
       page: option.page || 1,

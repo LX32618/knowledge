@@ -6,6 +6,7 @@
       :selectedCategory="selectedCategory"
       :currentKnowledgeBase="currentKnowledgeBase"
       @search="handleSearch"
+      v-on="$listeners"
     ></search-area>
     <!-- 知识显示列表 -->
     <div>
@@ -40,7 +41,7 @@
         <template slot="suffix-column">
           <el-table-column label="标签" prop="labels">
             <template v-slot="{ row }">
-              {{ handleLabelsShow(row.lables) }}
+              {{ handleLabelsShow(row.labelsEnt) }}
             </template>
           </el-table-column>
         </template>
@@ -61,12 +62,15 @@
 
 <script>
 // import { fetchKnowledges } from '@/api/knowledge'
+import { mapGetters } from 'vuex'
 import { getKnowledgeByClassifications } from '@/api/docCategory'
+import { subscribe, cancelSubscribe } from '@/api/knowledgeSubscribe'
 import SearchArea from './components/SearchArea'
 import { dateTime } from '@/filters'
 
 export default {
   name: 'KnowledgeBaseDetailArea',
+  inheritAttrs: false,
   components: {
     SearchArea
   },
@@ -115,6 +119,11 @@ export default {
       searchOption: {}
     }
   },
+  computed: {
+    ...mapGetters([
+      'userInfo'
+    ])
+  },
   watch: {
     selectedCategory (newValue) {
       if (!newValue || !newValue.id) {
@@ -130,11 +139,18 @@ export default {
     // 更新知识
     updateKnowledges () {
       this.isLoading = true
-      getKnowledgeByClassifications({ id: this.selectedCategory.id, ...this.searchOption, rows: this.rows, page: this.page }).then(res => {
+      getKnowledgeByClassifications({
+        id: this.selectedCategory.id,
+        userId: this.userInfo.id,
+        ...this.searchOption,
+        rows: this.rows,
+        page: this.page
+      }).then(res => {
         this.knowledges = res.content.datas.map(item => {
           const result = item.knowledgeBase
           result.classificationName = result.classificationEnt.categoryname
           result.creatorName = result.creatorEnt.username
+          result.isSubscribe = item.isSubscribe
           return result
         })
         this.total = res.content.total
@@ -142,11 +158,11 @@ export default {
       })
     },
     // 标签显示
-    handleLabelsShow (lables) {
-      if (!lables || !Array.isArray(lables)) {
+    handleLabelsShow (labels) {
+      if (!labels || !Array.isArray(labels)) {
         return ''
       }
-      return lables.map(item => item.label).join(',')
+      return labels.map(item => item.name).join(',')
     },
     // 查询知识
     handleSearch (searchOption) {
@@ -165,8 +181,32 @@ export default {
     },
     // 订阅 / 取消订阅知识
     handleSubscribe (row, index) {
-      row.isSubscribe = !row.isSubscribe
-      this.knowledges.splice(index, 1, row)
+      const id = row.id
+      const userId = this.userInfo.id
+      const text = `${row.isSubscribe ? '取消' : ''}订阅`
+      if (row.isSubscribe) {
+        cancelSubscribe({
+          ids: `${row.id}-1`,
+          userId
+        }).then(() => {
+          row.isSubscribe = false
+          this.knowledges.splice(index, 1, row)
+          this.$success(`${text}成功`)
+        }).catch(() => {
+          this.$error(`${text}失败`)
+        })
+      } else {
+        subscribe({
+          id,
+          userId
+        }).then(() => {
+          row.isSubscribe = true
+          this.knowledges.splice(index, 1, row)
+          this.$success(`${text}成功`)
+        }).catch(() => {
+          this.$error(`${text}失败`)
+        })
+      }
     },
     // 每页数量变化
     sizeChange (rows) {

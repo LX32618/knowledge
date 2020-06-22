@@ -5,7 +5,8 @@
       multiple
       :options="labels"
       placeholder="请选择知识标签"
-      noResultsText="未找到目录"
+      noResultsText="未找到标签"
+      noOptionsText="未找到标签"
       :disabled="disabled"
       disable-branch-nodes
       show-count
@@ -21,7 +22,7 @@
 </template>
 
 <script>
-import { getLablesTree } from '@/api/knowledge'
+import { getLabelesTree } from '@/api/docCategory'
 import { unflatTree, walkTree } from '@/utils/tree'
 
 export default {
@@ -29,7 +30,9 @@ export default {
   props: {
     value: {
       type: Array,
-      default: () => ({})
+      default () {
+        return []
+      }
     },
     disabled: {
       type: Boolean,
@@ -48,7 +51,7 @@ export default {
   },
   data () {
     return {
-      model: this.convertObjectToId(this.value),
+      model: this.convertStringToIdArray(this.value),
       labels: this.convertLabelTree(this.data),
       isLoading: false
     }
@@ -67,19 +70,9 @@ export default {
           return
         }
         this.isLoading = true
-        getLablesTree({ classificationid: this.classificationid }).then(res => {
-          let data = res.content
-          data = unflatTree(data, 0) // 生成树
-          console.log(data)
-          // 格式化节点
-          walkTree(data, item => {
-            if (!item.children || item.children.length === 0) {
-              item.children = undefined
-            }
-            return item
-          })
-          this.labels = data
-          this.$emit('loadingSuccess', data) // 向上发出加载成功事件
+        getLabelesTree({ id: this.classificationid }).then(res => {
+          this.labels = this.convertLabelTree(res.content.labelInfo)
+          this.$emit('loadingSuccess', this.labels) // 向上发出加载成功事件
           this.isLoading = false
         })
       },
@@ -88,7 +81,10 @@ export default {
   },
   methods: {
     // 转化为id数组
-    convertObjectToId (objArray) {
+    convertStringToIdArray (objArray) {
+      if (!objArray || objArray.length === 0) {
+        return []
+      }
       return objArray.map(item => item.id)
     },
     // 知识标签选择树图标显示
@@ -100,6 +96,9 @@ export default {
     },
     // 转化标签树
     convertLabelTree (data) {
+      if (data.length === 0) {
+        return data
+      }
       const result = data.slice(0)
       result.forEach(item => {
         item.label = item.name

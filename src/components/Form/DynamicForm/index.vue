@@ -27,10 +27,11 @@
                     field.htmlType === 3 ||
                     field.htmlType === 8
                 ">
-                <!-- <dict-display
+                <dict-display
                   :value="model[field.fieldName]"
                   :dictId="field.fieldType"
-                /> -->
+                  :isArray="field.htmlType === 8"
+                />
               </template>
               <!-- 布尔显示 -->
               <template v-else-if="field.htmlType === 2">
@@ -46,7 +47,7 @@
               </template>
               <!-- 标签显示 -->
               <template v-else-if="field.htmlType === 99">
-                <!-- {{ showArray(model[field.fieldName], "label") }} -->
+                {{ showArray(model[field.fieldName]) }}
               </template>
               <!-- 默认显示 -->
               <template v-else>
@@ -93,7 +94,10 @@
               </template>
               <!-- 布尔框 -->
               <template v-else-if="field.htmlType === 2">
-                <el-checkbox v-model="model[field.fieldName]"></el-checkbox>
+                <el-checkbox
+                  v-model="model[field.fieldName]"
+                  :true-label="1"
+                  :false-label="0"></el-checkbox>
               </template>
               <!-- 复选框 -->
               <template v-else-if="field.htmlType === 8">
@@ -109,6 +113,14 @@
                   v-model="model[field.fieldName]"
                   :dictId="field.fieldType"
                 />
+              </template>
+              <!-- 附件 -->
+              <template v-else-if="field.htmlType === 4">
+                <el-upload
+                  action="/file"
+                  :auto-upload="false">
+                  <el-button icon="el-icon-document" slot="trigger" size="small" type="primary">选取文件</el-button>
+                </el-upload>
               </template>
               <!-- 多行文本编辑框 -->
               <template v-else-if="field.htmlType === 9">
@@ -134,10 +146,11 @@
               </template>
               <!-- 标签选择框 -->
               <template v-else-if="field.htmlType === 99">
-                <!-- <knowledge-labels-input
+                <knowledge-labels-input
                   v-model="model[field.fieldName]"
-                  :classificationid="model.baseid"
-                ></knowledge-labels-input> -->
+                  :classificationid="model.classification"
+                  :data="[]"
+                ></knowledge-labels-input>
               </template>
             </template>
           </el-form-item>
@@ -193,6 +206,7 @@ export default {
     },
     // 数组显示
     showArray (arr, key = 'name') {
+      if (!arr || !Array.isArray(arr)) return ''
       return arr.map(item => item[key]).join(', ')
     }
   }

@@ -53,7 +53,7 @@ const state = {
         fieldfixed: 1
       },
       {
-        fieldName: 'lables',
+        fieldName: 'labelsEnt',
         displayName: '标签',
         htmlType: 99,
         fieldType: '',

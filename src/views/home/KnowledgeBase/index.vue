@@ -17,6 +17,8 @@
         <el-col :span="6">
           <side-nav
             :knowledgeBase="currentKnowledgeBase"
+            :categories="categories"
+            :categoriesLoading="categoriesLoading"
             @selectCategory="handleCategoryChange"
           ></side-nav>
         </el-col>
@@ -24,6 +26,7 @@
           <detail-area
             :selectedCategory="selectedCategory"
             :currentKnowledgeBase="currentKnowledgeBase"
+            @subscribeChange="handleSubscribeChange"
           ></detail-area>
         </el-col>
       </el-row>
@@ -34,6 +37,8 @@
 <script>
 import { mapGetters } from 'vuex'
 import { errorMsg } from '@/utils/msg'
+import { fetchCategoryTreeAndNum } from '@/api/docCategory'
+import { unflatTree, walkTree } from '@/utils/tree.js'
 import SideNav from './components/SideNav'
 import DetailArea from './components/DetailArea'
 import _ from 'lodash'
@@ -54,7 +59,9 @@ export default {
     return {
       currentKnowledgeBase: {},
       isLoading: false,
-      selectedCategory: {}
+      selectedCategory: {},
+      categories: [],
+      categoriesLoading: false
     }
   },
   computed: {
@@ -74,11 +81,37 @@ export default {
       errorMsg('知识库不存在，请刷新再尝试')
       return
     }
+    // 如果知识库id为空不更新树
+    if (!this.currentKnowledgeBase || !this.currentKnowledgeBase.id) return
+    // 更新树数据
+    this.categoriesLoading = true
+    fetchCategoryTreeAndNum({
+      id: this.currentKnowledgeBase.id,
+      userId: this.userInfo.id
+    }).then(res => {
+      let data = res.content
+      data = (unflatTree(data, this.currentKnowledgeBase.id))
+      // 类型为2的节点为叶子节点
+      walkTree(data, item => {
+        if (item.type === 2) {
+          item.isLeaf = true
+        }
+      })
+      this.categories = data
+      this.categoriesLoading = false
+    })
     document.title = `${this.currentKnowledgeBase.categoryName} | 知识工程`
   },
   methods: {
     handleCategoryChange (data) {
       this.selectedCategory = data
+    },
+    handleSubscribeChange (category) {
+      walkTree(this.categories, item => {
+        if (item.id === category.id) {
+          item.isSubscribe = !item.isSubscribe
+        }
+      })
     }
   }
 }

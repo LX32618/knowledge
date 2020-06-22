@@ -13,7 +13,7 @@
             >
           </template>
           <template v-else>
-            <el-button type="success" icon="fa fa-save" @click="save"
+            <el-button type="success" icon="fa fa-save" @click="save" :loading="saveButtonLoading"
               >&nbsp;保存</el-button
             >
             <el-button type="danger" icon="el-icon-share" @click="cancel"
@@ -33,7 +33,7 @@
         <!-- 主表 -->
         <dynamic-form
           ref="mainForm"
-          :config="formConfig"
+          :config="covertUpperFieldName(formConfig)"
           :formData="formData.mainForm"
           :isViewMode="isViewMode"
           @save="handleSubFormSave"
@@ -43,7 +43,7 @@
           v-for="subForm of formConfig.subForm"
           :key="subForm.id"
           :ref="`Form-${subForm.id}`"
-          :config="subForm"
+          :config="covertUpperFieldName(subForm)"
           :isViewMode="isViewMode"
           @save="handleSubFormSave"
         ></dynamic-form>
@@ -61,6 +61,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import { saveData } from '@/api/knowledgeData'
 import KnowledgePush from './components/KnowledgePush'
 import DynamicForm from '@/components/Form/DynamicForm'
 import KnowledgeShareForm from './components/KnowledgeShareForm'
@@ -76,13 +77,17 @@ export default {
     formConfig: Object,
     showBase: Boolean,
     baseData: Object,
-    formData: Object
+    formData: {
+      type: Object,
+      default () { return {} }
+    }
   },
   data () {
     return {
       isViewMode: true, // ture: 查看视图  false：编辑视图
       dialogShow: false,
       editFormData: {},
+      saveButtonLoading: false
     }
   },
   computed: {
@@ -91,9 +96,43 @@ export default {
     ])
   },
   methods: {
+    covertUpperFieldName (config) {
+      if (!config || !config.datas) {
+        return config
+      }
+      config.datas.forEach(field => {
+        field.fieldName = field.fieldName.toUpperCase()
+      })
+      return config
+    },
     edit () {
       this.editFormData = {} // 将所有表单验证状态设置为 false
       this.isViewMode = false
+    },
+    createKnowledgeModel () {
+      const knowledgeModel = {
+        knowledgeBase: {},
+        mainFormData: {},
+        associatedFormData: []
+      }
+      Object.keys(this.editFormData).forEach(key => {
+        const value = this.editFormData[key]
+        if (key === '0') {
+          value.labels = value.labelsEnt.join(',')
+          knowledgeModel.knowledgeBase = value
+        } else if (key === this.formConfig.id) {
+          knowledgeModel.mainFormData = {
+            formId: key,
+            datas: value
+          }
+        } else {
+          knowledgeModel.associatedFormData.push({
+            formId: key,
+            datas: value
+          })
+        }
+      })
+      return knowledgeModel
     },
     save () {
       // 提交基础信息表
@@ -115,8 +154,16 @@ export default {
           return
         }
       }
-      this.$success('保存成功')
-      this.isViewMode = true
+      this.saveButtonLoading = true
+      const knowledgeModel = this.createKnowledgeModel()
+      saveData(knowledgeModel).then(res => {
+        this.$success('保存成功')
+        this.isViewMode = true
+        this.saveButtonLoading = false
+        this.$emit('saveSuccess')
+      }).catch(() => {
+        this.saveButtonLoading = false
+      })
     },
     cancel () {
       // 重置基础信息表

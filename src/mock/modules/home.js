@@ -63,7 +63,7 @@
 // for (let i = 0; i < 1000; ++i) {
 //   knowledgeList.push(Mock.mock({
 //     id: '@increment',
-//     NAME: '@ctitle',
+//     name: '@ctitle',
 //     code: '@word(8)',
 //     'classification|1': thirdList.map(item => item.categoryName),
 //     'lables|0-3': [{
@@ -72,8 +72,8 @@
 //     }],
 //     keyword: '@cword(2,5)',
 //     'hasPermission|1-2': true,
-//     DESCRIBE: '@csentence',
-//     'CREATOR|1': ['系统管理员', '安全管理员', '安全审计员', '普通用户', '访客'],
+//     describe: '@csentence',
+//     'creator|1': ['系统管理员', '安全管理员', '安全审计员', '普通用户', '访客'],
 //     createDate: +Mock.Random.date('T'),
 //     'hot|1-2': true
 //   }))
@@ -246,6 +246,33 @@
 //         content: {
 //           datas,
 //           length
+//         }
+//       }
+//     }
+//   },
+//   {
+//     url: /\/categoryKnowledgeItemsByNodeId\/get.*/,
+//     type: 'post',
+//     response: _ => {
+//       return {
+//         status: 'success',
+//         content: {
+//           datas: knowledgeList.slice(0, 10).map(item => {
+//             const result = {
+//               knowledgeBase: {
+//                 ...item,
+//                 classificationEnt: {
+//                   categoryname: item.classification
+//                 },
+//                 creatorEnt: {
+//                   username: item.creator
+//                 }
+//               },
+//               isSubscribe: item.isSubscribe
+//             }
+//             return result
+//           }),
+//           total: knowledgeList.length
 //         }
 //       }
 //     }

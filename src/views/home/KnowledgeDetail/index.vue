@@ -12,6 +12,7 @@
               :showBase="true"
               :baseData="baseData"
               :formData="formData"
+              @saveSuccess="handleSaveSuccess"
             />
           </el-tab-pane>
         </template>
@@ -27,6 +28,7 @@
               :formConfig="relationForm"
               :showBase="index === 0"
               :baseData="baseData"
+              @saveSuccess="handleSaveSuccess"
             />
           </el-tab-pane>
         </template>
@@ -65,17 +67,25 @@ export default {
       formConfig: undefined
     }
   },
+  methods: {
+    handleSaveSuccess () {
+      location.reload()
+    },
+    update () {
+      this.isLoading = true
+      getModelAndData({ id: this.id }).then(res => {
+        const baseData = res.content.knowledgeData.knowledgeBase
+        baseData.classificationName = baseData.classificationEnt.categoryname
+        baseData.creatorName = baseData.creatorEnt.username
+        this.baseData = baseData
+        this.formData = res.content.knowledgeData.formData
+        this.formConfig = res.content.knowledgeModel.formModel
+        this.isLoading = false
+      })
+    }
+  },
   mounted () {
-    this.isLoading = true
-    getModelAndData({ id: this.id }).then(res => {
-      const baseData = res.content.knowledgeData.knowledgeBase
-      baseData.classificationName = baseData.classificationEnt.categoryname
-      baseData.creatorName = baseData.creatorEnt.username
-      this.baseData = baseData
-      this.formData = res.content.knowledgeData.formData
-      this.formConfig = res.content.knowledgeModel.formModel
-      this.isLoading = false
-    })
+    this.update()
   }
 }
 </script>
