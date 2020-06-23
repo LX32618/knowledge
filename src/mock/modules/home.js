@@ -39,24 +39,35 @@
 //   }))
 // }
 
-// const lableList = []
+// const labelList = []
 // const labelList2 = []
+// const labelList3 = []
 
-// for (let i = 0; i < 10; ++i) {
-//   lableList.push(Mock.mock({
-//     id: '@increment',
-//     label: '@cword(2,5)',
-//     pId: 0
-//   }))
-// }
-
-// for (let i = 0; i < 50; ++i) {
+// for (let i = 0; i < 5; ++i) {
 //   labelList2.push(Mock.mock({
-//     id: '@increment',
-//     label: '@cword(2,5)',
-//     'pId|1': lableList.map(item => item.id)
+//     id: '@guid',
+//     name: '@cword(2,5)',
 //   }))
 // }
+
+// for (let i = 0; i < 5; ++i) {
+//   labelList3.push(Mock.mock({
+//     id: '@guid',
+//     name: '@cword(2,5)',
+//   }))
+// }
+
+// labelList.push(Mock.mock({
+//   id: '@guid',
+//   name: '@cword(2,5)',
+//   data: labelList2
+// }))
+
+// labelList.push(Mock.mock({
+//   id: '@guid',
+//   name: '@cword(2,5)',
+//   data: labelList3
+// }))
 
 // const knowledgeList = []
 
@@ -221,22 +232,6 @@
 //       // const { creator, type, id, rows, page } = config.query
 //       let datas
 //       let length
-//       // if (type == 0) {
-//       //   data = knowledgeList.sort((a, b) => {
-//       //     return new Date(b.createDate) - new Date(a.createDate)
-//       //   })
-//       //   data = data.slice(0, 12)
-//       // } else if (type == 1) {
-//       //   data = knowledgeList.filter(item => item.creator === creator)
-//       //   data = data.slice(0, 12)
-//       // } else if (type == 2) {
-//       //   data = knowledgeList.filter(item => item.hot)
-//       //   data = data.slice(0, 12)
-//       // } else {
-//       //   data = knowledgeList.filter(item => item.id % id === 0)
-//       //   length = data.length
-//       //   data = data.slice((page - 1) * rows, page * rows)
-//       // }
 //       datas = knowledgeList.sort((a, b) => {
 //         return new Date(b.createDate) - new Date(a.createDate)
 //       })
@@ -321,6 +316,7 @@
 //           const tmp = {}
 //           _.assign(tmp, item)
 //           tmp.pId = tmp.pId.id
+//           tmp.labelInfo = labelList
 //           data.push(tmp)
 //         }
 //       })
@@ -388,6 +384,14 @@
 //       return {
 //         status: 'success',
 //         content: dicts
+//       }
+//     }
+//   }, {
+//     url: /save.*/,
+//     response: _ => {
+//       return {
+//         status: 'success',
+//         content: {}
 //       }
 //     }
 //   }

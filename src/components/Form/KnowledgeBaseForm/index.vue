@@ -185,7 +185,7 @@ export default {
           return item
         })
         if (this.category === this.id && !this.knowledge.classification && this.classification !== '0') {
-              this.knowledge.classification = this.classification
+          this.knowledge.classification = this.classification
         }
         this.subCategories = data
         this.isLoading = false
@@ -198,10 +198,11 @@ export default {
         this.labels = []
         return
       }
-      const subCategory = this.subCategories.find(item => item.id === val)
-      if (subCategory) {
-        this.labels = subCategory.labelInfo
-      }
+      walkTree(this.subCategories, item => {
+        if (item.id === val) {
+          this.labels = item.labelInfo
+        }
+      })
     }
   },
   methods: {
