@@ -79,7 +79,7 @@
                     name:"",
                     data:{
                         describe: "",
-                        sort: "0",
+                        sort: 0,
                         field_900: "",
                         field_901: "",
                         field_902: ""
@@ -144,7 +144,9 @@
                 {
                     this.editFormVisible = false;
                     this.$refs.lazytree.editSuccess(data);
+                    this.$set(this,"viewFormData",data);
                 }
+
             },
             treeDataFormat({node,data}){
                 const temp = _.cloneDeep(data);

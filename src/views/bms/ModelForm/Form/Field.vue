@@ -7,16 +7,16 @@
             <el-input autocomplete="off" placeholder="请输入字段名称" v-model="data.fieldName" :disabled="data.id != ''"></el-input>
         </el-form-item>
         <el-form-item label="显示类型">
-            <el-select placeholder="--请选择--" v-model="data.htmlType" @change="htmlTypeChange"  :disabled="data.id != ''">
+            <el-select placeholder="--请选择--" v-model="data.htmlType" @change="htmlTypeChange" value-key="value" :disabled="data.id != ''">
                 <el-option v-for="h in htmlType" :key="h.value" :label="h.label" :value="h.value"></el-option>
             </el-select>
         </el-form-item>
         <el-form-item label="字段类型" v-if="showFiledType">
             <div ref="fieldType">
-                <el-select placeholder="--请选择--" v-model="data.fieldType" @change="textFieldTypeChange" v-if="data.htmlType == '0'" :disabled="data.id != ''"><!--编辑或者子表新增时不能修改-->
+                <el-select placeholder="--请选择--" v-model="data.fieldType" @change="textFieldTypeChange" v-if="data.htmlType == 0" :disabled="data.id != ''"><!--编辑或者子表新增时不能修改-->
                     <el-option v-for="f in textFieldType" :key="f.value" :label="f.label" :value="f.value"></el-option>
                 </el-select>
-                <div v-else-if="data.htmlType == '1' || data.htmlType == '3' || data.htmlType == '8'">
+                <div v-else-if="data.htmlType == 1 || data.htmlType == 3 || data.htmlType == 8">
                     <el-button type="primary" icon="el-icon-search" circle @click.native="toggleDictionary"></el-button>
                     <el-tag type="danger" size="mini" style="margin-left: 3px" v-if="data.fieldType != ''">
                         {{data.fieldTypeName}}
@@ -39,6 +39,7 @@
                               :table-data="browseBtnTableData"
                               v-loading="browseBtnLoading"
                               @currentChange="browseBtnCurrentChange"
+                              @sortChange="browseBtnSortChange"
                               @pageSizeChange="browseBtnPageSizeChange">
                         <template v-slot:horizontalSlot>
                             <div class="operationNav">
@@ -55,22 +56,22 @@
                 </div>
             </div>
         </el-form-item>
-        <el-form-item label="字段长度" v-if="data.htmlType == '0' && data.fieldType == '0'">
+        <el-form-item label="字段长度" v-if="data.htmlType == 0 && data.fieldType == 0">
             <el-input autocomplete="off"  v-model="data.fieldLength"  :disabled="data.id != ''" ></el-input>
         </el-form-item>
-        <el-form-item label="精确位数" v-if="data.htmlType == '0' && data.fieldType == '2'">
+        <el-form-item label="精确位数" v-if="data.htmlType == 0 && data.fieldType == 2">
             <el-input autocomplete="off"  v-model="data.fieldFixed" :disabled="data.id != ''"></el-input>
         </el-form-item>
-        <el-form-item label="是否可多选" v-if="data.htmlType == '4' || data.htmlType == '5'">
+        <el-form-item label="是否可多选" v-if="data.htmlType == 4 || data.htmlType == 5">
             <el-switch v-model="data.isMulti"  active-value="1" inactive-value="0"></el-switch>
         </el-form-item>
-        <el-form-item label="默认高度" v-if="data.htmlType == '9'">
+        <el-form-item label="默认高度" v-if="data.htmlType == 9">
             <el-input autocomplete="off"  v-model="data.height"></el-input>%
         </el-form-item>
-        <el-form-item label="默认宽度" v-if="data.htmlType == '9'">
+        <el-form-item label="默认宽度" v-if="data.htmlType == 9">
             <el-input autocomplete="off"  v-model="data.width"></el-input>%
         </el-form-item>
-        <el-form-item label="字段验证" v-if="data.htmlType == '11'">
+        <el-form-item label="字段验证" v-if="data.htmlType == 11">
             <el-input autocomplete="off"  v-model="data.fieldCheck"></el-input>
         </el-form-item>
         <el-button type="primary" class="saveBtn"  @click="submitForm" :loading="submitBtnLoading">保存</el-button>
@@ -121,23 +122,23 @@
                 selectedFiledType:"",
                 selectedFiledTypeName:"",
                 textFieldType:[
-                    {label:"文本",value:"0"},
-                    {label:"整数",value:"1"},
-                    {label:"小数",value:"2"}
+                    {label:"文本",value:0},
+                    {label:"整数",value:1},
+                    {label:"小数",value:2}
                 ],
                 htmlType:[
-                    {label:"文本框",value:"0"},
-                    {label:"单选框",value:"1"},
-                    {label:"复选框",value:"2"},
-                    {label:"下拉列表",value:"3"},
-                    {label:"附件",value:"4"},
-                    {label:"图片",value:"5"},
-                    {label:"浏览按钮单选",value:"6"},
-                    {label:"浏览按钮多选",value:"7"},
-                    {label:"复选框组",value:"8"},
-                    {label:"多行文本",value:"9"},
-                    {label:"日期",value:"11"},
-                    {label:"超链接",value:"13"},
+                    {label:"文本框",value:0},
+                    {label:"单选框",value:1},
+                    {label:"复选框",value:2},
+                    {label:"下拉列表",value:3},
+                    {label:"附件",value:4},
+                    {label:"图片",value:5},
+                    {label:"浏览按钮单选",value:6},
+                    {label:"浏览按钮多选",value:7},
+                    {label:"复选框组",value:8},
+                    {label:"多行文本",value:9},
+                    {label:"日期",value:11},
+                    {label:"超链接",value:13},
                 ],
                 dictTreeSettings:{
                     root_id:"",//根节点id
@@ -171,7 +172,7 @@
                         {prop: "isMulti", label: "多选",
                             formatter(index,row)
                             {
-                                return row.isMulti=="0"?"否":"是";
+                                return row.isMulti==0?"否":"是";
                             }},
                     ]
                 },
@@ -189,18 +190,19 @@
             }
         },
         computed:{
+            //this.data.htmlType != '' &&
           showFiledType(){
-              let flag = this.data.htmlType != '' && this.data.htmlType != '2' &&
-                  this.data.htmlType != '4' && this.data.htmlType != '5' &&
-                  this.data.htmlType != '9' && this.data.htmlType != '11' && this.data.htmlType != '13';
+              let flag = this.data.htmlType != undefined && this.data.htmlType != 2 &&
+                  this.data.htmlType != 4 && this.data.htmlType != 5 &&
+                  this.data.htmlType != 9 && this.data.htmlType != 11 && this.data.htmlType != 13;
               return flag;
           }
         },
         watch:{
             fieldData:{
                 handler(newVal){
-
                     this.data= _.cloneDeep(newVal);
+                    console.log(newVal);
                     if(this.$refs['fieldForm'])//排除第一次加载组件时的情形
                         this.$refs['fieldForm'].clearValidate();//切换的时候清空校验规则
                 },
@@ -215,7 +217,7 @@
                 this.data.fieldTypeName = "";
                 this.data.htmlType = data;
                 this.data.htmlTypeName = this.htmlType.find(h=>  h.value == data).label;
-                if(data == "2")
+                if(data == 2)
                 {
                     this.data.fieldType = "";
                     this.data.fieldTypeName = "是、否";                }
@@ -270,10 +272,9 @@
                     rows:this.browseBtnTableSettings.pageSize,
                     condition:{
                         refName:"",
-                        isMulti:this.data.htmlType == "6"?"0":this.data.htmlType=="7"?"1":""
+                        isMulti:this.data.htmlType == 6?"0":this.data.htmlType==7?"1":""
                     }
                 };
-                console.log(data);
                 this.loadBrowseBtnData(data);
                 this.browseBtnKeyWord = "";
                 this.showBrowseBtn = !this.showBrowseBtn;
@@ -305,13 +306,26 @@
                 this.selectedFiledType = currentRow.id;
                 this.selectedFiledTypeName = currentRow.refName;
             },
+            browseBtnSortChange({sort, order}){
+                let data = {
+                    condition:{
+                        isMulti:this.data.htmlType == 6?"0":this.data.htmlType==7?"1":"",
+                        refName:this.searchKeyword,
+                        sort:sort,
+                        order:order,
+                    },
+                    page:this.tableSettings.currentPage,
+                    rows:this.tableSettings.pageSize
+                };
+                this.loadAssociatedFormData(data);
+            },
             browseBtnPageSizeChange({page,rows}){
                 let data = {
                     page:page,
                     rows:rows,
                     condition:{
-                        refName:"",
-                        isMulti:this.data.htmlType == "6"?"0":this.data.htmlType=="7"?"1":""
+                        refName:this.browseBtnKeyWord,
+                        isMulti:this.data.htmlType == 6?"0":this.data.htmlType==7?"1":""
                     }
                 };
                 this.loadBrowseBtnData(data);
@@ -322,7 +336,7 @@
                     rows:this.browseBtnTableSettings.pageSize,
                     condition:{
                         refName:this.browseBtnKeyWord,
-                        isMulti:this.data.htmlType == "6"?"0":this.data.htmlType=="7"?"1":""
+                        isMulti:this.data.htmlType == 6?"0":this.data.htmlType==7?"1":""
                     }
                 };
                 this.loadBrowseBtnData(data);

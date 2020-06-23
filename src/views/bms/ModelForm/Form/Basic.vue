@@ -5,14 +5,14 @@
         </el-form-item>
         <el-form-item label="表单类型">
             <el-select placeholder="--请选择--" v-model="data.formType" :disabled="data.id!='' || data.mainId!=''"><!--编辑或者子表新增时不能修改-->
-                <el-option label="实体表单" value="0"></el-option>
-                <el-option label="虚拟表单" value="1"></el-option>
+                <el-option label="实体表单" :value = 0></el-option>
+                <el-option label="虚拟表单" :value = 1></el-option>
             </el-select>
         </el-form-item>
-        <el-form-item label="数据库表名" prop="tableName" v-if="data.formType=='0'">
+        <el-form-item label="数据库表名" prop="tableName" v-if="data.formType==0">
             <el-input autocomplete="off" v-model="data.tableName" :disabled="data.id!=''"></el-input>
         </el-form-item>
-        <el-form-item label="关联表单" v-if="data.formType=='1'"><!--虚拟表单才有-->
+        <el-form-item label="关联表单" v-if="data.formType==1"><!--虚拟表单才有-->
             <div ref="associatedForm">
                 <el-button type="primary" icon="el-icon-search" circle
                            @click.native="toggleAssociatedForm()"></el-button>
@@ -28,6 +28,7 @@
                               :table-data="tableData"
                               v-loading="associatedFormLoading"
                               @selectionChange="associatedFormSelectionChange"
+                              @sortChange="associatedFormSortChange"
                               @pageSizeChange="associatedFormPageSizeChange">
                         <template v-slot:horizontalSlot>
                             <div class="operationNav">
@@ -49,8 +50,8 @@
                 <el-option v-for="dir in knowledgeDirs" :key="dir.id" :label="dir.categoryName" :value="dir.id"></el-option>
             </el-select>
         </el-form-item>
-        <el-form-item label="表单排序">
-            <el-input autocomplete="off" v-model="data.sortTable"></el-input>
+        <el-form-item label="表单排序" prop="sortTable">
+            <el-input autocomplete="off" v-model.number="data.sortTable" ></el-input>
         </el-form-item>
         <el-button type="primary" class="saveBtn"  @click="submitForm">保存</el-button>
     </el-form>
@@ -107,6 +108,10 @@
                         {required: true, message: "请输入数据库表名", trigger: "blur"},
                         {required: true, pattern:/(^[a-zA-Z][a-zA-Z0-9_]*$)/, message: "数据库表名必须以字母开头，只可包含字母、数字和下划线", trigger: "blur"},
                         {required: true, validator:tableNameVlidator, trigger: "blur"}
+                    ],
+                    sortTable: [
+                        {required: true, message: "显示顺序不能为空", trigger: "blur"},
+                        {type: 'number', message: '显示顺序只能为整数', trigger: 'blur'}
                     ]
                 },
                 tableSettings: {
@@ -133,7 +138,7 @@
                     if (valid) {
                         this.formLoading = true;
                         let data = _.cloneDeep(this.data);
-                        if(this.data.formType=="0")//实体表单
+                        if(this.data.formType==0)//实体表单
                         {
                             data.associatedForm = [];
                         }
@@ -154,11 +159,10 @@
                                 {
                                     if(formType == "mainForm")
                                         this.$success("新增成功,请开始表单配置");
-                                    else{
+                                    else
                                         this.$success("新增子表成功");
-                                    }
                                 }
-                                this.$emit("submitSuccess",{type:type,data:data.content});
+                                this.$emit("submitSuccess",{type:type,data:data.content.datas[0]});
                             }
                         });
                         this.formLoading = false;
@@ -176,7 +180,7 @@
                     rows:this.tableSettings.pageSize,
                     condition:{
                         mainForm:"mainForm",
-                        formType:"0",
+                        formType:0,
                         formName:"",
                         sort:"",
                         order:"",
@@ -199,7 +203,7 @@
                     rows:this.tableSettings.pageSize,
                     condition:{
                         mainForm:"mainForm",
-                        formType:"0",
+                        formType:0,
                         formName:this.searchKeyWord,
                         sort:"",
                         order:"",
@@ -209,9 +213,7 @@
             },
             certainAssociatedForm(){
                 let selection = _.concat(this.associatedFormSelection,this.data.associatedForm);//合并
-                console.log(selection);
                 this.data.associatedForm = _.uniqBy(selection,"id");//去重
-                console.log( this.data.associatedForm);
                 this.showAssociatedForm = false;
             },
             associatedFormSelectionChange(selection){
@@ -223,11 +225,25 @@
                     rows:rows,
                     condition:{
                         mainForm:"mainForm",
-                        formType:"0",
-                        formName:"",
+                        formType:0,
+                        formName:this.searchKeyWord,
                         sort:"",
                         order:"",
                     }
+                };
+                this.loadAssociatedFormData(data);
+            },
+            associatedFormSortChange({sort, order}){
+                let data = {
+                    condition:{
+                        mainForm:"mainForm",
+                        formType:0,
+                        formName:this.searchKeyword,
+                        sort:sort,
+                        order:order,
+                    },
+                    page:this.tableSettings.currentPage,
+                    rows:this.tableSettings.pageSize
                 };
                 this.loadAssociatedFormData(data);
             },
