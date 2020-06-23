@@ -75,7 +75,7 @@
             <field :field-data="appendFormFiledData" @submitSuccess="submitFiledSuccess"></field>
         </el-dialog>
 
-        <el-dialog title="添加编辑字段" :visible.sync="editFieldVisible" :close-on-click-modal="false" append-to-body>
+        <el-dialog title="编辑字段" :visible.sync="editFieldVisible" :close-on-click-modal="false" append-to-body>
             <field :field-data="editFormFiledData" @submitSuccess="submitFiledSuccess"></field>
         </el-dialog>
     </div>
@@ -132,9 +132,9 @@
                 this.appendSubFormData = {
                     id: "",
                     mainId:this.data.id,
-                    formType: "0",/*0是实体表单，1是虚拟表单*/
+                    formType: 0,/*0是实体表单，1是虚拟表单*/
                     formName: "",
-                    sortTable: "0",
+                    sortTable: 0,
                     tableName: "",
                     knowledgeDir: "",
                 };
@@ -144,7 +144,6 @@
                 let subFormId = this.activeName;
                 let subForm = this.data.subForm.filter(f=>f.id == subFormId)[0];
                 subForm.mainId =  this.data.id;
-                subForm.formType = subForm.formType.toString();
                 this.$set(this,"editSubFormData",subForm);
                 this.editSubFormVisible = true;
             },
@@ -154,14 +153,14 @@
                     id: "",//新增为空
                     fieldName: "",
                     displayName: "",
-                    htmlType: "",
+                    htmlType: undefined,
                     fieldType: "",//
                     fieldCheck: "yyyy-MM-dd",//日期的时候的校验
-                    fieldLength: "128",
-                    fieldFixed: "2",//浮点数，精度
+                    fieldLength: 128,
+                    fieldFixed: 2,//浮点数，精度
                     isMulti: "",//是否多选
-                    height: "95",
-                    width: "95"
+                    height: 95,
+                    width: 95
                 };
                 this.$set(this,"appendFormFiledData",data);
                 this.appendFieldVisible = true;
@@ -169,7 +168,7 @@
             editFormFiled(index, row,formId) {
                 this.editFormFiledData = row;
                 this.editFormFiledData.formId = formId;
-                this.editFormFiledData.htmlType = this.editFormFiledData.htmlType.toString();
+                this.editFormFiledData.htmlType = this.editFormFiledData.htmlType==-1?undefined:this.editFormFiledData.htmlType;
                 this.editFieldVisible = true;
             },
             loadData(id) {
@@ -188,7 +187,9 @@
             submitSubFormSuccess({type,data}){
                 if(type =="append")
                 {
+
                     this.appendSubFormVisible = false;
+                    data.datas = [];
                     this.data.subForm.push(data);
                 }
                 else if(type == "edit")
@@ -202,6 +203,7 @@
             submitFiledSuccess({type,data}){
                 let formId = data.formId;
                 let id = data.id;
+
                 if(type =="append")
                 {
                     this.appendFieldVisible = false;

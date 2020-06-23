@@ -82,7 +82,7 @@
         methods:{
             currentChange(val){//单选事件
                 val.mainId = "";
-                val.formType = val.formType.toString();
+               /* val.formType = val.formType.toString();*/
                 this.$set(this,"editFormData",val);
             },
             pageSizeChange({page,rows})
@@ -91,7 +91,7 @@
                     condition:{
                         mainForm:"mainForm",
                         formType:"",
-                        formName:"",
+                        formName:this.searchKeyword,
                         sort:"",
                         order:"",
                     },
@@ -105,7 +105,7 @@
                     condition:{
                         mainForm:"mainForm",
                         formType:"",
-                        formName:"",
+                        formName:this.searchKeyword,
                         sort:sort,
                         order:order,
                     },
@@ -119,10 +119,10 @@
                     mainId:"",
                     id:"",
                     formName:"",
-                    formType:"0",
+                    formType:0,
                     tableName:"",
                     knowledgeDir:"",
-                    sortTable:"0",
+                    sortTable:0,
                     associatedForm:[]
                 },
                 this.appendFormVisible = true;

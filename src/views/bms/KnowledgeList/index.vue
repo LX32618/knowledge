@@ -10,10 +10,10 @@
                         <basic :settings="basicFormSettings" :form-data="basicFormData" @submitSuccess="submitSuccess"></basic>
                     </div>
                 </el-tab-pane>
-                <el-tab-pane :key="1" v-if="basicFormData.type=='2'" label="模板配置" name="template">模板配置</el-tab-pane>
-                <el-tab-pane :key="2" v-if="basicFormData.type=='2'" label="列表配置" name="list">列表配置</el-tab-pane>
-                <el-tab-pane :key="3" v-if="basicFormData.type!='0'" label="权限配置" name="permission">权限配置</el-tab-pane>
-                <el-tab-pane :key="4" v-if="basicFormData.type=='2'" label="接口配置" name="interface">接口配置</el-tab-pane>
+                <el-tab-pane :key="1" v-if="basicFormData.type==2" label="模板配置" name="template">模板配置</el-tab-pane>
+                <el-tab-pane :key="2" v-if="basicFormData.type==2" label="列表配置" name="list">列表配置</el-tab-pane>
+                <el-tab-pane :key="3" v-if="basicFormData.type!=0" label="权限配置" name="permission">权限配置</el-tab-pane>
+                <el-tab-pane :key="4" v-if="basicFormData.type==2" label="接口配置" name="interface">接口配置</el-tab-pane>
             </el-tabs>
         </div>
         <el-dialog title="新增知识目录" :visible.sync="appendFormVisible" :close-on-click-modal="false">
@@ -84,9 +84,9 @@
                     formName:"",
                     labelInfo: [],
                     picture:"",
-                    secretLevel:"20",
-                    isSentMail:"0",//是否开启邮件（0否1是）
-                    enable:"0",//是否开启邮件（0否1是）
+                    secretLevel:20,
+                    isSentMail:0,//是否开启邮件（0否1是）
+                    enable:0,//是否开启邮件（0否1是）
                     remark:""
 
                 };
@@ -134,6 +134,7 @@
                 const temp = _.cloneDeep(data);
                 let formatData = temp.map((item,index,arr)=>{
                     item.sort = parseInt(item.sort);
+             /*       item.type = item.type.toString();*/
                     if(item.pid==this.treeSettings.root_id)
                     {
                         item.icon = "element-icons el-custom-book";
@@ -143,7 +144,7 @@
                             remove:false
                         };
                     }
-                    else if(item.type=="0"){
+                    else if(item.type==0){
                         item.icon = "element-icons el-custom-db";
                         item.right_click_option={
                             append:true,
@@ -151,7 +152,7 @@
                             remove:true
                         };
                     }
-                    else if(item.type=="1"){
+                    else if(item.type==1){
                         item.icon = "element-icons el-custom-files";
                         item.right_click_option={
                             append:true,
@@ -159,7 +160,7 @@
                             remove:true
                         };
                     }
-                    else if(item.type=="2"){
+                    else if(item.type==2){
                         item.icon = "element-icons el-custom-file";
                         item.right_click_option={
                             append:false,

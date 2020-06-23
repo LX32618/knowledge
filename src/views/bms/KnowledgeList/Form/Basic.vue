@@ -5,15 +5,15 @@
         </el-form-item>
         <el-form-item label="目录类型" v-if="data.pid!=''" >
             <el-select  placeholder="请选择目录类型" v-model="data.type" :disabled="settings.formType=='basic'">
-                <el-option label="知识库" value="0" v-if="settings.formType=='basic'"></el-option>
-                <el-option label="分类" value="1"></el-option>
-                <el-option label="目录" value="2"></el-option>
+                <el-option label="知识库" :value=0 v-if="settings.formType=='basic'"></el-option>
+                <el-option label="分类" :value=1></el-option>
+                <el-option label="目录" :value=2></el-option>
             </el-select>
         </el-form-item>
         <el-form-item label="显示顺序" prop="sort">
             <el-input autocomplete="off" v-model.number="data.sort" placeholder="请输入显示顺序"></el-input>
         </el-form-item>
-        <el-form-item label="关联表单"  v-if="data.type=='2'"  >
+        <el-form-item label="关联表单"  v-if="data.type==2"  >
             <div ref="associatedForm" style="width:203px;">
                 <el-input
                         placeholder="请选择"
@@ -28,6 +28,7 @@
                               :table-data="tableData"
                               v-loading="associatedFormLoading"
                               @currentChange="associatedFormCurrentChange"
+                              @sortChange="associatedFormSortChange"
                               @pageSizeChange="associatedFormPageSizeChange">
                         <template v-slot:horizontalSlot>
                             <div class="operationNav" >
@@ -44,7 +45,7 @@
                 </div>
             </div>
         </el-form-item>
-        <el-form-item label="标签分类选择" v-if="data.type=='2'">
+        <el-form-item label="标签分类选择" v-if="data.type==2">
             <div ref="labelClassification">
                 <el-button type="primary" icon="el-icon-search" circle
                            @click.native="toggleLabelClassification()"></el-button>
@@ -63,12 +64,12 @@
         </el-form-item>
         <el-form-item label="密级">
             <el-select  placeholder="请选择密级" v-model="data.secretLevel">
-                <el-option label="非密" value="10"></el-option>
-                <el-option label="内部" value="20"></el-option>
-                <el-option label="秘密" value="30"></el-option>
+                <el-option label="非密" :value=10></el-option>
+                <el-option label="内部" :value=20></el-option>
+                <el-option label="秘密" :value=30></el-option>
             </el-select>
         </el-form-item>
-        <el-form-item label="知识库图片" v-if="data.pid=='' || data.type=='0'">
+        <el-form-item label="知识库图片" v-if="data.pid=='' || data.type==0">
             <div class="pic">
                 <el-popover placement="bottom-end" trigger="click">
                     <icon-wall @selectIconChange="selectIconChange"></icon-wall>
@@ -78,10 +79,10 @@
             </div>
         </el-form-item>
         <el-form-item label="是否启用">
-            <el-switch v-model="data.enable" active-value="1" inactive-value="0"></el-switch>
+            <el-switch v-model="data.enable" :active-value=0 :inactive-value=-1></el-switch>
         </el-form-item>
-        <el-form-item label="是否开启邮件" v-if="data.type=='2'">
-            <el-switch v-model="data.isSentMail" active-value="1" inactive-value="0"></el-switch>
+        <el-form-item label="是否开启邮件" v-if="data.type==2">
+            <el-switch v-model="data.isSentMail" :active-value=1 :inactive-value=0></el-switch>
         </el-form-item>
         <el-form-item label="说明">
             <el-input type="textarea" :autosize="{ minRows: 2}" v-model="data.remark"></el-input>
@@ -184,7 +185,7 @@
 
                     this.data = _.cloneDeep(newVal);
                     if(this.settings.formType=="append")
-                        this.data.type = "1";//新增默認是分類
+                        this.data.type = 1;//新增默認是分類
                     let data = {
                         page:this.tableSettings.currentPage,
                         rows:this.tableSettings.pageSize,
@@ -197,10 +198,6 @@
                         }
                     };
                     this.loadAssociatedFormData(data);
-               /*     if(this.settings.formType == "basic")//新增的时候不加载数据
-                    {
-                        this.loadFormData(this.data.id);
-                    }*/
                     if(this.$refs['basicForm'])//排除第一次加载组件时的情形
                         this.$refs['basicForm'].clearValidate();//切换的时候清空校验规则
                 },
@@ -263,6 +260,20 @@
                 this.selectedAssociatedFormTable.formId = currentRow.formId;
                 this.selectedAssociatedFormTable.formName = currentRow.formName;
             },
+            ssociatedFormSortChange({sort, order}){
+                let data = {
+                    condition:{
+                        mainForm:"mainForm",
+                        formType:"",
+                        formName:this.searchKeyword,
+                        sort:sort,
+                        order:order,
+                    },
+                    page:this.tableSettings.currentPage,
+                    rows:this.tableSettings.pageSize
+                };
+                this.loadAssociatedFormData(data);
+            },
             associatedFormPageSizeChange({page,rows}){
                 let data = {
                     page:page,
@@ -270,7 +281,7 @@
                     condition:{
                         mainForm:"mainForm",
                         formType:"",
-                        formName:"",
+                        formName: this.searchKeyWord,
                         sort:"",
                         order:"desc"
                     }

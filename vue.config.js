@@ -4,7 +4,7 @@ module.exports = {
     devServer: {
         proxy: {
             '/api1': {
-                target: 'http://192.168.0.90:8083', // 刘珏先 api
+                target: 'http://192.168.0.99:8083', // 刘珏先 api
                 changeOrigin: true,
                 pathRewrite: {
                     '^/api1': '/'

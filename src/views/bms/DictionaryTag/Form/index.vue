@@ -40,7 +40,7 @@
                     name:"",
                     data:{
                         describe: "",
-                        sort: "0",
+                        sort: 0,
                         field_900: "",
                         field_901: "",
                         field_902: ""
@@ -90,9 +90,6 @@
                         return false;
                     }
                 });
-            },
-            resetForm() {
-                this.$refs['form'].resetFields();
             }
         }
     }
