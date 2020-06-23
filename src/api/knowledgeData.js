@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import { dateTime } from '@/filters'
 
 const rootUrl = '/api4/system/knowledgeDataController/'
 
@@ -18,7 +19,8 @@ export function saveBaseData (knowledge, creator, baseId) {
   const data = Object.assign({}, knowledge)
   data.creator = creator
   data.baseId = baseId
-  data.createDate = new Date()
+  data.createDate = dateTime(new Date())
+  data.labels = data.labels.join(',')
 
   return request({
     url: `${rootUrl}saveBaseData`,

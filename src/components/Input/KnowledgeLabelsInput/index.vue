@@ -60,8 +60,11 @@ export default {
     value (val) {
       this.model = val
     },
-    model (val) {
-      this.$emit('input', val)
+    model: {
+      handler (val) {
+        this.$emit('input', val)
+      },
+      immediate: true
     },
     // 根据知识库目录生成可选标签集
     classificationid: {
