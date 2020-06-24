@@ -1,13 +1,13 @@
 <template>
-    <el-form :model="data" :rules="rules" ref="basicForm" :label-width="settings.lableWidth" v-loading ="basicFormLoading">
+    <el-form :model="data" :rules="rules" ref="basicForm" :label-width="settings.lableWidth">
         <el-form-item label="名称"   prop="categoryName">
             <el-input autocomplete="off" v-model="data.categoryName" placeholder="请输入名称"></el-input>
         </el-form-item>
         <el-form-item label="目录类型" v-if="data.pid!=''" >
             <el-select  placeholder="请选择目录类型" v-model="data.type" :disabled="settings.formType=='basic'">
-                <el-option label="知识库" :value=0 v-if="settings.formType=='basic'"></el-option>
-                <el-option label="分类" :value=1></el-option>
-                <el-option label="目录" :value=2></el-option>
+                <el-option label="知识库" :value=0 v-if="settings.formType=='basic' || data.isRoot"></el-option>
+                <el-option label="分类" :value=1 v-if="!data.isRoot"></el-option>
+                <el-option label="目录" :value=2 v-if="!data.isRoot"></el-option>
             </el-select>
         </el-form-item>
         <el-form-item label="显示顺序" prop="sort">
@@ -35,7 +35,7 @@
                                 <div></div>
                                 <el-button-group class="search">
                                     <el-input placeholder="请输入表单名称" prefix-icon="el-icon-search"
-                                              v-model="searchKeyWord"></el-input>
+                                              v-model="searchKeyWord" @keyup.enter.native="searchAssociatedForm"></el-input>
                                     <el-button type="primary" @click="searchAssociatedForm">搜索</el-button>
                                     <el-button type="primary" @click="certainAssociatedForm">确定</el-button>
                                 </el-button-group>
@@ -90,7 +90,7 @@
         <el-divider></el-divider>
         <p :style="{textIndent:'2em'}"><i class="element-icons el-custom-files"></i>(分类)：表示该目录类型下还可以添加子分类和目录，不能挂知识文档</p>
         <p :style="{textIndent:'2em'}"><i class="element-icons el-custom-file"></i>(目录)：表示该目录类型下不能再添加子目录和分类了，能够挂知识文档</p>
-        <el-button type="primary" :style="{float:'right',marginTop:'-10px'}" :loading="submitBtnLoading" @click="submitForm">保存</el-button>
+        <el-button type="primary" :style="{float:'right',marginTop:'-10px',marginRight:'5%'}" :loading="submitBtnLoading" @click="submitForm">保存</el-button>
     </el-form>
 </template>
 
@@ -124,7 +124,6 @@
             return {
                 data:_.cloneDeep(this.formData),
                 submitBtnLoading:false,
-                basicFormLoading:false,
                 associatedFormLoading:false,
                 showAssociatedFormTable:false,
                 showLabelClassification:false,
@@ -182,10 +181,15 @@
         watch:{
             formData:{
                 handler(newVal,oldVal){
-
                     this.data = _.cloneDeep(newVal);
                     if(this.settings.formType=="append")
-                        this.data.type = 1;//新增默認是分類
+                    {
+                        if(newVal.isRoot)
+                            this.data.type = 0;//根节点下新增是知识库
+                        else
+                            this.data.type = 1;//新增默認是分類
+                    }
+
                     let data = {
                         page:this.tableSettings.currentPage,
                         rows:this.tableSettings.pageSize,
@@ -210,8 +214,8 @@
                 this.data.name = this.data.categoryName;
                 this.$refs['basicForm'].validate((valid) => {
                     if (valid) {
+                        /*this.submitBtnLoading = true;*/
                         this.submitBtnLoading = true;
-                        this.basicFormLoading = true;
                         request({
                             url: `${knowListUrl}save`,
                             method: 'post',
@@ -221,17 +225,14 @@
                             {
                                 this.$success("保存成功");
                                 this.$emit("submitSuccess",{type:this.settings.formType,data:this.data});
-                                this.basicFormLoading = false;
                             }
                             else
                             {
                                 this.$error(data.message);
                             }
-                        }).catch()
-                        {
-                            this.basicFormLoading = false;
-                        }
-                        this.submitBtnLoading = false;
+                            this.submitBtnLoading = false;
+                        })
+                      /*  this.submitBtnLoading = false;*/
                     } else {
                         return false;
                     }
@@ -257,10 +258,10 @@
             },
             //region 关联表单方法
             associatedFormCurrentChange(currentRow){
-                this.selectedAssociatedFormTable.formId = currentRow.formId;
+                this.selectedAssociatedFormTable.formId = currentRow.id;
                 this.selectedAssociatedFormTable.formName = currentRow.formName;
             },
-            ssociatedFormSortChange({sort, order}){
+            associatedFormSortChange({sort, order}){
                 let data = {
                     condition:{
                         mainForm:"mainForm",
@@ -295,6 +296,7 @@
             certainAssociatedForm(){
                 this.$set(this.data,"formId",this.selectedAssociatedFormTable.formId);
                 this.$set(this.data,"formName", this.selectedAssociatedFormTable.formName);
+
                 this.showAssociatedFormTable = false;
             },
             searchAssociatedForm(){

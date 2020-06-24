@@ -35,7 +35,7 @@
                                 <div></div>
                                 <el-button-group class="search">
                                     <el-input placeholder="请输入表单名称" prefix-icon="el-icon-search"
-                                              v-model="searchKeyWord"></el-input>
+                                              v-model="searchKeyWord" @keyup.enter.native="searchAssociatedForm"></el-input>
                                     <el-button type="primary" @click="searchAssociatedForm">搜索</el-button>
                                     <el-button type="primary" @click="certainAssociatedForm">确定</el-button>
                                 </el-button-group>
@@ -164,8 +164,8 @@
                                 }
                                 this.$emit("submitSuccess",{type:type,data:data.content.datas[0]});
                             }
+                            this.formLoading = false;
                         });
-                        this.formLoading = false;
                     } else {
                         return false;
                     }

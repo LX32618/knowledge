@@ -46,7 +46,7 @@
                                 <div></div>
                                 <el-button-group class="search">
                                     <el-input placeholder="请输入表单名称" prefix-icon="el-icon-search"
-                                              v-model="browseBtnKeyWord"></el-input>
+                                              v-model="browseBtnKeyWord" @keyup.enter.native="searchBrowseBtn"></el-input>
                                     <el-button type="primary" @click="searchBrowseBtn">搜索</el-button>
                                     <el-button type="primary" @click="certainBrowseBtn">确定</el-button>
                                 </el-button-group>
@@ -57,19 +57,23 @@
             </div>
         </el-form-item>
         <el-form-item label="字段长度" v-if="data.htmlType == 0 && data.fieldType == 0">
-            <el-input autocomplete="off"  v-model="data.fieldLength"  :disabled="data.id != ''" ></el-input>
+           <!-- <el-input autocomplete="off"  v-model="data.fieldLength"  :disabled="data.id != ''" ></el-input>-->
+            <el-input-number v-model="data.fieldLength" :disabled="data.id != ''" :min="1"></el-input-number>
         </el-form-item>
-        <el-form-item label="精确位数" v-if="data.htmlType == 0 && data.fieldType == 2">
-            <el-input autocomplete="off"  v-model="data.fieldFixed" :disabled="data.id != ''"></el-input>
+        <el-form-item label="精确位数" v-if="data.htmlType == 0 && data.fieldType == 2" prop="fieldFixed">
+        <!--    <el-input autocomplete="off"  v-model="data.fieldFixed" :disabled="data.id != ''"></el-input>-->
+            <el-input-number v-model="data.fieldFixed" :disabled="data.id != ''" :min="1"></el-input-number>
         </el-form-item>
         <el-form-item label="是否可多选" v-if="data.htmlType == 4 || data.htmlType == 5">
             <el-switch v-model="data.isMulti"  active-value="1" inactive-value="0"></el-switch>
         </el-form-item>
-        <el-form-item label="默认高度" v-if="data.htmlType == 9">
-            <el-input autocomplete="off"  v-model="data.height"></el-input>%
+        <el-form-item label="默认高度" v-if="data.htmlType == 9" prop="height">
+     <!--       <el-input autocomplete="off"  v-model="data.height"></el-input>%-->
+            <el-input-number v-model="data.height" :precision="2" :step="0.1" :min="0"></el-input-number>%
         </el-form-item>
-        <el-form-item label="默认宽度" v-if="data.htmlType == 9">
-            <el-input autocomplete="off"  v-model="data.width"></el-input>%
+        <el-form-item label="默认宽度" v-if="data.htmlType == 9" prop="width">
+           <!-- <el-input autocomplete="off"  v-model="data.width"></el-input>%-->
+            <el-input-number v-model="data.width" :precision="2" :step="0.1" :min="0"></el-input-number>%
         </el-form-item>
         <el-form-item label="字段验证" v-if="data.htmlType == 11">
             <el-input autocomplete="off"  v-model="data.fieldCheck"></el-input>
@@ -94,7 +98,7 @@
                     request({
                         url: `${modelUrl}check`,
                         method: 'post',
-                        data:{fieldName:this.data.fieldName},
+                        data:{formId:this.fieldData.formId,fieldName:this.data.fieldName},
                     }).then(data=>{
                         if(data.status =="success")
                         {
@@ -186,6 +190,18 @@
                         {required: true, pattern:/(^[a-zA-Z][a-zA-Z0-9_]*$)/, message: "字段名称必须以字母开头，只可包含字母、数字和下划线", trigger: "blur"},
                         {required: true, validator:fieldNameVlidator, trigger: "blur"}
                     ]
+/*                    fieldLength:[
+                        {required: true, pattern:/(^[1-9][0-9]*$)/, message: "字段长度应该为正整数", trigger: "blur"}
+                    ],
+                    fieldFixed:[
+                        {required: true, pattern:/(^[1-9][0-9]*$)/, message: "精确位数应该正整数", trigger: "blur"}
+                    ],
+                    height:[
+                        {required: true, pattern:/^[0-9]+.?[0-9]*$/, message: "高度应该为正数，可以为小数", trigger: "blur"}
+                    ],
+                    width:[
+                        {required: true, pattern:/^[0-9]+.?[0-9]*$/, message: "宽度应该为正数，可以为小数数", trigger: "blur"}
+                    ]*/
                 },
             }
         },
@@ -255,8 +271,8 @@
                                 }
                                 this.$emit("submitSuccess",{type:type,data:data.content});
                             }
+                            this.submitBtnLoading = false;
                         });
-                        this.submitBtnLoading = false;
                     } else {
                         return false;
                     }
@@ -353,7 +369,6 @@
                     method: 'post',
                     data:data,
                 }).then(data=>{
-                    this.browseBtnLoading = false;
                     let fileds = this.browseBtnTableSettings.fields.map(f=>{
                         return f.prop;
                     });
@@ -361,6 +376,7 @@
                     this.browseBtnTableData =  data.content.datas.map(d=>{
                         return _.pick(d,fileds);
                     });
+                    this.browseBtnLoading = false;
                 });
             }
 

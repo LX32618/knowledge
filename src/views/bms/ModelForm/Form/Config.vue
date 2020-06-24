@@ -1,5 +1,5 @@
 <template>
-    <div class="config box" v-loading="loading" v-if="Object.keys(data).length != 0">
+    <div class="config box" v-loading="loading" ><!--v-if="Object.keys(data).length != 0"-->
         <div>
             <el-card class="box-card">
                 <div slot="header" class="clearfix">
@@ -31,12 +31,12 @@
                         <el-tooltip class="item" effect="dark" content="添加子表" placement="right">
                             <el-button type="text" icon="el-icon-circle-plus-outline" style="font-size: 16px;" @click.native="appendSubForm()"></el-button>
                         </el-tooltip>
-                        <el-tooltip class="item"  content="编辑子表" placement="right" v-if="data.subForm.length != 0">
+                        <el-tooltip class="item"  content="编辑子表" placement="right" v-if="Object.keys(data).length != 0 && data.subForm.length != 0">
                             <el-button type="text" icon="el-icon-edit" style="font-size: 16px;" @click.native="editSubForm()"></el-button>
                         </el-tooltip>
                     </el-button-group>
                 </div>
-                <div v-if="data.subForm.length != 0">
+                <div v-if="Object.keys(data).length != 0 && data.subForm.length != 0">
                     <el-tabs v-model="activeName"  type="border-card" class="subForm">
                         <el-tab-pane v-for="tab in data.subForm" :key="tab.id" :label="tab.formName" :name="tab.id">
                             <cs-table :settings="tableSettings"
@@ -187,15 +187,17 @@
             submitSubFormSuccess({type,data}){
                 if(type =="append")
                 {
-
                     this.appendSubFormVisible = false;
                     data.datas = [];
-                    this.data.subForm.push(data);
+                    let index = _.sortedIndexBy(this.data.subForm, data, 'sortTable');//找到新插入的数据所在位置
+                    console.log(index);
+                    this.data.subForm.splice(index,0,data);
                 }
                 else if(type == "edit")
                 {
                     this.editSubFormVisible = false;
                     let index = this.data.subForm.findIndex(d=>d.id==data.id);
+                    data.datas = this.data.subForm[index].datas;
                     this.data.subForm.splice(index,1,data);
                 }
                 this.activeName = data.id;

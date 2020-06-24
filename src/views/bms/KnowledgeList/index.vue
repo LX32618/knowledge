@@ -71,6 +71,7 @@
                 this.$set(this, 'basicFormData', data);
             },
             appendTreeNode(node){
+                console.log(node.object);
                 let data = {
                     id:"",
                     pid: node.object.id,
@@ -87,8 +88,8 @@
                     secretLevel:20,
                     isSentMail:0,//是否开启邮件（0否1是）
                     enable:0,//是否开启邮件（0否1是）
-                    remark:""
-
+                    remark:"",
+                    isRoot:node.object.pid=="0"?true:false
                 };
                 this.$set(this, 'appendFormData', data);
                 this.appendFormVisible = true;

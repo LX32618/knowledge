@@ -134,19 +134,25 @@
                 }).catch(() => {
                 });
             },
-            submitSuccess({type,data}){
-                if(type == "append")
+            submitSuccess({result,type,data}){
+                if(result=="success")
                 {
-                    this.appendFormVisible = false;
-                     this.$refs.lazytree.appendSuccess(data.pid);
+                    if(type == "append")
+                    {
+                        this.appendFormVisible = false;
+                        this.$refs.lazytree.appendSuccess(data.pid);
+                    }
+                    else if(type == "edit")
+                    {
+                        this.editFormVisible = false;
+                        this.$refs.lazytree.editSuccess(data);
+                        this.$set(this,"viewFormData",data);
+                    }
                 }
-                else if(type == "edit")
-                {
-                    this.editFormVisible = false;
-                    this.$refs.lazytree.editSuccess(data);
-                    this.$set(this,"viewFormData",data);
+                else{
+                    this.$error(data.message);
                 }
-
+                this.submitBtnLoading = false;
             },
             treeDataFormat({node,data}){
                 const temp = _.cloneDeep(data);
@@ -181,7 +187,6 @@
             submitForm(form){
                 this.submitBtnLoading = true;
                 this.$refs[form].submitForm();
-                this.submitBtnLoading = false;
             }
         },
         mounted() {
