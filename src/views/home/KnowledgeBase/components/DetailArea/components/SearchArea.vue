@@ -123,7 +123,7 @@ export default {
         name: "knowledgeForm",
         params: {
           id: this.currentKnowledgeBase.id,
-          baseid: this.selectedCategory.id
+          classification: this.selectedCategory.id
         }
       });
       window.open(routeData.href, '_blank');

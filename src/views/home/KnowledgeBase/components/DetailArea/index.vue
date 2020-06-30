@@ -147,10 +147,13 @@ export default {
         page: this.page
       }).then(res => {
         this.knowledges = res.content.datas.map(item => {
-          const result = item.knowledgeBase
-          result.classificationName = result.classificationEnt.categoryname
-          result.creatorName = result.creatorEnt.username
+          const result = item.knowledgeBase || {}
+          result.classificationName = result.classificationEnt ? result.classificationEnt.categoryname : ''
+          result.creatorName = result.creatorEnt ? result.creatorEnt.username : ''
           result.isSubscribe = item.isSubscribe
+          if (!result.id) {
+            result.id = item.knowledgeId
+          }
           return result
         })
         this.total = res.content.total

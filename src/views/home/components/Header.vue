@@ -70,7 +70,7 @@
       </el-col>
       <!-- 用户名下拉菜单 -->
       <el-col :span="3">
-        <el-dropdown class="user-name" @command="handleCommand">
+        <el-dropdown class="user-name" @command="handleCommand" trigger="click">
           <span class="el-dropdown-link">
             {{ userInfo.name }}<i class="el-icon-caret-bottom"></i>
           </span>
@@ -250,6 +250,7 @@ export default {
 }
 .el-dropdown-link {
   cursor: pointer;
+  font-size: 16px;
 }
 .message-content {
   margin-top: 10px;

@@ -43,7 +43,6 @@
 </template>
 
 <script>
-// import { fetchKnowledgeDetail } from '@/api/knowledge'
 import { getModelAndData } from '@/api/knowledgeData'
 import ToolBar from './components/ToolBar'
 import ContentContainer from './components/ContentContainer'
@@ -69,7 +68,7 @@ export default {
   },
   methods: {
     handleSaveSuccess () {
-      location.reload()
+      // location.reload()
     },
     update () {
       this.isLoading = true
@@ -79,7 +78,11 @@ export default {
         baseData.creatorName = baseData.creatorEnt.username
         this.baseData = baseData
         this.formData = res.content.knowledgeData.formData
-        this.formConfig = res.content.knowledgeModel.formModel
+        const formConfig = res.content.knowledgeModel.formModel
+        this.formConfig = Array.isArray(formConfig) ? {
+          formType: 1,
+          relationForms: formConfig
+        } : formConfig
         this.isLoading = false
       })
     }

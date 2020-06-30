@@ -34,8 +34,6 @@
 <script>
 import { mapGetters } from 'vuex'
 import axios from 'axios'
-// import { fetchKnowledgeCount, fetchCollectKnowledgeCount } from '@/api/knowledge'
-// import { fetchKnowledgeCount } from '@/api/knowledge'
 import { fetchCollectKnowledgeCount } from '@/api/knowledgeCollect'
 import { fetchKnowledgeCount } from '@/api/knowledgeBase'
 import { errorMsg } from '@/utils/msg'
@@ -83,7 +81,7 @@ export default {
         name: "knowledgeForm",
         params: {
           id: '0',
-          baseid: '0'
+          classification: '0'
         }
       })
       window.open(routeData.href, '_blank')

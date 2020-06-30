@@ -61,7 +61,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { saveData } from '@/api/knowledgeData'
+import { saveData, saveFormData } from '@/api/knowledgeData'
 import KnowledgePush from './components/KnowledgePush'
 import DynamicForm from '@/components/Form/DynamicForm'
 import KnowledgeShareForm from './components/KnowledgeShareForm'
@@ -92,7 +92,8 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'baseFormConfig'
+      'baseFormConfig',
+      'userInfo'
     ])
   },
   methods: {
@@ -111,7 +112,10 @@ export default {
     },
     createKnowledgeModel () {
       const knowledgeModel = {
-        knowledgeBase: {},
+        knowledgeBase: {
+          id: this.$route.params.id,
+          creator: this.userInfo.id
+        },
         mainFormData: {},
         associatedFormData: []
       }
@@ -156,7 +160,8 @@ export default {
       }
       this.saveButtonLoading = true
       const knowledgeModel = this.createKnowledgeModel()
-      saveData(knowledgeModel).then(res => {
+      const saveHandler = this.showBase ? saveData : saveFormData
+      saveHandler(knowledgeModel).then(res => {
         this.$success('保存成功')
         this.isViewMode = true
         this.saveButtonLoading = false

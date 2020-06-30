@@ -31,9 +31,17 @@ export function saveBaseData (knowledge, creator, baseId) {
 
 // 保存知识
 export function saveData (data) {
-  console.log(data)
   return request({
     url: `${rootUrl}saveData`,
+    method: 'post',
+    data
+  })
+}
+
+// 保存表单数据知识
+export function saveFormData (data) {
+  return request({
+    url: `${rootUrl}saveFormData`,
     method: 'post',
     data
   })

@@ -96,7 +96,7 @@ const homeRouter = [
     }]
   },
   {
-    path: '/knowledgeForm/:id/:baseid',
+    path: '/knowledgeForm/:id/:classification',
     name: 'knowledgeForm',
     props: true,
     component: () => import("@/components/Form/KnowledgeBaseForm"),

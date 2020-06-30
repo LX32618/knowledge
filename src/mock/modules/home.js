@@ -1,6 +1,7 @@
 // import Mock from 'mockjs'
 // import _ from 'lodash'
 // import store from '@/store'
+// import staticData from '../datas/staticData'
 
 // const list = []
 
@@ -329,43 +330,34 @@
 //       }
 //     }
 //   }, {
-//     url: /\/knowledge\/getLablesTree.*/,
+//     url: /\/labels\/get.*/,
+//     type: 'post',
 //     response: _ => {
-//       const data = [...lableList, ...labelList2]
+//       return staticData.labels
+//     }
+//   }, {
+//     url: /\/knowledgeSubscribe\/subscribe.*/,
+//     type: 'post',
+//     response: _ => {
 //       return {
 //         status: 'success',
-//         content: data
+//         content: {}
 //       }
 //     }
 //   }, {
-//     url: /\/knowledge\/validateKnowledgeName.*/,
-//     response: config => {
-//       const { name } = config.query
-//       let data = true
-//       if (name === '已用' || name === 'used') {
-//         data = false
-//       }
+//     url: /\/knowledgeSubscribe\/cancelSubscribe.*/,
+//     type: 'post',
+//     response: _ => {
 //       return {
 //         status: 'success',
-//         content: data
+//         content: {}
 //       }
 //     }
 //   }, {
-//     url: /\/knowledge\/dataView.*/,
-//     response: config => {
-//       const { id } = config.query
-//       let data = knowledgeList.find(item => item.id == id)
-//       data.baseid = '180'
-//       data.secretLevel = 10
-
-//       return {
-//         status: 'success',
-//         content: {
-//           baseData: data,
-//           formConfig: vitualForm,
-//           // formConfig: entityForm
-//         }
-//       }
+//     url: /\/knowledgeDataController\/getModelAndData.*/,
+//     type: 'post',
+//     response: _ => {
+//       return staticData.formDataAndModel
 //     }
 //   }, {
 //     url: /\/knowledge\/pushList.*/,
@@ -379,19 +371,18 @@
 //       }
 //     }
 //   }, {
-//     url: /\/sysDic\/dictTree.*/,
+//     url: /\/dicTree\/get.*/,
+//     type: 'post',
 //     response: _ => {
-//       return {
-//         status: 'success',
-//         content: dicts
-//       }
+//       return staticData.dictTree
 //     }
 //   }, {
 //     url: /save.*/,
+//     type: 'post',
 //     response: _ => {
 //       return {
 //         status: 'success',
-//         content: {}
+//         content: 'test123'
 //       }
 //     }
 //   }
