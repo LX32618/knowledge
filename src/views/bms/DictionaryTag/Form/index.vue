@@ -79,10 +79,10 @@
                             if(data.status == "success")
                             {
                                 this.$success("保存成功");
-                                this.$emit("submitSuccess",{type:this.settings.type,data:this.data});
+                                this.$emit("submitSuccess",{result:"success",type:this.settings.type,data:this.data});
                             }
                             else{
-                                this.$error(data.message);
+                                this.$emit("submitSuccess",{result:"error",data:data});
                             }
 
                         });
