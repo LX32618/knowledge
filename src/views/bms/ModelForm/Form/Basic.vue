@@ -1,5 +1,5 @@
 <template>
-    <el-form :model="data" :rules="rules" ref="basicForm" label-width="100px" v-loading="formLoading" >
+    <el-form :model="data" :rules="rules" ref="basicForm" label-width="100px">
         <el-form-item label="表单名称" prop="formName">
             <el-input autocomplete="off" placeholder="请输入表单名称" v-model="data.formName"></el-input>
         </el-form-item>
@@ -53,7 +53,7 @@
         <el-form-item label="表单排序" prop="sortTable">
             <el-input autocomplete="off" v-model.number="data.sortTable" ></el-input>
         </el-form-item>
-        <el-button type="primary" class="saveBtn"  @click="submitForm">保存</el-button>
+        <el-button type="primary" class="saveBtn" :loading="savtBtnLoading" @click="submitForm">保存</el-button>
     </el-form>
 </template>
 
@@ -93,7 +93,7 @@
                 }
             })
             return{
-                formLoading:false,
+                savtBtnLoading:false,
                 knowledgeDirs:[],
                 showAssociatedForm:false,
                 associatedFormLoading:false,
@@ -136,7 +136,7 @@
             submitForm() {
                 this.$refs['basicForm'].validate((valid) => {
                     if (valid) {
-                        this.formLoading = true;
+                        this.savtBtnLoading = true;
                         let data = _.cloneDeep(this.data);
                         if(this.data.formType==0)//实体表单
                         {
@@ -164,7 +164,7 @@
                                 }
                                 this.$emit("submitSuccess",{type:type,data:data.content.datas[0]});
                             }
-                            this.formLoading = false;
+                            this.savtBtnLoading = false;
                         });
                     } else {
                         return false;

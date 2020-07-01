@@ -65,7 +65,7 @@ const sidebar = {
                         name: "BrowseButton",
                         path: "browsebutton",
                         meta:{title:"浏览按钮"},
-                        component:()=>import('@/views/About')
+                        component:()=>import('@/views/bms/BrowseButton')
                     }
                 ]
 

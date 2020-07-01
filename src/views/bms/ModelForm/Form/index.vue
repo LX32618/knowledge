@@ -3,7 +3,7 @@
         <el-tab-pane :key="0" label="基本信息" name="basic" >
             <basic :formData="formData" @submitSuccess="basicSubmitSuccess"></basic>
         </el-tab-pane>
-        <el-tab-pane :key="1" label="表单配置" name="config" v-if="formData.formType=='0'" :disabled="formData.id==''">
+        <el-tab-pane :key="1" label="表单配置" name="config" v-if="formData.formType==0" :disabled="formData.id==''">
             <config ref="configForm"></config>
         </el-tab-pane>
     </el-tabs>
@@ -33,6 +33,7 @@
                 }
             },
             basicSubmitSuccess(val){
+
                 this.$emit("submitSuccess",val);
             }
 
@@ -40,6 +41,7 @@
         watch:{
             formData:{
                 handler(newVal){
+                    console.log(newVal);
                     this.data = _.cloneDeep(this.formData);
                     this.activeName = "basic";
                 },

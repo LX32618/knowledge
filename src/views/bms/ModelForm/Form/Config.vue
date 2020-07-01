@@ -190,7 +190,6 @@
                     this.appendSubFormVisible = false;
                     data.datas = [];
                     let index = _.sortedIndexBy(this.data.subForm, data, 'sortTable');//找到新插入的数据所在位置
-                    console.log(index);
                     this.data.subForm.splice(index,0,data);
                 }
                 else if(type == "edit")

@@ -22,11 +22,11 @@
             </template>
         </cs-table>
 
-        <el-dialog title="表单添加" :visible.sync="appendFormVisible" :close-on-click-modal="false" width="60%">
+        <el-dialog title="表单添加" :visible.sync="appendFormVisible" :close-on-click-modal="false" width="50%">
             <cs-form :form-data="appendFormData" @submitSuccess="submitSuccess"></cs-form>
         </el-dialog>
 
-        <el-dialog title="表单编辑" :visible.sync="editFormVisible" :close-on-click-modal="false" width="60%">
+        <el-dialog title="表单编辑" :visible.sync="editFormVisible" :close-on-click-modal="false" width="50%">
             <cs-form :form-data="editFormData" @submitSuccess="submitSuccess"></cs-form>
         </el-dialog>
     </div>
@@ -147,7 +147,6 @@
                     this.editFormVisible = false;
                     let index = this.tableData.findIndex(d=>d.id==data.id);
                     this.tableData.splice(index,1,data);
-
                 }
             },
             remove(){
