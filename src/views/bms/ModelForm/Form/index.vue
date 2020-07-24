@@ -14,8 +14,6 @@
     import Basic from "./Basic";
     import Config from "./Config";
 
-    let modelUrl = "/api/model/";
-
     export default {
         name: "Form",
         props:["formData"],
