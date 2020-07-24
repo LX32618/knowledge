@@ -21,9 +21,9 @@
                 </span>
         </el-tree2>
         <div id="right_click_menu" v-if="settings.right_click"  v-show="show_right_click">
-            <el-button v-if="show_append_btn" icon="el-icon-circle-plus" size="mini" @click="append">添加</el-button>
-            <el-button v-if="show_edit_btn" icon="el-icon-edit" size="mini" @click="edit">编辑</el-button>
-            <el-button v-if="show_remove_btn" icon="el-icon-delete-solid" size="mini" @click="remove">删除</el-button>
+            <el-button v-if="show_append_btn" icon="el-icon-circle-plus" size="mini" @click="append">{{append_btn_label}}</el-button>
+            <el-button v-if="show_edit_btn" icon="el-icon-edit" size="mini" @click="edit">{{edit_btn_label}}</el-button>
+            <el-button v-if="show_remove_btn" icon="el-icon-delete-solid" size="mini" @click="remove">{{remove_btn_label}}</el-button>
         </div>
     </div>
 </template>
@@ -55,7 +55,10 @@
                 show_right_click:false,//控制右键menu的显隐
                 show_append_btn:true,//控制右键中的添加载按钮的显隐
                 show_edit_btn:true,//控制右键中的编辑按钮的显隐
-                show_remove_btn:true//控制右键中的删除按钮的显隐
+                show_remove_btn:true,//控制右键中的删除按钮的显隐
+                append_btn_label:"添加",
+                edit_btn_label:"编辑",
+                remove_btn_label:"删除"
             }
         },
         methods: {
@@ -70,6 +73,9 @@
                     this.show_append_btn = object.right_click_option.append;
                     this.show_edit_btn = object.right_click_option.edit;
                     this.show_remove_btn = object.right_click_option.remove;
+                    this.append_btn_label = object.right_click_option.appendLabel?object.right_click_option.appendLabel:"添加";
+                    this.edit_btn_label = object.right_click_option.editLabel?object.right_click_option.appendLabel:"编辑";
+                    this.remove_btn_label = object.right_click_option.removeLabel?object.right_click_option.appendLabel:"删除";
                 }
             },
             vanish() { // 取消鼠标监听事件

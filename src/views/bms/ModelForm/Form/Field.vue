@@ -57,22 +57,18 @@
             </div>
         </el-form-item>
         <el-form-item label="字段长度" v-if="data.htmlType == 0 && data.fieldType == 0">
-           <!-- <el-input autocomplete="off"  v-model="data.fieldLength"  :disabled="data.id != ''" ></el-input>-->
             <el-input-number v-model="data.fieldLength" :disabled="data.id != ''" :min="1"></el-input-number>
         </el-form-item>
         <el-form-item label="精确位数" v-if="data.htmlType == 0 && data.fieldType == 2" prop="fieldFixed">
-        <!--    <el-input autocomplete="off"  v-model="data.fieldFixed" :disabled="data.id != ''"></el-input>-->
             <el-input-number v-model="data.fieldFixed" :disabled="data.id != ''" :min="1"></el-input-number>
         </el-form-item>
         <el-form-item label="是否可多选" v-if="data.htmlType == 4 || data.htmlType == 5">
             <el-switch v-model="data.isMulti"  active-value="1" inactive-value="0"></el-switch>
         </el-form-item>
         <el-form-item label="默认高度" v-if="data.htmlType == 9" prop="height">
-     <!--       <el-input autocomplete="off"  v-model="data.height"></el-input>%-->
             <el-input-number v-model="data.height" :precision="2" :step="0.1" :min="0"></el-input-number>%
         </el-form-item>
         <el-form-item label="默认宽度" v-if="data.htmlType == 9" prop="width">
-           <!-- <el-input autocomplete="off"  v-model="data.width"></el-input>%-->
             <el-input-number v-model="data.width" :precision="2" :step="0.1" :min="0"></el-input-number>%
         </el-form-item>
         <el-form-item label="字段验证" v-if="data.htmlType == 11">
@@ -190,18 +186,6 @@
                         {required: true, pattern:/(^[a-zA-Z][a-zA-Z0-9_]*$)/, message: "字段名称必须以字母开头，只可包含字母、数字和下划线", trigger: "blur"},
                         {required: true, validator:fieldNameVlidator, trigger: "blur"}
                     ]
-/*                    fieldLength:[
-                        {required: true, pattern:/(^[1-9][0-9]*$)/, message: "字段长度应该为正整数", trigger: "blur"}
-                    ],
-                    fieldFixed:[
-                        {required: true, pattern:/(^[1-9][0-9]*$)/, message: "精确位数应该正整数", trigger: "blur"}
-                    ],
-                    height:[
-                        {required: true, pattern:/^[0-9]+.?[0-9]*$/, message: "高度应该为正数，可以为小数", trigger: "blur"}
-                    ],
-                    width:[
-                        {required: true, pattern:/^[0-9]+.?[0-9]*$/, message: "宽度应该为正数，可以为小数数", trigger: "blur"}
-                    ]*/
                 },
             }
         },
@@ -288,7 +272,7 @@
                     rows:this.browseBtnTableSettings.pageSize,
                     condition:{
                         refName:"",
-                        isMulti:this.data.htmlType == 6?"0":this.data.htmlType==7?"1":""
+                        isMulti:this.data.htmlType == 6?0:this.data.htmlType==7?1:-1
                     }
                 };
                 this.loadBrowseBtnData(data);
@@ -325,7 +309,7 @@
             browseBtnSortChange({sort, order}){
                 let data = {
                     condition:{
-                        isMulti:this.data.htmlType == 6?"0":this.data.htmlType==7?"1":"",
+                        isMulti:this.data.htmlType == 6?0:this.data.htmlType==7?1:-1,
                         refName:this.searchKeyword,
                         sort:sort,
                         order:order,
@@ -341,7 +325,7 @@
                     rows:rows,
                     condition:{
                         refName:this.browseBtnKeyWord,
-                        isMulti:this.data.htmlType == 6?"0":this.data.htmlType==7?"1":""
+                        isMulti:this.data.htmlType == 6?0:this.data.htmlType==7?1:-1
                     }
                 };
                 this.loadBrowseBtnData(data);
@@ -352,7 +336,7 @@
                     rows:this.browseBtnTableSettings.pageSize,
                     condition:{
                         refName:this.browseBtnKeyWord,
-                        isMulti:this.data.htmlType == 6?"0":this.data.htmlType==7?"1":""
+                        isMulti:this.data.htmlType == 6?0:this.data.htmlType==7?1:-1
                     }
                 };
                 this.loadBrowseBtnData(data);

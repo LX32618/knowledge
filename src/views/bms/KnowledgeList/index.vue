@@ -101,7 +101,6 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    console.log(node.object);
                     request({
                         url: `${rootUrl}delete`,
                         method: 'post',
@@ -135,14 +134,14 @@
                 const temp = _.cloneDeep(data);
                 let formatData = temp.map((item,index,arr)=>{
                     item.sort = parseInt(item.sort);
-             /*       item.type = item.type.toString();*/
                     if(item.pid==this.treeSettings.root_id)
                     {
                         item.icon = "element-icons el-custom-book";
                         item.right_click_option={
                             append:true,
                             edit:false,
-                            remove:false
+                            remove:false,
+                            appendLabel:"添加知识目录"
                         };
                     }
                     else if(item.type==0){

@@ -22,24 +22,28 @@
             </template>
         </cs-table>
 
-        <el-dialog title="表单添加" :visible.sync="appendFormVisible" :close-on-click-modal="false" width="50%">
+        <el-dialog title="浏览按钮配置" :visible.sync="appendFormVisible" :close-on-click-modal="false" width="50%">
             <cs-form :form-data="appendFormData" @submitSuccess="submitSuccess"></cs-form>
         </el-dialog>
 
-        <el-dialog title="表单编辑" :visible.sync="editFormVisible" :close-on-click-modal="false" width="50%">
+        <el-dialog title="浏览按钮配置" :visible.sync="editFormVisible" :close-on-click-modal="false" width="50%">
             <cs-form :form-data="editFormData" @submitSuccess="submitSuccess"></cs-form>
         </el-dialog>
     </div>
 </template>
 
 <script>
-    import form from "./Form"
     import request from '@/utils/request'
+    import form from './Form'
+    import {mapGetters} from "vuex";
 
-    let modelUrl = "/api1/system/knowledgeFormController/";
+    let browseBtnUrl = '/api4/app/authcenter/api/SysRefObjServer/';
 
     export default {
-        name: "ModelForm",
+        name: "BrowseButton",
+        components:{
+            "cs-form":form
+        },
         data(){
             return {
                 tableLoading:false,
@@ -56,16 +60,34 @@
                     total:0,//一共有多少条数据
                     fields: [
                         {prop: "id", label: "id", sortable: false, visible: false},
-                        {prop: "formName", label: "表单名称", sortable: true},
-                        {prop: "formType", label: "表单类型", sortable: false,
+                        {prop: "refName", label: "名称", sortable: true},
+                        {prop: "refType", label: "类型", sortable: false,
                             formatter(index,row)
                             {
-                                return row.formType==0?"实体表单":"虚拟表单";
+                                return row.refType==0?"默认":"自定义sql";
                             }},
-                        {prop: "sortTable", label: "表单顺序", visible:false},
-                        {prop: "tableName", label: "数据库表名", sortable: true},
-                        {prop: "knowledgeDir", label: "知识库", sortable: false},
-                        {prop: "associatedForm", label: "关联表单", visible:false},
+                        {prop: "keyField", label: "标识字段"},
+                        {prop: "viewField", label: "显示字段"},
+                        {prop: "viewUrl", label: "链接地址"},
+                        {prop: "isMulti", label: "多选",
+                            formatter(index,row)
+                            {
+                                return row.isMulti==0?"否":"是";
+                            }
+                        },
+                        {prop: "isSys", label: "系统对象",
+                            formatter(index,row)
+                            {
+                                return row.isSys==0?"否":"是";
+                            }
+                        },
+                        {prop: "refSql", label: "SQL", visible:false},
+                        {prop: "categoryName", label: "知识目录", visible:false},
+                        {prop: "categoryId", label: "知识目录id", visible:false},
+                        {prop: "importField", label: "导入标识", visible:false},
+                        {prop: "viewUrl", label: "链接地址", visible:false},
+                        {prop: "filter", label: "过滤条件", visible:false},
+                        {prop: "createrId", label: "createrId", visible:false},
                     ]
                 },
                 tableData:[],
@@ -76,13 +98,13 @@
                 }
             }
         },
-        components:{
-            "cs-form":form
+        computed: {
+            ...mapGetters([
+                'userInfo'
+            ])
         },
         methods:{
             currentChange(val){//单选事件
-                val.mainId = "";
-               /* val.formType = val.formType.toString();*/
                 this.$set(this,"editFormData",val);
             },
             pageSizeChange({page,rows})
@@ -103,62 +125,10 @@
             sortChange({sort, order}){
                 let data = {
                     condition:{
-                        mainForm:"mainForm",
-                        formType:"",
-                        formName:this.searchKeyword,
+                        isMulti:-1,
+                        refName:this.searchKeyword,
                         sort:sort,
                         order:order,
-                    },
-                    page:this.tableSettings.currentPage,
-                    rows:this.tableSettings.pageSize
-                };
-                this.loadTableData(data);
-            },
-            append(){
-                this.appendFormData= {
-                    mainId:"",
-                    id:"",
-                    formName:"",
-                    formType:0,
-                    tableName:"",
-                    knowledgeDir:"",
-                    sortTable:0,
-                    associatedForm:[]
-                },
-                this.appendFormVisible = true;
-            },
-            edit(){
-                if(this.editFormData.id)
-                {
-                    this.editFormVisible = true;
-                }
-                else{
-                    this.$error("请先选择要编辑的数据");
-                }
-
-            },
-            submitSuccess({type,data}){
-                if(type=="append")
-                {
-                    this.$set(this,"appendFormData",data);
-                    this.tableData.unshift(data);
-                }
-                else if(type=="edit"){
-                    this.editFormVisible = false;
-                    let index = this.tableData.findIndex(d=>d.id==data.id);
-                    this.tableData.splice(index,1,data);
-                }
-            },
-            remove(){
-            },
-            search(){
-                let data = {
-                    condition:{
-                        mainForm:"mainForm",
-                        formType:"",
-                        formName:this.searchKeyword,
-                        sort:"ID",
-                        order:"desc",
                     },
                     page:this.tableSettings.currentPage,
                     rows:this.tableSettings.pageSize
@@ -168,7 +138,7 @@
             loadTableData(data) {
                 this.tableLoading = true;
                 request({
-                    url: `${modelUrl}loadData`,
+                    url: `${browseBtnUrl}get`,
                     method: 'post',
                     data:data,
                 }).then(data=>{
@@ -182,13 +152,72 @@
                     });
                 });
             },
+            append(){
+                let appendFormData = {
+                    id:"",
+                    refName:"",
+                    refType:0,
+                    refSql:"",
+                    categoryId:"",
+                    categoryName:"",
+                    createrId:this.userInfo.id,
+                    keyField:"id",
+                    viewField:"name",
+                    importField:"",
+                    viewUrl:"system/knowledgeDataController/dataView?baseid=&#36;{id}&edittype=2",
+                    filter:"",
+                    isMulti:0,
+                    isSys:0
+                };
+                this.$set(this,"appendFormData",appendFormData);
+                this.appendFormVisible = true;
+            },
+            edit(){
+                if(this.editFormData.id)
+                {
+                    this.editFormVisible = true;
+                }
+                else{
+                    this.$error("请先选择要编辑的数据");
+                }
+            },
+            remove(){},
+            search(){
+                let data = {
+                    condition:{
+                        isMulti:-1,
+                        refName:this.searchKeyword
+                    },
+                    page:this.tableSettings.currentPage,
+                    rows:this.tableSettings.pageSize
+                };
+                this.loadTableData(data);
+            },
+            submitSuccess({type,data}){
+                if(type == "edit")
+                {
+                    let index = this.tableData.findIndex(d=> d.id == data.id);
+                    this.tableData.splice(index,1,data);
+                    this.editFormVisible = false;
+
+                }
+                else if(type == "append")
+                {
+                    this.tableData.unshift(data);
+                    this.appendFormVisible = false;
+                }
+                else{
+
+                }
+
+            }
         },
         mounted() {
             let data = {
                 condition:{
-                    mainForm:"mainForm",
-                    formName:"",
-                    sort:"ID",
+                    isMulti:-1,
+                    refName:"",
+                    sort:"",
                     order:"",
                 },
                 page:this.tableSettings.currentPage,
