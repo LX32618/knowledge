@@ -1,6 +1,7 @@
 const path = require("path");
 const resolve = dir => path.join(__dirname, dir);
 module.exports = {
+    publicPath: '/knowledge',
     devServer: {
         proxy: {
             '/api1': {

@@ -33,20 +33,22 @@
         <!-- 主表 -->
         <dynamic-form
           ref="mainForm"
-          :config="covertUpperFieldName(formConfig)"
-          :formData="formData.mainForm"
+          :config="convertUpperFieldName(formConfig)"
+          :formData="formData.mainForm || {}"
           :isViewMode="isViewMode"
           @save="handleSubFormSave"
         ></dynamic-form>
         <!-- 子表 -->
-        <dynamic-form
+        <!-- <html-form></html-form> -->
+        <!-- <dynamic-form
           v-for="subForm of formConfig.subForm"
           :key="subForm.id"
           :ref="`Form-${subForm.id}`"
-          :config="covertUpperFieldName(subForm)"
+          :config="convertUpperFieldName(subForm)"
+          :formData="getSubFormDataById(subForm.formId)"
           :isViewMode="isViewMode"
           @save="handleSubFormSave"
-        ></dynamic-form>
+        ></dynamic-form> -->
       </el-card>
     </el-col>
     <el-col :offset="1" :span="4">
@@ -64,6 +66,8 @@ import { mapGetters } from 'vuex'
 import { saveData, saveFormData } from '@/api/knowledgeData'
 import KnowledgePush from './components/KnowledgePush'
 import DynamicForm from '@/components/Form/DynamicForm'
+import HtmlForm from '@/components/Form/HtmlForm'
+import DynamicInput from '@/components/Input/DynamicInput'
 import KnowledgeShareForm from './components/KnowledgeShareForm'
 
 export default {
@@ -71,7 +75,9 @@ export default {
   components: {
     KnowledgePush,
     KnowledgeShareForm,
-    DynamicForm
+    DynamicForm,
+    HtmlForm,
+    DynamicInput
   },
   props: {
     formConfig: Object,
@@ -87,7 +93,8 @@ export default {
       isViewMode: true, // ture: 查看视图  false：编辑视图
       dialogShow: false,
       editFormData: {},
-      saveButtonLoading: false
+      saveButtonLoading: false,
+      test: ''
     }
   },
   computed: {
@@ -97,7 +104,7 @@ export default {
     ])
   },
   methods: {
-    covertUpperFieldName (config) {
+    convertUpperFieldName (config) {
       if (!config || !config.datas) {
         return config
       }
@@ -105,6 +112,12 @@ export default {
         field.fieldName = field.fieldName.toUpperCase()
       })
       return config
+    },
+    getSubFormDataById (id) {
+      const subFormData = this.formData.subForm.find(item => {
+        return item.ID === id
+      })
+      return subFormData || {}
     },
     edit () {
       this.editFormData = {} // 将所有表单验证状态设置为 false

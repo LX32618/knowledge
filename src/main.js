@@ -5,6 +5,7 @@ import store from './store'
 
 import '@/plugins/element'
 import '@/plugins/notify'
+import '@/plugins/formMaking'
 import '@/components'
 
 import './assets/iconfont/iconfont.css'

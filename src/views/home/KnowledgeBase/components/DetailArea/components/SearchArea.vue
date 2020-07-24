@@ -119,14 +119,21 @@ export default {
     },
     // 新增
     handleAdd () {
-      const routeData = this.$router.resolve({
+      // const routeData = this.$router.resolve({
+      //   name: "knowledgeForm",
+      //   params: {
+      //     id: this.currentKnowledgeBase.id,
+      //     classification: this.selectedCategory.id
+      //   }
+      // })
+      // window.open(routeData.href, '_blank')
+      this.$router.push({
         name: "knowledgeForm",
         params: {
           id: this.currentKnowledgeBase.id,
           classification: this.selectedCategory.id
         }
-      });
-      window.open(routeData.href, '_blank');
+      })
     },
     // 订阅 / 取消订阅目录
     handleSubscribe () {

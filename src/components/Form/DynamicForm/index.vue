@@ -62,7 +62,7 @@
                 <template v-if="field.fieldType === '1'">
                   <el-input-number
                     v-model="model[field.fieldName]"
-                    :disabled="Boolean(field.fieldfixed)"
+                    :disabled="field.disabled"
                     step-strictly
                   />
                 </template>
@@ -70,9 +70,9 @@
                 <template v-else-if="field.fieldType === '2'">
                   <el-input-number
                     v-model="model[field.fieldName]"
-                    :disabled="Boolean(field.fieldfixed)"
-                    :precision="field.precision"
-                    :step="1 / Math.pow(10, field.precision)"
+                    :disabled="field.disabled"
+                    :precision="field.fieldFixed"
+                    :step="1 / Math.pow(10, field.fieldFixed)"
                     step-strictly
                   />
                 </template>
@@ -80,7 +80,7 @@
                 <template v-else>
                   <el-input
                     v-model="model[field.fieldName]"
-                    :disabled="Boolean(field.fieldfixed)"
+                    :disabled="field.disabled"
                   ></el-input>
                 </template>
               </template>
@@ -127,7 +127,7 @@
                 <el-input
                   type="textarea"
                   v-model="model[field.fieldName]"
-                  :disabled="Boolean(field.fieldfixed)"
+                  :disabled="field.disabled"
                   resize="none"
                   rows="3"
                 />
@@ -137,7 +137,7 @@
                 <el-date-picker
                   type="datetime"
                   v-model="model[field.fieldName]"
-                  :disabled="Boolean(field.fieldfixed)"
+                  :disabled="field.disabled"
                 />
               </template>
               <!-- 密级选择框 -->

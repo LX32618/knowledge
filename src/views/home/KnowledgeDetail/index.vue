@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <tool-bar />
+    <!-- <form-making upload preview generate-code generate-json clearable></form-making> -->
     <div v-loading="isLoading">
       <el-tabs v-if="formConfig" type="card">
         <!-- 实体表单 -->
@@ -68,7 +69,7 @@ export default {
   },
   methods: {
     handleSaveSuccess () {
-      // location.reload()
+      location.reload()
     },
     update () {
       this.isLoading = true

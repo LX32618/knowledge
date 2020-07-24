@@ -24,7 +24,7 @@ const state = {
         displayName: '知识编码',
         htmlType: 0,
         fieldType: '',
-        fieldfixed: 1
+        disabled: true
       },
       {
         fieldName: 'secretLevel',
@@ -43,14 +43,14 @@ const state = {
         displayName: '类别',
         htmlType: 0,
         fieldType: '',
-        fieldfixed: 1
+        disabled: true
       },
       {
         fieldName: 'creatorName',
         displayName: '创建人',
         htmlType: 0,
         fieldType: '',
-        fieldfixed: 1
+        disabled: true
       },
       {
         fieldName: 'labelsEnt',
@@ -63,7 +63,7 @@ const state = {
         displayName: '创建时间',
         htmlType: 11,
         fieldType: 'YYYY-MM-DD hh:mm:ss',
-        fieldfixed: 1
+        disabled: true
       },
       {
         fieldName: 'keyword',

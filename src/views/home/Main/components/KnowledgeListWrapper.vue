@@ -77,13 +77,19 @@ export default {
       this.update(tab.name)
     },
     handleLinkClick (id) {
-      const routeData = this.$router.resolve({
+      // const routeData = this.$router.resolve({
+      //   name: 'knowledgeDetail',
+      //   params: {
+      //     id
+      //   }
+      // })
+      // window.open(routeData.href, '_blank')
+      this.$router.push({
         name: 'knowledgeDetail',
         params: {
           id
         }
       })
-      window.open(routeData.href, '_blank')
     }
   },
   mounted () {

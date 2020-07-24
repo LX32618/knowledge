@@ -77,14 +77,21 @@ export default {
     },
     // 打开新增知识页面
     openAddKnowledgePage () {
-      const routeData = this.$router.resolve({
+      // const routeData = this.$router.resolve({
+      //   name: "knowledgeForm",
+      //   params: {
+      //     id: '0',
+      //     classification: '0'
+      //   }
+      // })
+      // window.open(routeData.href, '_blank')
+      this.$router.push({
         name: "knowledgeForm",
         params: {
           id: '0',
           classification: '0'
         }
       })
-      window.open(routeData.href, '_blank')
     }
   },
   mounted () {

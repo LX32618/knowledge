@@ -219,7 +219,7 @@ export default {
       })
     },
     close () {
-      window.close()
+      this.$router.go(-1)
     },
     // 重置表单
     reset () {
