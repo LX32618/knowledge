@@ -21,10 +21,10 @@
             >
           </template>
         </el-button-group>
-        <form-making upload preview generate-code generate-json clearable>
+        <!-- <form-making upload preview generate-code generate-json clearable>
           <template slot="action">
           </template>
-        </form-making>
+        </form-making> -->
         <!-- 基础信息表 -->
         <!-- <dynamic-form
           v-if="showBase"
