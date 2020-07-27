@@ -7,17 +7,19 @@
             <el-tabs v-model="activeName" type="border-card" v-if="basicFormData.pid!='0' && Object.keys(basicFormData).length != 0" :style="{height:'100%'}">
                 <el-tab-pane :key="0" label="基本信息" name="basic">
                     <div>
-                        <basic :settings="basicFormSettings" :form-data="basicFormData" @submitSuccess="submitSuccess"></basic>
+                        <cs-basic :settings="basicFormSettings" :form-data="basicFormData" @submitSuccess="submitSuccess"></cs-basic>
                     </div>
                 </el-tab-pane>
-                <el-tab-pane :key="1" v-if="basicFormData.type==2" label="模板配置" name="template">模板配置</el-tab-pane>
-                <el-tab-pane :key="2" v-if="basicFormData.type==2" label="列表配置" name="list">列表配置</el-tab-pane>
+                <el-tab-pane :key="1" v-if="basicFormData.type==2 && clickData.formId" label="模板配置" name="template">
+                    <cs-template></cs-template>
+                </el-tab-pane>
+                <el-tab-pane :key="2" v-if="basicFormData.type==2 && clickData.formId" label="列表配置" name="list">列表配置</el-tab-pane>
                 <el-tab-pane :key="3" v-if="basicFormData.type!=0" label="权限配置" name="permission">权限配置</el-tab-pane>
-                <el-tab-pane :key="4" v-if="basicFormData.type==2" label="接口配置" name="interface">接口配置</el-tab-pane>
+                <el-tab-pane :key="4" v-if="basicFormData.type==2 && clickData.formId" label="接口配置" name="interface">接口配置</el-tab-pane>
             </el-tabs>
         </div>
         <el-dialog title="新增知识目录" :visible.sync="appendFormVisible" :close-on-click-modal="false">
-            <basic :settings="appendFormSettings" :form-data="appendFormData" @submitSuccess="submitSuccess"></basic>
+            <cs-basic :settings="appendFormSettings" :form-data="appendFormData" @submitSuccess="submitSuccess"></cs-basic>
         </el-dialog>
     </div>
 </template>
@@ -25,6 +27,7 @@
 
 <script>
     import basic from "./Form/Basic"
+    import template from "./Form/Template"
     import _ from 'lodash'
     import request from '@/utils/request'
     import {mapGetters} from "vuex";
@@ -36,6 +39,7 @@
         data(){
             return {
                 activeName:'basic',
+                clickData:{},
                 appendFormVisible:false,
                 treeSettings:{
                     root_id:"0",//根节点id
@@ -68,10 +72,10 @@
         methods:{
             treeNodeClick({data,node})
             {
+                this.clickData = data;
                 this.$set(this, 'basicFormData', data);
             },
             appendTreeNode(node){
-                console.log(node.object);
                 let data = {
                     id:"",
                     pid: node.object.id,
@@ -120,6 +124,7 @@
                 });
             },
             submitSuccess({type,data}){
+                this.clickData = data;
                 if(type == "append")
                 {
                     this.appendFormVisible = false;
@@ -176,7 +181,8 @@
             }
         },
         components:{
-            basic
+            "cs-basic":basic,
+            "cs-template":template
         },
         computed: {
             ...mapGetters([

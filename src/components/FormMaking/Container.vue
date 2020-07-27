@@ -6,13 +6,13 @@
           <div class="components-list">
             <template v-if="basicFields.length">
               <div class="widget-cate">基础字段</div>
-              <draggable tag="ul" :list="basicComponents" 
+              <draggable tag="ul" :list="basicComponents"
                 v-bind="{group:{ name:'people', pull:'clone',put:false},sort:false, ghostClass: 'ghost'}"
                 @end="handleMoveEnd"
                 @start="handleMoveStart"
                 :move="handleMove"
               >
-                
+
                 <li class="form-edit-widget-label" :class="{'no-put': item.type == 'divider'}" v-for="(item, index) in basicComponents" :key="index">
                   <a v-if="basicFields.indexOf(item.type)>=0">
                     <i class="icon iconfont" :class="item.icon"></i>
@@ -21,16 +21,16 @@
                 </li>
               </draggable>
             </template>
-            
+
             <template v-if="advanceFields.length">
               <div class="widget-cate">高级字段</div>
-              <draggable tag="ul" :list="advanceComponents" 
+              <draggable tag="ul" :list="advanceComponents"
                 v-bind="{group:{ name:'people', pull:'clone',put:false},sort:false, ghostClass: 'ghost'}"
                 @end="handleMoveEnd"
                 @start="handleMoveStart"
                 :move="handleMove"
               >
-                
+
                 <li class="form-edit-widget-label" :class="{'no-put': item.type == 'table'}" v-for="(item, index) in advanceComponents" :key="index">
                   <a v-if="advanceFields.indexOf(item.type) >= 0">
                     <i class="icon iconfont" :class="item.icon"></i>
@@ -40,16 +40,16 @@
               </draggable>
             </template>
 
-            
+
             <template v-if="layoutFields.length">
               <div class="widget-cate">布局字段</div>
-              <draggable tag="ul" :list="layoutComponents" 
+              <draggable tag="ul" :list="layoutComponents"
                 v-bind="{group:{ name:'people', pull:'clone',put:false},sort:false, ghostClass: 'ghost'}"
                 @end="handleMoveEnd"
                 @start="handleMoveStart"
                 :move="handleMove"
               >
-                
+
                 <li class="form-edit-widget-label no-put" v-for="(item, index) in layoutComponents" :key="index">
                   <a v-if="layoutFields.indexOf(item.type) >=0">
                     <i class="icon iconfont" :class="item.icon"></i>
@@ -58,26 +58,29 @@
                 </li>
               </draggable>
             </template>
-            
+
           </div>
-          
+
         </el-aside>
         <el-container class="center-container" direction="vertical">
           <el-header class="btn-bar" style="height: 45px;">
             <slot name="action">
             </slot>
             <el-button v-if="upload" type="text" size="medium" icon="el-icon-upload2" @click="handleUpload">导入JSON</el-button>
+            <el-button v-if="initial" type="text" size="medium" icon="element-icons el-custom-initialize" @click="handleUpload">&nbsp;&nbsp;初始化</el-button>
             <el-button v-if="clearable" type="text" size="medium" icon="el-icon-delete" @click="handleClear">清空</el-button>
             <el-button v-if="preview" type="text" size="medium" icon="el-icon-view" @click="handlePreview">预览</el-button>
             <el-button v-if="generateJson" type="text" size="medium" icon="el-icon-tickets" @click="handleGenerateJson">生成JSON</el-button>
             <el-button v-if="generateCode" type="text" size="medium" icon="el-icon-document" @click="handleGenerateCode">生成代码</el-button>
+            <el-button v-if="save" type="text" size="medium" icon="element-icons el-custom-save" @click="handleSave">&nbsp;&nbsp;保存</el-button>
+            <el-button v-if="close" type="text" size="medium" icon="el-icon-circle-close" @click="handleClose">关闭</el-button>
           </el-header>
           <el-main :class="{'widget-empty': widgetForm.list.length == 0}">
-            
+
             <widget-form v-if="!resetJson"  ref="widgetForm" :data="widgetForm" :select.sync="widgetFormSelect"></widget-form>
           </el-main>
         </el-container>
-        
+
         <el-aside class="widget-config-container">
           <el-container>
             <el-header height="45px">
@@ -89,7 +92,7 @@
               <form-config v-show="configTab=='form'" :data="widgetForm.config"></form-config>
             </el-main>
           </el-container>
-          
+
         </el-aside>
 
         <cus-dialog
@@ -132,9 +135,9 @@
           width="800px"
           form
         >
-          
+
           <div id="jsoneditor" style="height: 400px;width: 100%;">{{jsonTemplate}}</div>
-          
+
           <template slot="action">
             <el-button type="primary" class="json-btn" :data-clipboard-text="jsonCopyValue">复制数据</el-button>
           </template>
@@ -160,9 +163,9 @@
         </cus-dialog>
       </el-container>
     </el-main>
-    <el-footer height="30px" style="font-weight: 600;">Powered by <a target="_blank" href="https://github.com/GavinZhuLei/vue-form-making">vue-form-making</a></el-footer>
+<!--    <el-footer height="30px" style="font-weight: 600;">Powered by <a target="_blank" href="https://github.com/GavinZhuLei/vue-form-making">vue-form-making</a></el-footer>-->
   </el-container>
-  
+
 </template>
 
 <script>
@@ -202,10 +205,22 @@ export default {
       default: false
     },
     upload: {
-      type: Boolean, 
+      type: Boolean,
       default: false
     },
     clearable: {
+      type: Boolean,
+      default: false
+    },
+    save: {
+      type: Boolean,
+      default: false
+    },
+    close: {
+      type: Boolean,
+      default: false
+    },
+    initial: {
       type: Boolean,
       default: false
     },
@@ -373,6 +388,12 @@ export default {
 
       this.widgetFormSelect = {}
     },
+    handleSave(){
+
+    },
+    handleClose(){
+      this.$emit("closeFormMaking");
+    },
     getJSON () {
       return this.widgetForm
     },
@@ -406,7 +427,7 @@ export default {
 </script>
 
 <style lang="scss">
-.widget-empty{
-  background-position: 50%;
-}
+  .widget-empty{
+    background-position: 50%;
+  }
 </style>
