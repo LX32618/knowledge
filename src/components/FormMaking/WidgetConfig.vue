@@ -60,7 +60,7 @@
           >
           </el-switch>
       </el-form-item>
-      <el-form-item :label="$t('fm.config.widget.showLabel')" v-if="Object.keys(data.options).indexOf('showLabel')>=0">
+      <el-form-item label="是否显示标签" v-if="Object.keys(data.options).indexOf('showLabel')>=0">
         <el-switch
             v-model="data.options.showLabel"
           >
@@ -282,7 +282,7 @@
             <el-button type="text" @click="handleAddColumn">添加列</el-button>
           </div>
         </el-form-item>
-        <el-form-item :label="$t('fm.config.widget.justify')">
+        <el-form-item label="水平排列方式">
           <el-select v-model="data.options.justify">
             <el-option value="start" label="左对齐"></el-option>
             <el-option value="end" label="右对齐"></el-option>
@@ -302,7 +302,7 @@
 
 
       <template v-if="data.type != 'grid'">
-        <el-form-item :label="$t('fm.config.widget.attribute')">
+        <el-form-item label="操作属性">
           <el-checkbox v-model="data.options.readonly" v-if="Object.keys(data.options).indexOf('readonly')>=0">完全只读</el-checkbox>
           <el-checkbox v-model="data.options.disabled" v-if="Object.keys(data.options).indexOf('disabled')>=0">禁用</el-checkbox>
           <el-checkbox v-model="data.options.editable" v-if="Object.keys(data.options).indexOf('editable')>=0">文本框可输入</el-checkbox>
@@ -312,7 +312,7 @@
           <el-checkbox v-model="data.options.isEdit" v-if="Object.keys(data.options).indexOf('isEdit')>=0">编辑</el-checkbox>
 
         </el-form-item>
-        <el-form-item :label="$t('fm.config.widget.validate')">
+        <el-form-item label="校验">
           <div v-if="Object.keys(data.options).indexOf('required')>=0">
             <el-checkbox v-model="data.options.required">必填</el-checkbox>
           </div>
@@ -328,7 +328,7 @@
           </el-select>
 
           <div v-if="Object.keys(data.options).indexOf('pattern')>=0">
-            <el-input size="mini" v-model.lazy="data.options.pattern"  style=" width: 240px;" :placeholder="$t('fm.config.widget.patternPlaceholder')"></el-input>
+            <el-input size="mini" v-model.lazy="data.options.pattern"  style=" width: 240px;" placeholder="填写正则表达式"></el-input>
           </div>
         </el-form-item>
       </template>
@@ -375,12 +375,12 @@ export default {
     handleAddOption () {
       if (this.data.options.showLabel) {
         this.data.options.options.push({
-          value: this.$t('fm.config.widget.newOption'),
-          label: this.$t('fm.config.widget.newOption')
+          value: "新选项",
+          label: "新选项"
         })
       } else {
         this.data.options.options.push({
-          value: this.$t('fm.config.widget.newOption')
+          value: "新选项"
         })
       }
 
@@ -419,7 +419,7 @@ export default {
 
     validateRequired (val) {
       if (val) {
-        this.validator.required = {required: true, message: `${this.data.name}${this.$t('fm.config.widget.validatorRequired')}`}
+        this.validator.required = {required: true, message: `${this.data.name}${"必须填写"}`}
       } else {
         this.validator.required = null
       }
@@ -435,7 +435,7 @@ export default {
       }
 
       if (val) {
-        this.validator.type = {type: val, message: this.data.name + this.$t('fm.config.widget.validatorType')}
+        this.validator.type = {type: val, message: this.data.name + "格式不正确"}
       } else {
         this.validator.type = null
       }
@@ -448,7 +448,7 @@ export default {
       }
 
       if (val) {
-        this.validator.pattern = {pattern: val, message: this.data.name + this.$t('fm.config.widget.validatorPattern')}
+        this.validator.pattern = {pattern: val, message: this.data.name + "格式不匹配"}
       } else {
         this.validator.pattern = null
       }
