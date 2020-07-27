@@ -9,7 +9,7 @@ const state = {
   // 密级
   secretLevels,
   // 知识基础信息表单配置
-  baseFormConfig: {
+  baseFormConfig2: {
     id: '0',
     formName: '基础信息',
     datas: [
@@ -77,10 +77,162 @@ const state = {
         displayName: '描述',
         htmlType: 9,
         fieldType: '',
-        span: 24,
+        span: 24
       }
     ]
   },
+  // 知识基础信息表单配置
+  baseFormConfig: [
+    {
+      type: 'text',
+      title: '基础信息',
+      options: {},
+      rules: []
+    },
+    {
+      type: 'grid',
+      options: {},
+      columns: [
+        {
+          span: 12,
+          list: [
+            {
+              type: 'input',
+              name: '知识名称',
+              model: 'name',
+              rules: [],
+              options: {}
+            }
+          ]
+        },
+        {
+          span: 12,
+          list: [
+            {
+              type: 'input',
+              name: '知识编码',
+              model: 'code',
+              rules: [],
+              options: {
+                disabled: true
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      type: 'grid',
+      options: {},
+      columns: [
+        {
+          span: 12,
+          list: [
+            {
+              type: 'secrectSelect',
+              name: '密级',
+              model: 'secretLevel',
+              rules: [],
+              options: {}
+            }
+          ]
+        },
+        {
+          span: 12,
+          list: [
+            {
+              type: 'input',
+              name: '缩略语',
+              model: 'abbrev',
+              rules: [],
+              options: {}
+            }
+          ]
+        }
+      ]
+    },
+    {
+      type: 'grid',
+      options: {},
+      columns: [
+        {
+          span: 12,
+          list: [
+            {
+              type: 'input',
+              name: '类别',
+              model: 'classificationName',
+              rules: [],
+              options: {
+                disabled: true
+              }
+            }
+          ]
+        },
+        {
+          span: 12,
+          list: [
+            {
+              type: 'input',
+              name: '创建人',
+              model: 'creatorName',
+              rules: [],
+              options: {
+                disabled: true
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      type: 'grid',
+      options: {},
+      columns: [
+        {
+          span: 12,
+          list: [
+            {
+              type: 'labelSelect',
+              name: '标签',
+              model: 'labels',
+              rules: [],
+              options: {}
+            }
+          ]
+        },
+        {
+          span: 12,
+          list: [
+            {
+              type: 'date',
+              name: '创建时间',
+              model: 'createDate',
+              rules: [],
+              options: {
+                type: 'datetime',
+                disabled: true
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      type: 'input',
+      name: '关键字',
+      model: 'keyword',
+      rules: [],
+      options: {}
+    },
+    {
+      type: 'textarea',
+      name: '描述',
+      model: 'describe',
+      rules: [],
+      options: {}
+    }
+  ],
   defaultIcon: 'fa fa-book',
   icons: [
     'fa fa-book',

@@ -303,28 +303,28 @@
 
       <template v-if="data.type != 'grid'">
         <el-form-item :label="$t('fm.config.widget.attribute')">
-          <el-checkbox v-model="data.options.readonly" v-if="Object.keys(data.options).indexOf('readonly')>=0">{{$t('fm.config.widget.readonly')}}</el-checkbox>
-          <el-checkbox v-model="data.options.disabled" v-if="Object.keys(data.options).indexOf('disabled')>=0">{{$t('fm.config.widget.disabled')}}	</el-checkbox>
-          <el-checkbox v-model="data.options.editable" v-if="Object.keys(data.options).indexOf('editable')>=0">{{$t('fm.config.widget.editable')}}</el-checkbox>
-          <el-checkbox v-model="data.options.clearable" v-if="Object.keys(data.options).indexOf('clearable')>=0">{{$t('fm.config.widget.clearable')}} </el-checkbox>
-          <el-checkbox v-model="data.options.arrowControl" v-if="Object.keys(data.options).indexOf('arrowControl')>=0">{{$t('fm.config.widget.arrowControl')}}</el-checkbox>
-          <el-checkbox v-model="data.options.isDelete" v-if="Object.keys(data.options).indexOf('isDelete')>=0">{{$t('fm.config.widget.isDelete')}}</el-checkbox>
-          <el-checkbox v-model="data.options.isEdit" v-if="Object.keys(data.options).indexOf('isEdit')>=0">{{$t('fm.config.widget.isEdit')}}</el-checkbox>
+          <el-checkbox v-model="data.options.readonly" v-if="Object.keys(data.options).indexOf('readonly')>=0">完全只读</el-checkbox>
+          <el-checkbox v-model="data.options.disabled" v-if="Object.keys(data.options).indexOf('disabled')>=0">禁用	</el-checkbox>
+          <el-checkbox v-model="data.options.editable" v-if="Object.keys(data.options).indexOf('editable')>=0">文本框可输入</el-checkbox>
+          <el-checkbox v-model="data.options.clearable" v-if="Object.keys(data.options).indexOf('clearable')>=0">显示清除按钮 </el-checkbox>
+          <el-checkbox v-model="data.options.arrowControl" v-if="Object.keys(data.options).indexOf('arrowControl')>=0">使用箭头进行时间选择</el-checkbox>
+          <el-checkbox v-model="data.options.isDelete" v-if="Object.keys(data.options).indexOf('isDelete')>=0">删除</el-checkbox>
+          <el-checkbox v-model="data.options.isEdit" v-if="Object.keys(data.options).indexOf('isEdit')>=0">编辑</el-checkbox>
           
         </el-form-item>
-        <el-form-item :label="$t('fm.config.widget.validate')">
+        <el-form-item label="校验">
           <div v-if="Object.keys(data.options).indexOf('required')>=0">
-            <el-checkbox v-model="data.options.required">{{$t('fm.config.widget.required')}}</el-checkbox>
+            <el-checkbox v-model="data.options.required">必填</el-checkbox>
           </div>
           <el-select v-if="Object.keys(data.options).indexOf('dataType')>=0" v-model="data.options.dataType" size="mini" >
-            <el-option value="string" :label="$t('fm.config.widget.string')"></el-option>
-            <el-option value="number" :label="$t('fm.config.widget.number')"></el-option>
-            <el-option value="boolean" :label="$t('fm.config.widget.boolean')"></el-option>
-            <el-option value="integer" :label="$t('fm.config.widget.integer')"></el-option>
-            <el-option value="float" :label="$t('fm.config.widget.float')"></el-option>
-            <el-option value="url" :label="$t('fm.config.widget.url')"></el-option>
-            <el-option value="email" :label="$t('fm.config.widget.email')"></el-option>
-            <el-option value="hex" :label="$t('fm.config.widget.hex')"></el-option>
+            <el-option value="string" label="字符串"></el-option>
+            <el-option value="number" label="数字"></el-option>
+            <el-option value="boolean" label="布尔值"></el-option>
+            <el-option value="integer" label="整数"></el-option>
+            <el-option value="float" label="浮点数"></el-option>
+            <el-option value="url" label="URL地址"></el-option>
+            <el-option value="email" label="邮箱地址"></el-option>
+            <el-option value="hex" label="十六进制"></el-option>
           </el-select>
           
           <div v-if="Object.keys(data.options).indexOf('pattern')>=0">
@@ -375,12 +375,12 @@ export default {
     handleAddOption () {
       if (this.data.options.showLabel) {
         this.data.options.options.push({
-          value: this.$t('fm.config.widget.newOption'),
-          label: this.$t('fm.config.widget.newOption')
+          value: '新选项',
+          label: '新选项'
         })
       } else {
         this.data.options.options.push({
-          value: this.$t('fm.config.widget.newOption')
+          value: '新选项'
         })
       }
       
@@ -419,7 +419,7 @@ export default {
 
     validateRequired (val) {
       if (val) {
-        this.validator.required = {required: true, message: `${this.data.name}${this.$t('fm.config.widget.validatorRequired')}`}
+        this.validator.required = {required: true, message: `${this.data.name}必须填写`}
       } else {
         this.validator.required = null
       }
@@ -435,7 +435,7 @@ export default {
       }
       
       if (val) {
-        this.validator.type = {type: val, message: this.data.name + this.$t('fm.config.widget.validatorType')}
+        this.validator.type = {type: val, message: this.data.name + '格式不正确'}
       } else {
         this.validator.type = null
       }
@@ -448,7 +448,7 @@ export default {
       }
 
       if (val) {
-        this.validator.pattern = {pattern: val, message: this.data.name + this.$t('fm.config.widget.validatorPattern')}
+        this.validator.pattern = {pattern: val, message: this.data.name + '格式不匹配'}
       } else {
         this.validator.pattern = null
       }

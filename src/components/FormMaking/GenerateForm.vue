@@ -27,6 +27,7 @@
                   :remote="remote" 
                   :rules="rules" 
                   :widget="citem"
+                  :edit="edit"
                   @input-change="onInputChange">
                 </genetate-form-item>
               </template>
@@ -46,6 +47,7 @@
             :models.sync="models" 
             :rules="rules" 
             :widget="item" 
+            :edit="edit"
             @input-change="onInputChange"
             :remote="remote">
           </genetate-form-item>
@@ -65,7 +67,7 @@ export default {
   components: {
     GenetateFormItem
   },
-  props: ['data', 'remote', 'value', 'insite'],
+  props: ['data', 'remote', 'value', 'insite', 'edit'],
   data () {
     return {
       models: {},
@@ -116,6 +118,8 @@ export default {
           }      
         }
       }
+      // 传入类别以生成标签选择器
+      this.models.classification = this.value.classification
     },
     getData () {
       return new Promise((resolve, reject) => {
@@ -148,7 +152,7 @@ export default {
     value: {
       deep: true,
       handler (val) {
-        console.log(JSON.stringify(val))
+        // console.log(JSON.stringify(val))
         this.models = {...this.models, ...val}
       }
     }

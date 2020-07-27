@@ -1,5 +1,5 @@
 <template>
-  <el-select v-model="model" value-key="value">
+  <el-select v-model="model" value-key="value" v-bind="$attrs">
     <el-option
       v-for="item of secretLevels"
       :key="item.value"
