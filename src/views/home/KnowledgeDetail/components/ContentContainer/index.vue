@@ -21,23 +21,27 @@
             >
           </template>
         </el-button-group>
+        <!-- <form-making upload preview generate-code generate-json clearable>
+          <template slot="action">
+          </template>
+        </form-making> -->
         <!-- 基础信息表 -->
-        <dynamic-form
+        <!-- <dynamic-form
           v-if="showBase"
           ref="baseForm"
-          :config="baseFormConfig"
+          :config="baseFormConfig2"
           :formData="baseData"
           :isViewMode="isViewMode"
           @save="handleSubFormSave"
-        ></dynamic-form>
+        ></dynamic-form> -->
         <!-- 主表 -->
-        <dynamic-form
+        <!-- <dynamic-form
           ref="mainForm"
           :config="convertUpperFieldName(formConfig)"
           :formData="formData.mainForm || {}"
           :isViewMode="isViewMode"
           @save="handleSubFormSave"
-        ></dynamic-form>
+        ></dynamic-form> -->
         <!-- 子表 -->
         <!-- <html-form></html-form> -->
         <!-- <dynamic-form
@@ -49,6 +53,7 @@
           :isViewMode="isViewMode"
           @save="handleSubFormSave"
         ></dynamic-form> -->
+        <form-generate :data="widgetForm" :value="baseData" :edit="!isViewMode"></form-generate>
       </el-card>
     </el-col>
     <el-col :offset="1" :span="4">
@@ -94,12 +99,20 @@ export default {
       dialogShow: false,
       editFormData: {},
       saveButtonLoading: false,
-      test: ''
+      widgetForm: {
+        list: [],
+        config: {
+          labelWidth: 100,
+          labelPosition: 'right',
+          size: 'small'
+        },
+      },
     }
   },
   computed: {
     ...mapGetters([
       'baseFormConfig',
+      'baseFormConfig2',
       'userInfo'
     ])
   },
@@ -185,18 +198,18 @@ export default {
     },
     cancel () {
       // 重置基础信息表
-      if (this.showBase) {
-        this.$refs.baseForm.resetView()
-      }
+      // if (this.showBase) {
+      //   this.$refs.baseForm.resetView()
+      // }
       // 重置主表
-      this.$refs.mainForm.resetView()
+      // this.$refs.mainForm.resetView()
       // 重置子表
-      this.formConfig.subForm.forEach(subForm => {
-        const refs = this.$refs[`Form-${subForm.id}`]
-        if (refs && refs.length > 0) {
-          refs[0].resetView()
-        }
-      })
+      // this.formConfig.subForm.forEach(subForm => {
+      //   const refs = this.$refs[`Form-${subForm.id}`]
+      //   if (refs && refs.length > 0) {
+      //     refs[0].resetView()
+      //   }
+      // })
       this.isViewMode = true
     },
     share () {
@@ -205,6 +218,9 @@ export default {
     handleSubFormSave (data) {
       this.editFormData[data.key] = data.value
     }
+  },
+  mounted () {
+    this.widgetForm.list = this.baseFormConfig
   }
 }
 </script>

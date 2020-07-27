@@ -7,13 +7,13 @@
         v-model.number="dataModel"
         :placeholder="widget.options.placeholder"
         :style="{width: widget.options.width}"
-        :disabled="widget.options.disabled"
+        :disabled="isDisabled"
       ></el-input>
       <el-input 
         v-else
         :type="widget.options.dataType"
         v-model="dataModel"
-        :disabled="widget.options.disabled"
+        :disabled="isDisabled"
         :placeholder="widget.options.placeholder"
         :style="{width: widget.options.width}"
       ></el-input>
@@ -22,7 +22,7 @@
     <template v-if="widget.type == 'textarea'">
       <el-input type="textarea" :rows="5"
         v-model="dataModel"
-        :disabled="widget.options.disabled"
+        :disabled="isDisabled"
         :placeholder="widget.options.placeholder"
         :style="{width: widget.options.width}"
       ></el-input>
@@ -34,14 +34,14 @@
         :style="{width: widget.options.width}"
         :step="widget.options.step"
         controls-position="right"
-        :disabled="widget.options.disabled"
+        :disabled="isDisabled"
       ></el-input-number>
     </template>
 
     <template v-if="widget.type == 'radio'">
       <el-radio-group v-model="dataModel"
         :style="{width: widget.options.width}"
-        :disabled="widget.options.disabled"
+        :disabled="isDisabled"
       >
         <el-radio
           :style="{display: widget.options.inline ? 'inline-block' : 'block'}"
@@ -56,7 +56,7 @@
     <template v-if="widget.type == 'checkbox'">
       <el-checkbox-group v-model="dataModel"
         :style="{width: widget.options.width}"
-        :disabled="widget.options.disabled"
+        :disabled="isDisabled"
       >
         <el-checkbox
           
@@ -77,7 +77,7 @@
         :start-placeholder="widget.options.startPlaceholder"
         :end-placeholder="widget.options.endPlaceholder"
         :readonly="widget.options.readonly"
-        :disabled="widget.options.disabled"
+        :disabled="isDisabled"
         :editable="widget.options.editable"
         :clearable="widget.options.clearable"
         :arrowControl="widget.options.arrowControl"
@@ -95,7 +95,7 @@
         :start-placeholder="widget.options.startPlaceholder"
         :end-placeholder="widget.options.endPlaceholder"
         :readonly="widget.options.readonly"
-        :disabled="widget.options.disabled"
+        :disabled="isDisabled"
         :editable="widget.options.editable"
         :clearable="widget.options.clearable"
         :value-format="widget.options.timestamp ? 'timestamp' : widget.options.format"
@@ -108,7 +108,7 @@
     <template v-if="widget.type =='rate'">
       <el-rate v-model="dataModel"
         :max="widget.options.max"
-        :disabled="widget.options.disabled"
+        :disabled="isDisabled"
         :allow-half="widget.options.allowHalf"
       ></el-rate>
     </template>
@@ -116,7 +116,7 @@
     <template v-if="widget.type == 'color'">
       <el-color-picker 
         v-model="dataModel"
-        :disabled="widget.options.disabled"
+        :disabled="isDisabled"
         :show-alpha="widget.options.showAlpha"
       ></el-color-picker>
     </template>
@@ -124,7 +124,7 @@
     <template v-if="widget.type == 'select'">
       <el-select
         v-model="dataModel"
-        :disabled="widget.options.disabled"
+        :disabled="isDisabled"
         :multiple="widget.options.multiple"
         :clearable="widget.options.clearable"
         :placeholder="widget.options.placeholder"
@@ -138,7 +138,7 @@
     <template v-if="widget.type=='switch'">
       <el-switch
         v-model="dataModel"
-        :disabled="widget.options.disabled"
+        :disabled="isDisabled"
       >
       </el-switch>
     </template>
@@ -148,7 +148,7 @@
         v-model="dataModel"
         :min="widget.options.min"
         :max="widget.options.max"
-        :disabled="widget.options.disabled"
+        :disabled="isDisabled"
         :step="widget.options.step"
         :show-input="widget.options.showInput"
         :range="widget.options.range"
@@ -159,7 +159,7 @@
     <template v-if="widget.type=='imgupload'">
       <fm-upload
         v-model="dataModel"
-        :disabled="widget.options.disabled"
+        :disabled="isDisabled"
         :style="{'width': widget.options.width}"
         :width="widget.options.size.width"
         :height="widget.options.size.height"
@@ -187,33 +187,56 @@
     <template v-if="widget.type == 'cascader'">
       <el-cascader
         v-model="dataModel"
-        :disabled="widget.options.disabled"
+        :disabled="isDisabled"
         :clearable="widget.options.clearable"
         :placeholder="widget.options.placeholder"
         :style="{width: widget.options.width}"
         :options="widget.options.remoteOptions"
       >
-
       </el-cascader>
     </template>
 
     <template v-if="widget.type == 'text'">
-      <span>{{dataModel}}</span>
+      <h2>{{widget.title}}</h2>
+    </template>
+
+    <template v-if="widget.type == 'secrectSelect'">
+      <secretLevel-input 
+        v-model="dataModel"
+        :disabled="isDisabled"></secretLevel-input>
+    </template>
+
+    <template v-if="widget.type == 'labelSelect'">
+      <knowledge-labels-input
+        v-model="dataModel"
+        :classificationid="models.classification"
+        :disabled="isDisabled"
+        :data="[]"
+      ></knowledge-labels-input>
     </template>
   </el-form-item>
 </template>
 
 <script>
 import FmUpload from './Upload'
+import SecretLevelInput from '@/components/Input/SecretLevelInput'
+import KnowledgeLabelsInput from '@/components/Input/KnowledgeLabelsInput'
 
 export default {
-  props: ['widget', 'models', 'rules', 'remote'],
+  props: ['widget', 'models', 'rules', 'remote', 'edit'],
   components: {
-    FmUpload
+    FmUpload,
+    SecretLevelInput,
+    KnowledgeLabelsInput
   },
   data () {
     return {
       dataModel: this.models[this.widget.model]
+    }
+  },
+  computed: {
+    isDisabled () {
+      return this.widget.options.disabled || !this.edit
     }
   },
   created () {

@@ -8,6 +8,7 @@ import SideItem from "./SideItem";
 import Tree from "./Tree";
 import Table from "./Table";
 import LazyTree from "./LazyTree/index";
+import JsonEditor from "./JsonEditor"
 
 //第三方组件
 import Treeselect from '@riophae/vue-treeselect'
@@ -19,6 +20,7 @@ Vue.component("cs-sideitem", SideItem);
 Vue.component("cs-tree", Tree);
 Vue.component("cs-table", Table);
 Vue.component("cs-lazytree",LazyTree);
+Vue.component("json-editor",JsonEditor);
 
 //注册全局第三方组件
 Vue.component('treeselect', Treeselect)
