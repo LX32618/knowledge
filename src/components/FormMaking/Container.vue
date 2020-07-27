@@ -136,7 +136,9 @@
           form
         >
 
-          <div id="jsoneditor" style="height: 400px;width: 100%;">{{jsonTemplate}}</div>
+          <div id="jsoneditor" style="height: 400px;width: 100%;">
+            <json-editor v-model="jsonTemplate"></json-editor>
+          </div>
 
           <template slot="action">
             <el-button type="primary" class="json-btn" :data-clipboard-text="jsonCopyValue">复制数据</el-button>
@@ -333,9 +335,6 @@ export default {
       this.jsonTemplate = this.widgetForm
       // console.log(JSON.stringify(this.widgetForm))
       this.$nextTick(() => {
-
-        const editor = ace.edit('jsoneditor')
-        editor.session.setMode("ace/mode/json")
 
         if (!this.jsonClipboard) {
           this.jsonClipboard = new Clipboard('.json-btn')
