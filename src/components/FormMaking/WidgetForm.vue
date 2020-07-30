@@ -62,7 +62,7 @@
                   <el-table
                     class="widget-table-left"
                     size="large"
-                    :data="element.options.defaultValue">
+                    :data="[{}]">
                     <el-table-column type="index">
                       <template slot="header">#</template>
                     </el-table-column>
@@ -71,7 +71,7 @@
                     <div v-if="element.tableColumns.length === 0" class="table-empty">将字段拖拽到此处</div>
                     <draggable
                       class="widget-table-col" :style="{
-                        width: `${element.tableColumns.length > 3 ? element.tableColumns.length * 200 : 600}px`
+                        width: calculateWidth(element.tableColumns) + 'px'
                       }"
                       v-model="element.tableColumns"
                       :no-transition-on-drag="true"
@@ -239,6 +239,7 @@ export default {
         ...table.tableColumns[newIndex],
         options: {
           ...table.tableColumns[newIndex].options,
+          width: '200px',
           remoteFunc: 'func_' + key
         },
         key,
@@ -262,6 +263,13 @@ export default {
         this.data.list.splice(index, 1)
       })
     },
+    calculateWidth (columns) {
+      const total = 0
+      const totalWidth = columns.reduce((total, column) => {
+        return total + +column.options.width.replace(/px/, '')
+      }, 400)
+      return totalWidth
+    }
   },
   watch: {
     select (val) {

@@ -97,12 +97,12 @@
 
         <cus-dialog
           :visible="previewVisible"
-          @on-close="previewVisible = false"
+          @on-close="handlePreviewClose"
           ref="widgetPreview"
           width="1000px"
           form
         >
-          <generate-form insite="true" @on-change="handleDataChange" v-if="previewVisible" :data="widgetForm" :value="widgetModels" :remote="remoteFuncs" ref="generateForm">
+          <generate-form insite="true" @on-change="handleDataChange" v-if="previewVisible" :data="widgetForm" :value="widgetModels" :remote="remoteFuncs" :edit="true" ref="generateForm">
 
             <template v-slot:blank="scope">
               Width <el-input v-model="scope.model.blank.width" style="width: 100px"></el-input>
@@ -318,6 +318,10 @@ export default {
     handlePreview () {
       // console.log(this.widgetForm)
       this.previewVisible = true
+    },
+    handlePreviewClose () {
+      this.previewVisible = false
+      this.handleReset()
     },
     handleTest () {
       this.$refs.generateForm.getData().then(data => {

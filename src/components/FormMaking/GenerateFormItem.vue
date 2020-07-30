@@ -1,12 +1,18 @@
 <template>
-  <el-form-item :label="widget.name" :prop="widget.model">
+  <el-form-item
+    :label="table ? '' : widget.name"
+    :prop="widget.model"
+    :label-width="table ? '0px' : undefined"
+    :style="{
+      'margin-bottom': table ? 0 : '18px'
+    }">
     <template v-if="widget.type == 'input'" >
       <el-input 
         v-if="widget.options.dataType == 'number' || widget.options.dataType == 'integer' || widget.options.dataType == 'float'"
         type="number"
         v-model.number="dataModel"
         :placeholder="widget.options.placeholder"
-        :style="{width: widget.options.width}"
+        :style="{width: widgetWidth}"
         :disabled="isDisabled"
       ></el-input>
       <el-input 
@@ -15,7 +21,7 @@
         v-model="dataModel"
         :disabled="isDisabled"
         :placeholder="widget.options.placeholder"
-        :style="{width: widget.options.width}"
+        :style="{width: widgetWidth}"
       ></el-input>
     </template>
 
@@ -24,14 +30,14 @@
         v-model="dataModel"
         :disabled="isDisabled"
         :placeholder="widget.options.placeholder"
-        :style="{width: widget.options.width}"
+        :style="{width: widgetWidth}"
       ></el-input>
     </template>
 
     <template v-if="widget.type == 'number'">
       <el-input-number 
         v-model="dataModel" 
-        :style="{width: widget.options.width}"
+        :style="{width: widgetWidth}"
         :step="widget.options.step"
         controls-position="right"
         :disabled="isDisabled"
@@ -40,7 +46,7 @@
 
     <template v-if="widget.type == 'radio'">
       <el-radio-group v-model="dataModel"
-        :style="{width: widget.options.width}"
+        :style="{width: widgetWidth}"
         :disabled="isDisabled"
       >
         <el-radio
@@ -55,7 +61,7 @@
 
     <template v-if="widget.type == 'checkbox'">
       <el-checkbox-group v-model="dataModel"
-        :style="{width: widget.options.width}"
+        :style="{width: widgetWidth}"
         :disabled="isDisabled"
       >
         <el-checkbox
@@ -82,7 +88,7 @@
         :clearable="widget.options.clearable"
         :arrowControl="widget.options.arrowControl"
         :value-format="widget.options.format"
-        :style="{width: widget.options.width}"
+        :style="{width: widgetWidth}"
       >
       </el-time-picker>
     </template>
@@ -100,7 +106,7 @@
         :clearable="widget.options.clearable"
         :value-format="widget.options.timestamp ? 'timestamp' : widget.options.format"
         :format="widget.options.format"
-        :style="{width: widget.options.width}"
+        :style="{width: widgetWidth}"
       >
       </el-date-picker>
     </template>
@@ -128,7 +134,7 @@
         :multiple="widget.options.multiple"
         :clearable="widget.options.clearable"
         :placeholder="widget.options.placeholder"
-        :style="{width: widget.options.width}"
+        :style="{width: widgetWidth}"
         :filterable="widget.options.filterable"
       >
         <el-option v-for="item in (widget.options.remote ? widget.options.remoteOptions : widget.options.options)" :key="item.value" :value="item.value" :label="widget.options.showLabel || widget.options.remote?item.label:item.value"></el-option>
@@ -152,7 +158,7 @@
         :step="widget.options.step"
         :show-input="widget.options.showInput"
         :range="widget.options.range"
-        :style="{width: widget.options.width}"
+        :style="{width: widgetWidth}"
       ></el-slider>
     </template>
 
@@ -160,7 +166,7 @@
       <fm-upload
         v-model="dataModel"
         :disabled="isDisabled"
-        :style="{'width': widget.options.width}"
+        :style="{'width': widgetWidth}"
         :width="widget.options.size.width"
         :height="widget.options.size.height"
         :token="widget.options.token"
@@ -179,7 +185,7 @@
     <template v-if="widget.type == 'editor'">
       <vue-editor
         v-model="dataModel"
-        :style="{width: widget.options.width}"
+        :style="{width: widgetWidth}"
       >
       </vue-editor>
     </template>
@@ -190,7 +196,7 @@
         :disabled="isDisabled"
         :clearable="widget.options.clearable"
         :placeholder="widget.options.placeholder"
-        :style="{width: widget.options.width}"
+        :style="{width: widgetWidth}"
         :options="widget.options.remoteOptions"
       >
       </el-cascader>
@@ -223,7 +229,7 @@ import SecretLevelInput from '@/components/Input/SecretLevelInput'
 import KnowledgeLabelsInput from '@/components/Input/KnowledgeLabelsInput'
 
 export default {
-  props: ['widget', 'models', 'rules', 'remote', 'edit'],
+  props: ['widget', 'models', 'rules', 'remote', 'edit', 'table'],
   components: {
     FmUpload,
     SecretLevelInput,
@@ -237,6 +243,9 @@ export default {
   computed: {
     isDisabled () {
       return this.widget.options.disabled || !this.edit
+    },
+    widgetWidth () {
+      return this.table ? undefined : this.widget.options.width
     }
   },
   created () {

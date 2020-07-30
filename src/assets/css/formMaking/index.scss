@@ -743,3 +743,13 @@ $primary-background-color: #ecf5ff;
   margin-left: -150px;
   color: #ccc;
 }
+
+.form-table {
+  position: relative;
+  .el-table__fixed-header-wrapper, .el-table__header-wrapper {
+    background: #f5f7fa;
+    div, th {
+      background: #f5f7fa;
+    }
+  }
+}

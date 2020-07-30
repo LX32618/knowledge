@@ -289,9 +289,10 @@ export const advanceComponents = [
   {
     type: 'table',
     icon: 'icon-table',
+    name: '子表单',
     tableColumns: [],
     options: {
-      defaultValue: [{}],
+      defaultValue: [],
       required: false,
       disabled: false
     }

@@ -35,6 +35,44 @@
           </el-row>
         </template>
 
+        <template v-else-if="item.type == 'table'">
+          <el-form-item :key="item.key" :label="item.name" :prop="item.model">
+            <div class="form-table">
+              <el-table :data="models[item.model]" border>
+                <span slot="empty"></span>
+                <el-table-column label="#" width="50" fixed>
+                  <template slot-scope="{ $index }">
+                    <div
+                      @mouseenter="hoverIndex = item.key + $index"
+                      @mouseleave="hoverIndex = ''"
+                      style="width: 100%;">
+                      <i v-if="hoverIndex === item.key + $index"
+                        class="el-icon-remove delete-icon"
+                        @click="models[item.model].splice($index, 1)"></i>
+                      <span v-else>{{ $index + 1 }}</span>
+                    </div>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  v-for="column in item.tableColumns"
+                  :key="column.key"
+                  :label="column.name"
+                  :prop="column.model"
+                  :width="column.options.width">
+                  <template slot-scope="{ row }">
+                    <genetate-form-item
+                      :table="true"
+                      :models.sync="row"
+                      :widget="column"
+                      :edit="edit"></genetate-form-item>
+                  </template>
+                </el-table-column>
+              </el-table>
+              <el-button type="text" icon="el-icon-plus" @click="handleRowAppend(item)">添加</el-button>
+            </div>
+          </el-form-item>
+        </template>
+
         <template v-else-if="item.type == 'blank'">
           <el-form-item :label="item.name" :prop="item.model" :key="item.key">
             <slot :name="item.model" :model="models"></slot>
@@ -60,6 +98,7 @@
 
 <script>
 import GenetateFormItem from './GenerateFormItem'
+
 import {loadJs} from '@/utils/index.js'
 
 export default {
@@ -71,7 +110,8 @@ export default {
   data () {
     return {
       models: {},
-      rules: {}
+      rules: {},
+      hoverIndex: ''
     }
   },
   created () {
@@ -86,6 +126,12 @@ export default {
           genList[i].columns.forEach(item => {
             this.generateModle(item.list)
           })
+        } else if (genList[i].type === 'table') {
+          if (this.value && Object.keys(this.value).indexOf(genList[i].model) >= 0) {
+            this.models[genList[i].model] = this.value[genList[i].model]
+          } else {
+            this.models[genList[i].model] = []
+          }
         } else {
           if (this.value && Object.keys(this.value).indexOf(genList[i].model) >= 0) {
             this.models[genList[i].model] = this.value[genList[i].model]
@@ -140,6 +186,14 @@ export default {
     },
     refresh () {
       
+    },
+    handleRowAppend (config) {
+      const row = {}
+      for (let i = 0; i < config.tableColumns.length; ++i) {
+        const key = config.tableColumns[i].model
+        row[key] = config.tableColumns[i].options.defaultValue
+      }
+      this.models[config.model].push(row)
     }
   },
   watch: {
@@ -160,6 +214,10 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 // @import '../styles/cover.scss';
+.delete-icon {
+  color: #F56C6C;
+  font-size: 20px;
+}
 </style>

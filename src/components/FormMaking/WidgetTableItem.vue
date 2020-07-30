@@ -1,5 +1,7 @@
 <template>
-  <div class="widget-table-view" style="width: 200px;"
+  <div class="widget-table-view" :style="{
+      width: element.options.width
+    }"
     :class="{active: selectWidget.key == element.key, 'is_req': element.options.required}"
     @click.stop="handleSelectWidget(index)">
     <el-table :data="[{}]" size="large">
@@ -9,7 +11,6 @@
              <template v-if="element.type == 'input'">
               <el-input 
                 v-model="element.options.defaultValue"
-                :style="{width: element.options.width}"
                 :placeholder="element.options.placeholder"
                 :disabled="element.options.disabled"
               ></el-input>
@@ -193,7 +194,7 @@
       </el-table-column>
     </el-table>
     <div class="widget-view-action" v-if="selectWidget.key == element.key">
-      <i class="iconfont icon-icon_clone" @click.stop="handleWidgetClone(index)"></i>
+      <!-- <i class="iconfont icon-icon_clone" @click.stop="handleWidgetClone(index)"></i> -->
       <i class="iconfont icon-trash" @click.stop="handleWidgetDelete(index)"></i>
     </div>
     <div class="widget-view-drag" v-if="selectWidget.key == element.key">
