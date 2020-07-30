@@ -12,10 +12,9 @@
                 @start="handleMoveStart"
                 :move="handleMove"
               >
-
                 <li class="form-edit-widget-label" :class="{'no-put': item.type == 'divider'}" v-for="(item, index) in basicComponents" :key="index">
                   <a v-if="basicFields.indexOf(item.type)>=0">
-                    <i class="icon iconfont" :class="item.icon"></i>
+                    <i :class="item.icon"></i>
                     <span>{{item.name}}</span>
                   </a>
                 </li>
@@ -33,7 +32,7 @@
 
                 <li class="form-edit-widget-label" :class="{'no-put': item.type == 'table'}" v-for="(item, index) in advanceComponents" :key="index">
                   <a v-if="advanceFields.indexOf(item.type) >= 0">
-                    <i class="icon iconfont" :class="item.icon"></i>
+                    <i :class="item.icon"></i>
                     <span>{{item.name}}</span>
                   </a>
                 </li>
@@ -52,7 +51,7 @@
 
                 <li class="form-edit-widget-label no-put" v-for="(item, index) in layoutComponents" :key="index">
                   <a v-if="layoutFields.indexOf(item.type) >=0">
-                    <i class="icon iconfont" :class="item.icon"></i>
+                    <i :class="item.icon"></i>
                     <span>{{item.name}}</span>
                   </a>
                 </li>
@@ -102,7 +101,7 @@
           width="1000px"
           form
         >
-          <generate-form insite="true" @on-change="handleDataChange" v-if="previewVisible" :data="widgetForm" :value="widgetModels" :remote="remoteFuncs" :edit="true" ref="generateForm">
+          <generate-form insite="true" @on-change="handleDataChange" v-if="previewVisible" :edit="true" :preview="true" :data="widgetForm" :value="widgetModels" :remote="remoteFuncs" ref="generateForm">
 
             <template v-slot:blank="scope">
               Width <el-input v-model="scope.model.blank.width" style="width: 100px"></el-input>
@@ -228,7 +227,7 @@ export default {
     },
     basicFields: {
       type: Array,
-      default: () => ['input', 'textarea', 'number', 'radio', 'checkbox', 'time', 'date', 'rate', 'color', 'select', 'switch', 'slider', 'text']
+      default: () => ['input', 'textarea', 'number', 'radio', 'checkbox', 'time', 'date', 'rate', 'color', 'select', 'switch', 'slider', 'text','upload']
     },
     advanceFields: {
       type: Array,

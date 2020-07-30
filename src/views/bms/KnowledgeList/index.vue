@@ -17,6 +17,7 @@
                 <el-tab-pane :key="3" v-if="basicFormData.type!=0" label="权限配置" name="permission">权限配置</el-tab-pane>
                 <el-tab-pane :key="4" v-if="basicFormData.type==2 && clickData.formId" label="接口配置" name="interface">接口配置</el-tab-pane>
             </el-tabs>
+            <cs-template></cs-template>
         </div>
         <el-dialog title="新增知识目录" :visible.sync="appendFormVisible" :close-on-click-modal="false">
             <cs-basic :settings="appendFormSettings" :form-data="appendFormData" @submitSuccess="submitSuccess"></cs-basic>
@@ -41,6 +42,7 @@
                 activeName:'basic',
                 clickData:{},
                 appendFormVisible:false,
+                fileList:[],
                 treeSettings:{
                     root_id:"0",//根节点id
                     expand_root:true,//是否默认展开根节点
@@ -70,6 +72,17 @@
             }
         },
         methods:{
+            onSuccess(response, file, fileList){
+                console.log(response);
+                console.log(file);
+                console.log(fileList);
+            },
+            submitUpload(){
+                this.$refs.upload.submit();
+            },
+            onPreview(file){
+                console.log(file);
+            },
             treeNodeClick({data,node})
             {
                 this.clickData = data;

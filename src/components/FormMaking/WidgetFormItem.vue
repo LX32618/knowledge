@@ -1,12 +1,12 @@
 <template>
   <el-form-item class="widget-view "
-      v-if="element && element.key" 
+      v-if="element && element.key"
       :class="{active: selectWidget.key == element.key, 'is_req': element.options.required}"
       :label="element.name"
       @click.native.stop="handleSelectWidget(index)"
     >
         <template v-if="element.type == 'input'">
-          <el-input 
+          <el-input
             v-model="element.options.defaultValue"
             :style="{width: element.options.width}"
             :placeholder="element.options.placeholder"
@@ -24,8 +24,8 @@
         </template>
 
         <template v-if="element.type == 'number'">
-          <el-input-number 
-            v-model="element.options.defaultValue" 
+          <el-input-number
+            v-model="element.options.defaultValue"
             :disabled="element.options.disabled"
             :controls-position="element.options.controlsPosition"
             :style="{width: element.options.width}"
@@ -37,10 +37,10 @@
             :style="{width: element.options.width}"
             :disabled="element.options.disabled"
           >
-            <el-radio  
+            <el-radio
               :style="{display: element.options.inline ? 'inline-block' : 'block'}"
               :label="item.value" v-for="(item, index) in element.options.options" :key="item.value + index"
-              
+
             >
               {{element.options.showLabel ? item.label : item.value}}
             </el-radio>
@@ -62,7 +62,7 @@
         </template>
 
         <template v-if="element.type == 'time'">
-          <el-time-picker 
+          <el-time-picker
             v-model="element.options.defaultValue"
             :is-range="element.options.isRange"
             :placeholder="element.options.placeholder"
@@ -90,7 +90,7 @@
             :disabled="element.options.disabled"
             :editable="element.options.editable"
             :clearable="element.options.clearable"
-            :style="{width: element.options.width}"  
+            :style="{width: element.options.width}"
           >
           </el-date-picker>
         </template>
@@ -104,7 +104,7 @@
         </template>
 
         <template v-if="element.type == 'color'">
-          <el-color-picker 
+          <el-color-picker
             v-model="element.options.defaultValue"
             :disabled="element.options.disabled"
             :show-alpha="element.options.showAlpha"
@@ -133,7 +133,7 @@
         </template>
 
         <template v-if="element.type=='slider'">
-          <el-slider 
+          <el-slider
             v-model="element.options.defaultValue"
             :min="element.options.min"
             :max="element.options.max"
@@ -155,9 +155,21 @@
             token="xxx"
             domain="xxx"
           >
-            
           </fm-upload>
         </template>
+
+        <template v-if="element.type == 'upload'">
+            <file-upload
+                    :btnTitle="element.options.btnTitle"
+                    :action="element.options.uploadUrl"
+                    :accept="element.options.accept"
+                    :limit="element.options.limit"
+                    :multiple="element.options.multiple"
+                    :tips="element.options.tips"
+                    :disabled="element.options.disabled">
+            </file-upload>
+        </template>
+
 
         <template v-if="element.type == 'cascader'">
           <el-cascader
@@ -189,23 +201,26 @@
         </template>
 
         <div class="widget-view-action" v-if="selectWidget.key == element.key">
-          <i class="iconfont icon-icon_clone" @click.stop="handleWidgetClone(index)"></i>
+         <!-- <i class="iconfont icon-icon_clone" @click.stop="handleWidgetClone(index)"></i>-->
           <i class="iconfont icon-trash" @click.stop="handleWidgetDelete(index)"></i>
         </div>
 
         <div class="widget-view-drag" v-if="selectWidget.key == element.key">
           <i class="iconfont icon-drag drag-widget"></i>
         </div>
-        
+
     </el-form-item>
 </template>
 
 <script>
 import FmUpload from './Upload'
+import FileUpload from './FileUpload'
+
 export default {
   props: ['element', 'select', 'index', 'data'],
   components: {
     FmUpload,
+    FileUpload
   },
   data () {
     return {
@@ -213,7 +228,7 @@ export default {
     }
   },
   mounted () {
-    
+
   },
   methods: {
     handleSelectWidget (index) {

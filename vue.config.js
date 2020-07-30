@@ -31,7 +31,14 @@ module.exports = {
                 pathRewrite: {
                     '^/api4': '/'
                 }
-            }
+            },
+            '/api5': {
+                target: 'http://localhost:8080', // 王夏冰 api2
+                changeOrigin: true,
+                pathRewrite: {
+                    '^/api5': '/'
+                }
+            },
         }
     },
     //webpack 链式配置   默认已经配置好了  node_moudles/@vue
