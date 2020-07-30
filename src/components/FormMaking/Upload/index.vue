@@ -7,7 +7,7 @@
       v-bind="{group: uploadId, ghostClass: 'ghost', animation: 200}"
       :no-transition-on-drag="true"
     >
-      <div 
+      <div
         :id="item.key"
         :style="{width: width+'px', height: height+'px'}"
         :class="{uploading: item.status=='uploading', 'is-success': item.status=='success', 'is-diabled': disabled}"
@@ -140,7 +140,7 @@ export default {
     handleChange () {
       console.log(this.$refs.uploadInput.files)
       const files = this.$refs.uploadInput.files
-      
+
       for (let i = 0; i < files.length; i++) {
         const file = files[i]
         const reader = new FileReader()
@@ -176,12 +176,12 @@ export default {
         }
       }
       this.$refs.uploadInput.value = []
-    }, 
+    },
     uplaodAction (res, file, key) {
       let changeIndex = this.fileList.findIndex(item => item.key === key)
       console.log(this.fileList.findIndex(item => item.key === key))
       const xhr = new XMLHttpRequest()
-      
+
       const url = this.action
       xhr.open('POST', url, true)
       // xhr.setRequestHeader('Content-Type', 'multipart/form-data')
@@ -193,7 +193,7 @@ export default {
       xhr.onreadystatechange = () => {
         console.log(xhr)
         if (xhr.readyState === 4) {
-          
+
           let resData = JSON.parse(xhr.response)
           if (resData && resData.url) {
             this.$set(this.fileList, this.fileList.findIndex(item => item.key === key), {
@@ -236,7 +236,7 @@ export default {
       observable.subscribe({
         next (res) {
           _this.$set(_this.fileList[_this.fileList.findIndex(item => item.key === key)], 'percent', parseInt(res.total.percent))
-          
+
         },
         error (err) {
           _this.$set(_this.fileList, _this.fileList.findIndex(item => item.key === key), {
@@ -265,9 +265,9 @@ export default {
       this.fileList.splice(this.fileList.findIndex(item => item.key === key), 1)
     },
     handleEdit (key) {
-      
+
       this.editIndex = this.fileList.findIndex(item => item.key === key)
-      
+
       this.$refs.uploadInput.click()
     },
     handleMeitu (key) {
@@ -283,7 +283,7 @@ export default {
     handlePreviewFile (key) {
       this.viewer && this.viewer.destroy()
       this.uploadId = 'upload_' + new Date().getTime()
-      
+
       console.log(this.viewer)
       this.$nextTick(() => {
         this.viewer = new Viewer(document.getElementById(this.uploadId))

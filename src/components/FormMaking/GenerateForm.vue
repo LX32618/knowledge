@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-form ref="generateForm" 
+    <el-form ref="generateForm"
       label-suffix=":"
       :size="data.config.size"
       :model="models" :rules="rules" :label-position="data.config.labelPosition" :label-width="data.config.labelWidth + 'px'">
@@ -15,19 +15,20 @@
             :align="item.options.align"
           >
             <el-col v-for="(col, colIndex) in item.columns" :key="colIndex" :span="col.span">
-              
+
 
               <template v-for="citem in col.list" >
                 <el-form-item v-if="citem.type=='blank'" :label="citem.name" :prop="citem.model" :key="citem.key">
                   <slot :name="citem.model" :model="models"></slot>
                 </el-form-item>
-                <genetate-form-item v-else 
-                  :key="citem.key" 
-                  :models.sync="models" 
-                  :remote="remote" 
-                  :rules="rules" 
+                <genetate-form-item v-else
+                  :key="citem.key"
+                  :models.sync="models"
+                  :remote="remote"
+                  :rules="rules"
                   :widget="citem"
                   :edit="edit"
+                  :preview="preview"
                   @input-change="onInputChange">
                 </genetate-form-item>
               </template>
@@ -42,17 +43,18 @@
         </template>
 
         <template v-else>
-          <genetate-form-item 
-            :key="item.key" 
-            :models.sync="models" 
-            :rules="rules" 
-            :widget="item" 
+          <genetate-form-item
+            :key="item.key"
+            :models.sync="models"
+            :rules="rules"
+            :widget="item"
             :edit="edit"
+            :preview="preview"
             @input-change="onInputChange"
             :remote="remote">
           </genetate-form-item>
         </template>
-        
+
       </template>
     </el-form>
   </div>
@@ -67,7 +69,7 @@ export default {
   components: {
     GenetateFormItem
   },
-  props: ['data', 'remote', 'value', 'insite', 'edit'],
+  props: ['data', 'remote', 'value', 'insite', 'edit','preview'],
   data () {
     return {
       models: {},
@@ -94,11 +96,11 @@ export default {
               this.$set(this.models, genList[i].model, genList[i].options.defaultType === 'String' ? '' : (genList[i].options.defaultType === 'Object' ? {} : []))
             } else {
               this.models[genList[i].model] = genList[i].options.defaultValue
-            }      
+            }
           }
-          
+
           if (this.rules[genList[i].model]) {
-            
+
             this.rules[genList[i].model] = [...this.rules[genList[i].model], ...genList[i].rules.map(item => {
               if (item.pattern) {
                 return {...item, pattern: eval(item.pattern)}
@@ -107,7 +109,7 @@ export default {
               }
             })]
           } else {
-            
+
             this.rules[genList[i].model] = [...genList[i].rules.map(item => {
               if (item.pattern) {
                 return {...item, pattern: eval(item.pattern)}
@@ -115,7 +117,7 @@ export default {
                 return {...item}
               }
             })]
-          }      
+          }
         }
       }
       // 传入类别以生成标签选择器
@@ -139,7 +141,7 @@ export default {
       this.$emit('on-change', field, value, this.models)
     },
     refresh () {
-      
+
     }
   },
   watch: {

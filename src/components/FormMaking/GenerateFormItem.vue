@@ -1,7 +1,7 @@
 <template>
   <el-form-item :label="widget.name" :prop="widget.model">
     <template v-if="widget.type == 'input'" >
-      <el-input 
+      <el-input
         v-if="widget.options.dataType == 'number' || widget.options.dataType == 'integer' || widget.options.dataType == 'float'"
         type="number"
         v-model.number="dataModel"
@@ -9,7 +9,7 @@
         :style="{width: widget.options.width}"
         :disabled="isDisabled"
       ></el-input>
-      <el-input 
+      <el-input
         v-else
         :type="widget.options.dataType"
         v-model="dataModel"
@@ -29,8 +29,8 @@
     </template>
 
     <template v-if="widget.type == 'number'">
-      <el-input-number 
-        v-model="dataModel" 
+      <el-input-number
+        v-model="dataModel"
         :style="{width: widget.options.width}"
         :step="widget.options.step"
         controls-position="right"
@@ -59,7 +59,7 @@
         :disabled="isDisabled"
       >
         <el-checkbox
-          
+
           :style="{display: widget.options.inline ? 'inline-block' : 'block'}"
           :label="item.value" v-for="(item, index) in (widget.options.remote ? widget.options.remoteOptions : widget.options.options)" :key="index"
         >
@@ -70,7 +70,7 @@
     </template>
 
     <template v-if="widget.type == 'time'">
-      <el-time-picker 
+      <el-time-picker
         v-model="dataModel"
         :is-range="widget.options.isRange"
         :placeholder="widget.options.placeholder"
@@ -114,7 +114,7 @@
     </template>
 
     <template v-if="widget.type == 'color'">
-      <el-color-picker 
+      <el-color-picker
         v-model="dataModel"
         :disabled="isDisabled"
         :show-alpha="widget.options.showAlpha"
@@ -144,7 +144,7 @@
     </template>
 
     <template v-if="widget.type=='slider'">
-      <el-slider 
+      <el-slider
         v-model="dataModel"
         :min="widget.options.min"
         :max="widget.options.max"
@@ -176,6 +176,20 @@
       </fm-upload>
     </template>
 
+    <template v-if="widget.type=='upload'">
+      <file-upload :fileList="dataModel"
+                   :auto-upload="!preview"
+                   :btnTitle="widget.options.btnTitle"
+                   :upload-url="widget.options.uploadUrl"
+                   :accept="widget.options.accept"
+                   :limit="widget.options.limit"
+                   :multiple="widget.options.multiple"
+                   :tips="widget.options.tips"
+                   :disabled="isDisabled">
+      </file-upload>
+    </template>
+
+
     <template v-if="widget.type == 'editor'">
       <vue-editor
         v-model="dataModel"
@@ -201,7 +215,7 @@
     </template>
 
     <template v-if="widget.type == 'secrectSelect'">
-      <secretLevel-input 
+      <secretLevel-input
         v-model="dataModel"
         :disabled="isDisabled"></secretLevel-input>
     </template>
@@ -219,13 +233,15 @@
 
 <script>
 import FmUpload from './Upload'
+import FileUpload from './FileUpload'
 import SecretLevelInput from '@/components/Input/SecretLevelInput'
 import KnowledgeLabelsInput from '@/components/Input/KnowledgeLabelsInput'
 
 export default {
-  props: ['widget', 'models', 'rules', 'remote', 'edit'],
+  props: ['widget', 'models', 'rules', 'remote', 'edit','preview'],
   components: {
     FmUpload,
+    FileUpload,
     SecretLevelInput,
     KnowledgeLabelsInput
   },

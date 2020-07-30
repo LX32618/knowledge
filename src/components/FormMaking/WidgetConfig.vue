@@ -49,9 +49,7 @@
         <el-switch v-model="data.options.filterable"></el-switch>
       </el-form-item>
       <el-form-item label="允许半选" v-if="Object.keys(data.options).indexOf('allowHalf')>=0">
-        <el-switch
-            v-model="data.options.allowHalf"
-          >
+        <el-switch v-model="data.options.allowHalf">
           </el-switch>
       </el-form-item>
       <el-form-item label="支持透明度选择" v-if="Object.keys(data.options).indexOf('showAlpha')>=0">
@@ -251,6 +249,38 @@
         </template>
       </template>
 
+      <template v-if="data.type=='upload'">
+        <el-form-item label="按钮标题">
+          <el-input v-model="data.options.btnTitle"></el-input>
+        </el-form-item>
+        <el-form-item label="接受上传的文件类型">
+          <el-select v-model="data.options.accept"
+                  multiple
+                  filterable
+                  allow-create
+                  default-first-option
+                  placeholder="用户可以自定义文件类型">
+            <el-option v-for="item in data.options.defaultAccept"
+                    :key="item"
+                    :label="item"
+                    :value="item">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="最大上传数">
+          <el-input-number v-model="data.options.limit"  :min="1" :max="5" ></el-input-number>
+        </el-form-item>
+        <el-form-item label="是否支持多选文件">
+          <el-switch v-model="data.options.multiple">
+          </el-switch>
+        </el-form-item>
+        <el-form-item label="提示">
+          <el-input v-model="data.options.tips">
+          </el-input>
+        </el-form-item>
+      </template>
+
+
       <template v-if="data.type=='blank'">
         <el-form-item label="绑定数据类型">
           <el-select v-model="data.options.defaultType">
@@ -310,9 +340,10 @@
           <el-checkbox v-model="data.options.arrowControl" v-if="Object.keys(data.options).indexOf('arrowControl')>=0">使用箭头进行时间选择</el-checkbox>
           <el-checkbox v-model="data.options.isDelete" v-if="Object.keys(data.options).indexOf('isDelete')>=0">删除</el-checkbox>
           <el-checkbox v-model="data.options.isEdit" v-if="Object.keys(data.options).indexOf('isEdit')>=0">编辑</el-checkbox>
+<!--          <el-checkbox v-model="data.options.visible" v-if="Object.keys(data.options).indexOf('visible')>=0">显示是否可见</el-checkbox>-->
 
         </el-form-item>
-        <el-form-item label="校验">
+        <el-form-item label="校验" v-if="data.type != 'grid' && data.type != 'upload'  && data.type !='imgupload'">
           <div v-if="Object.keys(data.options).indexOf('required')>=0">
             <el-checkbox v-model="data.options.required">必填</el-checkbox>
           </div>
@@ -327,9 +358,9 @@
             <el-option value="hex" label="十六进制"></el-option>
           </el-select>
 
-          <div v-if="Object.keys(data.options).indexOf('pattern')>=0">
+<!--          <div v-if="Object.keys(data.options).indexOf('pattern')>=0">
             <el-input size="mini" v-model.lazy="data.options.pattern"  style=" width: 240px;" placeholder="填写正则表达式"></el-input>
-          </div>
+          </div>-->
         </el-form-item>
       </template>
     </el-form>

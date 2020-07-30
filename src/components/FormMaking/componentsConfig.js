@@ -1,7 +1,7 @@
 export const basicComponents = [
   {
     type: 'input',
-    icon: 'icon-input',
+    icon: 'icon iconfont icon-input',
     name: '单选框',
     options: {
       width: '100%',
@@ -16,7 +16,7 @@ export const basicComponents = [
   {
     type: 'textarea',
     name: '多行文本',
-    icon: 'icon-diy-com-textarea',
+    icon: 'icon iconfont icon-diy-com-textarea',
     options: {
       width: '100%',
       defaultValue: '',
@@ -28,7 +28,7 @@ export const basicComponents = [
   },
   {
     type: 'number',
-    icon: 'icon-number',
+    icon: 'icon iconfont icon-number',
     options: {
       width: '',
       required: false,
@@ -42,7 +42,7 @@ export const basicComponents = [
   },
   {
     type: 'radio',
-    icon: 'icon-radio-active',
+    icon: 'icon iconfont icon-radio-active',
     options: {
       inline: false,
       defaultValue: '',
@@ -75,7 +75,7 @@ export const basicComponents = [
   },
   {
     type: 'checkbox',
-    icon: 'icon-check-box',
+    icon: 'icon iconfont icon-check-box',
     options: {
       inline: false,
       defaultValue: [],
@@ -105,7 +105,7 @@ export const basicComponents = [
   },
   {
     type: 'time',
-    icon: 'icon-time',
+    icon: 'icon iconfont icon-time',
     options: {
       defaultValue: '21:19:56',
       readonly: false,
@@ -124,7 +124,7 @@ export const basicComponents = [
   },
   {
     type: 'date',
-    icon: 'icon-date',
+    icon: 'icon iconfont icon-date',
     options: {
       defaultValue: '',
       readonly: false,
@@ -143,7 +143,7 @@ export const basicComponents = [
   },
   {
     type: 'rate',
-    icon: 'icon-pingfen1',
+    icon: 'icon iconfont icon-pingfen1',
     options: {
       defaultValue: null,
       max: 5,
@@ -154,7 +154,7 @@ export const basicComponents = [
   },
   {
     type: 'color',
-    icon: 'icon-color',
+    icon: 'icon iconfont icon-color',
     options: {
       defaultValue: '',
       disabled: false,
@@ -164,7 +164,7 @@ export const basicComponents = [
   },
   {
     type: 'select',
-    icon: 'icon-select',
+    icon: 'icon iconfont icon-select',
     options: {
       defaultValue: '',
       multiple: false,
@@ -196,7 +196,7 @@ export const basicComponents = [
   },
   {
     type: 'switch',
-    icon: 'icon-switch',
+    icon: 'icon iconfont icon-switch',
     options: {
       defaultValue: false,
       required: false,
@@ -205,7 +205,7 @@ export const basicComponents = [
   },
   {
     type: 'slider',
-    icon: 'icon-slider',
+    icon: 'icon iconfont icon-slider',
     options: {
       defaultValue: 0,
       disabled: false,
@@ -220,10 +220,25 @@ export const basicComponents = [
   },
   {
     type: 'text',
-    icon: 'icon-wenzishezhi-',
+    icon: 'icon iconfont icon-wenzishezhi-',
     options: {
       defaultValue: 'This is a text',
       customClass: '',
+    }
+  },
+  {
+    type:"upload",
+    name: '上传',
+    icon:"el-icon-upload",
+    options:{
+      limit:1,
+      accept:[],
+      defaultAccept:["txt","jpg","xls","xlsx","rar","zip"],
+      tips:"",
+      uploadUrl:"/api5/upload",
+      disabled:false,
+      multiple:true,
+      btnTitle:"点击上传"
     }
   }
 ]
@@ -231,14 +246,14 @@ export const basicComponents = [
 export const advanceComponents = [
   {
     type: 'blank',
-    icon: 'icon-zidingyishuju',
+    icon: 'icon iconfont icon-zidingyishuju',
     options: {
       defaultType: 'String'
     }
   },
   {
     type: 'imgupload',
-    icon: 'icon-tupian',
+    icon: 'icon iconfont icon-tupian',
     options: {
       defaultValue: [],
       size: {
@@ -246,7 +261,7 @@ export const advanceComponents = [
         height: 100,
       },
       width: '',
-      tokenFunc: 'funcGetToken',
+      tokenFunc: 'icon iconfont funcGetToken',
       token: '',
       domain: 'http://pfp81ptt6.bkt.clouddn.com/',
       disabled: false,
@@ -261,7 +276,7 @@ export const advanceComponents = [
   },
   {
     type: 'editor',
-    icon: 'icon-fuwenbenkuang',
+    icon: 'icon iconfont icon-fuwenbenkuang',
     options: {
       defaultValue: '',
       width: ''
@@ -269,7 +284,7 @@ export const advanceComponents = [
   },
   {
     type: 'cascader',
-    icon: 'icon-jilianxuanze',
+    icon: 'icon iconfont icon-jilianxuanze',
     options: {
       defaultValue: [],
       width: '',
@@ -288,7 +303,7 @@ export const advanceComponents = [
   },
   {
     type: 'table',
-    icon: 'icon-table',
+    icon: 'icon iconfont icon-table',
     tableColumns: [],
     options: {
       defaultValue: [{}],
@@ -301,7 +316,7 @@ export const advanceComponents = [
 export const layoutComponents = [
   {
     type: 'grid',
-    icon: 'icon-grid-',
+    icon: 'icon iconfont icon-grid-',
     columns: [
       {
         span: 12,
