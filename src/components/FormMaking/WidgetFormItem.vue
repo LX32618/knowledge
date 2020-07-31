@@ -170,6 +170,13 @@
             </file-upload>
         </template>
 
+      <template v-if="element.type == 'viewBtn'">
+          <fm-view-btn
+                  :multiple="element.options.multiple"
+                  :disabled="element.options.disabled">
+          </fm-view-btn>
+      </template>
+
 
         <template v-if="element.type == 'cascader'">
           <el-cascader
@@ -219,12 +226,14 @@
 <script>
 import FmUpload from './Upload'
 import FileUpload from './FileUpload'
+import FmViewBtn from './ViewBtn'
 
 export default {
   props: ['element', 'select', 'index', 'data'],
   components: {
     FmUpload,
-    FileUpload
+    FileUpload,
+    FmViewBtn
   },
   data () {
     return {

@@ -15,8 +15,7 @@
         </el-form-item>
         <el-form-item label="关联表单"  v-if="data.type==2"  >
             <div ref="associatedForm" style="width:203px;">
-                <el-input
-                        placeholder="请选择"
+                <el-input placeholder="请选择"
                         v-model="data.formName"
                         size="small"
                         readonly="readonly"

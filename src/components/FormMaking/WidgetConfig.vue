@@ -20,7 +20,7 @@
         高度 <el-input style="width: 90px;" type="number" v-model.number="data.options.size.height"></el-input>
       </el-form-item>
 
-      <el-form-item label="占位内容" v-if="Object.keys(data.options).indexOf('placeholder')>=0 && (data.type!='time' || data.type!='date')">
+      <el-form-item label="占位内容" v-if="Object.keys(data.options).indexOf('placeholder')>=0 && data.type!='time' && data.type!='date'">
         <el-input v-model="data.options.placeholder"></el-input>
       </el-form-item>
       <el-form-item label="布局方式" v-if="Object.keys(data.options).indexOf('inline')>=0">
@@ -194,6 +194,9 @@
         <el-form-item label="占位内容" v-if="(!data.options.isRange && data.type == 'time') || (data.type != 'time' && data.options.type != 'datetimerange' && data.options.type != 'daterange')">
           <el-input v-model="data.options.placeholder"></el-input>
         </el-form-item>
+
+
+
         <el-form-item label="开始时间占位内容" v-if="(data.options.isRange) || data.options.type=='datetimerange' || data.options.type=='daterange'">
           <el-input v-model="data.options.startPlaceholder"></el-input>
         </el-form-item>
@@ -280,6 +283,13 @@
         </el-form-item>
       </template>
 
+      <template v-if="data.type=='viewBtn'">
+        <el-form-item label="是否多选">
+          <el-switch v-model="data.options.multiple">
+          </el-switch>
+        </el-form-item>
+      </template>
+
 
       <template v-if="data.type=='blank'">
         <el-form-item label="绑定数据类型">
@@ -343,7 +353,7 @@
 <!--          <el-checkbox v-model="data.options.visible" v-if="Object.keys(data.options).indexOf('visible')>=0">显示是否可见</el-checkbox>-->
 
         </el-form-item>
-        <el-form-item label="校验" v-if="data.type != 'grid' && data.type != 'upload'  && data.type !='imgupload'">
+        <el-form-item label="校验" v-if="data.type != 'grid' && data.type != 'upload'  && data.type !='imgupload' && data.type !='viewBtn' && data.type != 'text'  && data.type != 'table'">
           <div v-if="Object.keys(data.options).indexOf('required')>=0">
             <el-checkbox v-model="data.options.required">必填</el-checkbox>
           </div>

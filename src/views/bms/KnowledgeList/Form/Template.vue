@@ -13,16 +13,21 @@
 </template>
 
 <script>
+
     export default {
         name: "Template",
         data(){
             return{
-                dialogVisible:false
+                dialogVisible:false,
+                tagData:[]
             }
         },
         methods:{
             closeFormMaking(){
                 this.dialogVisible = false;
+            },
+            tagClick(tag){
+                console.log(tag)
             }
         }
     }

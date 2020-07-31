@@ -240,6 +240,15 @@ export const basicComponents = [
       multiple:true,
       btnTitle:"点击上传"
     }
+  },
+  {
+    type:"viewBtn",
+    name:'浏览按钮',
+    icon:"el-icon-collection-tag",
+    options:{
+       multiple:false,
+       disabled:false
+    }
   }
 ]
 

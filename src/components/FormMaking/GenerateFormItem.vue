@@ -35,8 +35,8 @@
     </template>
 
     <template v-if="widget.type == 'number'">
-      <el-input-number 
-        v-model="dataModel" 
+      <el-input-number
+        v-model="dataModel"
         :style="{width: widgetWidth}"
         :step="widget.options.step"
         controls-position="right"
@@ -195,6 +195,13 @@
       </file-upload>
     </template>
 
+    <template v-if="widget.type == 'viewBtn'">
+      <fm-view-btn
+              :tagData.sync="dataModel"
+              :multiple="widget.options.multiple"
+              :disabled="isDisabled">
+      </fm-view-btn>
+    </template>
 
     <template v-if="widget.type == 'editor'">
       <vue-editor
@@ -240,6 +247,7 @@
 <script>
 import FmUpload from './Upload'
 import FileUpload from './FileUpload'
+import FmViewBtn from './ViewBtn'
 import SecretLevelInput from '@/components/Input/SecretLevelInput'
 import KnowledgeLabelsInput from '@/components/Input/KnowledgeLabelsInput'
 
@@ -248,6 +256,7 @@ export default {
   components: {
     FmUpload,
     FileUpload,
+    FmViewBtn,
     SecretLevelInput,
     KnowledgeLabelsInput
   },

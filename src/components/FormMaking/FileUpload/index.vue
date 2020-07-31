@@ -68,7 +68,6 @@
         },
         computed:{
             acceptFiles(){
-                console.log(123);
                 return this.accept.map(a=>"."+a).join(",");
             }
         },
