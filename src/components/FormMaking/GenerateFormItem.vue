@@ -191,7 +191,8 @@
                    :limit="widget.options.limit"
                    :multiple="widget.options.multiple"
                    :tips="widget.options.tips"
-                   :disabled="isDisabled">
+                   :disabled="isDisabled"
+                   :edit="edit">
       </file-upload>
     </template>
 
@@ -199,7 +200,8 @@
       <fm-view-btn
               :tagData.sync="dataModel"
               :multiple="widget.options.multiple"
-              :disabled="isDisabled">
+              :disabled="isDisabled"
+              :edit="edit">
       </fm-view-btn>
     </template>
 

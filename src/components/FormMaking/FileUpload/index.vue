@@ -11,7 +11,7 @@
                :on-error="handleError"
                :on-remove="handleRemove"
                :before-remove="beforeRemove">
-        <el-button size="small" type="primary" :disabled="disabled">{{btnTitle}}</el-button>
+        <el-button size="small" type="primary" :disabled="disabled" v-if="edit">{{btnTitle}}</el-button>
         <div slot="tip" class="el-upload__tip">{{tips}}</div>
     </el-upload>
 </template>
@@ -39,6 +39,10 @@
             disabled:{
                 type:Boolean,
                 default:false
+            },
+            edit:{
+                type:Boolean,
+                default:true
             },
             autoUpload:{
                 type:Boolean,

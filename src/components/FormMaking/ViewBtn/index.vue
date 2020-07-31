@@ -23,14 +23,14 @@
                     </div>
                 </template>
             </cs-table>
-            <el-button type="primary" icon="el-icon-search" circle slot="reference" :disabled="disabled"></el-button>
+            <el-button type="primary" icon="el-icon-search" circle slot="reference" :disabled="disabled"  v-if="edit"></el-button>
         </el-popover>
         <el-tag v-for="tag in tagData"
                 :key="tag.id"
-                :closable="!disabled"
+                :closable="edit&&!disabled"
                 @click="tagClick(tag)"
                 @close="tagClose(tag)"
-                type="danger" size="mini" style="margin-left: 3px;cursor: pointer">
+                type="danger" size="mini" class="tag">
             {{tag.name}}
         </el-tag>
 
@@ -52,6 +52,10 @@
             konwId:{//知识的id
                 type:String,
                 default:""
+            },
+            edit:{//true：编辑模式，false：浏览模式
+                type:Boolean,
+                default:true
             },
             multiple:{//是否多选
                 type:Boolean,
@@ -175,5 +179,9 @@
     .search{
         display: flex;
         margin:5px 5px 5px 0px;
+    }
+    .tag{
+        margin-left: 3px;
+        cursor: pointer
     }
 </style>
