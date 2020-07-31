@@ -9,10 +9,13 @@
                 </template>-->
             </form-making>
         </el-dialog>
+        <fm-link></fm-link>
     </div>
 </template>
 
 <script>
+
+    import FmLink from "@/components/FormMaking/Link"
 
     export default {
         name: "Template",
@@ -29,6 +32,9 @@
             tagClick(tag){
                 console.log(tag)
             }
+        },
+        components:{
+            FmLink
         }
     }
 </script>

@@ -205,6 +205,17 @@
       </fm-view-btn>
     </template>
 
+    <template v-if="widget.type == 'link'">
+      <fm-link
+              :linkData.sync="dataModel"
+              :type="widget.options.type"
+              :blank="widget.options.blank"
+              :underline="widget.options.underline"
+              :disabled="isDisabled"
+              :edit="edit">
+      </fm-link>
+    </template>
+
     <template v-if="widget.type == 'editor'">
       <vue-editor
         v-model="dataModel"
@@ -250,6 +261,7 @@
 import FmUpload from './Upload'
 import FileUpload from './FileUpload'
 import FmViewBtn from './ViewBtn'
+import FmLink from './Link'
 import SecretLevelInput from '@/components/Input/SecretLevelInput'
 import KnowledgeLabelsInput from '@/components/Input/KnowledgeLabelsInput'
 
@@ -259,6 +271,7 @@ export default {
     FmUpload,
     FileUpload,
     FmViewBtn,
+    FmLink,
     SecretLevelInput,
     KnowledgeLabelsInput
   },

@@ -249,7 +249,18 @@ export const basicComponents = [
        multiple:false,
        disabled:false
     }
-  }
+  },
+  {
+    type:"link",
+    name:'超链接',
+    icon:"el-icon-link",
+    options:{
+      type:"primary",
+      underline:true,
+      blank:true,
+      disabled:false
+    }
+  },
 ]
 
 export const advanceComponents = [

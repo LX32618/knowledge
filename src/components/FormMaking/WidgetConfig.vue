@@ -290,6 +290,29 @@
         </el-form-item>
       </template>
 
+      <template v-if="data.type=='link'">
+        <el-form-item label="有无下划线">
+          <el-switch v-model="data.options.underline">
+          </el-switch>
+        </el-form-item>
+        <el-form-item label="是否打开新页面">
+          <el-switch v-model="data.options.blank">
+          </el-switch>
+        </el-form-item>
+        <el-form-item label="显示类型">
+          <el-select v-model="data.options.type" placeholder="请选择">
+            <el-option
+                    v-for="item in linkTypes"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+              <span style="float: left">{{ item.label }}</span>
+              <span style="float: right; color: #8492a6; font-size: 13px"><el-tag :type="item.value" style="width:80px;height:20px"></el-tag></span>
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </template>
+
 
       <template v-if="data.type=='blank'">
         <el-form-item label="绑定数据类型">
@@ -353,7 +376,7 @@
 <!--          <el-checkbox v-model="data.options.visible" v-if="Object.keys(data.options).indexOf('visible')>=0">显示是否可见</el-checkbox>-->
 
         </el-form-item>
-        <el-form-item label="校验" v-if="data.type != 'grid' && data.type != 'upload'  && data.type !='imgupload' && data.type !='viewBtn' && data.type != 'text'  && data.type != 'table'">
+        <el-form-item label="校验" v-if="data.type != 'grid' && data.type != 'upload'  && data.type !='imgupload' && data.type !='viewBtn' && data.type != 'text'  && data.type != 'table' && data.type !='link'">
           <div v-if="Object.keys(data.options).indexOf('required')>=0">
             <el-checkbox v-model="data.options.required">必填</el-checkbox>
           </div>
@@ -393,7 +416,14 @@ export default {
         pattern: null,
         range: null,
         length: null
-      }
+      },
+      linkTypes:[
+        {value:"primary", label:"主要"},
+        {value:"success", label:"成功"},
+        {value:"warning", label:"警告"},
+        {value:"danger", label:"危险"},
+        {value:"info", label:"信息"},
+      ]
     }
   },
   computed: {

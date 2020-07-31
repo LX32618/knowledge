@@ -177,6 +177,13 @@
           </fm-view-btn>
       </template>
 
+      <template v-if="element.type == 'link'">
+          <fm-link
+                  :type="element.options.type"
+                  :blank="element.options.blank"
+                  :disabled="element.options.disabled">
+          </fm-link>
+      </template>
 
         <template v-if="element.type == 'cascader'">
           <el-cascader
@@ -227,13 +234,15 @@
 import FmUpload from './Upload'
 import FileUpload from './FileUpload'
 import FmViewBtn from './ViewBtn'
+import FmLink from "./Link"
 
 export default {
   props: ['element', 'select', 'index', 'data'],
   components: {
     FmUpload,
     FileUpload,
-    FmViewBtn
+    FmViewBtn,
+    FmLink
   },
   data () {
     return {
