@@ -9,7 +9,6 @@ import utils from './modules/utils'
 
 Vue.use(Vuex)
 
-/* 正式环境用
 // https://webpack.js.org/guides/dependency-management/#requirecontext
 const modulesFiles = require.context('./modules', false, /\.js$/)
 
@@ -27,14 +26,13 @@ export default new Vuex.Store({
   getters,
   modules
 })
-*/
 
 // 测试环境用
-export default new Vuex.Store({
-  getters,
-  modules: {
-    docCategory,
-    user,
-    utils
-  }
-})
+// export default new Vuex.Store({
+//   getters,
+//   modules: {
+//     docCategory,
+//     user,
+//     utils
+//   }
+// })

@@ -30,15 +30,16 @@
                         @add="handleWidgetColAdd($event, element, colIndex)"
                       >
                         <transition-group name="fade" tag="div" class="widget-col-list">
-                          <widget-form-item 
-                            v-for="(el, i) in col.list"
-                            :key="el.key"
-                            v-if="el.key"
-                            :element="el" 
-                            :select.sync="selectWidget" 
-                            :index="i" 
-                            :data="col">
-                          </widget-form-item>
+                          <template v-for="(el, i) in col.list">
+                            <widget-form-item 
+                              :key="el.key"
+                              v-if="el.key"
+                              :element="el" 
+                              :select.sync="selectWidget" 
+                              :index="i" 
+                              :data="col">
+                            </widget-form-item>
+                          </template>
                         </transition-group>
                         
                       </draggable>
@@ -62,30 +63,36 @@
                   <el-table
                     class="widget-table-left"
                     size="large"
-                    :data="[{}]">
-                    <el-table-column type="index">
+                    :data="[{}]"
+                    row-class-name="widget-table-row">
+                    <el-table-column type="index" fixed>
                       <template slot="header">#</template>
                     </el-table-column>
                   </el-table>
                   <div class="widget-table-content">
                     <div v-if="element.tableColumns.length === 0" class="table-empty">将字段拖拽到此处</div>
                     <draggable
-                      class="widget-table-col" :style="{
-                        width: calculateWidth(element.tableColumns) + 'px'
-                      }"
                       v-model="element.tableColumns"
                       :no-transition-on-drag="true"
                       v-bind="{group:'people', ghostClass: 'ghost',animation: 200, handle: '.drag-widget'}"
                       @end="handleMoveEnd"
                       @add="handleWidgetTableAdd($event, element)">
-                        <!-- <transition-group name="fade" tag="div"> -->
-                          <widget-table-item v-for="(col, colIndex) in element.tableColumns"
-                          :key="col.key"
-                          :element="col" 
-                          :select.sync="selectWidget" 
-                          :index="colIndex" 
-                          :data="element"></widget-table-item>
-                        <!-- </transition-group> -->
+                        <transition-group name="fade" tag="div"
+                        class="widget-table-col"
+                        :style="{
+                          width: calculateWidth(element.tableColumns) + 'px'
+                        }">
+                          <template v-for="(col, colIndex) in element.tableColumns">
+                            <widget-table-item
+                              v-if="col.key"
+                              :key="col.key"
+                              :element="col" 
+                              :select.sync="selectWidget" 
+                              :index="colIndex" 
+                              :data="element">
+                            </widget-table-item>
+                          </template>
+                        </transition-group>
                       </draggable>        
                   </div>
                 </div>
@@ -96,10 +103,14 @@
                 <div class="widget-view-drag widget-col-drag" v-if="selectWidget.key == element.key">
                   <i class="iconfont icon-drag drag-widget"></i>
                 </div>
+
+                <div class="widget-view-model">
+                  <span>{{ element.model }}</span>
+                </div>
               </el-form-item>
             </template>
             <template v-else>
-              <widget-form-item v-if="element && element.key"  :key="element.key" :element="element" :select.sync="selectWidget" :index="index" :data="data"></widget-form-item>
+              <widget-form-item v-if="element && element.key"  :key="element.key" :element="element" :select.sync="selectWidget" :index="index" :data="data" @state-change="updateState"></widget-form-item>
             </template>
           </template>
         </transition-group>
@@ -183,6 +194,7 @@ export default {
       }
 
       this.selectWidget = this.data.list[newIndex]
+      this.updateState()
     },
     handleWidgetColAdd ($event, row, colIndex) {
       // console.log('coladd', $event, row, colIndex)
@@ -230,6 +242,7 @@ export default {
       }
 
       this.selectWidget = row.columns[colIndex].list[newIndex]
+      this.updateState()
     },
     handleWidgetTableAdd (evt, table) {
       const newIndex = evt.newIndex
@@ -247,6 +260,7 @@ export default {
         model: table.tableColumns[newIndex].type + '_' + key,
         rules: []
       })
+      this.updateState()
     },
     handleWidgetDelete (index) {
       if (this.data.list.length - 1 === index) {
@@ -258,17 +272,22 @@ export default {
       } else {
         this.selectWidget = this.data.list[index + 1]
       }
-
+      
       this.$nextTick(() => {
         this.data.list.splice(index, 1)
+        this.updateState()
       })
     },
     calculateWidth (columns) {
       const total = 0
       const totalWidth = columns.reduce((total, column) => {
-        return total + +column.options.width.replace(/px/, '')
-      }, 400)
-      return totalWidth
+        const width = column.options.width ? +column.options.width.replace(/px/, '') : 0
+        return total + width
+      }, 200)
+      return totalWidth < 400 ? 400 : totalWidth
+    },
+    updateState () {
+      this.$store.commit('formMaking/APPEND_STATE', this.data)
     }
   },
   watch: {

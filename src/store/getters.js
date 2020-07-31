@@ -6,7 +6,9 @@ const getters = {
   baseFormConfig: state => state.utils.baseFormConfig,
   baseFormConfig2: state => state.utils.baseFormConfig2,
   defaultIcon: state => state.utils.defaultIcon,
-  icons: state => state.utils.icons
+  icons: state => state.utils.icons,
+  historyStates: state => state.formMaking.historyStates,
+  stateIndex: state => state.formMaking.stateIndex
 }
 
 export default getters

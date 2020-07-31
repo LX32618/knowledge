@@ -209,6 +209,10 @@
           <i class="iconfont icon-drag drag-widget"></i>
         </div>
 
+        <div class="widget-view-model">
+          <span>{{ element.model }}</span>
+        </div>
+
     </el-form-item>
 </template>
 
@@ -247,6 +251,7 @@ export default {
 
       this.$nextTick(() => {
         this.data.list.splice(index, 1)
+        this.$emit('state-change')
       })
     },
     handleWidgetClone (index) {

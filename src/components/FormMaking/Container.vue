@@ -65,6 +65,8 @@
           <el-header class="btn-bar" style="height: 45px;">
             <slot name="action">
             </slot>
+            <el-button :disabled="stateIndex < 0" type="text" size="medium" icon="el-icon-arrow-left" @click="handleUndo">撤销</el-button>
+            <el-button :disabled="stateIndex >= historyStates.length - 1" type="text" size="medium" icon="el-icon-arrow-right" @click="handleRedo">重做</el-button>
             <el-button v-if="upload" type="text" size="medium" icon="el-icon-upload2" @click="handleUpload">导入JSON</el-button>
             <el-button v-if="initial" type="text" size="medium" icon="element-icons el-custom-initialize" @click="handleUpload">&nbsp;&nbsp;初始化</el-button>
             <el-button v-if="clearable" type="text" size="medium" icon="el-icon-delete" @click="handleClear">清空</el-button>
@@ -181,6 +183,7 @@ import {basicComponents, layoutComponents, advanceComponents} from './components
 import {loadJs, loadCss} from '@/utils/index.js'
 import request from '@/utils/request.js'
 import generateCode from './generateCode.js'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'fm-making-form',
@@ -298,6 +301,12 @@ export default {
       codeActiveName: 'vue',
     }
   },
+  computed: {
+    ...mapGetters([
+      'historyStates',
+      'stateIndex'
+    ])
+  },
   methods: {
     handleGoGithub () {
       window.location.href = 'https://github.com/GavinZhuLei/vue-form-making'
@@ -388,6 +397,8 @@ export default {
         },
       }
 
+      this.updateState()
+
       this.widgetFormSelect = {}
     },
     handleSave(){
@@ -415,6 +426,21 @@ export default {
     },
     handleDataChange (field, value, data) {
       // console.log(field, value, data)
+    },
+    handleUndo () {
+      this.$store.commit('formMaking/UNDO')
+      if (this.stateIndex >= 0) {
+        this.widgetForm = this.historyStates[this.stateIndex]
+      } else {
+        this.handleClear()
+      }
+    },
+    handleRedo () {
+      this.$store.commit('formMaking/REDO')
+      this.widgetForm = this.historyStates[this.stateIndex]
+    },
+    updateState () {
+      this.$store.commit('formMaking/APPEND_STATE', this.widgetForm)
     }
   },
   watch: {
@@ -424,6 +450,9 @@ export default {
         // console.log(this.$refs.widgetForm)
       }
     }
+  },
+  mounted () {
+    this.$store.commit('formMaking/RESET_STATES')
   }
 }
 </script>
@@ -431,5 +460,10 @@ export default {
 <style lang="scss">
   .widget-empty{
     background-position: 50%;
+  }
+  #jsoneditor {
+    .cm-s-rubyblue {
+      height: 400px;
+    }
   }
 </style>

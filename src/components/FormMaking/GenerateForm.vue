@@ -223,3 +223,9 @@ export default {
   font-size: 20px;
 }
 </style>
+
+<style>
+.form-table .el-table__empty-block {
+  display: none;
+}
+</style>

@@ -4,7 +4,7 @@
     }"
     :class="{active: selectWidget.key == element.key, 'is_req': element.options.required}"
     @click.stop="handleSelectWidget(index)">
-    <el-table :data="[{}]" size="large">
+    <el-table :data="[{}]" size="large" row-class-name="widget-table-row">
       <el-table-column :label="element.name">
         <slot>
           <span>
@@ -19,7 +19,6 @@
             <template v-if="element.type == 'textarea'">
               <el-input type="textarea" :rows="5"
                 v-model="element.options.defaultValue"
-                :style="{width: element.options.width}"
                 :disabled="element.options.disabled"
                 :placeholder="element.options.placeholder"
               ></el-input>
@@ -30,13 +29,11 @@
                 v-model="element.options.defaultValue" 
                 :disabled="element.options.disabled"
                 :controls-position="element.options.controlsPosition"
-                :style="{width: element.options.width}"
               ></el-input-number>
             </template>
 
             <template v-if="element.type == 'radio'">
               <el-radio-group v-model="element.options.defaultValue"
-                :style="{width: element.options.width}"
                 :disabled="element.options.disabled"
               >
                 <el-radio  
@@ -51,7 +48,6 @@
 
             <template v-if="element.type == 'checkbox'">
               <el-checkbox-group v-model="element.options.defaultValue"
-                :style="{width: element.options.width}"
                 :disabled="element.options.disabled"
               >
                 <el-checkbox
@@ -75,7 +71,6 @@
                 :editable="element.options.editable"
                 :clearable="element.options.clearable"
                 :arrowControl="element.options.arrowControl"
-                :style="{width: element.options.width}"
               >
               </el-time-picker>
             </template>
@@ -92,7 +87,6 @@
                 :disabled="element.options.disabled"
                 :editable="element.options.editable"
                 :clearable="element.options.clearable"
-                :style="{width: element.options.width}"  
               >
               </el-date-picker>
             </template>
@@ -120,7 +114,6 @@
                 :multiple="element.options.multiple"
                 :clearable="element.options.clearable"
                 :placeholder="element.options.placeholder"
-                :style="{width: element.options.width}"
               >
                 <el-option v-for="item in element.options.options" :key="item.value" :value="item.value" :label="element.options.showLabel?item.label:item.value"></el-option>
               </el-select>
@@ -143,7 +136,6 @@
                 :step="element.options.step"
                 :show-input="element.options.showInput"
                 :range="element.options.range"
-                :style="{width: element.options.width}"
               ></el-slider>
             </template>
 
@@ -151,7 +143,6 @@
               <fm-upload
                 v-model="element.options.defaultValue"
                 :disabled="element.options.disabled"
-                :style="{'width': element.options.width}"
                 :width="element.options.size.width"
                 :height="element.options.size.height"
                 token="xxx"
@@ -167,7 +158,6 @@
                 :disabled="element.options.disabled"
                 :clearable="element.options.clearable"
                 :placeholder="element.options.placeholder"
-                :style="{width: element.options.width}"
                 :options="element.options.remoteOptions"
               >
 
@@ -177,7 +167,6 @@
             <template v-if="element.type == 'editor'">
               <vue-editor
                 v-model="element.options.defaultValue"
-                :style="{width: element.options.width}"
               >
               </vue-editor>
             </template>
@@ -189,6 +178,18 @@
             <template v-if="element.type == 'text'">
               <span>{{element.options.defaultValue}}</span>
             </template>
+
+            <template v-if="element.type == 'upload'">
+            <file-upload
+              :btnTitle="element.options.btnTitle"
+              :action="element.options.uploadUrl"
+              :accept="element.options.accept"
+              :limit="element.options.limit"
+              :multiple="element.options.multiple"
+              :tips="element.options.tips"
+              :disabled="element.options.disabled">
+            </file-upload>
+        </template>
           </span>
         </slot>
       </el-table-column>
@@ -200,12 +201,20 @@
     <div class="widget-view-drag" v-if="selectWidget.key == element.key">
       <i class="iconfont icon-drag drag-widget"></i>
     </div>
+    <div class="widget-view-model">
+      <span>{{ element.model }}</span>
+    </div>
   </div>
 </template>
 
 <script>
+import FileUpload from './FileUpload'
+
 export default {
   name: 'WidgetTableItem',
+  components: {
+    FileUpload
+  },
   props: ['element', 'select', 'index', 'data'],
   data () {
     return {
