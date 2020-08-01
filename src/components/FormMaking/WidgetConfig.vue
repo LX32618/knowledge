@@ -42,7 +42,7 @@
       <el-form-item label="步长" v-if="Object.keys(data.options).indexOf('step')>=0">
         <el-input-number v-model="data.options.step" :min="0" :max="100" :step="1"></el-input-number>
       </el-form-item>
-      <el-form-item label="是否多选" v-if="data.type=='select' || data.type=='imgupload'">
+      <el-form-item label="是否多选" v-if="data.type=='select'">
         <el-switch v-model="data.options.multiple" @change="handleSelectMuliple"></el-switch>
       </el-form-item>
       <el-form-item label="是否可搜索" v-if="data.type=='select'">
@@ -232,9 +232,16 @@
       <template v-if="data.type=='imgupload'">
 
         <el-form-item label="最大上传数">
-          <el-input type="number" v-model.number="data.options.length"></el-input>
+          <!--<el-input type="number" v-model.number="data.options.length"></el-input>-->
+          <el-input-number v-model="data.options.length" :min="0" :max="10" :step="1"></el-input-number>
         </el-form-item>
-        <el-form-item label="使用七牛上传">
+
+        <el-form-item label="是否支持多选图片">
+          <el-switch v-model="data.options.multiple" @change="handleSelectMuliple"></el-switch>
+        </el-form-item>
+
+
+<!--        <el-form-item label="使用七牛上传">
           <el-switch v-model="data.options.isQiniu"></el-switch>
         </el-form-item>
         <template v-if="data.options.isQiniu">
@@ -249,7 +256,7 @@
           <el-form-item label="图片上传地址" :required="true">
             <el-input v-model="data.options.action"></el-input>
           </el-form-item>
-        </template>
+        </template>-->
       </template>
 
       <template v-if="data.type=='upload'">

@@ -280,16 +280,14 @@ export const advanceComponents = [
         width: 100,
         height: 100,
       },
-      width: '',
       tokenFunc: 'icon iconfont funcGetToken',
       token: '',
       domain: 'http://pfp81ptt6.bkt.clouddn.com/',
       disabled: false,
-      length: 8,
+      length: 3,
       multiple: false,
-      isQiniu: false,
       isDelete: false,
-      min: 0,
+      //min: 0,
       isEdit: false,
       action: 'https://jsonplaceholder.typicode.com/photos/'
     }
