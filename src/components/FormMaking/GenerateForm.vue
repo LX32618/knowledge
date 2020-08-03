@@ -14,9 +14,8 @@
             :justify="item.options.justify"
             :align="item.options.align"
           >
-            <el-col v-for="(col, colIndex) in item.columns" :key="colIndex" :span="col.span">
-
-
+            <el-col v-for="(col, colIndex) in item.columns" :key="colIndex" :span="item.options.rowConfig=='span'?col.span:undefined"
+                    :style="{width:rowPercent(item,col.scale)}">
               <template v-for="citem in col.list" >
                 <el-form-item v-if="citem.type=='blank'" :label="citem.name" :prop="citem.model" :key="citem.key">
                   <slot :name="citem.model" :model="models"></slot>
@@ -187,7 +186,7 @@ export default {
       this.$emit('on-change', field, value, this.models)
     },
     refresh () {
-      
+
     },
     handleRowAppend (config) {
       const row = {}
@@ -210,6 +209,25 @@ export default {
       handler (val) {
         // console.log(JSON.stringify(val))
         this.models = {...this.models, ...val}
+      }
+    }
+  },
+  computed: {
+    rowPercent(element,scale){
+      return function(element,scale){
+        if(element.type=='grid')
+        {
+          if(element.options.rowConfig == 'scale')
+          {
+            let total = element.options.blank + element.columns.reduce((s, d) => {
+              return s + d.scale;
+            }, 0);
+            return (scale / total) * 100 + "%";
+          }
+          else{
+            return undefined;
+          }
+        }
       }
     }
   }

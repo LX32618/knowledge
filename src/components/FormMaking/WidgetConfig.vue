@@ -336,17 +336,32 @@
           <el-input type="number" v-model.number="data.options.gutter"></el-input>
         </el-form-item>
         <el-form-item label="列配置项">
+            <el-radio-group v-model="data.options.rowConfig" size="mini">
+              <el-radio-button label="span">栅格</el-radio-button>
+              <el-radio-button label="scale">比例</el-radio-button>
+            </el-radio-group>
           <draggable tag="ul" :list="data.columns"
             v-bind="{group:{ name:'options'}, ghostClass: 'ghost',handle: '.drag-item'}"
-            handle=".drag-item"
-          >
-            <li v-for="(item, index) in data.columns" :key="index" >
-              <i class="drag-item" style="font-size: 16px;margin: 0 5px;cursor: move;"><i class="iconfont icon-icon_bars"></i></i>
-              <el-input placeholder="栅格值" size="mini" style="width: 100px;" type="number" v-model.number="item.span"></el-input>
-
-              <el-button @click="handleOptionsRemove(index)" circle plain type="danger" size="mini" icon="el-icon-minus" style="padding: 4px;margin-left: 5px;"></el-button>
-
-            </li>
+            handle=".drag-item">
+              <div v-if="data.options.rowConfig=='scale'">
+                留白值<br>
+                <i class="drag-item" style="font-size: 16px;margin: 0 5px;cursor: move;"><i class="iconfont icon-icon_bars"></i></i>
+                <el-input-number :min="0" :max="10" v-model="data.options.blank"></el-input-number>
+                <br>
+                比例值
+              </div>
+              <li v-for="(item, index) in data.columns" :key="index" >
+                <div  v-if="data.options.rowConfig=='span'">
+                  <i class="drag-item" style="font-size: 16px;margin: 0 5px;cursor: move;"><i class="iconfont icon-icon_bars"></i></i>
+                  <el-input placeholder="栅格值" size="mini" style="width: 100px;" type="number" v-model.number="item.span"></el-input>
+                  <el-button @click="handleOptionsRemove(index)" circle plain type="danger" size="mini" icon="el-icon-minus" style="padding: 4px;margin-left: 5px;"></el-button>
+                </div>
+                <div v-else-if="data.options.rowConfig=='scale'">
+                  <i class="drag-item" style="font-size: 16px;margin: 0 5px;cursor: move;"><i class="iconfont icon-icon_bars"></i></i>
+                  <el-input-number v-model="item.scale" :min="1" :max="10" label="比例值"></el-input-number>
+                  <el-button @click="handleOptionsRemove(index)" circle plain type="danger" size="mini" icon="el-icon-minus" style="padding: 4px;margin-left: 5px;"></el-button>
+                </div>
+              </li>
           </draggable>
           <div style="margin-left: 22px;">
             <el-button type="text" @click="handleAddColumn">添加列</el-button>
@@ -465,7 +480,8 @@ export default {
     },
     handleAddColumn () {
       this.data.columns.push({
-        span: '',
+        span: 12,
+        scale:1,
         list: []
       })
     },

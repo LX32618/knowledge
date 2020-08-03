@@ -2,9 +2,9 @@
   <div class="widget-form-container">
     <div v-if="data.list.length == 0" class="form-empty">从左侧拖拽来添加字段</div>
     <el-form :size="data.config.size" label-suffix=":" :label-position="data.config.labelPosition" :label-width="data.config.labelWidth + 'px'">
-      
-      <draggable class="" 
-        v-model="data.list" 
+
+      <draggable class=""
+        v-model="data.list"
         v-bind="{group:'people', ghostClass: 'ghost',animation: 200, handle: '.drag-widget'}"
         @end="handleMoveEnd"
         @add="handleWidgetAdd"
@@ -13,15 +13,16 @@
         <transition-group name="fade" tag="div" class="widget-form-list">
           <template v-for="(element, index) in data.list">
             <template v-if="element.type == 'grid'">
-                <el-row class="widget-col widget-view" v-if="element && element.key" :key="element.key" 
+                <el-row class="widget-col widget-view" v-if="element && element.key" :key="element.key"
                   type="flex"
                   :class="{active: selectWidget.key == element.key}"
                   :gutter="element.options.gutter ? element.options.gutter : 0"
                   :justify="element.options.justify"
                   :align="element.options.align"
                   @click.native="handleSelectWidget(index)">
-                  <el-col  v-for="(col, colIndex) in element.columns" :key="colIndex" :span="col.span ? col.span : 0">
-                    
+                  <el-col  v-for="(col, colIndex) in element.columns" :key="colIndex"
+                           :span="element.options.rowConfig=='span'?col.span ? col.span : 0:undefined"
+                  :style="{width:rowPercent(element,col.scale)}">
                       <draggable
                         v-model="col.list"
                         :no-transition-on-drag="true"
@@ -31,21 +32,22 @@
                       >
                         <transition-group name="fade" tag="div" class="widget-col-list">
                           <template v-for="(el, i) in col.list">
-                            <widget-form-item 
+                            <widget-form-item
                               :key="el.key"
                               v-if="el.key"
-                              :element="el" 
-                              :select.sync="selectWidget" 
-                              :index="i" 
+                              :element="el"
+                              :select.sync="selectWidget"
+                              :index="i"
                               :data="col">
                             </widget-form-item>
                           </template>
                         </transition-group>
-                        
+
                       </draggable>
+
                   </el-col>
                   <div class="widget-view-action widget-col-action" v-if="selectWidget.key == element.key">
-        
+
                     <i class="iconfont icon-trash" @click.stop="handleWidgetDelete(index)"></i>
                   </div>
 
@@ -86,14 +88,14 @@
                             <widget-table-item
                               v-if="col.key"
                               :key="col.key"
-                              :element="col" 
-                              :select.sync="selectWidget" 
-                              :index="colIndex" 
+                              :element="col"
+                              :select.sync="selectWidget"
+                              :index="colIndex"
                               :data="element">
                             </widget-table-item>
                           </template>
                         </transition-group>
-                      </draggable>        
+                      </draggable>
                   </div>
                 </div>
                 <div class="widget-view-action widget-col-action" v-if="selectWidget.key == element.key">
@@ -131,12 +133,12 @@ export default {
     WidgetTableItem
   },
   props: ['data', 'select'],
-  data () {
+  data() {
     return {
       selectWidget: this.select
     }
   },
-  mounted () {
+  mounted() {
     document.body.ondrop = function (event) {
       let isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1
       if (isFirefox) {
@@ -146,20 +148,20 @@ export default {
     }
   },
   methods: {
-    handleMoveEnd ({newIndex, oldIndex}) {
+    handleMoveEnd({newIndex, oldIndex}) {
       // console.log('index', newIndex, oldIndex)
     },
-    handleSelectWidget (index) {
+    handleSelectWidget(index) {
       // console.log(index, '#####')
       this.selectWidget = this.data.list[index]
     },
-    handleWidgetAdd (evt) {
+    handleWidgetAdd(evt) {
       // console.log('add', evt)
       // console.log('end', evt)
       const newIndex = evt.newIndex
       // const to = evt.to
       // console.log(to)
-      
+
       //为拖拽到容器的元素添加唯一 key
       const key = Date.parse(new Date()) + '_' + Math.ceil(Math.random() * 99999)
       this.$set(this.data.list, newIndex, {
@@ -196,7 +198,7 @@ export default {
       this.selectWidget = this.data.list[newIndex]
       this.updateState()
     },
-    handleWidgetColAdd ($event, row, colIndex) {
+    handleWidgetColAdd($event, row, colIndex) {
       // console.log('coladd', $event, row, colIndex)
       const newIndex = $event.newIndex
       const oldIndex = $event.oldIndex
@@ -244,9 +246,9 @@ export default {
       this.selectWidget = row.columns[colIndex].list[newIndex]
       this.updateState()
     },
-    handleWidgetTableAdd (evt, table) {
+    handleWidgetTableAdd(evt, table) {
       const newIndex = evt.newIndex
-      
+
       const key = Date.parse(new Date()) + '_' + Math.ceil(Math.random() * 99999)
       this.$set(table.tableColumns, newIndex, {
         ...table.tableColumns[newIndex],
@@ -262,7 +264,7 @@ export default {
       })
       this.updateState()
     },
-    handleWidgetDelete (index) {
+    handleWidgetDelete(index) {
       if (this.data.list.length - 1 === index) {
         if (index === 0) {
           this.selectWidget = {}
@@ -272,13 +274,13 @@ export default {
       } else {
         this.selectWidget = this.data.list[index + 1]
       }
-      
+
       this.$nextTick(() => {
         this.data.list.splice(index, 1)
         this.updateState()
       })
     },
-    calculateWidth (columns) {
+    calculateWidth(columns) {
       const total = 0
       const totalWidth = columns.reduce((total, column) => {
         const width = column.options.width ? +column.options.width.replace(/px/, '') : 0
@@ -286,20 +288,39 @@ export default {
       }, 200)
       return totalWidth < 400 ? 400 : totalWidth
     },
-    updateState () {
+    updateState() {
       this.$store.commit('formMaking/APPEND_STATE', this.data)
     }
   },
   watch: {
-    select (val) {
+    select(val) {
       this.selectWidget = val
     },
     selectWidget: {
-      handler (val) {
+      handler(val) {
         this.$emit('update:select', val)
       },
       deep: true
     }
+  },
+  computed: {
+    rowPercent(element,scale){
+      return function(element,scale){
+        if(element.type=='grid')
+        {
+          if(element.options.rowConfig == 'scale')
+          {
+            let total = element.options.blank + element.columns.reduce((s, d) => {
+              return s + d.scale;
+            }, 0);
+            return (scale / total) * 100 + "%";
+          }
+          else{
+            return undefined;
+          }
+        }
+    }
   }
+}
 }
 </script>

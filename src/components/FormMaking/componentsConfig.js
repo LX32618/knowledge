@@ -339,17 +339,21 @@ export const layoutComponents = [
     columns: [
       {
         span: 12,
+        scale:1,
         list: []
       },
       {
         span: 12,
+        scale:1,
         list: []
       }
     ],
     options: {
       gutter: 0,
       justify: 'start',
-      align: 'top'
+      align: 'top',
+      rowConfig:"span",
+      blank: 0
     }
   }
 ]
