@@ -168,7 +168,6 @@
     </el-main>
 <!--    <el-footer height="30px" style="font-weight: 600;">Powered by <a target="_blank" href="https://github.com/GavinZhuLei/vue-form-making">vue-form-making</a></el-footer>-->
   </el-container>
-
 </template>
 
 <script>
@@ -441,6 +440,9 @@ export default {
     },
     updateState () {
       this.$store.commit('formMaking/APPEND_STATE', this.widgetForm)
+    },
+    test(){
+      console.log('test');
     }
   },
   watch: {
@@ -452,8 +454,54 @@ export default {
     }
   },
   mounted () {
-    this.$store.commit('formMaking/RESET_STATES')
-  }
+    this.$store.commit('formMaking/RESET_STATES');
+
+  },
+  created(){
+    let self = this;
+    let ctrlKey = false;
+    let zKey = false;
+    let yKey = false;
+    document.onkeydown = function(e) {
+      if("Control"== e.key)
+      {
+        e.preventDefault() //禁止默认事件
+        ctrlKey = true;
+      }
+      if("z"== e.key)
+      {
+        e.preventDefault() //禁止默认事件
+        zKey = true;
+      }
+      if("y" == e.key)
+      {
+        e.preventDefault() //禁止默认事件
+        yKey = true;
+      }
+      if(ctrlKey && zKey)
+      {
+        self.handleUndo();
+      }
+      if(ctrlKey && yKey)
+      {
+        self.handleRedo();
+      }
+    };
+    document.onkeyup = function(e) {
+      if("Control"== e.key)
+      {
+        ctrlKey = false;
+      }
+      if("z"== e.key)
+      {
+        zKey = false;
+      }
+      if("y" == e.key)
+      {
+        yKey = false;
+      }
+    };
+  },
 }
 </script>
 
