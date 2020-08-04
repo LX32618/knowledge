@@ -69,12 +69,13 @@
                         {prop: "keyField", label: "标识字段"},
                         {prop: "viewField", label: "显示字段"},
                         {prop: "viewUrl", label: "链接地址"},
-                        {prop: "isMulti", label: "多选",
+            /*            {prop: "isMulti", label: "多选",
                             formatter(index,row)
                             {
                                 return row.isMulti==0?"否":"是";
-                            }
-                        },
+                            },
+                            visible: false
+                        },*/
                         {prop: "isSys", label: "系统对象",
                             formatter(index,row)
                             {

@@ -44,9 +44,9 @@
         <el-form-item label="过滤条件">
             <el-input type="textarea"  :autosize="{ minRows: 3, maxRows: 6}" autocomplete="off" placeholder="请输入过滤条件" v-model="data.filter"></el-input>
         </el-form-item>
-        <el-form-item label="是否多选">
+     <!--   <el-form-item label="是否多选">
             <el-switch v-model="data.isMulti" :active-value=1 :inactive-value=0></el-switch>
-        </el-form-item>
+        </el-form-item>-->
         <el-form-item label="是否系统对象">
             <el-switch v-model="data.isSys" :active-value=1 :inactive-value=0></el-switch>
         </el-form-item>

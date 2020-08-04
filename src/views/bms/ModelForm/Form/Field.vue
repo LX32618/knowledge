@@ -13,10 +13,10 @@
         </el-form-item>
         <el-form-item label="字段类型" v-if="showFiledType">
             <div ref="fieldType">
-                <el-select placeholder="--请选择--" v-model="data.fieldType" @change="textFieldTypeChange" v-if="data.htmlType == 0" :disabled="data.id != ''"><!--编辑或者子表新增时不能修改-->
+         <!--       <el-select placeholder="&#45;&#45;请选择&#45;&#45;" v-model="data.fieldType" @change="textFieldTypeChange" v-if="data.htmlType == 0" :disabled="data.id != ''">&lt;!&ndash;编辑或者子表新增时不能修改&ndash;&gt;
                     <el-option v-for="f in textFieldType" :key="f.value" :label="f.label" :value="f.value"></el-option>
-                </el-select>
-                <div v-else-if="data.htmlType == 1 || data.htmlType == 3 || data.htmlType == 8">
+                </el-select>-->
+                <div v-if="data.htmlType == 1 || data.htmlType == 3 || data.htmlType == 8">
                     <el-button type="primary" icon="el-icon-search" circle @click.native="toggleDictionary"></el-button>
                     <el-tag type="danger" size="mini" style="margin-left: 3px" v-if="data.fieldType != ''">
                         {{data.fieldTypeName}}
@@ -56,7 +56,7 @@
                 </div>
             </div>
         </el-form-item>
-        <el-form-item label="字段长度" v-if="data.htmlType == 0 && data.fieldType == 0">
+<!--        <el-form-item label="字段长度" v-if="data.htmlType == 0 && data.fieldType == 0">
             <el-input-number v-model="data.fieldLength" :disabled="data.id != ''" :min="1"></el-input-number>
         </el-form-item>
         <el-form-item label="精确位数" v-if="data.htmlType == 0 && data.fieldType == 2" prop="fieldFixed">
@@ -73,7 +73,7 @@
         </el-form-item>
         <el-form-item label="字段验证" v-if="data.htmlType == 11">
             <el-input autocomplete="off"  v-model="data.fieldCheck"></el-input>
-        </el-form-item>
+        </el-form-item>-->
         <el-button type="primary" class="saveBtn"  @click="submitForm" :loading="submitBtnLoading">保存</el-button>
     </el-form>
 </template>
@@ -121,20 +121,20 @@
                 browseBtnLoading:false,
                 selectedFiledType:"",
                 selectedFiledTypeName:"",
-                textFieldType:[
+  /*              textFieldType:[
                     {label:"文本",value:0},
                     {label:"整数",value:1},
                     {label:"小数",value:2}
-                ],
+                ],*/
                 htmlType:[
                     {label:"文本框",value:0},
                     {label:"单选框",value:1},
-                    {label:"复选框",value:2},
+                    {label:"开关",value:2},
                     {label:"下拉列表",value:3},
                     {label:"附件",value:4},
                     {label:"图片",value:5},
-                    {label:"浏览按钮单选",value:6},
-                    {label:"浏览按钮多选",value:7},
+                    {label:"浏览按钮",value:6},
+  /*                  {label:"浏览按钮多选",value:7},*/
                     {label:"复选框组",value:8},
                     {label:"多行文本",value:9},
                     {label:"日期",value:11},
@@ -192,8 +192,8 @@
         computed:{
             //this.data.htmlType != '' &&
           showFiledType(){
-              let flag = this.data.htmlType != undefined && this.data.htmlType != 2 &&
-                  this.data.htmlType != 4 && this.data.htmlType != 5 &&
+              let flag = this.data.htmlType != undefined && this.data.htmlType != 0
+                  && this.data.htmlType != 2 && this.data.htmlType != 4 && this.data.htmlType != 5 &&
                   this.data.htmlType != 9 && this.data.htmlType != 11 && this.data.htmlType != 13;
               return flag;
           }
@@ -228,10 +228,10 @@
                 }
 
             },
-            textFieldTypeChange(data){
+    /*        textFieldTypeChange(data){
                 this.data.fieldType = data;
                 this.data.fieldTypeName = this.textFieldType.find(t=>t.value == data).label;
-            },
+            },*/
             submitForm(){
                 this.$refs['fieldForm'].validate((valid) => {
                     if (valid) {
