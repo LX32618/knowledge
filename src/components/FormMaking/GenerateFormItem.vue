@@ -104,7 +104,7 @@
         :disabled="isDisabled"
         :editable="widget.options.editable"
         :clearable="widget.options.clearable"
-        :value-format="widget.options.timestamp ? 'timestamp' : widget.options.format"
+        :value-format="widget.options.format"
         :format="widget.options.format"
         :style="{width: widgetWidth}"
       >

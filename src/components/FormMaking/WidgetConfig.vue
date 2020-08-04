@@ -167,16 +167,16 @@
       </el-form-item>
 
       <template v-if="data.type == 'time' || data.type == 'date'">
+
         <el-form-item label="显示类型" v-if="data.type == 'date'">
-          <el-select v-model="data.options.type">
-            <el-option value="year"></el-option>
-            <el-option value="month"></el-option>
-            <el-option value="date"></el-option>
-            <el-option value="dates"></el-option>
-            <!-- <el-option value="week"></el-option> -->
-            <el-option value="datetime"></el-option>
-            <el-option value="datetimerange"></el-option>
-            <el-option value="daterange"></el-option>
+          <el-select v-model="data.options.type" @change="dateTypeChange">
+            <el-option value="year" label="年"></el-option>
+            <el-option value="month" label="月"></el-option>
+            <el-option value="date" label="日期"></el-option>
+            <el-option value="daterange" label="日期范围"></el-option>
+            <el-option value="dates" label="多个日期"></el-option>
+            <el-option value="datetime" label="日期时间"></el-option>
+            <el-option value="datetimerange" label="日期时间范围"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="是否为范围选择" v-if="data.type == 'time'">
@@ -185,18 +185,15 @@
           >
           </el-switch>
         </el-form-item>
-        <el-form-item label="是否获取时间戳" v-if="data.type == 'date'">
+<!--        <el-form-item label="是否获取时间戳" v-if="data.type == 'date'">
           <el-switch
             v-model="data.options.timestamp"
           >
           </el-switch>
-        </el-form-item>
+        </el-form-item>-->
         <el-form-item label="占位内容" v-if="(!data.options.isRange && data.type == 'time') || (data.type != 'time' && data.options.type != 'datetimerange' && data.options.type != 'daterange')">
           <el-input v-model="data.options.placeholder"></el-input>
         </el-form-item>
-
-
-
         <el-form-item label="开始时间占位内容" v-if="(data.options.isRange) || data.options.type=='datetimerange' || data.options.type=='daterange'">
           <el-input v-model="data.options.startPlaceholder"></el-input>
         </el-form-item>
@@ -457,6 +454,20 @@ export default {
     }
   },
   methods: {
+    dateTypeChange(val) {
+      if ("year" == val) {
+        this.data.options.format = "yyyy";
+      }
+      else if("month" == val){
+        this.data.options.format = "yyyy-MM";
+      }
+      else if (val.startsWith("datetime")) {
+        this.data.options.format = "yyyy-MM-dd hh:mm:ss";
+      }
+      else {
+        this.data.options.format = "yyyy-MM-dd";
+      }
+    },
     handleOptionsRemove (index) {
       if (this.data.type === 'grid') {
         this.data.columns.splice(index, 1)
