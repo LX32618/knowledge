@@ -111,13 +111,13 @@
                         {prop: "htmlTypeName", label: "显示类型"},
                         {prop: "htmlType", label: "显示类型Id",visible:false},
                         {prop: "fieldTypeName", label: "字段类型"},
-                        {prop: "fieldType", label: "字段类型Id",visible:false},
-                        {prop: "fieldLength", label: "字段长度"},
-                        {prop: "fieldFixed", label: "精度"},
+                        {prop: "fieldType", label: "字段类型Id",visible:false}
+/*                        {prop: "fieldLength", label: "字段长度",visible:false},
+                        {prop: "fieldFixed", label: "精度",visible:false},
                         {prop: "isMulti", label: "是否多选",visible:false},
                         {prop: "fieldCheck", label: "字段验证",visible:false},
                         {prop: "height", label: "高度",visible:false},
-                        {prop: "width", label: "宽度",visible:false}
+                        {prop: "width", label: "宽度",visible:false}*/
                     ]
                 },
                 data:{},

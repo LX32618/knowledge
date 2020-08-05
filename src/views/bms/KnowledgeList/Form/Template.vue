@@ -9,7 +9,6 @@
                 </template>-->
             </form-making>
         </el-dialog>
-        <fm-link></fm-link>
     </div>
 </template>
 
