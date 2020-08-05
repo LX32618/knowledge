@@ -2,7 +2,7 @@ export const basicComponents = [
   {
     type: 'input',
     icon: 'icon iconfont icon-input',
-    name: '单选框',
+    name: '输入框',
     options: {
       width: '100%',
       defaultValue: '',
@@ -43,6 +43,7 @@ export const basicComponents = [
   {
     type: 'radio',
     icon: 'icon iconfont icon-radio-active',
+    name:"单选框",
     options: {
       defaultValue:"",
       dictId:'76ACF600189647489831436CA030D2F4',
@@ -54,27 +55,28 @@ export const basicComponents = [
   {
     type: 'checkbox',
     icon: 'icon iconfont icon-check-box',
+    name:"多选框",
     options: {
-      inline: false,
-      defaultValue: [],
-      options: [
-        {
-          value: 'Option 1'
-        },
-        {
-          value: 'Option 2'
-        },
-        {
-          value: 'Option 3'
-        }
-      ],
+      defaultValue: "",
+      dictId:'76ACF600189647489831436CA030D2F4',
       required: false,
       width: '',
-      props: {
-        value: 'value',
-        label: 'label'
-      },
       disabled: false,
+    },
+  },
+  {
+    type: 'select',
+    icon: 'icon iconfont icon-select',
+    name:"下拉框",
+    options: {
+      defaultValue: '',
+      dictId:'76ACF600189647489831436CA030D2F4',
+      disabled: false,
+      clearable: false,
+      placeholder: '',
+      required: false,
+      width: '',
+      filterable: false
     }
   },
   {
@@ -134,34 +136,6 @@ export const basicComponents = [
       disabled: false,
       showAlpha: false,
       required: false
-    }
-  },
-  {
-    type: 'select',
-    icon: 'icon iconfont icon-select',
-    options: {
-      defaultValue: '',
-      disabled: false,
-      clearable: false,
-      placeholder: '',
-      required: false,
-      width: '',
-      options: [
-        {
-          value: 'Option 1'
-        },
-        {
-          value: 'Option 2'
-        },{
-          value: 'Option 3'
-        }
-      ],
-      remote: false,
-      filterable: false,
-      props: {
-        value: 'value',
-        label: 'label'
-      },
     }
   },
   {

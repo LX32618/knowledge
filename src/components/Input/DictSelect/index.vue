@@ -2,7 +2,7 @@
   <div v-loading="isLoading">
     <!-- 单选框 -->
     <template v-if="type === 'radio'">
-      <el-radio-group v-model="model">
+      <el-radio-group v-model="model" v-bind="$attrs">
         <el-radio v-for="item of options" :key="item.id" :label="item.id">{{
           item.name
         }}</el-radio>
@@ -10,7 +10,7 @@
     </template>
     <!-- 复选框 -->
     <template v-else-if="type === 'checkbox'">
-      <el-checkbox-group v-model="model">
+      <el-checkbox-group v-model="model" v-bind="$attrs">
         <el-checkbox v-for="item of options" :key="item.id" :label="item.id">{{
           item.name
         }}</el-checkbox>
@@ -33,6 +33,7 @@
 <script>
 import { fetchDictTree } from '@/api/treeRest'
 export default {
+  name: 'DictSelect',
   name: 'DictSelect',
   props: ['dictId', 'value', 'type'],
   data () {

@@ -32,40 +32,30 @@
           ></el-input-number>
         </template>
 
-<!--        <template v-if="element.type == 'radio'">
-          <el-radio-group v-model="element.options.defaultValue"
-            :style="{width: element.options.width}"
-            :disabled="element.options.disabled"
-          >
-            <el-radio
-              :style="{display: element.options.inline ? 'inline-block' : 'block'}"
-              :label="item.value" v-for="(item, index) in element.options.options" :key="item.value + index"
 
-            >
-              {{element.options.showLabel ? item.label : item.value}}
-            </el-radio>
-          </el-radio-group>
-        </template>-->
+        <template v-if="element.type == 'radio'">
+          <dict-select :type="'radio'"
+                       :dict-id="element.options.dictId"
+                       :disabled="element.options.disabled"
+                       :style="{width: element.options.width}"></dict-select>
+         </template>
 
-      <template v-if="element.type == 'radio'">
-          {{element}}
-          <dict-select :type="'radio'" :dict-id="element.options.dictId"></dict-select>
-      </template>
+        <template v-if="element.type == 'checkbox'">
+          <dict-select :type="'checkbox'"
+                       :dict-id="element.options.dictId"
+                       :disabled="element.options.disabled"
+                       :style="{width: element.options.width}"></dict-select>
+        </template>
 
-
-<!--        <template v-if="element.type == 'checkbox'">
-          <el-checkbox-group v-model="element.options.defaultValue"
-            :style="{width: element.options.width}"
-            :disabled="element.options.disabled"
-          >
-            <el-checkbox
-              :style="{display: element.options.inline ? 'inline-block' : 'block'}"
-              :label="item.value" v-for="(item, index) in element.options.options" :key="item.value + index"
-            >
-              {{element.options.showLabel ? item.label : item.value}}
-            </el-checkbox>
-          </el-checkbox-group>
-        </template>-->
+         <template v-if="element.type == 'select'">
+          <dict-select :type="'select'"
+                       :dict-id="element.options.dictId"
+                       :disabled="element.options.disabled"
+                       :clearable="element.options.clearable"
+                       :placeholder="element.options.placeholder"
+                       :filterable="element.options.filterable"
+                       :style="{width: element.options.width}"></dict-select>
+         </template>
 
         <template v-if="element.type == 'time'">
           <el-time-picker
@@ -117,7 +107,7 @@
           ></el-color-picker>
         </template>
 
-        <template v-if="element.type == 'select'">
+<!--        <template v-if="element.type == 'select'">
           <el-select
             v-model="element.options.defaultValue"
             :disabled="element.options.disabled"
@@ -128,7 +118,7 @@
           >
             <el-option v-for="item in element.options.options" :key="item.value" :value="item.value" :label="element.options.showLabel?item.label:item.value"></el-option>
           </el-select>
-        </template>
+        </template>-->
 
         <template v-if="element.type=='switch'">
           <el-switch
@@ -158,8 +148,6 @@
             :style="{'width': element.options.width}"
             :width="element.options.size.width"
             :height="element.options.size.height"
-            token="xxx"
-            domain="xxx"
           >
           </fm-upload>
         </template>

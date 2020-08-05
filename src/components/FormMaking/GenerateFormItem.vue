@@ -44,7 +44,36 @@
       ></el-input-number>
     </template>
 
+
     <template v-if="widget.type == 'radio'">
+      <dict-select v-model="dataModel"
+                   :type="'radio'"
+                   :dict-id="widget.options.dictId"
+                   :disabled="isDisabled"
+                   :style="{width: widget.options.width}"></dict-select>
+    </template>
+
+    <template v-if="widget.type == 'checkbox'">
+      <dict-select v-model="dataModel"
+                   :type="'checkbox'"
+                   :dict-id="widget.options.dictId"
+                   :disabled="isDisabled"
+                   :style="{width: widget.options.width}"></dict-select>
+    </template>
+
+    <template v-if="widget.type == 'select'">
+      <dict-select v-model="dataModel"
+                   :type="'select'"
+                   :dict-id="widget.options.dictId"
+                   :disabled="isDisabled"
+                   :clearable="widget.options.clearable"
+                   :placeholder="widget.options.placeholder"
+                   :filterable="widget.options.filterable"
+                   :style="{width: widget.options.width}"></dict-select>
+    </template>
+
+
+<!--    <template v-if="widget.type == 'radio'">
       <el-radio-group v-model="dataModel"
         :style="{width: widgetWidth}"
         :disabled="isDisabled"
@@ -57,9 +86,9 @@
           <template v-else>{{widget.options.showLabel ? item.label : item.value}}</template>
         </el-radio>
       </el-radio-group>
-    </template>
+    </template>-->
 
-    <template v-if="widget.type == 'checkbox'">
+<!--    <template v-if="widget.type == 'checkbox'">
       <el-checkbox-group v-model="dataModel"
         :style="{width: widgetWidth}"
         :disabled="isDisabled"
@@ -73,7 +102,7 @@
           <template v-else>{{widget.options.showLabel ? item.label : item.value}}</template>
         </el-checkbox>
       </el-checkbox-group>
-    </template>
+    </template>-->
 
     <template v-if="widget.type == 'time'">
       <el-time-picker
@@ -127,7 +156,7 @@
       ></el-color-picker>
     </template>
 
-    <template v-if="widget.type == 'select'">
+<!--    <template v-if="widget.type == 'select'">
       <el-select
         v-model="dataModel"
         :disabled="isDisabled"
@@ -139,7 +168,7 @@
       >
         <el-option v-for="item in (widget.options.remote ? widget.options.remoteOptions : widget.options.options)" :key="item.value" :value="item.value" :label="widget.options.showLabel || widget.options.remote?item.label:item.value"></el-option>
       </el-select>
-    </template>
+    </template>-->
 
     <template v-if="widget.type=='switch'">
       <el-switch
@@ -262,6 +291,7 @@ import FmUpload from './Upload'
 import FileUpload from './FileUpload'
 import FmViewBtn from './ViewBtn'
 import FmLink from './Link'
+import DictSelect from "../Input/DictSelect"
 import SecretLevelInput from '@/components/Input/SecretLevelInput'
 import KnowledgeLabelsInput from '@/components/Input/KnowledgeLabelsInput'
 
@@ -272,6 +302,7 @@ export default {
     FileUpload,
     FmViewBtn,
     FmLink,
+    DictSelect,
     SecretLevelInput,
     KnowledgeLabelsInput
   },

@@ -9,7 +9,6 @@
         @end="handleMoveEnd"
         @add="handleWidgetAdd"
       >
-
         <transition-group name="fade" tag="div" class="widget-form-list">
           <template v-for="(element, index) in data.list">
             <template v-if="element.type == 'grid'">
@@ -168,7 +167,7 @@ export default {
         ...this.data.list[newIndex],
         options: {
           ...this.data.list[newIndex].options,
-          remoteFunc: 'func_' + key
+          //remoteFunc: 'func_' + key
         },
         key,
         // 绑定键值
@@ -176,17 +175,17 @@ export default {
         rules: []
       })
 
-/*      if (this.data.list[newIndex].type === 'radio' || this.data.list[newIndex].type === 'checkbox' || this.data.list[newIndex].type === 'select') {
+      if (this.data.list[newIndex].type === 'radio' || this.data.list[newIndex].type === 'checkbox' || this.data.list[newIndex].type === 'select') {
         this.$set(this.data.list, newIndex, {
           ...this.data.list[newIndex],
           options: {
-            ...this.data.list[newIndex].options,
-            options: this.data.list[newIndex].options.options.map(item => ({
+            ...this.data.list[newIndex].options
+         /*   options: this.data.list[newIndex].options.options.map(item => ({
               ...item
-            }))
+            }))*/
           }
         })
-      }*/
+      }
 
       if (this.data.list[newIndex].type === 'grid') {
         this.$set(this.data.list, newIndex, {
@@ -231,17 +230,17 @@ export default {
         rules: []
       })
 
-/*      if (row.columns[colIndex].list[newIndex].type === 'radio' || row.columns[colIndex].list[newIndex].type === 'checkbox' || row.columns[colIndex].list[newIndex].type === 'select') {
+      if (row.columns[colIndex].list[newIndex].type === 'radio' || row.columns[colIndex].list[newIndex].type === 'checkbox' || row.columns[colIndex].list[newIndex].type === 'select') {
         this.$set(row.columns[colIndex].list, newIndex, {
           ...row.columns[colIndex].list[newIndex],
           options: {
-            ...row.columns[colIndex].list[newIndex].options,
-            options: row.columns[colIndex].list[newIndex].options.options.map(item => ({
+            ...row.columns[colIndex].list[newIndex].options
+         /*   options: row.columns[colIndex].list[newIndex].options.options.map(item => ({
               ...item
-            }))
+            }))*/
           }
         })
-      }*/
+      }
 
       this.selectWidget = row.columns[colIndex].list[newIndex]
       this.updateState()
@@ -254,8 +253,8 @@ export default {
         ...table.tableColumns[newIndex],
         options: {
           ...table.tableColumns[newIndex].options,
-          width: '200px',
-          remoteFunc: 'func_' + key
+          width: '200px'
+          //remoteFunc: 'func_' + key
         },
         key,
         // 绑定键值
@@ -265,6 +264,7 @@ export default {
       this.updateState()
     },
     handleWidgetDelete(index) {
+      console.log('trash')
       if (this.data.list.length - 1 === index) {
         if (index === 0) {
           this.selectWidget = {}
