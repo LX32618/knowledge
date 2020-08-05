@@ -18,7 +18,7 @@
     </template>
     <!-- 下拉框 -->
     <template v-else>
-      <el-select v-model="model">
+      <el-select v-model="model" v-bind="$attrs">
         <el-option
           v-for="item of options"
           :key="item.id"
