@@ -143,7 +143,6 @@
 
         <template v-if="element.type=='imgupload'">
           <fm-upload
-            v-model="element.options.defaultValue"
             :disabled="element.options.disabled"
             :style="{'width': element.options.width}"
             :width="element.options.size.width"
@@ -246,7 +245,6 @@ export default {
     }
   },
   mounted () {
-
   },
   methods: {
     handleSelectWidget (index) {
