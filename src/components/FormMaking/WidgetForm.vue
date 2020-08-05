@@ -176,7 +176,7 @@ export default {
         rules: []
       })
 
-      if (this.data.list[newIndex].type === 'radio' || this.data.list[newIndex].type === 'checkbox' || this.data.list[newIndex].type === 'select') {
+/*      if (this.data.list[newIndex].type === 'radio' || this.data.list[newIndex].type === 'checkbox' || this.data.list[newIndex].type === 'select') {
         this.$set(this.data.list, newIndex, {
           ...this.data.list[newIndex],
           options: {
@@ -186,7 +186,7 @@ export default {
             }))
           }
         })
-      }
+      }*/
 
       if (this.data.list[newIndex].type === 'grid') {
         this.$set(this.data.list, newIndex, {
@@ -222,8 +222,8 @@ export default {
       this.$set(row.columns[colIndex].list, newIndex, {
         ...row.columns[colIndex].list[newIndex],
         options: {
-          ...row.columns[colIndex].list[newIndex].options,
-          remoteFunc: 'func_' + key
+          ...row.columns[colIndex].list[newIndex].options
+          //remoteFunc: 'func_' + key
         },
         key,
         // 绑定键值
@@ -231,7 +231,7 @@ export default {
         rules: []
       })
 
-      if (row.columns[colIndex].list[newIndex].type === 'radio' || row.columns[colIndex].list[newIndex].type === 'checkbox' || row.columns[colIndex].list[newIndex].type === 'select') {
+/*      if (row.columns[colIndex].list[newIndex].type === 'radio' || row.columns[colIndex].list[newIndex].type === 'checkbox' || row.columns[colIndex].list[newIndex].type === 'select') {
         this.$set(row.columns[colIndex].list, newIndex, {
           ...row.columns[colIndex].list[newIndex],
           options: {
@@ -241,7 +241,7 @@ export default {
             }))
           }
         })
-      }
+      }*/
 
       this.selectWidget = row.columns[colIndex].list[newIndex]
       this.updateState()

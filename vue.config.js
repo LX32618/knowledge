@@ -33,7 +33,7 @@ module.exports = {
                 }
             },
             '/api5': {
-                target: 'http://localhost:8080', // 王夏冰 api2
+                target: 'http://localhost:8080',
                 changeOrigin: true,
                 pathRewrite: {
                     '^/api5': '/'

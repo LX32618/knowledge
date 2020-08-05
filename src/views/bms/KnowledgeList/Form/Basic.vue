@@ -223,6 +223,7 @@
                             if(data.status == "success")
                             {
                                 this.$success("保存成功");
+                                console.log(this.data);
                                 this.$emit("submitSuccess",{type:this.settings.formType,data:this.data});
                             }
                             else

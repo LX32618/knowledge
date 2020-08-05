@@ -44,32 +44,10 @@ export const basicComponents = [
     type: 'radio',
     icon: 'icon iconfont icon-radio-active',
     options: {
-      inline: false,
-      defaultValue: '',
-      showLabel: false,
-      options: [
-        {
-          value: 'Option 1',
-          label: 'Option 1'
-        },
-        {
-          value: 'Option 2',
-          label: 'Option 2'
-        },
-        {
-          value: 'Option 3',
-          label: 'Option 3'
-        }
-      ],
+      defaultValue:"",
+      dictId:'76ACF600189647489831436CA030D2F4',
       required: false,
       width: '',
-      remote: false,
-      remoteOptions: [],
-      props: {
-        value: 'value',
-        label: 'label'
-      },
-      remoteFunc: '',
       disabled: false,
     }
   },
@@ -79,7 +57,6 @@ export const basicComponents = [
     options: {
       inline: false,
       defaultValue: [],
-      showLabel: false,
       options: [
         {
           value: 'Option 1'
@@ -93,13 +70,10 @@ export const basicComponents = [
       ],
       required: false,
       width: '',
-      remote: false,
-      remoteOptions: [],
       props: {
         value: 'value',
         label: 'label'
       },
-      remoteFunc: '',
       disabled: false,
     }
   },
@@ -167,12 +141,10 @@ export const basicComponents = [
     icon: 'icon iconfont icon-select',
     options: {
       defaultValue: '',
-      multiple: false,
       disabled: false,
       clearable: false,
       placeholder: '',
       required: false,
-      showLabel: false,
       width: '',
       options: [
         {
@@ -186,12 +158,10 @@ export const basicComponents = [
       ],
       remote: false,
       filterable: false,
-      remoteOptions: [],
       props: {
         value: 'value',
         label: 'label'
       },
-      remoteFunc: ''
     }
   },
   {

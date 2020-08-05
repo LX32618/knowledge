@@ -23,12 +23,12 @@
       <el-form-item label="占位内容" v-if="Object.keys(data.options).indexOf('placeholder')>=0 && data.type!='time' && data.type!='date'">
         <el-input v-model="data.options.placeholder"></el-input>
       </el-form-item>
-      <el-form-item label="布局方式" v-if="Object.keys(data.options).indexOf('inline')>=0">
+<!--      <el-form-item label="布局方式" v-if="Object.keys(data.options).indexOf('inline')>=0">
         <el-radio-group v-model="data.options.inline">
           <el-radio-button :label="false">块级</el-radio-button>
           <el-radio-button :label="true">行内</el-radio-button>
         </el-radio-group>
-      </el-form-item>
+      </el-form-item>-->
       <!-- <el-form-item label="标签宽度"></el-form-item> -->
       <el-form-item label="显示输入框" v-if="Object.keys(data.options).indexOf('showInput')>=0">
         <el-switch v-model="data.options.showInput" ></el-switch>
@@ -42,9 +42,9 @@
       <el-form-item label="步长" v-if="Object.keys(data.options).indexOf('step')>=0">
         <el-input-number v-model="data.options.step" :min="0" :max="100" :step="1"></el-input-number>
       </el-form-item>
-      <el-form-item label="是否多选" v-if="data.type=='select'">
+<!--      <el-form-item label="是否多选" v-if="data.type=='select'">
         <el-switch v-model="data.options.multiple" @change="handleSelectMuliple"></el-switch>
-      </el-form-item>
+      </el-form-item>-->
       <el-form-item label="是否可搜索" v-if="data.type=='select'">
         <el-switch v-model="data.options.filterable"></el-switch>
       </el-form-item>
@@ -53,12 +53,10 @@
           </el-switch>
       </el-form-item>
       <el-form-item label="支持透明度选择" v-if="Object.keys(data.options).indexOf('showAlpha')>=0">
-        <el-switch
-            v-model="data.options.showAlpha"
-          >
+        <el-switch v-model="data.options.showAlpha">
           </el-switch>
       </el-form-item>
-      <el-form-item label="是否显示标签" v-if="Object.keys(data.options).indexOf('showLabel')>=0">
+<!--      <el-form-item label="是否显示标签" v-if="Object.keys(data.options).indexOf('showLabel')>=0">
         <el-switch
             v-model="data.options.showLabel"
           >
@@ -96,7 +94,7 @@
                   >
                     <el-input :style="{'width': data.options.showLabel? '90px': '180px' }" size="mini" v-model="item.value"></el-input>
                     <el-input style="width:90px;" size="mini" v-if="data.options.showLabel" v-model="item.label"></el-input>
-                    <!-- <input v-model="item.value"/> -->
+                    &lt;!&ndash; <input v-model="item.value"/> &ndash;&gt;
                   </el-radio>
                   <i class="drag-item" style="font-size: 16px;margin: 0 5px;cursor: move;"><i class="iconfont icon-icon_bars"></i></i>
                   <el-button @click="handleOptionsRemove(index)" circle plain type="danger" size="mini" icon="el-icon-minus" style="padding: 4px;margin-left: 5px;"></el-button>
@@ -151,7 +149,7 @@
             <template slot="prepend">子选项</template>
           </el-input>
         </div>
-      </el-form-item>
+      </el-form-item>-->
 
       <el-form-item label="默认值" v-if="Object.keys(data.options).indexOf('defaultValue')>=0 && (data.type == 'textarea' || data.type == 'input' || data.type=='rate' || data.type=='color' || data.type=='switch')">
         <el-input v-if="data.type=='textarea'" type="textarea" :rows="5" v-model="data.options.defaultValue"></el-input>

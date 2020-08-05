@@ -32,7 +32,7 @@
           ></el-input-number>
         </template>
 
-        <template v-if="element.type == 'radio'">
+<!--        <template v-if="element.type == 'radio'">
           <el-radio-group v-model="element.options.defaultValue"
             :style="{width: element.options.width}"
             :disabled="element.options.disabled"
@@ -45,9 +45,15 @@
               {{element.options.showLabel ? item.label : item.value}}
             </el-radio>
           </el-radio-group>
-        </template>
+        </template>-->
 
-        <template v-if="element.type == 'checkbox'">
+      <template v-if="element.type == 'radio'">
+          {{element}}
+          <dict-select :type="'radio'" :dict-id="element.options.dictId"></dict-select>
+      </template>
+
+
+<!--        <template v-if="element.type == 'checkbox'">
           <el-checkbox-group v-model="element.options.defaultValue"
             :style="{width: element.options.width}"
             :disabled="element.options.disabled"
@@ -59,7 +65,7 @@
               {{element.options.showLabel ? item.label : item.value}}
             </el-checkbox>
           </el-checkbox-group>
-        </template>
+        </template>-->
 
         <template v-if="element.type == 'time'">
           <el-time-picker
@@ -235,6 +241,7 @@ import FmUpload from './Upload'
 import FileUpload from './FileUpload'
 import FmViewBtn from './ViewBtn'
 import FmLink from "./Link"
+import DictSelect from "../Input/DictSelect"
 
 export default {
   props: ['element', 'select', 'index', 'data'],
@@ -242,7 +249,8 @@ export default {
     FmUpload,
     FileUpload,
     FmViewBtn,
-    FmLink
+    FmLink,
+    DictSelect
   },
   data () {
     return {
