@@ -1,8 +1,8 @@
 <template>
   <div v-if="show">
     <el-form label-position="top">
-      <el-form-item label="字段标识" v-if="data.type!='grid'">
-        <el-input v-model="data.model"></el-input>
+      <el-form-item label="字段名称" v-if="data.type!='grid'">
+        <el-input v-model="data.model" readonly></el-input>
       </el-form-item>
       <el-form-item label="标题" v-if="data.type!='grid'">
         <el-input v-model="data.name"></el-input>
