@@ -58,7 +58,7 @@
 </template>
 
 <script>
-        import _ from 'lodash'
+    import _ from 'lodash'
     import request from '@/utils/request'
 
     let modelUrl = "/api1/system/knowledgeFormController/";

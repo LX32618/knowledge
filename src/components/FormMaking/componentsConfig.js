@@ -7,8 +7,8 @@ export const basicComponents = [
       width: '100%',
       defaultValue: '',
       required: false,
-      dataType: 'string',
-      pattern: '',
+      dataType: '',
+/*      pattern: '',*/
       placeholder: '',
       disabled: false,
     }
@@ -112,7 +112,7 @@ export const basicComponents = [
       endPlaceholder: '',
       type: 'date',
       format: 'yyyy-MM-dd',
-      timestamp: false,
+/*      timestamp: false,*/
       required: false,
       width: '',
     }
@@ -141,6 +141,7 @@ export const basicComponents = [
   {
     type: 'switch',
     icon: 'icon iconfont icon-switch',
+    name:"开关",
     options: {
       defaultValue: false,
       required: false,
@@ -165,14 +166,15 @@ export const basicComponents = [
   {
     type: 'text',
     icon: 'icon iconfont icon-wenzishezhi-',
+    name:"文字",
     options: {
-      defaultValue: 'This is a text',
+      defaultValue: '',
       customClass: '',
     }
   },
   {
     type:"upload",
-    name: '上传',
+    name: '附件',
     icon:"el-icon-upload",
     options:{
       limit:1,
@@ -217,6 +219,7 @@ export const advanceComponents = [
   },
   {
     type: 'imgupload',
+    name:"图片",
     icon: 'icon iconfont icon-tupian',
     options: {
       defaultValue: [],
@@ -224,9 +227,9 @@ export const advanceComponents = [
         width: 100,
         height: 100,
       },
-      tokenFunc: 'icon iconfont funcGetToken',
+/*      tokenFunc: 'icon iconfont funcGetToken',
       token: '',
-      domain: 'http://pfp81ptt6.bkt.clouddn.com/',
+      domain: 'http://pfp81ptt6.bkt.clouddn.com/',*/
       disabled: false,
       length: 3,
       multiple: false,
@@ -269,9 +272,9 @@ export const advanceComponents = [
     icon: 'icon iconfont icon-table',
     tableColumns: [],
     options: {
-      defaultValue: [],
-      required: false,
-      disabled: false
+      defaultValue: []
+/*      required: false,
+      disabled: false*/
     }
   }
 ]

@@ -4,20 +4,20 @@
             <cs-lazytree ref="lazytree" :settings="treeSettings" :dataFormat="treeDataFormat" @treeNodeClick="treeNodeClick" @appendTreeNode="appendTreeNode"  @removeTreeNode="removeTreeNode"></cs-lazytree>
         </div>
         <div class="knowlist main">
-            <el-tabs v-model="activeName" type="border-card" v-if="basicFormData.pid!='0' && Object.keys(basicFormData).length != 0" :style="{height:'100%'}">
+            <el-tabs v-model="activeName" type="border-card" v-if="basicFormData.pid!='0' && Object.keys(basicFormData).length != 0" @tab-click="tabClick" :style="{height:'100%'}">
                 <el-tab-pane :key="0" label="基本信息" name="basic">
                     <div>
                         <cs-basic :settings="basicFormSettings" :form-data="basicFormData" @submitSuccess="submitSuccess"></cs-basic>
                     </div>
                 </el-tab-pane>
                 <el-tab-pane :key="1" v-if="basicFormData.type==2 && clickData.formId" label="模板配置" name="template">
-                    <cs-template></cs-template>
+                    <cs-template :form-data="tempFormData"></cs-template>
                 </el-tab-pane>
                 <el-tab-pane :key="2" v-if="basicFormData.type==2 && clickData.formId" label="列表配置" name="list">列表配置</el-tab-pane>
                 <el-tab-pane :key="3" v-if="basicFormData.type!=0" label="权限配置" name="permission">权限配置</el-tab-pane>
                 <el-tab-pane :key="4" v-if="basicFormData.type==2 && clickData.formId" label="接口配置" name="interface">接口配置</el-tab-pane>
             </el-tabs>
-            <cs-template></cs-template>
+            <cs-template :form-data="tempFormData"></cs-template>
         </div>
         <el-dialog title="新增知识目录" :visible.sync="appendFormVisible" :close-on-click-modal="false">
             <cs-basic :settings="appendFormSettings" :form-data="appendFormData" @submitSuccess="submitSuccess"></cs-basic>
@@ -32,6 +32,7 @@
     import _ from 'lodash'
     import request from '@/utils/request'
     import {mapGetters} from "vuex";
+    import {fetchModel,fetchTestModel} from "@/api/formMaking.js"
 
     const rootUrl = '/api4/app/authcenter/api/categoryTree/';
 
@@ -65,6 +66,7 @@
                     lableWidth:"120px",
                     formType:"append"
                 },
+                tempFormData:{},
                 basicFormData:{
                 },
                 appendFormData:{
@@ -72,6 +74,23 @@
             }
         },
         methods:{
+            tabClick(tab){
+                if(tab.label=='模板配置')
+                {
+                    let option = {
+                        formId:this.basicFormData.id
+                    };
+                    fetchModel(option).then(resp=>{
+                        if(resp.status == "success")
+                        {
+                           this.tempFormData = resp.content.knowledgeModel.formModel;
+                        }
+                        else{
+                            this.$error(resp.msg);
+                        }
+                    });
+                }
+            },
             onSuccess(response, file, fileList){
                 console.log(response);
                 console.log(file);
@@ -86,6 +105,7 @@
             treeNodeClick({data,node})
             {
                 this.clickData = data;
+                this.activeName = "basic";
                 this.$set(this, 'basicFormData', data);
             },
             appendTreeNode(node){
@@ -201,6 +221,21 @@
             ...mapGetters([
                 'userInfo'
             ])
+        },
+        mounted() {
+            let option = {
+                formId:this.basicFormData.id
+            };
+            fetchTestModel(option).then(resp=>{
+                console.log(resp.content.content.knowledgeModel.formModel)
+                if(resp.status == "success")
+                {
+                    this.tempFormData = resp.content.content.knowledgeModel.formModel;
+                }
+                else{
+                    this.$error(resp.msg);
+                }
+            });
         }
     }
 </script>

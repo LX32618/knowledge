@@ -33,7 +33,7 @@ module.exports = {
                 }
             },
             '/api5': {
-                target: 'http://localhost:8080',
+                target: 'http://192.168.0.48:8083/',
                 changeOrigin: true,
                 pathRewrite: {
                     '^/api5': '/'

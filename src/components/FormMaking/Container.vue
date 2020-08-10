@@ -68,7 +68,7 @@
             <el-button :disabled="stateIndex < 0" type="text" size="medium" icon="el-icon-arrow-left" @click="handleUndo">撤销</el-button>
             <el-button :disabled="stateIndex >= historyStates.length - 1" type="text" size="medium" icon="el-icon-arrow-right" @click="handleRedo">重做</el-button>
             <el-button v-if="upload" type="text" size="medium" icon="el-icon-upload2" @click="handleUpload">导入JSON</el-button>
-            <el-button v-if="initial" type="text" size="medium" icon="element-icons el-custom-initialize" @click="handleUpload">&nbsp;&nbsp;初始化</el-button>
+            <el-button v-if="initial" type="text" size="medium" icon="element-icons el-custom-initialize" @click="handleInitial">&nbsp;&nbsp;初始化</el-button>
             <el-button v-if="clearable" type="text" size="medium" icon="el-icon-delete" @click="handleClear">清空</el-button>
             <el-button v-if="preview" type="text" size="medium" icon="el-icon-view" @click="handlePreview">预览</el-button>
             <el-button v-if="generateJson" type="text" size="medium" icon="el-icon-tickets" @click="handleGenerateJson">生成JSON</el-button>
@@ -195,6 +195,10 @@ export default {
     GenerateForm
   },
   props: {
+    modelData:{
+      type:Object,
+      default:()=>{}
+    },
     preview: {
       type: Boolean,
       default: false
@@ -342,6 +346,7 @@ export default {
       this.$refs.generateForm.reset()
     },
     handleGenerateJson () {
+      console.log(this.formData);
       this.jsonVisible = true
       this.jsonTemplate = this.widgetForm
       // console.log(JSON.stringify(this.widgetForm))
@@ -375,6 +380,236 @@ export default {
         this.uploadEditor = ace.edit('uploadeditor')
         this.uploadEditor.session.setMode("ace/mode/json")
       })
+    },
+    handleInitial(){
+      console.log(this.modelData)
+      let mainFormData = this.initialTransform(this.modelData.datas);
+      let inputKey = Date.parse(new Date()) + '_' + Math.ceil(Math.random() * 99999);
+      let initialData = {
+        list:[
+          {
+            type: 'text',
+            icon: 'icon iconfont icon-wenzishezhi-',
+            name:this.modelData.formName,
+            options: {
+              defaultValue: '',
+              customClass: '',
+            },
+            key:inputKey,
+            model:"input_"+inputKey
+          },
+        ],
+        config:{
+          labelWidth:100,
+          labelPosition:"right",
+          size:"mini"
+        }
+      };
+      let loop = Math.ceil(mainFormData.length/2);
+      for(let i = 0;i<loop;i++) {
+        let gridKey = Date.parse(new Date()) + '_' + Math.ceil(Math.random() * 99999);
+        let grid = {
+          type: "grid",
+          icon: "icon iconfont icon-grid-",
+          columns: [],
+          options: {
+            gutter: 0,
+            justify: "start",
+            align: "top",
+            rowConfig: "span",
+            blank: 0
+          },
+          key: gridKey,
+          model: "grid_"+gridKey,
+          rules: []
+        }
+        let col = {
+          span:12,
+          scale:1,
+          list:[]
+        };
+        col.list.push(mainFormData[i*2])
+        let col1={
+          span:12,
+          scale:1,
+          list:[]
+        }
+        if(i== loop -1 && mainFormData.length%2 == 1){//最后一次循环且数量为奇数
+        }
+        else
+        {
+          col1.list.push(mainFormData[i*2+1]);
+        }
+
+        grid.columns.push(col);
+        grid.columns.push(col1);
+        initialData.list.push(grid);
+      }
+
+      console.log(initialData);
+
+      this.modelData.subForm.forEach(s=>{
+        let subFormData = this.initialTransform(s.datas);
+        let tableKey = Date.parse(new Date()) + '_' + Math.ceil(Math.random() * 99999);
+        let table = {
+          type:"table",
+          name:s.formName,
+          icon:"icon iconfont icon-table",
+          tableColumns:[],
+          options:{
+            defaultValue:[]
+          },
+          key:tableKey,
+          model:"table_"+tableKey,
+          rules:[]
+        };
+        subFormData.forEach(s=>{
+          s.options.width = "200px";
+          table.tableColumns.push(s);
+        })
+        initialData.list.push(table);
+      })
+
+      this.setJSON(initialData);
+      //console.log(JSON.stringify(initialData));
+    },
+    initialTransform(data){
+      data = data.filter(d=>d.htmlType != -1);
+      let tranferData = [];
+      data.forEach(d=>{
+        let tran = {};
+        tran.key = d.id;
+        tran.name = d.displayName;
+        tran.disabled = false;
+        tran.rules = [];
+        if(d.htmlType == 0)
+        {
+          tran.type = "input";
+          tran.icon = "icon iconfont icon-input";
+          tran.options = {};
+          tran.options.width = "100%";
+          tran.options.defaultValue = "";
+          tran.options.dataType = "";
+          tran.options.required = false;
+          tran.options.placeholder = "";
+        }
+        else if(d.htmlType == 1){
+          tran.type = "radio";
+          tran.icon = "icon iconfont icon-radio-active";
+          tran.options = {};
+          tran.options.width = "";
+          tran.options.defaultValue = "";
+          tran.options.dictId = d.fieldType;
+          tran.options.required = false;
+          tran.options.placeholder = "";
+        }
+        else if(d.htmlType == 2)
+        {
+          tran.type = "switch";
+          tran.icon = "icon iconfont icon-switch";
+          tran.options = {};
+          tran.options.defaultValue = false;
+          tran.options.required = false;
+        }
+        else if(d.htmlType == 3)
+        {
+          tran.type = "select";
+          tran.icon = "icon iconfont icon-select";
+          tran.options = {};
+          tran.options.defaultValue = false;
+          tran.options.width = "";
+          tran.options.dictId = d.fieldType;
+          tran.options.required = false;
+          tran.options.disabled = false;
+          tran.options.clearable = false;
+          tran.options.filterable = false;
+          tran.options.placeholder = "";
+        }
+        else if(d.htmlType == 4)
+        {
+          tran.type = "upload";
+          tran.icon = "el-icon-upload";
+          tran.options = {};
+          tran.options.limit = 1;
+          tran.options.accept = [];
+          tran.options.defaultAccept = ["txt","jpg","xls","xlsx","rar","zip"];
+          tran.options.uploadUrl = "/api5/upload";
+          tran.options.disabled = false;
+          tran.options.multiple = true;
+          tran.options.btnTitle = "点击上传";
+        }
+        else if(d.htmlType == 5)
+        {
+          tran.type = "imgupload";
+          tran.icon = "icon iconfont icon-tupian";
+          tran.options = {};
+          tran.options.defaultValue = [];
+          tran.options.size = {};
+          tran.options.size.width = 100;
+          tran.options.size.height = 100;
+          tran.options.length = 3;
+          tran.options.multiple = true;
+          tran.options.isDelete = false;
+          tran.options.isEdit = false;
+          tran.options.action = 'https://jsonplaceholder.typicode.com/photos/';
+
+        }
+        else if(d.htmlType == 6 || d.htmlType == 7){
+          tran.type = "viewBtn";
+          tran.icon = "el-icon-collection-tag";
+          tran.options = {};
+          tran.options.disabled = false;
+        }
+        else if(d.htmlType == 8){
+          tran.type = "checkbox";
+          tran.icon = "icon iconfont icon-check-box";
+          tran.options = {};
+          tran.options.width = "";
+          tran.options.disabled = false;
+          tran.options.required = false;
+          tran.options.dictId = d.fieldType;
+          tran.options.defaultValue = '';
+        }
+        else if(d.htmlType == 9){
+          tran.type = "textarea";
+          tran.icon = "icon iconfont icon-diy-com-textarea";
+          tran.options = {};
+          tran.options.defaultValue = "";
+          tran.options.width = "100%";
+          tran.options.required = false;
+          tran.options.disabled = false;
+          tran.options.pattern = "";
+          tran.options.placeholder = "";
+        }
+        else if(d.htmlType == 11){
+          tran.type = "date";
+          tran.icon = "icon iconfont icon-date";
+          tran.width = "";
+          tran.options = {};
+          tran.options.readonly = false;
+          tran.options.disabled = false;
+          tran.options.editable = false;
+          tran.options.clearable = false;
+          tran.options.required = false;
+          tran.options.placeholder = "";
+          tran.options.startPlaceholder = "";
+          tran.options.endPlaceholder = "";
+          tran.options.type = "date";
+          tran.options.format = "yyyy-MM-dd";
+        }
+        else if(d.htmlType == 13){
+          tran.type = "link";
+          tran.icon = "el-icon-link";
+          tran.options = {};
+          tran.options.type = "primary";
+          tran.options.disabled = false;
+          tran.options.underline = true;
+          tran.options.blank = true;
+        }
+        tran.model = tran.type+"_"+d.id;
+        tranferData.push(tran);
+      })
+      return tranferData;
     },
     handleUploadJson () {
       try {
@@ -441,9 +676,6 @@ export default {
     updateState () {
       this.$store.commit('formMaking/APPEND_STATE', this.widgetForm)
     },
-    test(){
-      console.log('test');
-    }
   },
   watch: {
     widgetForm: {

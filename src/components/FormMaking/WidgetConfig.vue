@@ -380,8 +380,22 @@
         </el-form-item>
       </template>
 
-
-      <template v-if="data.type != 'grid'">
+      <el-form-item label="数据类型" v-if="data.type == 'input'">
+        <el-select v-if="Object.keys(data.options).indexOf('dataType')>=0" v-model="data.options.dataType" size="mini" >
+          <el-option value="string" label="字符串"></el-option>
+          <el-option value="number" label="数字"></el-option>
+          <el-option value="boolean" label="布尔值"></el-option>
+          <el-option value="integer" label="整数"></el-option>
+          <el-option value="float" label="浮点数"></el-option>
+          <el-option value="url" label="URL地址"></el-option>
+          <el-option value="email" label="邮箱地址"></el-option>
+          <el-option value="hex" label="十六进制"></el-option>
+        </el-select>
+        <!--          <div v-if="Object.keys(data.options).indexOf('pattern')>=0">
+            <el-input size="mini" v-model.lazy="data.options.pattern"  style=" width: 240px;" placeholder="填写正则表达式"></el-input>
+          </div>-->
+      </el-form-item>
+      <template v-if="data.type != 'grid' || data.type !='table'">
         <el-form-item label="操作属性">
           <el-checkbox v-model="data.options.readonly" v-if="Object.keys(data.options).indexOf('readonly')>=0">完全只读</el-checkbox>
           <el-checkbox v-model="data.options.disabled" v-if="Object.keys(data.options).indexOf('disabled')>=0">禁用</el-checkbox>
@@ -393,24 +407,11 @@
 <!--          <el-checkbox v-model="data.options.visible" v-if="Object.keys(data.options).indexOf('visible')>=0">显示是否可见</el-checkbox>-->
 
         </el-form-item>
-        <el-form-item label="校验" v-if="data.type != 'grid' && data.type != 'upload'  && data.type !='imgupload' && data.type !='viewBtn' && data.type != 'text'  && data.type != 'table' && data.type !='link'">
+
+        <el-form-item label="校验" v-if="data.type != 'grid' && data.type != 'upload'  && data.type !='imgupload' && data.type !='viewBtn' && data.type != 'text'  && data.type != 'table' && data.type !='link' && data.type !='siwtch'">
           <div v-if="Object.keys(data.options).indexOf('required')>=0">
             <el-checkbox v-model="data.options.required">必填</el-checkbox>
           </div>
-          <el-select v-if="Object.keys(data.options).indexOf('dataType')>=0" v-model="data.options.dataType" size="mini" >
-            <el-option value="string" label="字符串"></el-option>
-            <el-option value="number" label="数字"></el-option>
-            <el-option value="boolean" label="布尔值"></el-option>
-            <el-option value="integer" label="整数"></el-option>
-            <el-option value="float" label="浮点数"></el-option>
-            <el-option value="url" label="URL地址"></el-option>
-            <el-option value="email" label="邮箱地址"></el-option>
-            <el-option value="hex" label="十六进制"></el-option>
-          </el-select>
-
-<!--          <div v-if="Object.keys(data.options).indexOf('pattern')>=0">
-            <el-input size="mini" v-model.lazy="data.options.pattern"  style=" width: 240px;" placeholder="填写正则表达式"></el-input>
-          </div>-->
         </el-form-item>
       </template>
     </el-form>

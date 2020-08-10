@@ -1,42 +1,42 @@
 <template>
     <div>
-        <span style="font-size:17px">模板信息：<el-button type="primary" icon="el-icon-plus" circle @click="dialogVisible=true"></el-button></span>
-
+        <div v-for="form in formData">
+            <el-divider content-position="left">{{form.formName}}</el-divider>
+            <span>模板：<el-button type="primary" icon="el-icon-s-platform" circle @click="openModel(form.id)"></el-button></span>
+        </div>
+        <el-divider></el-divider>
         <el-dialog :visible.sync="dialogVisible" :fullscreen="true" :show-close="false" title="">
             <!-- <form-making :preview="true" :generateCode="true" :generateJson="true" :upload="true" :clearable="true"></form-making>-->
-            <form-making style="height:100vh;margin-top: -50px" initial preview generate-json close save clearable @closeFormMaking="closeFormMaking" >
+            <form-making :model-data="modelData" style="height:100vh;margin-top: -50px" initial preview generate-json close save clearable @closeFormMaking="closeFormMaking" >
                 <template slot="action">
                 </template>
             </form-making>
         </el-dialog>
-       <!-- <dict-select :type="'radio'" :dict-id="'76ACF600189647489831436CA030D2F4'" ></dict-select>-->
     </div>
 </template>
 
 <script>
 
-    import FmLink from "@/components/FormMaking/Link"
-    import DictSelect from "../../../../components/Input/DictSelect/index";
-
     export default {
         name: "Template",
+        props:["formData"],
         data(){
             return{
                 dialogVisible:false,
-                tagData:[]
+                modelData:{}
             }
         },
         methods:{
             closeFormMaking(){
                 this.dialogVisible = false;
             },
-            tagClick(tag){
-                console.log(tag)
+            openModel(id){
+              this.modelData =  this.formData.find(f=>f.id==id);
+              this.dialogVisible = true;
             }
         },
         components:{
-            DictSelect,
-            FmLink
+
         }
     }
 </script>
