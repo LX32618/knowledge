@@ -1,4 +1,4 @@
-export const basicComponents = [
+/*export const basicComponents = [
   {
     type: 'input',
     icon: 'icon iconfont icon-input',
@@ -8,7 +8,7 @@ export const basicComponents = [
       defaultValue: '',
       required: false,
       dataType: '',
-/*      pattern: '',*/
+/!*      pattern: '',*!/
       placeholder: '',
       disabled: false,
     }
@@ -112,7 +112,7 @@ export const basicComponents = [
       endPlaceholder: '',
       type: 'date',
       format: 'yyyy-MM-dd',
-/*      timestamp: false,*/
+/!*      timestamp: false,*!/
       required: false,
       width: '',
     }
@@ -207,7 +207,7 @@ export const basicComponents = [
       disabled:false
     }
   },
-]
+]*/
 
 export const advanceComponents = [
   {
@@ -304,3 +304,49 @@ export const layoutComponents = [
     }
   }
 ]
+
+export const basicComponents=[
+  {
+    type: 'text',
+    icon: 'icon iconfont icon-wenzishezhi-',
+    name:"文字",
+    options: {
+      defaultValue: '',
+      customClass: '',
+    }
+  },
+  {
+    type: 'grid',
+    icon: 'icon iconfont icon-grid-',
+    name: "栅格",
+    columns: [
+      {
+        span: 12,
+        scale:1,
+        list: []
+      },
+      {
+        span: 12,
+        scale:1,
+        list: []
+      }
+    ],
+    options: {
+      gutter: 0,
+      justify: 'start',
+      align: 'top',
+      rowConfig:"span",
+      blank: 0
+    }
+  },
+  {
+    type: 'table',
+    name: '子表单',
+    icon: 'icon iconfont icon-table',
+    tableColumns: [],
+    options: {
+      defaultValue: []
+    }
+  }
+]
+

@@ -7,7 +7,7 @@
         <el-divider></el-divider>
         <el-dialog :visible.sync="dialogVisible" :fullscreen="true" :show-close="false" title="">
             <!-- <form-making :preview="true" :generateCode="true" :generateJson="true" :upload="true" :clearable="true"></form-making>-->
-            <form-making :model-data="modelData" style="height:100vh;margin-top: -50px" initial preview generate-json close save clearable @closeFormMaking="closeFormMaking" >
+            <form-making ref="formMaking" :model-data="modelData" class="formMaking" initial preview generate-json close save clearable @closeFormMaking="closeFormMaking" >
                 <template slot="action">
                 </template>
             </form-making>
@@ -37,10 +37,21 @@
         },
         components:{
 
+        },
+        watch:{
+            dialogVisible(val){
+                this.$nextTick(()=>{
+                    if(val)
+                        this.$refs.formMaking.initialModelData();
+                })
+            }
         }
     }
 </script>
 
 <style scoped>
-
+    .formMaking{
+        height:100vh;
+        margin-top: -50px;
+    }
 </style>

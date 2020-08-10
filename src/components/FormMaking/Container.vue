@@ -4,16 +4,16 @@
       <el-container>
         <el-aside width="250px">
           <div class="components-list">
-            <template v-if="basicFields.length">
+            <template>
               <div class="widget-cate">基础字段</div>
               <draggable tag="ul" :list="basicComponents"
-                v-bind="{group:{ name:'people', pull:'clone',put:false},sort:false, ghostClass: 'ghost'}"
-                @end="handleMoveEnd"
-                @start="handleMoveStart"
-                :move="handleMove"
+                         v-bind="{group:{ name:'people', pull:'clone',put:false},sort:false, ghostClass: 'ghost'}"
+                         @end="handleMoveEnd"
+                         @start="handleMoveStart"
+                         :move="handleMove"
               >
                 <li class="form-edit-widget-label" :class="{'no-put': item.type == 'divider'}" v-for="(item, index) in basicComponents" :key="index">
-                  <a v-if="basicFields.indexOf(item.type)>=0">
+                  <a>
                     <i :class="item.icon"></i>
                     <span>{{item.name}}</span>
                   </a>
@@ -21,7 +21,49 @@
               </draggable>
             </template>
 
-            <template v-if="advanceFields.length">
+            <template v-if="mainForm">
+              <div class="widget-cate">主表{{mainForm.formName}}</div>
+              <draggable tag="ul" :list="mainForm.data"
+                v-bind="{group:{ name:mainForm.formId, pull:'clone',put:false},sort:false, ghostClass: 'ghost'}"
+                @end="handleMoveEnd"
+                @start="handleMoveStart"
+                :move="handleMove"
+              >
+                <li class="form-edit-widget-label" :class="{'no-put': item.type == 'divider'}" v-for="(item, index) in mainForm.data" :key="index">
+                  <a>
+                    <i :class="item.icon"></i>
+                    <span>{{item.name}}</span>
+                  </a>
+                </li>
+              </draggable>
+            </template>
+
+
+            <template v-if="subForm.length">
+              <div v-for="sub in subForm">
+                <div class="widget-cate">子表{{sub.formName}}</div>
+                <div v-if="sub.data.length">
+                  <draggable tag="ul" :list="sub.data"
+                             v-bind="{group:{ name:sub.formId, pull:'clone',put:false},sort:false, ghostClass: 'ghost'}"
+                             @end="handleMoveEnd"
+                             @start="handleMoveStart"
+                             :move="handleMove">
+                    <li class="form-edit-widget-label" :class="{'no-put': item.type == 'divider'}" v-for="(item, index) in sub.data" :key="index">
+                      <a>
+                        <i :class="item.icon"></i>
+                        <span>{{item.name}}</span>
+                      </a>
+                    </li>
+                  </draggable>
+                </div>
+                <div v-else>
+                  <span style="font-size:12px;padding: 8px 20px;color:#F56C6C">暂无字段</span>
+                </div>
+              </div>
+            </template>
+
+
+     <!--       <template v-if="advanceFields.length">
               <div class="widget-cate">高级字段</div>
               <draggable tag="ul" :list="advanceComponents"
                 v-bind="{group:{ name:'people', pull:'clone',put:false},sort:false, ghostClass: 'ghost'}"
@@ -56,7 +98,63 @@
                   </a>
                 </li>
               </draggable>
+            </template>-->
+
+
+<!--            <template v-if="basicFields.length">
+              <div class="widget-cate">基础字段</div>
+              <draggable tag="ul" :list="basicComponents"
+                         v-bind="{group:{ name:'people', pull:'clone',put:false},sort:false, ghostClass: 'ghost'}"
+                         @end="handleMoveEnd"
+                         @start="handleMoveStart"
+                         :move="handleMove"
+              >
+                <li class="form-edit-widget-label" :class="{'no-put': item.type == 'divider'}" v-for="(item, index) in basicComponents" :key="index">
+                  <a v-if="basicFields.indexOf(item.type)>=0">
+                    <i :class="item.icon"></i>
+                    <span>{{item.name}}</span>
+                  </a>
+                </li>
+              </draggable>
             </template>
+
+            <template v-if="advanceFields.length">
+              <div class="widget-cate">高级字段</div>
+              <draggable tag="ul" :list="advanceComponents"
+                         v-bind="{group:{ name:'people', pull:'clone',put:false},sort:false, ghostClass: 'ghost'}"
+                         @end="handleMoveEnd"
+                         @start="handleMoveStart"
+                         :move="handleMove"
+              >
+
+                <li class="form-edit-widget-label" :class="{'no-put': item.type == 'table'}" v-for="(item, index) in advanceComponents" :key="index">
+                  <a v-if="advanceFields.indexOf(item.type) >= 0">
+                    <i :class="item.icon"></i>
+                    <span>{{item.name}}</span>
+                  </a>
+                </li>
+              </draggable>
+            </template>
+
+
+            <template v-if="layoutFields.length">
+              <div class="widget-cate">布局字段</div>
+              <draggable tag="ul" :list="layoutComponents"
+                         v-bind="{group:{ name:'people', pull:'clone',put:false},sort:false, ghostClass: 'ghost'}"
+                         @end="handleMoveEnd"
+                         @start="handleMoveStart"
+                         :move="handleMove"
+              >
+
+                <li class="form-edit-widget-label no-put" v-for="(item, index) in layoutComponents" :key="index">
+                  <a v-if="layoutFields.indexOf(item.type) >=0">
+                    <i :class="item.icon"></i>
+                    <span>{{item.name}}</span>
+                  </a>
+                </li>
+              </draggable>
+            </template>-->
+
 
           </div>
 
@@ -249,6 +347,8 @@ export default {
       basicComponents,
       layoutComponents,
       advanceComponents,
+      mainForm:{},
+      subForm:[],
       resetJson: false,
       widgetForm: {
         list: [],
@@ -312,7 +412,7 @@ export default {
   },
   methods: {
     handleGoGithub () {
-      window.location.href = 'https://github.com/GavinZhuLei/vue-form-making'
+      //window.location.href = 'https://github.com/GavinZhuLei/vue-form-making'
     },
     handleConfigSelect (value) {
       this.configTab = value
@@ -346,10 +446,8 @@ export default {
       this.$refs.generateForm.reset()
     },
     handleGenerateJson () {
-      console.log(this.formData);
       this.jsonVisible = true
       this.jsonTemplate = this.widgetForm
-      // console.log(JSON.stringify(this.widgetForm))
       this.$nextTick(() => {
 
         if (!this.jsonClipboard) {
@@ -382,10 +480,27 @@ export default {
       })
     },
     handleInitial(){
-      console.log(this.modelData)
-      let mainFormData = this.initialTransform(this.modelData.datas);
-      let inputKey = Date.parse(new Date()) + '_' + Math.ceil(Math.random() * 99999);
-      let initialData = {
+      let {view} = this.transModelData();
+      this.setJSON(view);
+    },
+    initialModelData(){
+     let {model,view} = this.transModelData();
+     console.log(model,view);
+     this.mainForm = model.main;
+     this.subForm = model.sub;
+    },
+    transModelData(){
+      let model = {
+        main:{},
+        sub:[]
+      };
+      model.main = {
+        formId:this.modelData.id,
+        formName:this.modelData.formName,
+        data:this.initialTransform(this.modelData.id,this.modelData.datas)
+      };
+      let textKey = Date.parse(new Date()) + '_' + Math.ceil(Math.random() * 99999);
+      let view = {
         list:[
           {
             type: 'text',
@@ -395,8 +510,8 @@ export default {
               defaultValue: '',
               customClass: '',
             },
-            key:inputKey,
-            model:"input_"+inputKey
+            key:textKey,
+            model:"text_"+textKey
           },
         ],
         config:{
@@ -405,7 +520,7 @@ export default {
           size:"mini"
         }
       };
-      let loop = Math.ceil(mainFormData.length/2);
+      let loop = Math.ceil(model.main.length/2);
       for(let i = 0;i<loop;i++) {
         let gridKey = Date.parse(new Date()) + '_' + Math.ceil(Math.random() * 99999);
         let grid = {
@@ -428,28 +543,31 @@ export default {
           scale:1,
           list:[]
         };
-        col.list.push(mainFormData[i*2])
+        col.list.push(model.main[i*2])
         let col1={
           span:12,
           scale:1,
           list:[]
         }
-        if(i== loop -1 && mainFormData.length%2 == 1){//最后一次循环且数量为奇数
+        if(i== loop -1 && model.main.length%2 == 1){//最后一次循环且数量为奇数
         }
         else
         {
-          col1.list.push(mainFormData[i*2+1]);
+          col1.list.push(model.main[i*2+1]);
         }
 
         grid.columns.push(col);
         grid.columns.push(col1);
-        initialData.list.push(grid);
+        view.list.push(grid);
       }
-
-      console.log(initialData);
-
       this.modelData.subForm.forEach(s=>{
-        let subFormData = this.initialTransform(s.datas);
+        let subFormData = this.initialTransform(s.id,s.datas);
+        let subModel = {
+          formId:s.id,
+          formName:s.formName,
+          data:subFormData
+        }
+        model.sub.push(subModel);
         let tableKey = Date.parse(new Date()) + '_' + Math.ceil(Math.random() * 99999);
         let table = {
           type:"table",
@@ -459,27 +577,26 @@ export default {
           options:{
             defaultValue:[]
           },
-          key:tableKey,
-          model:"table_"+tableKey,
+          key:s.id,
+          model:"table_"+s.id,
           rules:[]
         };
         subFormData.forEach(s=>{
           s.options.width = "200px";
           table.tableColumns.push(s);
         })
-        initialData.list.push(table);
+        view.list.push(table);
       })
-
-      this.setJSON(initialData);
-      //console.log(JSON.stringify(initialData));
+      return {model,view};
     },
-    initialTransform(data){
+    initialTransform(formId,data){
       data = data.filter(d=>d.htmlType != -1);
       let tranferData = [];
       data.forEach(d=>{
         let tran = {};
         tran.key = d.id;
         tran.name = d.displayName;
+        tran.formId = formId;
         tran.disabled = false;
         tran.rules = [];
         if(d.htmlType == 0)
@@ -528,7 +645,7 @@ export default {
         else if(d.htmlType == 4)
         {
           tran.type = "upload";
-          tran.icon = "el-icon-upload";
+          tran.icon = "icon el-icon-upload";
           tran.options = {};
           tran.options.limit = 1;
           tran.options.accept = [];
@@ -556,7 +673,7 @@ export default {
         }
         else if(d.htmlType == 6 || d.htmlType == 7){
           tran.type = "viewBtn";
-          tran.icon = "el-icon-collection-tag";
+          tran.icon = "icon el-icon-collection-tag";
           tran.options = {};
           tran.options.disabled = false;
         }
@@ -599,14 +716,14 @@ export default {
         }
         else if(d.htmlType == 13){
           tran.type = "link";
-          tran.icon = "el-icon-link";
+          tran.icon = "icon el-icon-link";
           tran.options = {};
           tran.options.type = "primary";
           tran.options.disabled = false;
           tran.options.underline = true;
           tran.options.blank = true;
         }
-        tran.model = tran.type+"_"+d.id;
+        tran.model = d.fieldName;//tran.type+"_"+d.id;
         tranferData.push(tran);
       })
       return tranferData;
@@ -636,7 +753,6 @@ export default {
       this.widgetFormSelect = {}
     },
     handleSave(){
-
     },
     handleClose(){
       this.$emit("closeFormMaking");
@@ -687,7 +803,6 @@ export default {
   },
   mounted () {
     this.$store.commit('formMaking/RESET_STATES');
-
   },
   created(){
     let self = this;

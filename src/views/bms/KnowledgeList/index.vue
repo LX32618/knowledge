@@ -10,14 +10,14 @@
                         <cs-basic :settings="basicFormSettings" :form-data="basicFormData" @submitSuccess="submitSuccess"></cs-basic>
                     </div>
                 </el-tab-pane>
-                <el-tab-pane :key="1" v-if="basicFormData.type==2 && clickData.formId" label="模板配置" name="template">
+                <el-tab-pane :key="1" v-if="basicFormData.type==2 && clickData.formId" label="模板配置" name="template" v-loading="tempLoading">
                     <cs-template :form-data="tempFormData"></cs-template>
                 </el-tab-pane>
                 <el-tab-pane :key="2" v-if="basicFormData.type==2 && clickData.formId" label="列表配置" name="list">列表配置</el-tab-pane>
                 <el-tab-pane :key="3" v-if="basicFormData.type!=0" label="权限配置" name="permission">权限配置</el-tab-pane>
                 <el-tab-pane :key="4" v-if="basicFormData.type==2 && clickData.formId" label="接口配置" name="interface">接口配置</el-tab-pane>
             </el-tabs>
-            <cs-template :form-data="tempFormData"></cs-template>
+      <!--      <cs-template :form-data="tempFormData"></cs-template>-->
         </div>
         <el-dialog title="新增知识目录" :visible.sync="appendFormVisible" :close-on-click-modal="false">
             <cs-basic :settings="appendFormSettings" :form-data="appendFormData" @submitSuccess="submitSuccess"></cs-basic>
@@ -43,6 +43,7 @@
                 activeName:'basic',
                 clickData:{},
                 appendFormVisible:false,
+                tempLoading:false,
                 fileList:[],
                 treeSettings:{
                     root_id:"0",//根节点id
@@ -78,8 +79,9 @@
                 if(tab.label=='模板配置')
                 {
                     let option = {
-                        formId:this.basicFormData.id
+                        categeryId:this.basicFormData.id
                     };
+                    this.tempLoading = true;
                     fetchModel(option).then(resp=>{
                         if(resp.status == "success")
                         {
@@ -88,6 +90,7 @@
                         else{
                             this.$error(resp.msg);
                         }
+                        this.tempLoading = false;
                     });
                 }
             },
@@ -224,9 +227,9 @@
         },
         mounted() {
             let option = {
-                formId:this.basicFormData.id
+                categeryId:this.basicFormData.id
             };
-            fetchTestModel(option).then(resp=>{
+/*            fetchTestModel(option).then(resp=>{
                 console.log(resp.content.content.knowledgeModel.formModel)
                 if(resp.status == "success")
                 {
@@ -235,7 +238,7 @@
                 else{
                     this.$error(resp.msg);
                 }
-            });
+            });*/
         }
     }
 </script>

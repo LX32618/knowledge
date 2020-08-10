@@ -264,7 +264,7 @@ export default {
       this.updateState()
     },
     handleWidgetDelete(index) {
-      console.log('trash')
+      console.log('grid_trash')
       if (this.data.list.length - 1 === index) {
         if (index === 0) {
           this.selectWidget = {}
@@ -274,6 +274,8 @@ export default {
       } else {
         this.selectWidget = this.data.list[index + 1]
       }
+      console.log(this.data.list[index]);
+      console.log(this.selectWidget);
 
       this.$nextTick(() => {
         this.data.list.splice(index, 1)
