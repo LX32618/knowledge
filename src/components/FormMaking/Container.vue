@@ -24,7 +24,7 @@
             <template v-if="mainForm">
               <div class="widget-cate">主表{{mainForm.formName}}</div>
               <draggable tag="ul" :list="mainForm.data"
-                v-bind="{group:{ name:mainForm.formId, pull:'clone',put:false},sort:false, ghostClass: 'ghost'}"
+                v-bind="{group:{ name:'people', pull:'clone',put:false},sort:false, ghostClass: 'ghost'}"
                 @end="handleMoveEnd"
                 @start="handleMoveStart"
                 :move="handleMove"
@@ -481,11 +481,11 @@ export default {
     },
     handleInitial(){
       let {view} = this.transModelData();
+      console.log(view);
       this.setJSON(view);
     },
     initialModelData(){
      let {model,view} = this.transModelData();
-     console.log(model,view);
      this.mainForm = model.main;
      this.subForm = model.sub;
     },
@@ -520,7 +520,7 @@ export default {
           size:"mini"
         }
       };
-      let loop = Math.ceil(model.main.length/2);
+      let loop = Math.ceil(model.main.data.length/2);
       for(let i = 0;i<loop;i++) {
         let gridKey = Date.parse(new Date()) + '_' + Math.ceil(Math.random() * 99999);
         let grid = {
@@ -543,17 +543,17 @@ export default {
           scale:1,
           list:[]
         };
-        col.list.push(model.main[i*2])
+        col.list.push(model.main.data[i*2])
         let col1={
           span:12,
           scale:1,
           list:[]
         }
-        if(i== loop -1 && model.main.length%2 == 1){//最后一次循环且数量为奇数
+        if(i== loop -1 && model.main.data.length%2 == 1){//最后一次循环且数量为奇数
         }
         else
         {
-          col1.list.push(model.main[i*2+1]);
+          col1.list.push(model.main.data[i*2+1]);
         }
 
         grid.columns.push(col);
