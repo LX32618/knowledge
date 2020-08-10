@@ -62,6 +62,7 @@
     </template>
 
     <template v-if="widget.type == 'select'">
+      {{dataModel}}
       <dict-select v-model="dataModel"
                    :type="'select'"
                    :dict-id="widget.options.dictId"
