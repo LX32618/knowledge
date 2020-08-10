@@ -95,15 +95,13 @@
             </template>
 
             <template v-if="element.type == 'select'">
-              <el-select
-                v-model="element.options.defaultValue"
+              <dict-select :type="'select'"
+                :dict-id="element.options.dictId"
                 :disabled="element.options.disabled"
-                :multiple="element.options.multiple"
                 :clearable="element.options.clearable"
                 :placeholder="element.options.placeholder"
-              >
-                <el-option v-for="item in element.options.options" :key="item.value" :value="item.value" :label="element.options.showLabel?item.label:item.value"></el-option>
-              </el-select>
+                :filterable="element.options.filterable"
+                :style="{width: element.options.width}"></dict-select>
             </template>
 
             <template v-if="element.type=='switch'">
