@@ -33,30 +33,17 @@
             </template>
 
             <template v-if="element.type == 'radio'">
-              <el-radio-group v-model="element.options.defaultValue"
+              <dict-select :type="'radio'"
+                :dict-id="element.options.dictId"
                 :disabled="element.options.disabled"
-              >
-                <el-radio  
-                  :style="{display: element.options.inline ? 'inline-block' : 'block'}"
-                  :label="item.value" v-for="(item, index) in element.options.options" :key="item.value + index"
-                  
-                >
-                  {{element.options.showLabel ? item.label : item.value}}
-                </el-radio>
-              </el-radio-group>
+                :style="{width: element.options.width}"></dict-select>
             </template>
 
             <template v-if="element.type == 'checkbox'">
-              <el-checkbox-group v-model="element.options.defaultValue"
+              <dict-select :type="'checkbox'"
+                :dict-id="element.options.dictId"
                 :disabled="element.options.disabled"
-              >
-                <el-checkbox
-                  :style="{display: element.options.inline ? 'inline-block' : 'block'}"
-                  :label="item.value" v-for="(item, index) in element.options.options" :key="item.value + index"
-                >
-                  {{element.options.showLabel ? item.label : item.value}}
-                </el-checkbox>
-              </el-checkbox-group>
+                :style="{width: element.options.width}"></dict-select>
             </template>
 
             <template v-if="element.type == 'time'">
@@ -148,8 +135,34 @@
                 token="xxx"
                 domain="xxx"
               >
-                
               </fm-upload>
+            </template>
+
+            <template v-if="element.type == 'upload'">
+              <file-upload
+                :btnTitle="element.options.btnTitle"
+                :action="element.options.uploadUrl"
+                :accept="element.options.accept"
+                :limit="element.options.limit"
+                :multiple="element.options.multiple"
+                :tips="element.options.tips"
+                :disabled="element.options.disabled">
+              </file-upload>
+            </template>
+
+            <template v-if="element.type == 'viewBtn'">
+              <fm-view-btn
+                :multiple="element.options.multiple"
+                :disabled="element.options.disabled">
+              </fm-view-btn>
+            </template>
+
+            <template v-if="element.type == 'link'">
+              <fm-link
+                :type="element.options.type"
+                :blank="element.options.blank"
+                :disabled="element.options.disabled">
+              </fm-link>
             </template>
 
             <template v-if="element.type == 'cascader'">
@@ -160,7 +173,6 @@
                 :placeholder="element.options.placeholder"
                 :options="element.options.remoteOptions"
               >
-
               </el-cascader>
             </template>
 
@@ -178,18 +190,6 @@
             <template v-if="element.type == 'text'">
               <span>{{element.options.defaultValue}}</span>
             </template>
-
-            <template v-if="element.type == 'upload'">
-            <file-upload
-              :btnTitle="element.options.btnTitle"
-              :action="element.options.uploadUrl"
-              :accept="element.options.accept"
-              :limit="element.options.limit"
-              :multiple="element.options.multiple"
-              :tips="element.options.tips"
-              :disabled="element.options.disabled">
-            </file-upload>
-        </template>
           </span>
         </slot>
       </el-table-column>
@@ -201,19 +201,27 @@
     <div class="widget-view-drag" v-if="selectWidget.key == element.key">
       <i class="iconfont icon-drag drag-widget"></i>
     </div>
-    <div class="widget-view-model">
+    <!-- <div class="widget-view-model">
       <span>{{ element.model }}</span>
-    </div>
+    </div> -->
   </div>
 </template>
 
 <script>
+import FmUpload from './Upload'
 import FileUpload from './FileUpload'
+import FmViewBtn from './ViewBtn'
+import FmLink from "./Link"
+import DictSelect from "../Input/DictSelect"
 
 export default {
   name: 'WidgetTableItem',
   components: {
-    FileUpload
+    FileUpload,
+    FmUpload,
+    FmViewBtn,
+    FmLink,
+    DictSelect
   },
   props: ['element', 'select', 'index', 'data'],
   data () {
