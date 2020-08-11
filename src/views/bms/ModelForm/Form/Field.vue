@@ -11,7 +11,7 @@
                 <el-option v-for="h in htmlType" :key="h.value" :label="h.label" :value="h.value"></el-option>
             </el-select>
         </el-form-item>
-        <el-form-item label="字段类型" v-if="showFiledType">
+        <el-form-item label="字段类型" v-if="showFiledType" prop="fieldType">
             <div ref="fieldType">
          <!--       <el-select placeholder="&#45;&#45;请选择&#45;&#45;" v-model="data.fieldType" @change="textFieldTypeChange" v-if="data.htmlType == 0" :disabled="data.id != ''">&lt;!&ndash;编辑或者子表新增时不能修改&ndash;&gt;
                     <el-option v-for="f in textFieldType" :key="f.value" :label="f.label" :value="f.value"></el-option>
@@ -185,6 +185,9 @@
                         {required: true, message: "请输入字段名称", trigger: "blur"},
                         {required: true, pattern:/(^[a-zA-Z][a-zA-Z0-9_]*$)/, message: "字段名称必须以字母开头，只可包含字母、数字和下划线", trigger: "blur"},
                         {required: true, validator:fieldNameVlidator, trigger: "blur"}
+                    ],
+                    fieldType:[
+                        {required: true, message: "请选择字段类型",trigger:"blur"},
                     ]
                 },
             }

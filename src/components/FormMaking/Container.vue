@@ -649,7 +649,7 @@ export default {
           tran.type = "select";
           tran.icon = "icon iconfont icon-select";
           tran.options = {};
-          tran.options.defaultValue = false;
+          tran.options.defaultValue = '';
           tran.options.width = "";
           tran.options.dictId = d.fieldType;
           tran.options.required = false;
