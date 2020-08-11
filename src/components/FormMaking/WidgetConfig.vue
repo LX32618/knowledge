@@ -395,6 +395,15 @@
             <el-input size="mini" v-model.lazy="data.options.pattern"  style=" width: 240px;" placeholder="填写正则表达式"></el-input>
           </div>-->
       </el-form-item>
+      <template v-if="data.type === 'table'">
+        <el-form-item label="子表Id">
+          <el-select v-model="data.key" :disabled="isInSubFormKeys(data.key)">
+            <el-option v-for="item of canUserSubForms" :key="item.id" :value="item.id">
+              {{ item.name }}: {{ item.id }}
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </template>
       <template v-if="data.type != 'grid' || data.type !='table'">
         <el-form-item label="操作属性">
           <el-checkbox v-model="data.options.readonly" v-if="Object.keys(data.options).indexOf('readonly')>=0">完全只读</el-checkbox>
@@ -420,12 +429,13 @@
 
 <script>
 import Draggable from 'vuedraggable'
+import _ from 'lodash'
 
 export default {
   components: {
     Draggable
   },
-  props: ['data'],
+  props: ['data', 'allSubForms', 'usedSubForms'],
   data () {
     return {
       validator: {
@@ -450,9 +460,16 @@ export default {
         return true
       }
       return false
+    },
+    canUserSubForms () {
+      return _.differenceBy(this.allSubForms, this.usedSubForms, item => item.id)
     }
   },
   methods: {
+    isInSubFormKeys (val) {
+      const index = this.allSubForms.findIndex(item => item.id === val)
+      return index >= 0
+    },
     dateTypeChange(val) {
       if ("year" == val) {
         this.data.options.format = "yyyy";

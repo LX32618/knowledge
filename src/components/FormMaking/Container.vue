@@ -40,11 +40,11 @@
 
 
             <template v-if="subForm.length">
-              <div v-for="sub in subForm">
+              <div v-for="sub in subForm" :key="sub.formId">
                 <div class="widget-cate">子表{{sub.formName}}</div>
                 <div v-if="sub.data.length">
                   <draggable tag="ul" :list="sub.data"
-                             v-bind="{group:{ name:sub.formId, pull:'clone',put:false},sort:false, ghostClass: 'ghost'}"
+                             v-bind="{group:{ name: sub.formId, pull:'clone',put:false},sort:false, ghostClass: 'ghost'}"
                              @end="handleMoveEnd"
                              @start="handleMoveStart"
                              :move="handleMove">
@@ -187,7 +187,7 @@
               <div class="config-tab" :class="{active: configTab=='form'}" @click="handleConfigSelect('form')">表单属性</div>
             </el-header>
             <el-main class="config-content">
-              <widget-config v-show="configTab=='widget'" :data="widgetFormSelect"></widget-config>
+              <widget-config v-show="configTab=='widget'" :data="widgetFormSelect" :allSubForms="allSubForms" :usedSubForms="usedSubForms"></widget-config>
               <form-config v-show="configTab=='form'" :data="widgetForm.config"></form-config>
             </el-main>
           </el-container>
@@ -408,7 +408,23 @@ export default {
     ...mapGetters([
       'historyStates',
       'stateIndex'
-    ])
+    ]),
+    allSubForms () {
+      return this.subForm.map(item => {
+        return {
+          id: item.formId,
+          name: item.formName
+        }
+      })
+    },
+    usedSubForms () {
+      return this.widgetForm.list.filter(item => item.type === 'table').map(item => {
+        return {
+          id: item.key,
+          name: item.name
+        }
+      })
+    }
   },
   methods: {
     handleGoGithub () {

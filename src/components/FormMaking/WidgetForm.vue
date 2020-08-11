@@ -75,7 +75,7 @@
                     <draggable
                       v-model="element.tableColumns"
                       :no-transition-on-drag="true"
-                      v-bind="{group:'people', ghostClass: 'ghost',animation: 200, handle: '.drag-widget'}"
+                      v-bind="{group: element.key, ghostClass: 'ghost',animation: 200, handle: '.drag-widget'}"
                       @end="handleMoveEnd"
                       @add="handleWidgetTableAdd($event, element)">
                         <transition-group name="fade" tag="div"
