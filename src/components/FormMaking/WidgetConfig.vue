@@ -396,10 +396,9 @@
           </div>-->
       </el-form-item>
       <template v-if="data.type === 'table'">
-        <el-form-item label="子表Id">
+        <el-form-item label="子表">
           <el-select v-model="data.key" :disabled="isInSubFormKeys(data.key)">
-            <el-option v-for="item of canUserSubForms" :key="item.id" :value="item.id">
-              {{ item.name }}: {{ item.id }}
+            <el-option v-for="item of canUserSubForms" :key="item.id" :value="item.id" :label="item.name">
             </el-option>
           </el-select>
         </el-form-item>
@@ -462,7 +461,10 @@ export default {
       return false
     },
     canUserSubForms () {
-      return _.differenceBy(this.allSubForms, this.usedSubForms, item => item.id)
+      const list = _.differenceBy(this.allSubForms, this.usedSubForms, item => item.id)
+      const nowItem = this.allSubForms.find(item => item.id === this.data.key)
+      nowItem ? list.push(nowItem) : list.push({ name: '未选择子表', id: this.data.key })
+      return list
     }
   },
   methods: {
