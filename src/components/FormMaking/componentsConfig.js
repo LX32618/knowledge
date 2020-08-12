@@ -207,7 +207,7 @@
       disabled:false
     }
   },
-]*/
+]
 
 export const advanceComponents = [
   {
@@ -227,9 +227,9 @@ export const advanceComponents = [
         width: 100,
         height: 100,
       },
-/*      tokenFunc: 'icon iconfont funcGetToken',
-      token: '',
-      domain: 'http://pfp81ptt6.bkt.clouddn.com/',*/
+      /!*      tokenFunc: 'icon iconfont funcGetToken',
+            token: '',
+            domain: 'http://pfp81ptt6.bkt.clouddn.com/',*!/
       disabled: false,
       length: 3,
       multiple: false,
@@ -273,8 +273,8 @@ export const advanceComponents = [
     tableColumns: [],
     options: {
       defaultValue: []
-/*      required: false,
-      disabled: false*/
+      /!*      required: false,
+            disabled: false*!/
     }
   }
 ]
@@ -303,7 +303,7 @@ export const layoutComponents = [
       blank: 0
     }
   }
-]
+]*/
 
 export const basicComponents=[
   {
@@ -314,7 +314,10 @@ export const basicComponents=[
       defaultValue: '',
       customClass: '',
     }
-  },
+  }
+]
+
+export const layoutComponents =[
   {
     type: 'grid',
     icon: 'icon iconfont icon-grid-',
@@ -322,12 +325,12 @@ export const basicComponents=[
     columns: [
       {
         span: 12,
-        scale:1,
+        scale: 1,
         list: []
       },
       {
         span: 12,
-        scale:1,
+        scale: 1,
         list: []
       }
     ],
@@ -335,7 +338,7 @@ export const basicComponents=[
       gutter: 0,
       justify: 'start',
       align: 'top',
-      rowConfig:"span",
+      rowConfig: "span",
       blank: 0
     }
   },
@@ -347,6 +350,4 @@ export const basicComponents=[
     options: {
       defaultValue: []
     }
-  }
-]
-
+  }]

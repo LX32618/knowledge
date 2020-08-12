@@ -7,7 +7,7 @@
             <template>
               <div class="widget-cate">基础字段</div>
               <draggable tag="ul" :list="basicComponents"
-                         v-bind="{group:{ name:'people', pull:'clone',put:false},sort:false, ghostClass: 'ghost'}"
+                         v-bind="{group:{ name:'grid', pull:'clone',put:false},sort:false, ghostClass: 'ghost'}"
                          @end="handleMoveEnd"
                          @start="handleMoveStart"
                          :move="handleMove"
@@ -21,140 +21,65 @@
               </draggable>
             </template>
 
-            <template v-if="mainForm">
-              <div class="widget-cate">主表{{mainForm.formName}}</div>
-              <draggable tag="ul" :list="mainForm.data"
-                v-bind="{group:{ name:'people', pull:'clone',put:false},sort:false, ghostClass: 'ghost'}"
-                @end="handleMoveEnd"
-                @start="handleMoveStart"
-                :move="handleMove"
-              >
-                <li class="form-edit-widget-label" :class="{'no-put': item.type == 'divider'}" v-for="(item, index) in mainForm.data" :key="index">
-                  <a>
-                    <i :class="item.icon"></i>
-                    <span>{{item.name}}</span>
-                  </a>
-                </li>
-              </draggable>
-            </template>
+            <div class="components-list">
+              <template>
+                <div class="widget-cate">布局字段</div>
+                <draggable tag="ul" :list="layoutComponents"
+                           v-bind="{group:{ name:'people', pull:'clone',put:false},sort:false, ghostClass: 'ghost'}"
+                           @end="handleMoveEnd"
+                           @start="handleMoveStart"
+                           :move="handleMove"
+                >
+                  <li class="form-edit-widget-label" :class="{'no-put': item.type == 'divider'}" v-for="(item, index) in layoutComponents" :key="index">
+                    <a>
+                      <i :class="item.icon"></i>
+                      <span>{{item.name}}</span>
+                    </a>
+                  </li>
+                </draggable>
+              </template>
 
+              <template v-if="mainForm">
+                <div class="widget-cate">主表{{mainForm.formName}}</div>
+                <draggable tag="ul" v-model="mainForm.data"
+                           v-bind="{group:{ name:'grid', pull:true,put:false},sort:false, ghostClass: 'ghost'}"
+                           @end="handleMoveEnd"
+                           @start="handleMoveStart"
+                           :move="handleMove"
+                >
 
-            <template v-if="subForm.length">
-              <div v-for="sub in subForm" :key="sub.formId">
-                <div class="widget-cate">子表{{sub.formName}}</div>
-                <div v-if="sub.data.length">
-                  <draggable tag="ul" :list="sub.data"
-                             v-bind="{group:{ name: sub.formId, pull:'clone',put:false},sort:false, ghostClass: 'ghost'}"
-                             @end="handleMoveEnd"
-                             @start="handleMoveStart"
-                             :move="handleMove">
-                    <li class="form-edit-widget-label" :class="{'no-put': item.type == 'divider'}" v-for="(item, index) in sub.data" :key="index">
-                      <a>
-                        <i :class="item.icon"></i>
-                        <span>{{item.name}}</span>
-                      </a>
-                    </li>
-                  </draggable>
+                  <li class="form-edit-widget-label" :class="{'no-put': item.type == 'divider'}" v-for="(item, index) in mainForm.data" :key="index">
+                    <a>
+                      <i :class="item.icon"></i>
+                      <span>{{item.name}}</span>
+                    </a>
+                  </li>
+                </draggable>
+              </template>
+
+              <template v-if="subForm.length">
+                <div v-for="sub in subForm" :key="sub.formId">
+                  <div class="widget-cate">子表{{sub.formName}}</div>
+                  <div v-if="sub.data.length">
+                    <draggable tag="ul" :list="sub.data"
+                               v-bind="{group:{ name: sub.formId, pull:true,put:false},sort:false, ghostClass: 'ghost'}"
+                               @end="handleMoveEnd"
+                               @start="handleMoveStart"
+                               :move="handleMove">
+                      <li class="form-edit-widget-label" :class="{'no-put': item.type == 'divider'}" v-for="(item, index) in sub.data" :key="index">
+                        <a>
+                          <i :class="item.icon"></i>
+                          <span>{{item.name}}</span>
+                        </a>
+                      </li>
+                    </draggable>
+                  </div>
+                  <div v-else>
+                    <span style="font-size:12px;padding: 8px 20px;color:#F56C6C">暂无字段</span>
+                  </div>
                 </div>
-                <div v-else>
-                  <span style="font-size:12px;padding: 8px 20px;color:#F56C6C">暂无字段</span>
-                </div>
-              </div>
-            </template>
-
-
-     <!--       <template v-if="advanceFields.length">
-              <div class="widget-cate">高级字段</div>
-              <draggable tag="ul" :list="advanceComponents"
-                v-bind="{group:{ name:'people', pull:'clone',put:false},sort:false, ghostClass: 'ghost'}"
-                @end="handleMoveEnd"
-                @start="handleMoveStart"
-                :move="handleMove"
-              >
-
-                <li class="form-edit-widget-label" :class="{'no-put': item.type == 'table'}" v-for="(item, index) in advanceComponents" :key="index">
-                  <a v-if="advanceFields.indexOf(item.type) >= 0">
-                    <i :class="item.icon"></i>
-                    <span>{{item.name}}</span>
-                  </a>
-                </li>
-              </draggable>
-            </template>
-
-
-            <template v-if="layoutFields.length">
-              <div class="widget-cate">布局字段</div>
-              <draggable tag="ul" :list="layoutComponents"
-                v-bind="{group:{ name:'people', pull:'clone',put:false},sort:false, ghostClass: 'ghost'}"
-                @end="handleMoveEnd"
-                @start="handleMoveStart"
-                :move="handleMove"
-              >
-
-                <li class="form-edit-widget-label no-put" v-for="(item, index) in layoutComponents" :key="index">
-                  <a v-if="layoutFields.indexOf(item.type) >=0">
-                    <i :class="item.icon"></i>
-                    <span>{{item.name}}</span>
-                  </a>
-                </li>
-              </draggable>
-            </template>-->
-
-
-<!--            <template v-if="basicFields.length">
-              <div class="widget-cate">基础字段</div>
-              <draggable tag="ul" :list="basicComponents"
-                         v-bind="{group:{ name:'people', pull:'clone',put:false},sort:false, ghostClass: 'ghost'}"
-                         @end="handleMoveEnd"
-                         @start="handleMoveStart"
-                         :move="handleMove"
-              >
-                <li class="form-edit-widget-label" :class="{'no-put': item.type == 'divider'}" v-for="(item, index) in basicComponents" :key="index">
-                  <a v-if="basicFields.indexOf(item.type)>=0">
-                    <i :class="item.icon"></i>
-                    <span>{{item.name}}</span>
-                  </a>
-                </li>
-              </draggable>
-            </template>
-
-            <template v-if="advanceFields.length">
-              <div class="widget-cate">高级字段</div>
-              <draggable tag="ul" :list="advanceComponents"
-                         v-bind="{group:{ name:'people', pull:'clone',put:false},sort:false, ghostClass: 'ghost'}"
-                         @end="handleMoveEnd"
-                         @start="handleMoveStart"
-                         :move="handleMove"
-              >
-
-                <li class="form-edit-widget-label" :class="{'no-put': item.type == 'table'}" v-for="(item, index) in advanceComponents" :key="index">
-                  <a v-if="advanceFields.indexOf(item.type) >= 0">
-                    <i :class="item.icon"></i>
-                    <span>{{item.name}}</span>
-                  </a>
-                </li>
-              </draggable>
-            </template>
-
-
-            <template v-if="layoutFields.length">
-              <div class="widget-cate">布局字段</div>
-              <draggable tag="ul" :list="layoutComponents"
-                         v-bind="{group:{ name:'people', pull:'clone',put:false},sort:false, ghostClass: 'ghost'}"
-                         @end="handleMoveEnd"
-                         @start="handleMoveStart"
-                         :move="handleMove"
-              >
-
-                <li class="form-edit-widget-label no-put" v-for="(item, index) in layoutComponents" :key="index">
-                  <a v-if="layoutFields.indexOf(item.type) >=0">
-                    <i :class="item.icon"></i>
-                    <span>{{item.name}}</span>
-                  </a>
-                </li>
-              </draggable>
-            </template>-->
-
+              </template>
+            </div>
 
           </div>
 
@@ -175,8 +100,7 @@
             <el-button v-if="close" type="text" size="medium" icon="el-icon-circle-close" @click="handleClose">关闭</el-button>
           </el-header>
           <el-main :class="{'widget-empty': widgetForm.list.length == 0}">
-
-            <widget-form v-if="!resetJson"  ref="widgetForm" :data="widgetForm" :select.sync="widgetFormSelect"></widget-form>
+            <widget-form v-if="!resetJson"  ref="widgetForm" :data="widgetForm" :select.sync="widgetFormSelect" @removeGrid="removeGrid" @removeWidget="removeWidget"></widget-form>
           </el-main>
         </el-container>
 
@@ -187,7 +111,7 @@
               <div class="config-tab" :class="{active: configTab=='form'}" @click="handleConfigSelect('form')">表单属性</div>
             </el-header>
             <el-main class="config-content">
-              <widget-config v-show="configTab=='widget'" :data="widgetFormSelect" :allSubForms="allSubForms" :usedSubForms="usedSubForms"></widget-config>
+              <widget-config v-show="configTab=='widget'" :data="widgetFormSelect" :allSubForms="allSubForms" :usedSubForms="usedSubForms" @removeCol="removeCol"></widget-config>
               <form-config v-show="configTab=='form'" :data="widgetForm.config"></form-config>
             </el-main>
           </el-container>
@@ -281,6 +205,8 @@ import {loadJs, loadCss} from '@/utils/index.js'
 import request from '@/utils/request.js'
 import generateCode from './generateCode.js'
 import { mapGetters } from 'vuex'
+import _ from "lodash"
+
 
 export default {
   name: 'fm-making-form',
@@ -349,6 +275,7 @@ export default {
       advanceComponents,
       mainForm:{},
       subForm:[],
+      dataBak:{},
       resetJson: false,
       widgetForm: {
         list: [],
@@ -427,6 +354,82 @@ export default {
     }
   },
   methods: {
+    removeGrid({index,removeData}){
+      let type = removeData.type;
+      //let key = removeData.key;
+      if("grid" == type)//删除的是主表中的grid
+      {
+        removeData.columns.forEach(col=>{
+          if(col.list.length>0)//栅格中有界面元素
+          {
+            col.list.forEach(m=>{
+              if(m.type != "text")//界面元素不是text
+              {
+                let key = m.key;
+                let removeModelData = this.dataBak.main.data.filter(d=>{
+                  return d.options.key == key;
+                });
+                this.mainForm.data.push(removeModelData[0]);
+              }
+            })
+          }
+        })
+      }
+      else if("table" ==  type)//删除的是子表
+      {
+        let formId = removeData.key;
+        let removeModelData = this.dataBak.sub.filter(s=>{
+          return s.formId == formId;
+        })
+        let index = this.subForm.findIndex(s=>{
+          return s.formId == formId;
+        })
+        this.subForm.splice(index,1,removeModelData[0]);
+      }
+      this.updateState();
+    },
+    removeCol({index,removeData}){
+        removeData.list.forEach(m=>{
+          if("text"!= m.type){//不是文本
+            let removeModelData = this.dataBak.main.data.filter(d=>{
+              return d.options.key == m.key;
+            });
+            this.mainForm.data.push(removeModelData[0]);
+          }
+        })
+        this.updateState();
+    },
+    removeWidget({index,removeData}){
+        let formId = removeData.formId;
+        let type = removeData.type;
+        let key = removeData.key;
+        if("text" != type)//不是文本
+        {
+          if(formId == this.mainForm.formId)//是主表单的
+          {
+            let removeModelData = this.dataBak.main.data.filter(d=>{
+              return d.options.key == key;
+            });
+            this.mainForm.data.push(removeModelData[0]);
+          }
+          else//是子表单的
+          {
+            let removeSubForm = this.dataBak.sub.filter(s=>{
+              return s.formId == formId;
+            });
+            let removeModelData = removeSubForm[0].data.filter(d=>{
+              return d.options.key == key;
+            })
+            this.subForm.forEach(s=>{
+              if(s.formId == formId)
+              {
+                s.data.push(removeModelData[0]);
+              }
+            })
+          }
+        }
+        this.updateState();
+    },
     handleGoGithub () {
       //window.location.href = 'https://github.com/GavinZhuLei/vue-form-making'
     },
@@ -434,10 +437,8 @@ export default {
       this.configTab = value
     },
     handleMoveEnd (evt) {
-      // console.log('end', evt)
     },
     handleMoveStart ({oldIndex}) {
-      // console.log('start', oldIndex, this.basicComponents)
     },
     handleMove () {
       return true
@@ -464,6 +465,7 @@ export default {
     handleGenerateJson () {
       this.jsonVisible = true
       this.jsonTemplate = this.widgetForm
+
       this.$nextTick(() => {
 
         if (!this.jsonClipboard) {
@@ -476,7 +478,6 @@ export default {
       })
     },
     handleGenerateCode () {
-
       this.codeVisible = true
       this.htmlTemplate = generateCode(JSON.stringify(this.widgetForm), 'html')
       this.vueTemplate = generateCode(JSON.stringify(this.widgetForm), 'vue')
@@ -497,11 +498,12 @@ export default {
     },
     handleInitial(){
       let {view} = this.transModelData();
-      console.log(view);
       this.setJSON(view);
+      this.updateState();
     },
     initialModelData(){
      let {model,view} = this.transModelData();
+     this.dataBak = _.cloneDeep(model);//将数据复制储存起来
      this.mainForm = model.main;
      this.subForm = model.sub;
     },
@@ -516,19 +518,42 @@ export default {
         data:this.initialTransform(this.modelData.id,this.modelData.datas)
       };
       let textKey = Date.parse(new Date()) + '_' + Math.ceil(Math.random() * 99999);
+      let gridKey = Date.parse(new Date()) + '_' + Math.ceil(Math.random() * 99999);
       let view = {
         list:[
           {
-            type: 'text',
-            icon: 'icon iconfont icon-wenzishezhi-',
-            name:this.modelData.formName,
-            options: {
-              defaultValue: '',
-              customClass: '',
+            type: "grid",
+            icon: "icon iconfont icon-grid-",
+            name: "栅格",
+            columns:[
+              {
+                span:12,
+                scale:1,
+                list:[{
+                  type: 'text',
+                  icon: 'icon iconfont icon-wenzishezhi-',
+                  name:this.modelData.formName,
+                  options: {
+                    defaultValue: '',
+                    customClass: ''
+                  },
+                  key:textKey,
+                  model:"text_"+textKey,
+                  rules:[]
+                }]
+              },
+            ],
+            options:{
+              gutter:0,
+              justify:"start",
+              align:"top",
+              rowConfig:"scale",
+              blank:0
             },
-            key:textKey,
-            model:"text_"+textKey
-          },
+            rules:[],
+            key:gridKey,
+            model:"grid_"+gridKey,
+          }
         ],
         config:{
           labelWidth:100,
@@ -536,9 +561,11 @@ export default {
           size:"mini"
         }
       };
-      let loop = Math.ceil(model.main.data.length/2);
+      let modelTemp = _.cloneDeep(model);
+      let loop = Math.ceil(modelTemp.main.data.length/2);
       for(let i = 0;i<loop;i++) {
         let gridKey = Date.parse(new Date()) + '_' + Math.ceil(Math.random() * 99999);
+
         let grid = {
           type: "grid",
           icon: "icon iconfont icon-grid-",
@@ -550,8 +577,8 @@ export default {
             rowConfig: "span",
             blank: 0
           },
-          key: gridKey,
-          model: "grid_"+gridKey,
+          key:gridKey,
+          model:"grid_"+gridKey,
           rules: []
         }
         let col = {
@@ -559,17 +586,21 @@ export default {
           scale:1,
           list:[]
         };
-        col.list.push(model.main.data[i*2])
+        modelTemp.main.data[i*2].key = modelTemp.main.data[i*2].options.key;
+        modelTemp.main.data[i*2].model = modelTemp.main.data[i*2].options.model;
+        col.list.push(modelTemp.main.data[i*2])
         let col1={
           span:12,
           scale:1,
           list:[]
         }
-        if(i== loop -1 && model.main.data.length%2 == 1){//最后一次循环且数量为奇数
+        if(i== loop -1 && modelTemp.main.data.length%2 == 1){//最后一次循环且数量为奇数
         }
         else
         {
-          col1.list.push(model.main.data[i*2+1]);
+          modelTemp.main.data[i*2+1].key = modelTemp.main.data[i*2+1].options.key;
+          modelTemp.main.data[i*2+1].model = modelTemp.main.data[i*2+1].options.model;
+          col1.list.push(modelTemp.main.data[i*2+1]);
         }
 
         grid.columns.push(col);
@@ -584,7 +615,6 @@ export default {
           data:subFormData
         }
         model.sub.push(subModel);
-        let tableKey = Date.parse(new Date()) + '_' + Math.ceil(Math.random() * 99999);
         let table = {
           type:"table",
           name:s.formName,
@@ -597,8 +627,11 @@ export default {
           model:"table_"+s.id,
           rules:[]
         };
-        subFormData.forEach(s=>{
+        let tempSubFormData = _.cloneDeep(subFormData);
+        tempSubFormData.forEach(s=>{
           s.options.width = "200px";
+          s.key = s.options.key;
+          s.model = s.options.model;
           table.tableColumns.push(s);
         })
         view.list.push(table);
@@ -610,16 +643,17 @@ export default {
       let tranferData = [];
       data.forEach(d=>{
         let tran = {};
-        tran.key = d.id;
         tran.name = d.displayName;
         tran.formId = formId;
         tran.disabled = false;
         tran.rules = [];
+        tran.options = {};
+        tran.options.key = d.id;
+        tran.options.model = d.fieldName;
         if(d.htmlType == 0)
         {
           tran.type = "input";
           tran.icon = "icon iconfont icon-input";
-          tran.options = {};
           tran.options.width = "100%";
           tran.options.defaultValue = "";
           tran.options.dataType = "";
@@ -629,7 +663,6 @@ export default {
         else if(d.htmlType == 1){
           tran.type = "radio";
           tran.icon = "icon iconfont icon-radio-active";
-          tran.options = {};
           tran.options.width = "";
           tran.options.defaultValue = "";
           tran.options.dictId = d.fieldType;
@@ -640,7 +673,6 @@ export default {
         {
           tran.type = "switch";
           tran.icon = "icon iconfont icon-switch";
-          tran.options = {};
           tran.options.defaultValue = false;
           tran.options.required = false;
         }
@@ -648,7 +680,6 @@ export default {
         {
           tran.type = "select";
           tran.icon = "icon iconfont icon-select";
-          tran.options = {};
           tran.options.defaultValue = '';
           tran.options.width = "";
           tran.options.dictId = d.fieldType;
@@ -662,7 +693,6 @@ export default {
         {
           tran.type = "upload";
           tran.icon = "icon el-icon-upload";
-          tran.options = {};
           tran.options.limit = 1;
           tran.options.accept = [];
           tran.options.defaultAccept = ["txt","jpg","xls","xlsx","rar","zip"];
@@ -675,7 +705,6 @@ export default {
         {
           tran.type = "imgupload";
           tran.icon = "icon iconfont icon-tupian";
-          tran.options = {};
           tran.options.defaultValue = [];
           tran.options.size = {};
           tran.options.size.width = 100;
@@ -690,13 +719,11 @@ export default {
         else if(d.htmlType == 6 || d.htmlType == 7){
           tran.type = "viewBtn";
           tran.icon = "icon el-icon-collection-tag";
-          tran.options = {};
           tran.options.disabled = false;
         }
         else if(d.htmlType == 8){
           tran.type = "checkbox";
           tran.icon = "icon iconfont icon-check-box";
-          tran.options = {};
           tran.options.width = "";
           tran.options.disabled = false;
           tran.options.required = false;
@@ -706,7 +733,6 @@ export default {
         else if(d.htmlType == 9){
           tran.type = "textarea";
           tran.icon = "icon iconfont icon-diy-com-textarea";
-          tran.options = {};
           tran.options.defaultValue = "";
           tran.options.width = "100%";
           tran.options.required = false;
@@ -718,7 +744,6 @@ export default {
           tran.type = "date";
           tran.icon = "icon iconfont icon-date";
           tran.width = "";
-          tran.options = {};
           tran.options.readonly = false;
           tran.options.disabled = false;
           tran.options.editable = false;
@@ -733,13 +758,11 @@ export default {
         else if(d.htmlType == 13){
           tran.type = "link";
           tran.icon = "icon el-icon-link";
-          tran.options = {};
           tran.options.type = "primary";
           tran.options.disabled = false;
           tran.options.underline = true;
           tran.options.blank = true;
         }
-        tran.model = d.fieldName;//tran.type+"_"+d.id;
         tranferData.push(tran);
       })
       return tranferData;
@@ -813,9 +836,15 @@ export default {
     widgetForm: {
       deep: true,
       handler: function (val) {
-        // console.log(this.$refs.widgetForm)
       }
     }
+/*    'widgetForm.list':{
+      //deep:true,
+      handler:function (val) {
+     /!*   console.log("list change");
+        console.log(val);*!/
+      }
+    }*/
   },
   mounted () {
     this.$store.commit('formMaking/RESET_STATES');
