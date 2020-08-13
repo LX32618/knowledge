@@ -7,7 +7,7 @@
         <el-divider></el-divider>
         <el-dialog :visible.sync="dialogVisible" :fullscreen="true" :show-close="false" title="">
             <!-- <form-making :preview="true" :generateCode="true" :generateJson="true" :upload="true" :clearable="true"></form-making>-->
-            <form-making ref="formMaking" :model-data="modelData" class="formMaking" initial preview generate-json close save clearable @closeFormMaking="closeFormMaking" >
+            <form-making ref="formMaking" :model-data="modelData" :category-id="categoryId"  class="formMaking" initial preview generate-json close save clearable @closeFormMaking="closeFormMaking" >
                 <template slot="action">
                 </template>
             </form-making>
@@ -19,7 +19,7 @@
 
     export default {
         name: "Template",
-        props:["formData"],
+        props:["formData","categoryId"],
         data(){
             return{
                 dialogVisible:false,

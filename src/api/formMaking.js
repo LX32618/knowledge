@@ -2,6 +2,7 @@ import request from '@/utils/request'
 
 const rootUrl = '/api/formMaking/'
 const rootUrl1 = '/api5/system/knowledgeDataController/'
+const templateUrl = '/api5//system/KnowledgeFormTemplateController/'
 
 
 //获取浏览按钮
@@ -21,6 +22,26 @@ export function fetchModel(option)
         data: option
     })
 }
+
+export function fetchTemplate(option)
+{
+    return request({
+        url: `${templateUrl}getTemplate`,
+        method: 'post',
+        data: option
+    })
+}
+
+
+export function saveTemplate(option)
+{
+    return request({
+        url: `${templateUrl}saveTemplate`,
+        method: 'post',
+        data: option
+    })
+}
+
 
 export function fetchTestModel(option)
 {

@@ -1,5 +1,5 @@
 <template>
-  <el-container class="fm2-container">
+  <el-container class="fm2-container" v-loading="tempLoading">
     <el-main class="fm2-main">
       <el-container>
         <el-aside width="250px">
@@ -39,42 +39,41 @@
                 </draggable>
               </template>
 
-              <template v-if="mainForm">
+              <template v-if="JSON.stringify(mainForm) != '{}'">
                 <div class="widget-cate">主表{{mainForm.formName}}</div>
-                <draggable tag="ul" v-model="mainForm.data"
-                           v-bind="{group:{ name:'grid', pull:true,put:false},sort:false, ghostClass: 'ghost'}"
-                           @end="handleMoveEnd"
-                           @start="handleMoveStart"
-                           :move="handleMove"
-                >
-
-                  <li class="form-edit-widget-label" :class="{'no-put': item.type == 'divider'}" v-for="(item, index) in mainForm.data" :key="index">
-                    <a>
-                      <i :class="item.icon"></i>
-                      <span>{{item.name}}</span>
-                    </a>
-                  </li>
-                </draggable>
+                  <draggable tag="ul" v-model="mainForm.data"
+                             v-bind="{group:{ name:'grid', pull:true,put:false},sort:false, ghostClass: 'ghost'}"
+                             @end="handleMoveEnd"
+                             @start="handleMoveStart"
+                             :move="handleMove">
+                    <li class="form-edit-widget-label" :class="{'no-put': item.type == 'divider'}" v-for="(item, index) in mainForm.data" :key="index">
+                      <a>
+                        <i :class="item.icon"></i>
+                        <span>{{item.name}}</span>
+                      </a>
+                    </li>
+                  </draggable>
+                  <div v-if="!mainForm.data.length">
+                    <span style="font-size:12px;padding: 8px 20px;color:#F56C6C">暂无字段</span>
+                  </div>
               </template>
 
               <template v-if="subForm.length">
                 <div v-for="sub in subForm" :key="sub.formId">
                   <div class="widget-cate">子表{{sub.formName}}</div>
-                  <div v-if="sub.data.length">
-                    <draggable tag="ul" :list="sub.data"
-                               v-bind="{group:{ name: sub.formId, pull:true,put:false},sort:false, ghostClass: 'ghost'}"
-                               @end="handleMoveEnd"
-                               @start="handleMoveStart"
-                               :move="handleMove">
-                      <li class="form-edit-widget-label" :class="{'no-put': item.type == 'divider'}" v-for="(item, index) in sub.data" :key="index">
-                        <a>
-                          <i :class="item.icon"></i>
-                          <span>{{item.name}}</span>
-                        </a>
-                      </li>
-                    </draggable>
-                  </div>
-                  <div v-else>
+                  <draggable tag="ul" :list="sub.data"
+                             v-bind="{group:{ name: sub.formId, pull:true,put:false},sort:false, ghostClass: 'ghost'}"
+                             @end="handleMoveEnd"
+                             @start="handleMoveStart"
+                             :move="handleMove">
+                    <li class="form-edit-widget-label" :class="{'no-put': item.type == 'divider'}" v-for="(item, index) in sub.data" :key="index">
+                      <a>
+                        <i :class="item.icon"></i>
+                        <span>{{item.name}}</span>
+                      </a>
+                    </li>
+                  </draggable>
+                  <div v-if="!sub.data.length">
                     <span style="font-size:12px;padding: 8px 20px;color:#F56C6C">暂无字段</span>
                   </div>
                 </div>
@@ -206,7 +205,7 @@ import request from '@/utils/request.js'
 import generateCode from './generateCode.js'
 import { mapGetters } from 'vuex'
 import _ from "lodash"
-
+import {fetchTemplate,saveTemplate} from "@/api/formMaking.js"
 
 export default {
   name: 'fm-making-form',
@@ -219,6 +218,10 @@ export default {
     GenerateForm
   },
   props: {
+    categoryId:{
+      type:String,
+      default:""
+    },
     modelData:{
       type:Object,
       default:()=>{}
@@ -270,11 +273,13 @@ export default {
   },
   data () {
     return {
+      tempLoading:false,
       basicComponents,
       layoutComponents,
       advanceComponents,
       mainForm:{},
       subForm:[],
+      savedModel:{},
       dataBak:{},
       resetJson: false,
       widgetForm: {
@@ -354,158 +359,74 @@ export default {
     }
   },
   methods: {
-    removeGrid({index,removeData}){
-      let type = removeData.type;
-      //let key = removeData.key;
-      if("grid" == type)//删除的是主表中的grid
-      {
-        removeData.columns.forEach(col=>{
-          if(col.list.length>0)//栅格中有界面元素
-          {
-            col.list.forEach(m=>{
-              if(m.type != "text")//界面元素不是text
-              {
-                let key = m.key;
-                let removeModelData = this.dataBak.main.data.filter(d=>{
-                  return d.options.key == key;
-                });
-                this.mainForm.data.push(removeModelData[0]);
-              }
-            })
-          }
-        })
-      }
-      else if("table" ==  type)//删除的是子表
-      {
-        let formId = removeData.key;
-        let removeModelData = this.dataBak.sub.filter(s=>{
-          return s.formId == formId;
-        })
-        let index = this.subForm.findIndex(s=>{
-          return s.formId == formId;
-        })
-        this.subForm.splice(index,1,removeModelData[0]);
-      }
-      this.updateState();
-    },
-    removeCol({index,removeData}){
-        removeData.list.forEach(m=>{
-          if("text"!= m.type){//不是文本
-            let removeModelData = this.dataBak.main.data.filter(d=>{
-              return d.options.key == m.key;
-            });
-            this.mainForm.data.push(removeModelData[0]);
-          }
-        })
-        this.updateState();
-    },
-    removeWidget({index,removeData}){
-        let formId = removeData.formId;
-        let type = removeData.type;
-        let key = removeData.key;
-        if("text" != type)//不是文本
-        {
-          if(formId == this.mainForm.formId)//是主表单的
-          {
-            let removeModelData = this.dataBak.main.data.filter(d=>{
-              return d.options.key == key;
-            });
-            this.mainForm.data.push(removeModelData[0]);
-          }
-          else//是子表单的
-          {
-            let removeSubForm = this.dataBak.sub.filter(s=>{
-              return s.formId == formId;
-            });
-            let removeModelData = removeSubForm[0].data.filter(d=>{
-              return d.options.key == key;
-            })
-            this.subForm.forEach(s=>{
-              if(s.formId == formId)
-              {
-                s.data.push(removeModelData[0]);
-              }
-            })
-          }
-        }
-        this.updateState();
-    },
-    handleGoGithub () {
-      //window.location.href = 'https://github.com/GavinZhuLei/vue-form-making'
-    },
-    handleConfigSelect (value) {
-      this.configTab = value
-    },
-    handleMoveEnd (evt) {
-    },
-    handleMoveStart ({oldIndex}) {
-    },
-    handleMove () {
-      return true
-    },
-    handlePreview () {
-      // console.log(this.widgetForm)
-      this.previewVisible = true
-    },
-    handlePreviewClose () {
-      this.previewVisible = false
-      this.handleReset()
-    },
-    handleTest () {
-      this.$refs.generateForm.getData().then(data => {
-        this.$alert(data, '').catch(e=>{})
-        this.$refs.widgetPreview.end()
-      }).catch(e => {
-        this.$refs.widgetPreview.end()
-      })
-    },
-    handleReset () {
-      this.$refs.generateForm.reset()
-    },
-    handleGenerateJson () {
-      this.jsonVisible = true
-      this.jsonTemplate = this.widgetForm
-
-      this.$nextTick(() => {
-
-        if (!this.jsonClipboard) {
-          this.jsonClipboard = new Clipboard('.json-btn')
-          this.jsonClipboard.on('success', (e) => {
-            this.$message.success('复制成功')
-          })
-        }
-        this.jsonCopyValue = JSON.stringify(this.widgetForm)
-      })
-    },
-    handleGenerateCode () {
-      this.codeVisible = true
-      this.htmlTemplate = generateCode(JSON.stringify(this.widgetForm), 'html')
-      this.vueTemplate = generateCode(JSON.stringify(this.widgetForm), 'vue')
-      this.$nextTick(() => {
-        const editor = ace.edit('codeeditor')
-        editor.session.setMode("ace/mode/html")
-
-        const vueeditor = ace.edit('vuecodeeditor')
-        vueeditor.session.setMode("ace/mode/html")
-      })
-    },
-    handleUpload () {
-      this.uploadVisible = true
-      this.$nextTick(() => {
-        this.uploadEditor = ace.edit('uploadeditor')
-        this.uploadEditor.session.setMode("ace/mode/json")
-      })
-    },
     handleInitial(){
       let {view} = this.transModelData();
+      this.mainForm.data = [];
+      this.subForm.forEach(sub=>{
+        sub.data = [];
+      });
       this.setJSON(view);
       this.updateState();
     },
     initialModelData(){
-     let {model,view} = this.transModelData();
-     this.dataBak = _.cloneDeep(model);//将数据复制储存起来
-     this.mainForm = model.main;
-     this.subForm = model.sub;
+      this.tempLoading = true;
+      let {model,view} = this.transModelData();
+      this.dataBak = _.cloneDeep(model);//将数据复制储存起来
+      let savedModel = {};
+      let option = {
+        categoryId:this.categoryId,
+        formId:this.modelData.id
+      };
+      fetchTemplate(option).then(resp=>{
+        if(resp.status == "success")
+        {
+          if(resp.content.length){
+            savedModel = resp.content.filter(c=>{
+              return c.type == -1
+            })[0];
+            let loadedModel = JSON.parse(savedModel.content);//界面上已经加载过的数据了
+            loadedModel.list.forEach(lm=>{
+              if(lm.type == 'grid') {
+                lm.columns.forEach(c => {
+                  c.list.forEach(m => {
+                    if(m.type != "text")
+                    {
+                      let key = m.options.key;
+                      let index = model.main.data.findIndex(d => {
+                        return d.options.key == key;
+                      })
+                      model.main.data.splice(index,1);
+                    }
+                  })
+                })
+              }
+              else{
+                let tableId = lm.key;
+                model.sub.forEach(s=>{
+                  if(s.formId == tableId){//找到对应的子表
+                    lm.tableColumns.forEach(c=>{
+                      let key = lm.key;
+                      let index = s.data.findIndex(d=>{
+                        return d.options.key == key;
+                      })
+                      s.data.splice(index,1);
+                    })
+                  }
+                })
+
+              }
+            });//剔除已经加载过的数据
+            this.setJSON(loadedModel);//界面显示初始化的模板
+          }
+          this.savedModel = savedModel;
+          this.mainForm = model.main;
+          this.subForm = model.sub;
+        }
+        else{
+          this.$error(resp.msg);
+        }
+        this.tempLoading = false;
+      });
     },
     transModelData(){
       let model = {
@@ -767,6 +688,147 @@ export default {
       })
       return tranferData;
     },
+    removeGrid({index,removeData}){
+      let type = removeData.type;
+      //let key = removeData.key;
+      if("grid" == type)//删除的是主表中的grid
+      {
+        removeData.columns.forEach(col=>{
+          if(col.list.length>0)//栅格中有界面元素
+          {
+            col.list.forEach(m=>{
+              if(m.type != "text")//界面元素不是text
+              {
+                let key = m.key;
+                let removeModelData = this.dataBak.main.data.filter(d=>{
+                  return d.options.key == key;
+                });
+                this.mainForm.data.push(removeModelData[0]);
+              }
+            })
+          }
+        })
+      }
+      else if("table" ==  type)//删除的是子表
+      {
+        let formId = removeData.key;
+        let removeModelData = this.dataBak.sub.filter(s=>{
+          return s.formId == formId;
+        })
+        let index = this.subForm.findIndex(s=>{
+          return s.formId == formId;
+        })
+        this.subForm.splice(index,1,removeModelData[0]);
+      }
+      this.updateState();
+    },
+    removeCol({index,removeData}){
+        removeData.list.forEach(m=>{
+          if("text"!= m.type){//不是文本
+            let removeModelData = this.dataBak.main.data.filter(d=>{
+              return d.options.key == m.key;
+            });
+            this.mainForm.data.push(removeModelData[0]);
+          }
+        })
+        this.updateState();
+    },
+    removeWidget({index,removeData}){
+        let formId = removeData.formId;
+        let type = removeData.type;
+        let key = removeData.key;
+        if("text" != type)//不是文本
+        {
+          if(formId == this.mainForm.formId)//是主表单的
+          {
+            let removeModelData = this.dataBak.main.data.filter(d=>{
+              return d.options.key == key;
+            });
+            this.mainForm.data.push(removeModelData[0]);
+          }
+          else//是子表单的
+          {
+            let removeSubForm = this.dataBak.sub.filter(s=>{
+              return s.formId == formId;
+            });
+            let removeModelData = removeSubForm[0].data.filter(d=>{
+              return d.options.key == key;
+            })
+            this.subForm.forEach(s=>{
+              if(s.formId == formId)
+              {
+                s.data.push(removeModelData[0]);
+              }
+            })
+          }
+        }
+        this.updateState();
+    },
+    handleGoGithub () {
+      //window.location.href = 'https://github.com/GavinZhuLei/vue-form-making'
+    },
+    handleConfigSelect (value) {
+      this.configTab = value
+    },
+    handleMoveEnd (evt) {
+    },
+    handleMoveStart ({oldIndex}) {
+    },
+    handleMove () {
+      return true
+    },
+    handlePreview () {
+      // console.log(this.widgetForm)
+      this.previewVisible = true
+    },
+    handlePreviewClose () {
+      this.previewVisible = false
+      this.handleReset()
+    },
+    handleTest () {
+      this.$refs.generateForm.getData().then(data => {
+        this.$alert(data, '').catch(e=>{})
+        this.$refs.widgetPreview.end()
+      }).catch(e => {
+        this.$refs.widgetPreview.end()
+      })
+    },
+    handleReset () {
+      this.$refs.generateForm.reset()
+    },
+    handleGenerateJson () {
+      this.jsonVisible = true
+      this.jsonTemplate = this.widgetForm
+
+      this.$nextTick(() => {
+        if (!this.jsonClipboard) {
+          this.jsonClipboard = new Clipboard('.json-btn')
+          this.jsonClipboard.on('success', (e) => {
+            this.$message.success('复制成功')
+          })
+        }
+        this.jsonCopyValue = JSON.stringify(this.widgetForm)
+      })
+    },
+    handleGenerateCode () {
+      this.codeVisible = true
+      this.htmlTemplate = generateCode(JSON.stringify(this.widgetForm), 'html')
+      this.vueTemplate = generateCode(JSON.stringify(this.widgetForm), 'vue')
+      this.$nextTick(() => {
+        const editor = ace.edit('codeeditor')
+        editor.session.setMode("ace/mode/html")
+
+        const vueeditor = ace.edit('vuecodeeditor')
+        vueeditor.session.setMode("ace/mode/html")
+      })
+    },
+    handleUpload () {
+      this.uploadVisible = true
+      this.$nextTick(() => {
+        this.uploadEditor = ace.edit('uploadeditor')
+        this.uploadEditor.session.setMode("ace/mode/json")
+      })
+    },
     handleUploadJson () {
       try {
         this.setJSON(JSON.parse(this.uploadEditor.getValue()))
@@ -792,6 +854,28 @@ export default {
       this.widgetFormSelect = {}
     },
     handleSave(){
+      this.tempLoading = true;
+      let option = {
+        id:JSON.stringify(this.savedModel) == "{}"?"":this.savedModel.id,
+        templateName:"template",
+        categoryId:this.categoryId,
+        formId:this.modelData.id,
+        type:"-1",
+        content:JSON.stringify(this.widgetForm)
+      };
+      saveTemplate(option).then(resp=>{
+        if(resp.status == "success")
+        {
+          //this.tempFormData = resp.content.knowledgeModel.formModel;
+          this.$success("保存成功");
+        }
+        else{
+          this.$error(resp.msg);
+        }
+        this.tempLoading = false;
+      });
+
+
     },
     handleClose(){
       this.$emit("closeFormMaking");
