@@ -95,7 +95,6 @@
                     }]
                 }],
                 tableSettings: {
-                    x1:200,
                     radio:false,//是否单选
                     checkbox: true,//是否多选，单选和多选同一时间只能存在一个
                     pagination:true,//是否显示分页

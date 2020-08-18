@@ -17,7 +17,7 @@
                     v-model="data.refSql">
             </el-input>
         </el-form-item>
-        <el-form-item label="知识目录">
+        <el-form-item label="知识目录" v-if="data.refType == 0">
             <el-button type="primary" icon="el-icon-search" circle @click.native="toggleKnowledgeDir"></el-button>
             <el-tag type="danger" size="mini" style="margin-left: 3px" v-if="data.categoryId != ''">
                 {{data.categoryName}}
@@ -37,6 +37,7 @@
         </el-form-item>
         <el-form-item label="导入标识">
             <el-input autocomplete="off" placeholder="请输入导入标识" v-model="data.importField"></el-input>
+            &nbsp;<span style="color:red">默认和显示字段一样</span>
         </el-form-item>
         <el-form-item label="链接地址">
             <el-input type="textarea"  :autosize="{ minRows: 3, maxRows: 6}" autocomplete="off" placeholder="请输入链接地址" v-model="data.viewUrl"></el-input>
