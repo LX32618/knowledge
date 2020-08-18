@@ -35,15 +35,15 @@
         <!-- <a href="#" class="header-help">帮助</a> -->
         <span class="header-placeholder"></span>
         <!-- 帮助 -->
-        <el-tooltip placement="bottom">
+        <!-- <el-tooltip placement="bottom">
           <i class="el-icon-help header-icon" @click="handleHelpIconClick"></i>
           <div slot="content">帮助</div>
-        </el-tooltip>
+        </el-tooltip> -->
         <!-- 全屏显示 -->
-        <!-- <el-tooltip placement="bottom">
+        <el-tooltip placement="bottom">
           <i class="el-icon-rank header-icon" @click="handleFullScreen"></i>
           <div slot="content">{{ fullScreen ? "取消全屏" : "全屏" }}</div>
-        </el-tooltip> -->
+        </el-tooltip>
         <!-- 消息提示 -->
         <el-tooltip placement="bottom" :disabled="toolTipDisable">
           <el-badge :value="`+${messages.length}`">

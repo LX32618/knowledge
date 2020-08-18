@@ -81,6 +81,9 @@ export default {
       },
       immediate: true
     },
+    data () {
+      this.labels = this.convertLabelTree(this.data)
+    }
   },
   methods: {
     // 转化为id数组

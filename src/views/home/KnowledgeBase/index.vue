@@ -23,11 +23,11 @@
           ></side-nav>
         </el-col>
         <el-col :span="18">
-          <detail-area
+          <knowledge-view
             :selectedCategory="selectedCategory"
             :currentKnowledgeBase="currentKnowledgeBase"
             @subscribeChange="handleSubscribeChange"
-          ></detail-area>
+          ></knowledge-view>
         </el-col>
       </el-row>
     </div>
@@ -40,14 +40,14 @@ import { errorMsg } from '@/utils/msg'
 import { fetchCategoryTreeAndNum } from '@/api/docCategory'
 import { unflatTree, walkTree } from '@/utils/tree.js'
 import SideNav from './components/SideNav'
-import DetailArea from './components/DetailArea'
+import KnowledgeView from '@/components/KnowledgeView'
 import _ from 'lodash'
 
 export default {
   name: 'KnowledgeBase',
   components: {
     SideNav,
-    DetailArea
+    KnowledgeView
   },
   props: {
     id: {
