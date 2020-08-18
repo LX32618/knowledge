@@ -25,7 +25,7 @@
                       <draggable
                         v-model="col.list"
                         :no-transition-on-drag="true"
-                        v-bind="{group:'people', ghostClass: 'ghost',animation: 200, handle: '.drag-widget'}"
+                        v-bind="{group:'grid', ghostClass: 'ghost',animation: 200, handle: '.drag-widget'}"
                         @end="handleMoveEnd"
                         @add="handleWidgetColAdd($event, element, colIndex)"
                       >
@@ -37,7 +37,9 @@
                               :element="el"
                               :select.sync="selectWidget"
                               :index="i"
-                              :data="col">
+                              :data="col"
+                              @removeWidget="removeWidget"
+                            >
                             </widget-form-item>
                           </template>
                         </transition-group>
@@ -90,7 +92,8 @@
                               :element="col"
                               :select.sync="selectWidget"
                               :index="colIndex"
-                              :data="element">
+                              :data="element"
+                              @removeWidget="removeWidget">
                             </widget-table-item>
                           </template>
                         </transition-group>
@@ -111,7 +114,16 @@
               </el-form-item>
             </template>
             <template v-else>
-              <widget-form-item v-if="element && element.key"  :key="element.key" :element="element" :select.sync="selectWidget" :index="index" :data="data" @state-change="updateState"></widget-form-item>
+              <widget-form-item
+                      v-if="element && element.key"
+                      :key="element.key"
+                      :element="element"
+                      :select.sync="selectWidget"
+                      :index="index"
+                      :data="data"
+                      @state-change="updateState"
+                      @removeWidget="removeWidget">
+              </widget-form-item>
             </template>
           </template>
         </transition-group>
@@ -124,6 +136,8 @@
 import Draggable from 'vuedraggable'
 import WidgetTableItem from './WidgetTableItem'
 import WidgetFormItem from './WidgetFormItem'
+import _ from 'lodash'
+
 
 export default {
   components: {
@@ -147,46 +161,38 @@ export default {
     }
   },
   methods: {
-    handleMoveEnd({newIndex, oldIndex}) {
-      // console.log('index', newIndex, oldIndex)
+    removeWidget({index,removeData}){
+      this.$emit("removeWidget",{index,removeData});
+    },
+    handleMoveEnd(evt) {
+ /*     console.log('index', newIndex, oldIndex)*/
     },
     handleSelectWidget(index) {
       // console.log(index, '#####')
       this.selectWidget = this.data.list[index]
     },
     handleWidgetAdd(evt) {
-      // console.log('add', evt)
-      // console.log('end', evt)
-      const newIndex = evt.newIndex
-      // const to = evt.to
-      // console.log(to)
-
+      const newIndex = evt.newIndex;
       //为拖拽到容器的元素添加唯一 key
-      const key = Date.parse(new Date()) + '_' + Math.ceil(Math.random() * 99999)
-      this.$set(this.data.list, newIndex, {
+      const key = Date.parse(new Date()) + '_' + Math.ceil(Math.random() * 99999);
+
+      let indexData = _.cloneDeep(this.data.list[newIndex]);
+      indexData.key = (indexData.type=='grid' || indexData.type == 'table' || indexData.type == "text")?key:indexData.options.key;
+      indexData.model = (indexData.type=='grid' || indexData.type == 'table' || indexData.type == "text")?indexData.type+"_"+key:indexData.options.model;
+
+      this.$set(this.data.list, newIndex,indexData);
+
+      //region old code
+      /*this.$set(this.data.list, newIndex, {
         ...this.data.list[newIndex],
         options: {
           ...this.data.list[newIndex].options,
           //remoteFunc: 'func_' + key
         },
-        key,
+        key:(this.data.list[newIndex].type=='grid' || this.data.list[newIndex].type == 'table')?key:this.data.list[newIndex].options.key,
         // 绑定键值
-        model: this.data.list[newIndex].type + '_' + key,
-        rules: []
+        model:(this.data.list[newIndex].type=='grid' || this.data.list[newIndex].type == 'table')?this.data.list[newIndex].type + '_' + key:this.data.list[newIndex].options.model,
       })
-
-      if (this.data.list[newIndex].type === 'radio' || this.data.list[newIndex].type === 'checkbox' || this.data.list[newIndex].type === 'select') {
-        this.$set(this.data.list, newIndex, {
-          ...this.data.list[newIndex],
-          options: {
-            ...this.data.list[newIndex].options
-         /*   options: this.data.list[newIndex].options.options.map(item => ({
-              ...item
-            }))*/
-          }
-        })
-      }
-
       if (this.data.list[newIndex].type === 'grid') {
         this.$set(this.data.list, newIndex, {
           ...this.data.list[newIndex],
@@ -194,18 +200,25 @@ export default {
         })
       }
 
+      if (this.data.list[newIndex].type === 'table') {
+        this.$set(this.data.list, newIndex, {
+          ...this.data.list[newIndex],
+          columns: this.data.list[newIndex].columns.map(item => ({...item}))
+        })
+      }*/
+      //endregion
+
+
       this.selectWidget = this.data.list[newIndex]
       this.updateState()
     },
     handleWidgetColAdd($event, row, colIndex) {
-      // console.log('coladd', $event, row, colIndex)
       const newIndex = $event.newIndex
       const oldIndex = $event.oldIndex
       const item = $event.item
 
       // 防止布局元素的嵌套拖拽
       if (item.className.indexOf('data-grid') >= 0) {
-
         // 如果是列表中拖拽的元素需要还原到原来位置
         item.tagName === 'DIV' && this.data.list.splice(oldIndex, 0, row.columns[colIndex].list[newIndex])
 
@@ -214,11 +227,18 @@ export default {
         return false
       }
 
-      // console.log('from', item)
-
       const key = Date.parse(new Date()) + '_' + Math.ceil(Math.random() * 99999)
+      let indexData = _.cloneDeep(row.columns[colIndex].list[newIndex]);
+      if(indexData.type == "table" || indexData.type == "grid")//防止布局元素嵌套
+      {
+        return false;
+      }
+      indexData.key = (indexData.type=="text")?key:indexData.options.key;
+      indexData.model = (indexData.type=="text")?"text_"+key:indexData.options.model;
+      this.$set(row.columns[colIndex].list, newIndex,indexData);
 
-      this.$set(row.columns[colIndex].list, newIndex, {
+      //region old code
+      /*this.$set(row.columns[colIndex].list, newIndex, {
         ...row.columns[colIndex].list[newIndex],
         options: {
           ...row.columns[colIndex].list[newIndex].options
@@ -235,12 +255,14 @@ export default {
           ...row.columns[colIndex].list[newIndex],
           options: {
             ...row.columns[colIndex].list[newIndex].options
-         /*   options: row.columns[colIndex].list[newIndex].options.options.map(item => ({
+         /!*   options: row.columns[colIndex].list[newIndex].options.options.map(item => ({
               ...item
-            }))*/
+            }))*!/
           }
         })
       }
+*/
+      //endregion
 
       this.selectWidget = row.columns[colIndex].list[newIndex]
       this.updateState()
@@ -249,7 +271,15 @@ export default {
       const newIndex = evt.newIndex
 
       const key = Date.parse(new Date()) + '_' + Math.ceil(Math.random() * 99999)
-      this.$set(table.tableColumns, newIndex, {
+
+      let indexData = _.cloneDeep(table.tableColumns[newIndex]);
+      indexData.key = indexData.options.key;
+      indexData.model = indexData.options.model;
+      indexData.options.width = '200px';
+      this.$set(table.tableColumns, newIndex,indexData);
+
+      //region old code
+/*      this.$set(table.tableColumns, newIndex, {
         ...table.tableColumns[newIndex],
         options: {
           ...table.tableColumns[newIndex].options,
@@ -260,11 +290,13 @@ export default {
         // 绑定键值
         model: table.tableColumns[newIndex].type + '_' + key,
         rules: []
-      })
+      })*/
+//endregion
       this.updateState()
     },
     handleWidgetDelete(index) {
-      console.log('grid_trash')
+      let removeData = this.data.list[index];
+      this.$emit("removeGrid",{index,removeData});
       if (this.data.list.length - 1 === index) {
         if (index === 0) {
           this.selectWidget = {}
@@ -274,8 +306,6 @@ export default {
       } else {
         this.selectWidget = this.data.list[index + 1]
       }
-      console.log(this.data.list[index]);
-      console.log(this.selectWidget);
 
       this.$nextTick(() => {
         this.data.list.splice(index, 1)

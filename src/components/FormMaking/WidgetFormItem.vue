@@ -251,6 +251,8 @@ export default {
       this.selectWidget = this.data.list[index]
     },
     handleWidgetDelete (index) {
+      let removeData = this.data.list[index];
+      this.$emit("removeWidget",{index,removeData});
       if (this.data.list.length - 1 === index) {
         if (index === 0) {
           this.selectWidget = {}

@@ -234,24 +234,6 @@
         <el-form-item label="是否支持多选图片">
           <el-switch v-model="data.options.multiple" @change="handleSelectMuliple"></el-switch>
         </el-form-item>
-
-
-<!--        <el-form-item label="使用七牛上传">
-          <el-switch v-model="data.options.isQiniu"></el-switch>
-        </el-form-item>
-        <template v-if="data.options.isQiniu">
-          <el-form-item label="Domain" :required="true">
-          <el-input v-model="data.options.domain"></el-input>
-          </el-form-item>
-          <el-form-item label="获取七牛Token方法" :required="true">
-            <el-input v-model="data.options.tokenFunc"></el-input>
-          </el-form-item>
-        </template>
-        <template v-else>
-          <el-form-item label="图片上传地址" :required="true">
-            <el-input v-model="data.options.action"></el-input>
-          </el-form-item>
-        </template>-->
       </template>
 
       <template v-if="data.type=='upload'">
@@ -349,12 +331,12 @@
                 <div  v-if="data.options.rowConfig=='span'">
                   <i class="drag-item" style="font-size: 16px;margin: 0 5px;cursor: move;"><i class="iconfont icon-icon_bars"></i></i>
                   <el-input placeholder="栅格值" size="mini" style="width: 100px;" type="number" v-model.number="item.span"></el-input>
-                  <el-button @click="handleOptionsRemove(index)" circle plain type="danger" size="mini" icon="el-icon-minus" style="padding: 4px;margin-left: 5px;"></el-button>
+                  <el-button v-if="data.columns.length>1" @click="handleOptionsRemove(index)" circle plain type="danger" size="mini" icon="el-icon-minus" style="padding: 4px;margin-left: 5px;"></el-button>
                 </div>
                 <div v-else-if="data.options.rowConfig=='scale'">
                   <i class="drag-item" style="font-size: 16px;margin: 0 5px;cursor: move;"><i class="iconfont icon-icon_bars"></i></i>
                   <el-input-number v-model="item.scale" :min="1" :max="10" label="比例值"></el-input-number>
-                  <el-button @click="handleOptionsRemove(index)" circle plain type="danger" size="mini" icon="el-icon-minus" style="padding: 4px;margin-left: 5px;"></el-button>
+                  <el-button v-if="data.columns.length>1" @click="handleOptionsRemove(index)" circle plain type="danger" size="mini" icon="el-icon-minus" style="padding: 4px;margin-left: 5px;"></el-button>
                 </div>
               </li>
           </draggable>
@@ -487,12 +469,13 @@ export default {
       }
     },
     handleOptionsRemove (index) {
+      let removeData = this.data.columns[index];
+      this.$emit("removeCol",{index,removeData});
       if (this.data.type === 'grid') {
         this.data.columns.splice(index, 1)
       } else {
         this.data.options.options.splice(index, 1)
       }
-
     },
     handleAddOption () {
       if (this.data.options.showLabel) {

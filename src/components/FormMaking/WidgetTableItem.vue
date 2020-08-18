@@ -9,7 +9,7 @@
         <slot>
           <span>
              <template v-if="element.type == 'input'">
-              <el-input 
+              <el-input
                 v-model="element.options.defaultValue"
                 :placeholder="element.options.placeholder"
                 :disabled="element.options.disabled"
@@ -25,8 +25,8 @@
             </template>
 
             <template v-if="element.type == 'number'">
-              <el-input-number 
-                v-model="element.options.defaultValue" 
+              <el-input-number
+                v-model="element.options.defaultValue"
                 :disabled="element.options.disabled"
                 :controls-position="element.options.controlsPosition"
               ></el-input-number>
@@ -47,7 +47,7 @@
             </template>
 
             <template v-if="element.type == 'time'">
-              <el-time-picker 
+              <el-time-picker
                 v-model="element.options.defaultValue"
                 :is-range="element.options.isRange"
                 :placeholder="element.options.placeholder"
@@ -87,7 +87,7 @@
             </template>
 
             <template v-if="element.type == 'color'">
-              <el-color-picker 
+              <el-color-picker
                 v-model="element.options.defaultValue"
                 :disabled="element.options.disabled"
                 :show-alpha="element.options.showAlpha"
@@ -113,7 +113,7 @@
             </template>
 
             <template v-if="element.type=='slider'">
-              <el-slider 
+              <el-slider
                 v-model="element.options.defaultValue"
                 :min="element.options.min"
                 :max="element.options.max"
@@ -256,6 +256,8 @@ export default {
       })
     },
     handleWidgetDelete(index) {
+      let removeData = this.data.tableColumns[index];
+      this.$emit("removeWidget",{index,removeData});
       if (this.data.tableColumns.length - 1 === index) {
         if (index === 0) {
           this.selectWidget = {}

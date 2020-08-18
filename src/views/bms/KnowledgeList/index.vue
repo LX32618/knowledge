@@ -11,7 +11,7 @@
                     </div>
                 </el-tab-pane>
                 <el-tab-pane :key="1" v-if="basicFormData.type==2 && clickData.formId" label="模板配置" name="template" v-loading="tempLoading">
-                    <cs-template :form-data="tempFormData"></cs-template>
+                    <cs-template :form-data="tempFormData" :category-id="basicFormData.id"></cs-template>
                 </el-tab-pane>
                 <el-tab-pane :key="2" v-if="basicFormData.type==2 && clickData.formId" label="列表配置" name="list">列表配置</el-tab-pane>
                 <el-tab-pane :key="3" v-if="basicFormData.type!=0" label="权限配置" name="permission">权限配置</el-tab-pane>
