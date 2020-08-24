@@ -10,6 +10,7 @@
               @current-change="currentChange"
               @selection-change="selectionChange"
               @sort-change="sortChange"
+              @row-dblclick="rowDbClick"
               class="cs-table">
       <el-table-column
               v-if="settings.checkbox"
@@ -95,6 +96,9 @@
       sortChange({column, prop, order}) {
         this.$emit("sortChange",{sort:prop,order:order == "descending"?"desc":"asc"});
       },
+      rowDbClick(row, column, cell, event){
+        this.$emit("rowDbClick",{row:row,column:column,cell:cell,event:event});
+      }
     },
     mounted() {
     }

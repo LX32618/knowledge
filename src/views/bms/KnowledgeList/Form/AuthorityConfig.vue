@@ -22,44 +22,35 @@
                 </template>
             </cs-table>
         </el-form>
-        <el-dialog :visible.sync="dialogVisible"  title="添加共享规则">
-            <el-form :model="addRuleForm" label-width="80px">
-                <el-form-item label="权限规则">
-                    <el-select v-model="addRuleForm.object" placeholder="请选择">
-                        <el-option label="指定人员" value="people"></el-option>
-                        <el-option label="指定部门" value="dept"></el-option>
-                        <el-option label="指定专业组" value="group"></el-option>
-                        <el-option label="全部人员" value="allpeople"></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="权限类型">
-                    <el-select v-model="addRuleForm.type" multiple placeholder="请选择">
-                        <el-option label="查看" value="view"></el-option>
-                        <el-option label="编辑" value="edit"></el-option>
-                        <el-option label="创建" value="create"></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="可下载" v-if="addRuleForm.type.indexOf('view')!=-1">
-                    <el-switch v-model="addRuleForm.isDownload">
-                    </el-switch>
-                </el-form-item>
-            </el-form>
+        <el-dialog :visible.sync="dialogVisible"  title="添加共享规则" append-to-body :close-on-click-modal="false">
+            <cs-people-select :priority="true" :form="addRuleForm">
+                <template v-slot:operationSlot>
+                    <div style="text-align: end">
+                        <el-button @click="dialogVisible = false">取 消</el-button>
+                        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+                    </div>
+                </template>
+            </cs-people-select>
         </el-dialog>
     </div>
 </template>
 
 <script>
+
+    import Template from "./Template";
     export default {
         name: "AuthorityConfig",
         data(){
             return{
                 dialogVisible:false,
+                deptDialogVisible:false,
+                peopleDialogVisible:false,
                 ruleForm:{
                     creator:"",
                     ruleData:[]
                 },
                 addRuleForm:{
-                    object:"",
+                    object:"people",
                     type:[],
                     isDownload:false
                 },
@@ -80,7 +71,18 @@
             add(){
                 this.dialogVisible = true;
             },
-            remove(){}
+            remove(){
+
+            },
+            openPeopleDialog(){
+                this.peopleDialogVisible = true;
+            },
+            openDeptDialog() {
+
+            }
+        },
+        components:{
+            Template
         }
     }
 </script>

@@ -98,8 +98,7 @@
                         {prop: "fieldId", label: "fieldId", sortable: false, visible: false},
                         {prop: "showName",width:100, label: "字段名"}
                     ]
-                },
-                tableData:[]
+                }
             }
         },
         methods:{
