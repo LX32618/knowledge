@@ -276,7 +276,7 @@ export default {
       tempLoading:false,
       basicComponents,
       layoutComponents,
-      advanceComponents,
+   /*   advanceComponents,*/
       mainForm:{},
       subForm:[],
       savedModel:{},

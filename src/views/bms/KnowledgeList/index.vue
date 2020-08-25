@@ -39,7 +39,7 @@
     import request from '@/utils/request'
     import {mapGetters} from "vuex";
     import {fetchModel} from "@/api/formMaking.js"
-    import {fetchTableConfigTest} from "@/api/knowledgeList.js"
+    import {fetchTableConfig} from "@/api/knowledgeList.js"
 
     const rootUrl = '/api4/app/authcenter/api/categoryTree/';
 
@@ -103,15 +103,17 @@
                 }
                 else if(tab.label == '列表配置')
                 {
-                    console.log(this.basicFormData)
                     let option = {
-                        categeryId:this.basicFormData.id,
+                        categoryId:this.basicFormData.id,
                         formId:this.basicFormData.formId
                     };
-                    fetchTableConfigTest(option).then(resp=>{
+                    this.tempLoading = true;
+                    fetchTableConfig(option).then(resp=>{
                         if(resp.status == "success")
                         {
-                            this.configData = resp.content;
+                            let  configData = _.cloneDeep(resp.content);
+                            configData.categoryId = this.basicFormData.id;
+                            this.configData = configData;
                         }
                         else{
                             this.$error(resp.msg);

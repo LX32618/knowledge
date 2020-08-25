@@ -1,9 +1,10 @@
 import request from '@/utils/request'
 
 const testUrl = '/api/tableConfig/'
+const rootUrl = '/api4/app/authcenter/api/knowledgeReport/'
 
 
-//获取浏览按钮
+//获取列表配置
 export function fetchTableConfigTest (option) {
     return request({
         url: `${testUrl}getConfig`,
@@ -12,3 +13,19 @@ export function fetchTableConfigTest (option) {
     })
 }
 
+//获取列表配置
+export function fetchTableConfig (option) {
+    return request({
+        url: `${rootUrl}get`,
+        method: 'post',
+        data: option
+    })
+}
+
+export function saveTableConfig(option) {
+    return request({
+        url: `${rootUrl}save`,
+        method: 'post',
+        data: option
+    })
+}
