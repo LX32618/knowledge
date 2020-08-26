@@ -1,8 +1,8 @@
 <template>
     <div>
         <el-form :model="form" label-width="100px">
-            <el-form-item label="权限规则">
-                <el-select v-model="form.object" placeholder="请选择">
+            <el-form-item label="选择对象">
+                <el-select v-model="form.object" placeholder="请选择" @change="objectChange">
                     <el-option label="指定人员" value="people"></el-option>
                     <el-option label="指定部门" value="dept"></el-option>
                     <el-option label="指定专业组" value="group"></el-option>
@@ -11,9 +11,26 @@
             </el-form-item>
             <el-form-item v-if="form.object == 'people'" label="选择人员">
                 <el-button type="primary" icon="el-icon-search" circle @click.native="peopleDialogVisible=true"></el-button>
+                <el-tag
+                        v-for="tag in selectList"
+                        :key="tag.id"
+                        closable
+                        @close="closeTag(tag)"
+                        type="danger">
+                    {{tag.userName}}
+                </el-tag>
+
             </el-form-item>
             <el-form-item v-if="form.object == 'dept'" label="选择部门">
                 <el-button type="primary" icon="el-icon-search" circle @click.native="deptDialogVisible=true"></el-button>
+                <el-tag
+                        v-for="tag in selectList"
+                        :key="tag.id"
+                        closable
+                        @close="closeTag(tag)"
+                        type="danger">
+                    {{tag.orgName}}
+                </el-tag>
             </el-form-item>
             <el-form-item v-if="form.object == 'group'" label="选择专业组">
                 <el-select v-model="form.group" placeholder="请选择">
@@ -37,25 +54,17 @@
         </el-form>
         <slot name="operationSlot"></slot>
         <el-dialog :visible.sync="deptDialogVisible"  title="选择部门" append-to-body :close-on-click-modal="false" append-to-body>
-            <dept-transfer></dept-transfer>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="deptDialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="deptDialogVisible = false">确 定</el-button>
-            </span>
+            <dept-transfer @cancel="deptCancel" @certain="deptCertain"></dept-transfer>
         </el-dialog>
         <el-dialog :visible.sync="peopleDialogVisible"  title="选择人员" append-to-body :close-on-click-modal="false" append-to-body>
-            <people-transfer></people-transfer>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="peopleDialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="peopleDialogVisible = false">确 定</el-button>
-            </span>
+            <people-transfer @cancel="peopleCancel" @certain="peopleCertain"></people-transfer>
         </el-dialog>
     </div>
 </template>
 
 <script>
-    import PeopleTransfer from "./components/PeopleTransfer";
-    import DeptTransfer from "./components/DeptTransfer";
+    import PeopleTransfer from "../Transfer/PeopleTransfer";
+    import DeptTransfer from "../Transfer/DeptTransfer";
     export default {
         name: "PeopleSelect",
         props:{
@@ -71,7 +80,34 @@
         data(){
             return {
                 deptDialogVisible:false,
-                peopleDialogVisible:false
+                peopleDialogVisible:false,
+                selectList:[]
+            }
+        },
+        methods:{
+            objectChange(){
+                this.selectList = [];
+            },
+            deptCancel(){
+                this.deptDialogVisible = false;
+            },
+            deptCertain(selectList){
+                this.selectList = selectList;
+                this.deptDialogVisible = false;
+            },
+            peopleCancel(){
+                this.peopleDialogVisible = false;
+            },
+            peopleCertain(selectList){
+                this.selectList = selectList;
+                this.peopleDialogVisible = false;
+            },
+            closeTag(tag)
+            {
+                let index = this.selectList.findIndex(s=>{
+                    return tag.id == s.id;
+                });
+                this.selectList.splice(index,1);
             }
         },
         components:{

@@ -1,39 +1,46 @@
 <template>
-    <div class="box" style="margin-top: 0px">
-        <div class="unselect">
-            <cs-table :settings="tableSettings" :table-data="unSelectList" @rowDbClick="rowDbClick">
-                <template v-slot:horizontalSlot>
-                    部门列表
-                    <div class="search oper">
-                        <el-button-group class="oper">
-                            <el-input  placeholder="请输入关键字" prefix-icon="el-icon-search" v-model="keyWord"></el-input>
-                            <el-button type="primary" size="mini">搜索</el-button>
-                        </el-button-group>
-                    </div>
-                </template>
-            </cs-table>
-        </div>
-        <div class="operations">
-            <div>
-                <el-button type="primary" icon="el-icon-d-arrow-right" circle @click="addAll()"></el-button>
+    <div>
+        <div class="box" style="margin-top: 0px">
+            <div class="unselect">
+                <cs-table :settings="tableSettings" :table-data="unSelectList" @rowDbClick="rowDbClick">
+                    <template v-slot:horizontalSlot>
+                        部门列表
+                        <div class="search oper">
+                            <el-button-group class="oper">
+                                <el-input  placeholder="请输入关键字" prefix-icon="el-icon-search" v-model="keyWord"></el-input>
+                                <el-button type="primary" size="mini">搜索</el-button>
+                            </el-button-group>
+                        </div>
+                    </template>
+                </cs-table>
             </div>
-            <div>
-                <el-button type="primary" icon="el-icon-d-arrow-left" circle @click="removeAll()"></el-button>
-            </div>
-        </div>
-        <div class="select">
-            选中列表
-            <div>
-                <div  v-for="tag in selectList" :key="tag.id"
-                      class="tag" style="cursor: pointer">
-                    <el-tag  type="danger" @dblclick.native="closeTag(tag)">
-                        <i class="el-icon-s-flag"/>{{tag.orgName}}
-                    </el-tag>
+            <div class="operations">
+                <div>
+                    <el-button type="primary" icon="el-icon-d-arrow-right" circle @click="addAll()"></el-button>
                 </div>
-                <br/>
+                <div>
+                    <el-button type="primary" icon="el-icon-d-arrow-left" circle @click="removeAll()"></el-button>
+                </div>
             </div>
+            <div class="select">
+                选中列表
+                <div>
+                    <div  v-for="tag in selectList" :key="tag.id"
+                          class="tag" style="cursor: pointer">
+                        <el-tag  type="danger" @dblclick.native="closeTag(tag)">
+                            <i class="el-icon-s-flag"/>{{tag.orgName}}
+                        </el-tag>
+                    </div>
+                    <br/>
+                </div>
+            </div>
+        </div>
+        <div style="text-align: end;margin-top: 30px;">
+            <el-button @click="cancel()">取 消</el-button>
+            <el-button type="primary" @click="certain()">确 定</el-button>
         </div>
     </div>
+
 </template>
 
 <script>
@@ -112,6 +119,12 @@
             },
             removeAll(){
                 this.selectList = [];
+            },
+            cancel(){
+                this.$emit("cancel");
+            },
+            certain(){
+                this.$emit("certain",this.selectList);
             }
         }
     }

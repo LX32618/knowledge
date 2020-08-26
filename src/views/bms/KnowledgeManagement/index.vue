@@ -16,8 +16,8 @@
                             <el-button type="primary" icon="el-icon-delete" @click.native="remove">删除</el-button>
                           <!--  <el-button type="primary" icon="element-icons el-custom-transfer1" size="mini">权限转移</el-button>-->
                             <el-button type="primary" v-if="clickData.type == 2" icon="element-icons el-custom-batchedit" size="mini">批量修改</el-button>
-                            <el-button type="primary" v-if="clickData.type == 2" icon="element-icons el-custom-import" size="mini" @click="importDialogVisible=true">批量导入</el-button>
-                            <el-button type="primary" icon="element-icons el-custom-share" size="mini" @click="shareDialogVisible=true">批量分享</el-button>
+                            <el-button type="primary" v-if="clickData.type == 2" icon="element-icons el-custom-import" size="mini" @click="batchImport()">批量导入</el-button>
+                            <el-button type="primary" icon="element-icons el-custom-share" size="mini" @click="batchShare()">批量分享</el-button>
                             <el-button type="primary" icon="element-icons el-custom-export" size="mini">导出</el-button>
                         </el-button-group>
                         <div style="font-size: 12px">
@@ -72,7 +72,7 @@
                     </el-upload>
                 </el-form-item>
                 <el-form-item label="3.导入">
-                    <el-button type="primary" icon="fa fa-save" size="mini" @click="submitUpload()">开始导入</el-button>
+                    <el-button type="primary" icon="element-icons el-custom-import" size="mini" @click="submitUpload()">开始导入</el-button>
                 </el-form-item>
             </el-form>
             <el-divider></el-divider>
@@ -189,6 +189,7 @@
                     ]
                 },
                 tableData:[],
+                tableSelectData:[],
                 seniorKeyWords:{
                     knowName:"",
                     knowCode:""
@@ -223,10 +224,10 @@
                 this.$set(this, 'clickData', data);
             },
             currentChange(val){//行单选事件
-                console.log(val);
+
             },
             selectionChange(val){//行多选事件
-                console.log(val)
+                this.$set(this,"tableSelectData",val);
             },
             pageSizeChange({page,rows})//每页显示数量、页码变化
             {
@@ -247,6 +248,22 @@
             submitUpload() {
                 this.$refs.upload.submit();
             },
+            batchImport(){
+                if(this.tableSelectData.length > 0){
+                    this.importDialogVisible = true;
+                }
+                else{
+                    this.$error("请先选择需要操作的知识");
+                }
+            },
+            batchShare(){
+                if(this.tableSelectData.length > 0){
+                    this.shareDialogVisible = true;
+                }
+                else{
+                    this.$error("请先选择需要分享的知识");
+                }
+            }
         },
         mounted() {
             this.tableData = [{

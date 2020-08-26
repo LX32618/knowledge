@@ -89,7 +89,17 @@ const sidebar = {
         name: 'System',
         meta:{title:"系统管理"},
         icon: 'el-icon-setting',
-        children: []
+        children: [{
+            name: "roleMangement",
+            path: "roleMangement",
+            meta:{title:"角色管理"},
+            component:()=>import('@/views/bms/RoleManagement')
+        },{
+            name: "priorityManagement",
+            path: "priorityManagement",
+            meta:{title:"权限管理"},
+            component:()=>import('@/views/bms/PriorityManagement')
+        }]
     }, {
         name: 'Audit',
         meta:{title:"安全审计"},
