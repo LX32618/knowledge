@@ -16,13 +16,13 @@
                 </el-table-column>
                 <el-table-column label="是否查询条件" >
                     <template slot-scope="scope">
-                        <el-switch v-model="scope.row.isSearch" :active-value="1"  :inactive-value="0">
+                        <el-switch v-model="scope.row.isSearch" :active-value="1"  :inactive-value="0" disabled>
                         </el-switch>
                     </template>
                 </el-table-column>
                 <el-table-column label="是否排序" >
                     <template slot-scope="scope">
-                        <el-switch v-model="scope.row.isOrder" :active-value="1"  :inactive-value="0">
+                        <el-switch v-model="scope.row.isOrder" :active-value="1"  :inactive-value="0" disabled>
                         </el-switch>
                     </template>
                 </el-table-column>
@@ -55,12 +55,12 @@
                             </el-switch>
                         </template>
                     </el-table-column>
-                    <el-table-column label="是否排序" >
+          <!--          <el-table-column label="是否排序" >
                         <template slot-scope="scope">
                             <el-switch v-model="scope.row.isOrder" :active-value="1"  :inactive-value="0">
                             </el-switch>
                         </template>
-                    </el-table-column>
+                    </el-table-column>-->
                     <el-table-column label="列宽" >
                         <template slot-scope="scope">
                             <el-input-number v-model="scope.row.colWidth" :min="1"  step-strictly></el-input-number>

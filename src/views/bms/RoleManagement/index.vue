@@ -15,49 +15,26 @@
                 </div>
             </template>
         </cs-table>
-        <el-dialog :visible.sync="dialogVisible"  title="角色信息" append-to-body :close-on-click-modal="false" append-to-body>
-            <el-form :model="form" label-width="100px">
-                <el-form-item label="角色名称">
-                    <el-input v-model="form.roleName" style="width:203px"></el-input>
-                </el-form-item>
-                <el-form-item label="角色人员">
-                    <el-button type="primary" icon="el-icon-search" circle @click.native="peopleDialogVisible=true"></el-button>
-                    <el-tag
-                            v-for="tag in selectList"
-                            :key="tag.id"
-                            closable
-                            @close="closeTag(tag)"
-                            type="danger">
-                        {{tag.userName}}
-                    </el-tag>
-
-                </el-form-item>
-                <el-form-item label="角色权限">
-                    <el-select v-model="form.priority" placeholder="请选择">
-                        <el-option label="安选审计" value="axsj"></el-option>
-                        <el-option label="系统管理" value="xtgl"></el-option>
-                        <el-option label="知识管理" value="zsgl"></el-option>
-                        <el-option label="安全保密" value="aqbm"></el-option>
-                    </el-select>
-                </el-form-item>
-            </el-form>
+        <el-dialog :visible.sync="addDialogVisible"  title="角色信息" append-to-body :close-on-click-modal="false" append-to-body>
+            <role-select type="add" :form-data="addFormData"  @submitSuccess="submitSuccess"></role-select>
         </el-dialog>
-        <el-dialog :visible.sync="peopleDialogVisible"  title="选择人员" append-to-body :close-on-click-modal="false" append-to-body>
-            <people-transfer @cancel="peopleCancel" @certain="peopleCertain"></people-transfer>
+        <el-dialog :visible.sync="editDialogVisible"  title="角色信息" append-to-body :close-on-click-modal="false" append-to-body>
+            <role-select type="edit" :form-data="editFormData" @submitSuccess="submitSuccess"></role-select>
         </el-dialog>
-
     </div>
 
 </template>
 
 <script>
-    import PeopleTransfer from "@/components/Transfer/PeopleTransfer";
+    import RoleSelect from "./Form/RoleSelect";
+
     export default {
         name: "index",
         data(){
             return{
                 form:{},
-                dialogVisible:false,
+                addDialogVisible:false,
+                editDialogVisible:false,
                 peopleDialogVisible:false,
                 tableSettings: {
                     radio:true,//是否单选
@@ -72,69 +49,102 @@
                         {prop: "roleId", label: "roleId",visible:false},
                         {prop: "roleName", label: "角色名称"},
                         {prop: "userNames", label: "人员"},
-                        {prop: "permissionNames", label: "权限资源"}
+                        {prop: "userIds", label: "userIds",visible:false},
+                        {prop: "permissionNames", label: "权限资源"},
+                        {prop: "permissionIds", label: "permissionIds",visible:false}
                     ]
                 },
                 tableData:[
                     {
-                        id:1,
+                        id:"1",
                         roleName:"安全保密员",
-                        userNames:"宋悦刚,王亮",
-                        permissionNames:"安全保密,安全审计,测试,知识管理",
+                        userNames:"李书洋,夏添",
+                        userIds:"lisy1,xt",
+                        orgNames:"流程与信息化部,流程与信息化部",
+                        permissionNames:"安全保密,安全审计,知识管理",
+                        permissionIds:"aqbm,axsj,zsgl"
                     },{
-                        id:2,
+                        id:"2",
                         roleName:"SEPG审核组",
-                        userNames:"宋悦刚",
+                        userNames:"王夏冰",
+                        userIds:"wxb",
+                        orgNames:"流程与信息化部",
                         permissionNames:"SEPG审核",
+                        permissionIds:"seg"
                     },{
-                        id:3,
+                        id:"3",
                         roleName:"SEPG审核组",
-                        userNames:"宋悦刚",
+                        userNames:"刘珏先",
+                        userIds:"ljx",
+                        orgNames:"流程与信息化部",
                         permissionNames:"SEPG审核",
-                    },{
-                        id:4,
-                        roleName:"SEPG审核组",
-                        userNames:"宋悦刚",
-                        permissionNames:"SEPG审核",
+                        permissionIds:"seg"
                     }
                 ],
-                selectList:[]
+                tableSelect:{},
+                addFormData:{
+                    id:"",
+                    roleName:"",
+                    roles:[],
+                    permissions:[]
+                },
+                editFormData:{}
             }
         },
         methods:{
             currentChange(val){//行单选事件
-                console.log();
+                this.tableSelect = val;
             },
             pageSizeChange({page,rows})//每页显示数量、页码变化
             {
 
             },
             add(){
-                this.dialogVisible = true;
+                this.addDialogVisible = true;
             },
             edit(){
-
+                if("{}" == JSON.stringify(this.tableSelect)){
+                    this.$error("请先选择一行数据");
+                }
+                else{
+                    let val = this.tableSelect;
+                    console.log(this.tableSelect);
+                    let userArray = _.zip(val.userIds.split(","),val.userNames.split(","),val.orgNames.split(","));
+                    let roles = [];
+                    userArray.forEach(u=>{
+                        let user =  _.zipObject(['id', 'userName','orgName'], u);
+                        roles.push(user);
+                    })
+                    let data = {
+                        id:val.id,
+                        roleName:val.roleName,
+                        permissions:val.permissionIds.split(","),
+                        roles:roles
+                    }
+                    this.$set(this,"editFormData",data);
+                    this.editDialogVisible = true;
+                }
             },
             remove(){
 
             },
-            peopleCancel(){
-                this.peopleDialogVisible = false;
-            },
-            peopleCertain(selectList){
-                this.selectList = selectList;
-                this.peopleDialogVisible = false;
-            },
-            closeTag(tag)
-            {
-                let index = this.selectList.findIndex(s=>{
-                    return tag.id == s.id;
-                });
-                this.selectList.splice(index,1);
+            submitSuccess({type,data}){
+                if("add" == type)
+                {
+                    this.tableData.push(data);
+                    this.addDialogVisible = false;
+                }
+                else{
+                    let index = this.tableData.findIndex(d=>{
+                        return d.id == data.id;
+                    });
+                    this.tableData.splice(index,1,data);
+                    this.editDialogVisible = false;
+                }
             }
         },
         components:{
-            PeopleTransfer
+            RoleSelect
         }
     }
 </script>

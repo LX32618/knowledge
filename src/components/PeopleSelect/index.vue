@@ -101,13 +101,6 @@
             peopleCertain(selectList){
                 this.selectList = selectList;
                 this.peopleDialogVisible = false;
-            },
-            closeTag(tag)
-            {
-                let index = this.selectList.findIndex(s=>{
-                    return tag.id == s.id;
-                });
-                this.selectList.splice(index,1);
             }
         },
         components:{

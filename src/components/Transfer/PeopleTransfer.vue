@@ -49,7 +49,10 @@
         name:'PeopleTranfer',
         components: {CatTreeSelect},
         props:{
-
+            selectList:{
+                type:Array,
+                default:()=>[]
+            }
         },
         data() {
             return {
@@ -83,30 +86,30 @@
                         {id:"kefa",orgName:"科发部"}
                     ]}
                 ],
-                selectList: [
+/*                selectList: [
                     {
-                        id: 'AHU-L28-01',
+                        id: 'lsy1',
                         userName: '李书洋',
                         orgName: '流程与信息化部'
                     },
-                ],
+                ],*/
                 unSelectList: [
                     {
-                        id: 'AHU-L28-01',
+                        id: 'lsy1',
                         userName: '李书洋',
                         orgName: '流程与信息化部'
                     },
                     {
-                        id: 'AHU-L28-02',
+                        id: 'xt',
                         userName: '夏添',
                         orgName: '流程与信息化部'
                     },
                     {
-                        id: 'AHU-L28-03',
+                        id: 'wxb',
                         userName: '王夏冰',
                         orgName: '流程与信息化部'
                     },   {
-                        id: 'AHU-L28-04',
+                        id: 'ljx',
                         userName: '刘珏先',
                         orgName: '流程与信息化部'
                     },

@@ -64,24 +64,24 @@
                 },
                 selectList: [
                     {
-                        id: 'AHU-L28-01',
+                        id: 'lhb',
                         orgName: '流程与信息化部'
                     },
                 ],
                 unSelectList: [
                     {
-                        id: 'AHU-L28-01',
+                        id: 'lhb',
                         orgName: '流程与信息化部'
                     },
                     {
-                        id: 'AHU-L28-02',
+                        id: 'jhb',
                         orgName: '综合计划部'
                     },
                     {
-                        id: 'AHU-L28-03',
+                        id: 'kfb',
                         orgName: '科技发展部'
                     },   {
-                        id: 'AHU-L28-04',
+                        id: 'htb',
                         orgName: '航天部'
                     },
 

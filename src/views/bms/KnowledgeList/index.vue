@@ -10,10 +10,10 @@
                         <cs-basic :settings="basicFormSettings" :form-data="basicFormData" @submitSuccess="submitSuccess"></cs-basic>
                     </div>
                 </el-tab-pane>
-                <el-tab-pane :key="1" v-if="basicFormData.type==2 && clickData.formId" label="模板配置" name="template" v-loading="tempLoading">
+                <el-tab-pane :key="1" v-if="basicFormData.type==2 && clickData.formId" label="模板配置" name="template" v-loading="tabLoading">
                     <cs-template :form-data="tempFormData" :category-id="basicFormData.id"></cs-template>
                 </el-tab-pane>
-                <el-tab-pane :key="2" v-if="basicFormData.type==2 && clickData.formId" label="列表配置" name="list">
+                <el-tab-pane :key="2" v-if="basicFormData.type==2 && clickData.formId" label="列表配置" name="list" v-loading="tabLoading">
                     <cs-table-config :config-data="configData"></cs-table-config>
                 </el-tab-pane>
                 <el-tab-pane :key="3" v-if="basicFormData.type!=0" label="权限配置" name="permission">
@@ -50,7 +50,7 @@
                 activeName:'basic',
                 clickData:{},
                 appendFormVisible:false,
-                tempLoading:false,
+                tabLoading:false,
                 fileList:[],
                 treeSettings:{
                     root_id:"0",//根节点id
@@ -89,7 +89,7 @@
                     let option = {
                         categeryId:this.basicFormData.id
                     };
-                    this.tempLoading = true;
+                    this.tabLoading = true;
                     fetchModel(option).then(resp=>{
                         if(resp.status == "success")
                         {
@@ -98,7 +98,7 @@
                         else{
                             this.$error(resp.msg);
                         }
-                        this.tempLoading = false;
+                        this.tabLoading = false;
                     });
                 }
                 else if(tab.label == '列表配置')
@@ -107,7 +107,7 @@
                         categoryId:this.basicFormData.id,
                         formId:this.basicFormData.formId
                     };
-                    this.tempLoading = true;
+                    this.tabLoading = true;
                     fetchTableConfig(option).then(resp=>{
                         if(resp.status == "success")
                         {
@@ -118,7 +118,7 @@
                         else{
                             this.$error(resp.msg);
                         }
-                        this.tempLoading = false;
+                        this.tabLoading = false;
                     });
                 }
             },
