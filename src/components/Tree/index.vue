@@ -9,27 +9,16 @@
       :default-expand-all="treeOptions.default_expand_all"
       :show-checkbox="treeOptions.show_checkbox || treeOptions.show_radio"
       :expand-on-click-node="treeOptions.expand_on_click_node"
+      :default-checked-keys="treeOptions.default_checked_keys"
       @check-change="checkChange"
       @node-contextmenu="rightClick"
-      @node-click="nodeClick"
-    >
+      @node-click="nodeClick">
       <span slot-scope="{ data, node }">
         <span>
-          <i
-            :class="
-              data.icon
-                ? data.icon
-                : data.isLeaf
-                ? 'el-icon-document'
-                : node.expanded
-                ? 'el-icon-folder-opened'
-                : 'el-icon-folder'
-            "
-          ></i>
+          <i :class="data.icon?data.icon: data.children?node.expanded?'el-icon-folder-opened':'el-icon-folder':'el-icon-document'"></i>
           <span :style="{ fontSize: '14px' }">
             {{ node.label }}
-            <span v-if="treeOptions.showCount">({{ data.knowNum }})</span></span
-          >
+            <span v-if="treeOptions.showCount">({{ data.knowNum }})</span></span>
         </span>
       </span>
     </el-tree2>
@@ -50,15 +39,12 @@
         icon="el-icon-edit"
         size="mini"
         @click="edit"
-        >编辑</el-button
-      >
+        >编辑</el-button>
       <el-button
         v-if="show_remove_btn"
         icon="el-icon-delete-solid"
         size="mini"
-        @click="remove"
-        >删除</el-button
-      >
+        @click="remove">删除</el-button>
     </div>
   </div>
 </template>
@@ -136,7 +122,11 @@ export default {
       else {
         this.checkedNodes = this.$refs.tree.getCheckedNodes();
       }
+      this.$emit("checkChange",this.checkedNodes);
     },
+    setCheckedKeys(keys){
+      this.$refs.tree.setCheckedKeys(keys,true);
+    }
   },
   components: {
     "el-tree2": Tree2

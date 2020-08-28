@@ -22,14 +22,13 @@
             <role-select type="edit" :form-data="editFormData" @submitSuccess="submitSuccess"></role-select>
         </el-dialog>
     </div>
-
 </template>
 
 <script>
-    import RoleSelect from "./Form/RoleSelect";
+    import RoleSelect from "./Form/index";
 
     export default {
-        name: "index",
+        name: "RoleManagement",
         data(){
             return{
                 form:{},
