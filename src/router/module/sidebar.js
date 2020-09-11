@@ -89,8 +89,8 @@ const sidebar = {
         meta:{title:"系统管理"},
         icon: 'el-icon-setting',
         children: [{
-            name: "roleMangement",
-            path: "roleMangement",
+            name: "RoleManagement",
+            path: "RoleManagement",
             meta:{title:"角色管理"},
             component:()=>import('@/views/bms/RoleManagement')
         },{

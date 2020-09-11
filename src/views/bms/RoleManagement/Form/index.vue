@@ -55,11 +55,7 @@
         data(){
             return {
                 peopleDialogVisible:false,
-                rules:{
-                    roleName:[
-                        {required:true,message:"请填入角色名称",trigger:"blur"}
-                    ]
-                }
+
             }
         },
         methods:{

@@ -35,28 +35,23 @@
         </div>
         <el-drawer title="高级搜索"
                 :visible.sync="drawer"
-                direction="ttb">
-            <div class="drawerContent" style="margin-top: -25px">
-                <el-row :gutter="10">
-                    <el-col :md="8" :offset="4"><el-input v-model="seniorKeyWords.knowName"><template slot="prepend">知识名称</template></el-input></el-col>
-                    <el-col :md="8"><el-input v-model="seniorKeyWords.knowCode"><template slot="prepend">知识编号</template></el-input></el-col>
-                </el-row>
-                <el-row>
-                    <el-col :md="8" :offset="4">
-                        标签选择：
-                        <knowledge-labels-input
-                                v-model="seniorKeyWords.selectedLabels"
-                                :data="[]"
-                                :classificationid="classificationid"/>
-                    </el-col>
-
-                </el-row>
-                <el-row style="margin-top:5px">
-                    <el-col :md="4" :offset="21">
+                direction="rtl">
+            <div>
+                <el-form  :model="seniorKeyWords" label-width="80px" style="text-align: center">
+                    <el-form-item label="知识名称">
+                        <el-input v-model="seniorKeyWords.knowName" style="width:90%"></el-input>
+                    </el-form-item>
+                    <el-form-item label="知识编号">
+                        <el-input v-model="seniorKeyWords.knowCode" style="width:90%"></el-input>
+                    </el-form-item>
+                    <el-form-item label="标签选择">
+                        <cat-tree-select v-model="seniorKeyWords.selectedLabels" :props="treeSelectSettings" :data="seniorKeyWords.labels" multiple size="mini" style="width:90%"></cat-tree-select>
+                    </el-form-item>
+                    <el-form-item style="float: right;margin-right: 20px">
                         <el-button @click="drawer = false">取 消</el-button>
                         <el-button type="primary" @click="seniorSearch()" :loading="seniorSearchLoading">{{ seniorSearchLoading ? '查询中 ...' : '确 定' }}</el-button>
-                    </el-col>
-                </el-row>
+                    </el-form-item>
+                </el-form>
             </div>
 
         </el-drawer>
@@ -120,6 +115,7 @@
     import _ from "lodash";
     import {fetchCategoryByNodeId} from "@/api/knowledgeManagement.js";
     import KnowledgeLabelsInput from '@/components/Input/KnowledgeLabelsInput'
+    import CatTreeSelect from "@/components/CatTreeSelect";
 
     const rootUrl = '/api4/app/authcenter/api/categoryTree/';
 
@@ -150,39 +146,12 @@
                         method:"post"
                     }
                 },
-                treeData:[{
-                    id: 1,
-                    name: '知识目录',
-                    type:"root",
-                    children: [{
-                        id: 2,
-                        name: "机械产品知识库",
-                        type:"repository",
-                        showCheckbox:true,
-                        children: [{
-                            id: 3,
-                            type:"catalog",
-                            name: "设计知识",
-
-                        }, {
-                            id: 4,
-                            name:"产品分类",
-                            type:"sort",
-
-                            children:[{
-                                id: 5,
-                                type:"catalog",
-                                name: "目录一",
-
-                            },{
-                                id: 6,
-                                type:"catalog",
-                                name: "目录二",
-
-                            }]
-                        }]
-                    }]
-                }],
+                treeSelectSettings:{
+                    key:"id",
+                    label:"name",
+                    children:"datas"
+                },
+                treeSelectData:[],
                 tableSettings: {
                     radio:false,//是否单选
                     checkbox: true,//是否多选，单选和多选同一时间只能存在一个
@@ -238,6 +207,7 @@
             },
             treeNodeClick({data,node})
             {
+                console.log(JSON.stringify(data.labelInfo));
                 this.classificationid = data.id;
                 this.seniorKeyWords.labels = data.labelInfo;
                 let temp = {
@@ -302,7 +272,7 @@
                         keyword:this.keywords,//搜索-keyword
                         name:this.seniorKeyWords.knowName,//搜索-知识名称
                         code:this.seniorKeyWords.knowCode,//搜索-知识编码
-                        labels:this.seniorKeyWords.selectedLabelIds.join(),//
+                        labels:"",//
                         createdateMin:"",//固定
                         createdateMax:""//固定
                     }
@@ -349,33 +319,13 @@
                         keyword:"",//搜索-keyword
                         name:this.seniorKeyWords.knowName,//搜索-知识名称
                         code:this.seniorKeyWords.knowCode,//搜索-知识编码
-                        labels:this.seniorKeyWords.selectedLabelIds,//
+                        labels:_.map(this.seniorKeyWords.selectedLabels, 'id').join(),//
                         createdateMin:"",//固定
                         createdateMax:""//固定
                     }
                 };
+                console.log(temp)
                 this.loadTableData(temp);
-            },
-            tagClose(tag){
-                let filterTags = this.seniorKeyWords.selectedLabels.filter(d=>{
-                    return d.id!=tag.id;
-                })
-                this.$set(this.seniorKeyWords,"selectedLabels",filterTags);
-            },
-            tagClick(tag){
-                let temp = [tag];
-                console.log(temp);
-                let selected = [];
-                if(this.seniorKeyWords.selectedLabels.length)
-                {
-                    selected = _.unionBy(temp,this.seniorKeyWords.selectedLabels,"id");
-                }
-                else
-                {
-                    selected = temp;
-                }
-                console.log(selected)
-                this.$set(this.seniorKeyWords,"selectedLabels",selected);
             },
             handleExceed(files, fileList) {
                 this.$message.warning(`每次只能上传1个文件，当前共选择了 ${files.length + fileList.length} 个文件`);
@@ -403,7 +353,8 @@
         mounted() {
         },
         components:{
-            KnowledgeLabelsInput
+            KnowledgeLabelsInput,
+            CatTreeSelect
         }
     }
 </script>

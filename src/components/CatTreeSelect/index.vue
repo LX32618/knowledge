@@ -51,7 +51,7 @@
           type="info"
           @close="deleteTag($event, checkedKeys[0])"
           disable-transitions>
-          <span class="cat-tree-select__tags-text">{{ checkedNodes[0].label }}</span>
+          <span class="cat-tree-select__tags-text">{{ checkedNodes[0][props.label ? props.label: 'label'] }}</span>
         </el-tag>
         <el-tag
           v-if="checkedKeys.length > 1"
@@ -71,7 +71,7 @@
           type="info"
           @close="deleteTag($event, item)"
           disable-transitions>
-          <span class="cat-tree-select__tags-text">{{ checkedNodes[index].label }}</span>
+          <span class="cat-tree-select__tags-text">{{ checkedNodes[index][props.label ? props.label: 'label'] }}</span>
         </el-tag>
       </transition-group>
       <!-- 搜索输入框 (多选) -->
