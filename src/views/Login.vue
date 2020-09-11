@@ -76,6 +76,12 @@ export default {
           }).catch(() => {
             this.isLoading = false
           })
+
+          this.$store.dispatch('routerMenu/getRouterMenu',"F36A946243D34506A6BE625412739725").then(() => {
+          }).catch(() => {
+
+          })
+
         } else {
           this.$error('请输入账号和密码')
           return false

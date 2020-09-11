@@ -30,15 +30,6 @@
         },
         data(){
             return {
- /*               treeSettings:{
-                    check_strictly:false,
-                    default_expand_all:false,
-                    show_checkbox:true,
-                    show_radio:false,
-                    expand_on_click_node:true,
-                    right_click:false,
-                    default_checked_keys:[]
-                },*/
                 treeData:[
                     {
                         id:"szzx",

@@ -42,6 +42,8 @@ export default [
 
       const user = users.find(item => item.username === username)
 
+
+
       if (!user) {
         return {
           status: 'fail',

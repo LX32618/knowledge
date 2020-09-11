@@ -24,21 +24,23 @@
 </template>
 
 <script>
-    import {sidebar} from "@/router/module/sidebar"
+    //import {sidebar} from "@/router/module/sidebar"
     import vHeader from "./components/Header"
-
 
     export default {
         name: "LayOut",
         data(){
             return {
                 defaultActive:this.$route.name,
-                basePath:sidebar.path,
-                items:sidebar.items
+                basePath:this.$store.state.routerMenu.sidebar.path,
+                items:this.$store.state.routerMenu.sidebar.children
             };
         },
         components:{
             vHeader
+        },
+        mounted() {
+            console.log(this.$store.state.routerMenu.sidebar);
         }
     }
 </script>

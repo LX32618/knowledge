@@ -1,24 +1,24 @@
 <template>
   <div v-if="item.children">
     <el-submenu :index="item.name">
-      <template slot="title"
-        ><i v-if="item.icon" :class="item.icon"></i
-        >{{ item.meta.title }}</template
-      >
+      <template slot="title">
+        <i v-if="item.icon" :class="item.icon"></i>
+        {{ item.meta.title }}
+      </template>
       <cs-sideitem
         v-for="child in item.children"
         :item="child"
         :basePath="basePath"
-        :key="child.name"
-      ></cs-sideitem>
+        :key="child.name">
+      </cs-sideitem>
     </el-submenu>
   </div>
 
-  <router-link v-else :to="resolvePath(item.path)"
-    ><el-menu-item :index="item.name">{{
-      item.meta.title
-    }}</el-menu-item></router-link
-  >
+  <router-link v-else :to="resolvePath(item.path)">
+    <el-menu-item :index="item.name">
+      {{item.meta.title }}
+    </el-menu-item>
+  </router-link>
 </template>
 
 <script>

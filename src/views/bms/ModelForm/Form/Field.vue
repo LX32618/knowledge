@@ -269,7 +269,6 @@
               this.showDictionary = !this.showDictionary;
             },
             toggleBrowseBtn(){
-                console.log(this.data.htmlType);
                 let data = {
                     page:this.browseBtnTableSettings.currentPage,
                     rows:this.browseBtnTableSettings.pageSize,

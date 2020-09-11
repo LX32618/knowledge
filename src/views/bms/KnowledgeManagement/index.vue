@@ -1,5 +1,5 @@
 <template>
-    <div class="knowmgt box">
+    <div class="knowmgt box" v-loading="loading">
         <div class="knowmgt sidebar">
             <cs-lazytree ref="lazytree" :settings="treeSettings" :dataFormat="treeDataFormat" @treeNodeClick="treeNodeClick"></cs-lazytree>
         </div>
@@ -7,7 +7,6 @@
             <cs-table ref="tb"
                       :settings="tableSettings"
                       :table-data="tableData"
-                      @currentChange="currentChange"
                       @selectionChange="selectionChange"
                       @pageSizeChange="pageSizeChange">
                 <template v-slot:horizontalSlot>
@@ -41,6 +40,16 @@
                 <el-row :gutter="10">
                     <el-col :md="8" :offset="4"><el-input v-model="seniorKeyWords.knowName"><template slot="prepend">知识名称</template></el-input></el-col>
                     <el-col :md="8"><el-input v-model="seniorKeyWords.knowCode"><template slot="prepend">知识编号</template></el-input></el-col>
+                </el-row>
+                <el-row>
+                    <el-col :md="8" :offset="4">
+                        标签选择：
+                        <knowledge-labels-input
+                                v-model="seniorKeyWords.selectedLabels"
+                                :data="[]"
+                                :classificationid="classificationid"/>
+                    </el-col>
+
                 </el-row>
                 <el-row style="margin-top:5px">
                     <el-col :md="4" :offset="21">
@@ -108,12 +117,18 @@
 </template>
 
 <script>
+    import _ from "lodash";
+    import {fetchCategoryByNodeId} from "@/api/knowledgeManagement.js";
+    import KnowledgeLabelsInput from '@/components/Input/KnowledgeLabelsInput'
+
     const rootUrl = '/api4/app/authcenter/api/categoryTree/';
 
     export default {
         name: "KonwledgeManagement",
         data(){
             return{
+                classificationid:"",
+                loading:false,
                 drawer:false,
                 seniorSearchLoading:false,
                 importDialogVisible:false,
@@ -180,11 +195,11 @@
                         {prop: "id", label: "id", sortable: false, visible: false},
                         {prop: "name", label: "名称", sortable: true},
                         {prop: "code", label: "编号", sortable: true},
-                        {prop: "keyword", label: "关键字", sortable: true},
+                        {prop: "keyWord", label: "关键字", sortable: true},
                         {prop: "tag", label: "标签", sortable: true},
                         {prop: "sort", label: "知识分类", sortable: true},
                         {prop: "description", label: "描述", sortable: true},
-                        {prop: "createdate", label: "创建时间", sortable: true},
+                        {prop: "createDate", label: "创建时间", sortable: true},
                         {prop: "creator", label: "创建人", sortable: true}
                     ]
                 },
@@ -192,7 +207,9 @@
                 tableSelectData:[],
                 seniorKeyWords:{
                     knowName:"",
-                    knowCode:""
+                    knowCode:"",
+                    labels:[],
+                    selectedLabels:[]
                 },
                 shareForm:{}
             }
@@ -221,26 +238,144 @@
             },
             treeNodeClick({data,node})
             {
+                this.classificationid = data.id;
+                this.seniorKeyWords.labels = data.labelInfo;
+                let temp = {
+                    page:this.tableSettings.currentPage,
+                    rows:this.tableSettings.pageSize,
+                    userId:"",
+                    condition:{
+                        auditing:"1",//固定
+                        classification:data.id,//左侧节点id
+                        sort:"",//
+                        order:"",//
+                        name:"",//搜索-知识名称
+                        code:"",//搜索-知识编码
+                        keyword:"",//搜索-keyword
+                        labels:"",//
+                        createdateMin:"",//固定
+                        createdateMax:""//固定
+                    }
+                };
+                this.loadTableData(temp);
                 this.$set(this, 'clickData', data);
             },
-            currentChange(val){//行单选事件
-
+            loadTableData(option){
+                this.loading = true;
+                fetchCategoryByNodeId(option).then(resp=>{
+                    this.$set(this.tableSettings,"total",resp.content.total);
+                    let datas = [];
+                    resp.content.datas.forEach(d=>{
+                        let data = {};
+                        data.id = d.knowledgeBase.id;
+                        data.name = d.knowledgeBase.name;
+                        data.code = d.knowledgeBase.code;
+                        data.keyWord = d.knowledgeBase.keyword;
+                        data.tag = _.map(d.knowledgeBase.labelsEnt, 'name').join();
+                        data.sort = d.knowledgeBase.classificationEnt.categoryname;
+                        data.description = d.knowledgeBase.describe;
+                        data.createDate = d.knowledgeBase.createDate;
+                        data.creator = d.knowledgeBase.creatorEnt.username;
+                        datas.push(data);
+                    })
+                    this.$set(this,"tableData",datas);
+                    this.loading = false;
+                }).catch((msg)=>{
+                    this.loading = false;
+                    this.$error(msg);
+                });
             },
             selectionChange(val){//行多选事件
                 this.$set(this,"tableSelectData",val);
             },
             pageSizeChange({page,rows})//每页显示数量、页码变化
             {
-
+                let temp = {
+                    page:page,
+                    rows:rows,
+                    userId:"",
+                    condition:{
+                        auditing:"1",//固定
+                        classification:this.clickData.id,//左侧节点id
+                        sort:"",//
+                        order:"",//
+                        keyword:this.keywords,//搜索-keyword
+                        name:this.seniorKeyWords.knowName,//搜索-知识名称
+                        code:this.seniorKeyWords.knowCode,//搜索-知识编码
+                        labels:this.seniorKeyWords.selectedLabelIds.join(),//
+                        createdateMin:"",//固定
+                        createdateMax:""//固定
+                    }
+                };
+                this.loadTableData(temp);
             },
             remove(){
 
             },
             search(){
-
+                this.$set(this.seniorKeyWords,"knowName","");
+                this.$set(this.seniorKeyWords,"knowCode","");
+                this.$set(this.seniorKeyWords,"selectedLabelIds",[]);
+                let temp = {
+                    page:this.tableSettings.currentPage,
+                    rows:this.tableSettings.pageSizes,
+                    userId:"",
+                    condition:{
+                        auditing:"1",//固定
+                        classification:this.clickData.id,//左侧节点id
+                        sort:"",//
+                        order:"",//
+                        keyword:this.keywords,//搜索-keyword
+                        name:"",//搜索-知识名称
+                        code:"",//搜索-知识编码
+                        labels:"",//
+                        createdateMin:"",//固定
+                        createdateMax:""//固定
+                    }
+                };
+                this.loadTableData(temp);
             },
             seniorSearch(){
-
+                this.keywords = "";
+                let temp = {
+                    page:this.tableSettings.currentPage,
+                    rows:this.tableSettings.pageSizes,
+                    userId:"",
+                    condition:{
+                        auditing:"1",//固定
+                        classification:this.clickData.id,//左侧节点id
+                        sort:"",//
+                        order:"",//
+                        keyword:"",//搜索-keyword
+                        name:this.seniorKeyWords.knowName,//搜索-知识名称
+                        code:this.seniorKeyWords.knowCode,//搜索-知识编码
+                        labels:this.seniorKeyWords.selectedLabelIds,//
+                        createdateMin:"",//固定
+                        createdateMax:""//固定
+                    }
+                };
+                this.loadTableData(temp);
+            },
+            tagClose(tag){
+                let filterTags = this.seniorKeyWords.selectedLabels.filter(d=>{
+                    return d.id!=tag.id;
+                })
+                this.$set(this.seniorKeyWords,"selectedLabels",filterTags);
+            },
+            tagClick(tag){
+                let temp = [tag];
+                console.log(temp);
+                let selected = [];
+                if(this.seniorKeyWords.selectedLabels.length)
+                {
+                    selected = _.unionBy(temp,this.seniorKeyWords.selectedLabels,"id");
+                }
+                else
+                {
+                    selected = temp;
+                }
+                console.log(selected)
+                this.$set(this.seniorKeyWords,"selectedLabels",selected);
             },
             handleExceed(files, fileList) {
                 this.$message.warning(`每次只能上传1个文件，当前共选择了 ${files.length + fileList.length} 个文件`);
@@ -266,52 +401,9 @@
             }
         },
         mounted() {
-            this.tableData = [{
-                id:1,
-                name: 'test1',
-                code:"K2020010638703",
-                sort:'产品知识目录',
-                tag: '',
-                description:'',
-                createdate: '2016-05-02',
-                creator: '李书洋',
-            }, {
-                id:2,
-                name: 'test2',
-                code:"K2020010638703",
-                sort:'产品知识目录',
-                tag: '',
-                description:'',
-                createdate: '2016-05-02',
-                creator: '李书洋',
-            },{
-                id:3,
-                name: 'test3',
-                code:"K2020010638703",
-                sort:'产品知识目录',
-                tag: '',
-                description:'',
-                createdate: '2016-05-02',
-                creator: '李书洋',
-            },{
-                id:4,
-                name: 'test4',
-                code:"K2020010638703",
-                sort:'产品知识目录',
-                tag: '',
-                description:'',
-                createdate: '2016-05-02',
-                creator: '李书洋',
-            },{
-                id:5,
-                name: 'test5',
-                code:"K2020010638703",
-                sort:'产品知识目录',
-                tag: '',
-                description:'',
-                createdate: '2016-05-02',
-                creator: '李书洋',
-            }];
+        },
+        components:{
+            KnowledgeLabelsInput
         }
     }
 </script>
