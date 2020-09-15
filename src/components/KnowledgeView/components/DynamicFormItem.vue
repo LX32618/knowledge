@@ -1,11 +1,13 @@
 <script>
 import request from '@/utils/request'
 import KnowledgeLabelsInput from '@/components/Input/KnowledgeLabelsInput'
+import DictSelect from '@/components/Input/DictSelect'
 import _ from 'lodash'
 
 export default {
   name: 'DynamicFormItem',
   components: {
+    DictSelect,
     KnowledgeLabelsInput
   },
   render (h) {
@@ -53,7 +55,7 @@ export default {
   methods: {
     renderComponent (h) {
       switch (this.field.type) {
-        case 'input':
+        case 0:
           return this.renderInput(h)
         case 'textarea':
           return this.renderTextArea(h)
@@ -65,11 +67,11 @@ export default {
           return this.renderRadio(h)
         case 'checkbox':
           return this.renderCheckbox(h)
-        case 'select':
-          return this.renderSelect(h)
+        case 3:
+          return this.renderDictSelect(h)
         case 'timePicker':
           return this.renderTimePicker(h)
-        case 'datePicker':
+        case 11:
           return this.renderDatePicker(h)
         case 'knowledgeLabelsInput':
           return this.renderKnowledgeLabelsInput(h)
@@ -126,16 +128,11 @@ export default {
         </el-checkbox-group>
       )
     },
-    renderSelect (h) {
+    renderDictSelect (h) {
       return (
-        <el-select
-          vModel={ this.dataModel }>
-          {
-            this.options.map(option => {
-              return <el-option value={ option.value } label={ option.label }></el-option>
-            })
-          }
-        </el-select>
+        <dict-select
+          vModel={ this.dataModel }
+          dictId={ this.field.options.fieldType }></dict-select>
       )
     },
     renderTimePicker (h) {

@@ -41,6 +41,11 @@ export default {
       models: {}
     }
   },
+  watch: {
+    data (val) {
+      this.generateModels()
+    }
+  },
   methods: {
     // 列样式
     colStyle (formConfig, field) {
@@ -50,6 +55,7 @@ export default {
     },
     // 生成表单模型
     generateModels () {
+      this.models = {}
       for (const field of this.fields) {
         this.models[field.key] = _.cloneDeep(field.options.defaultValue)
       }

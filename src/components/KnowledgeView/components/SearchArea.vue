@@ -99,8 +99,10 @@ export default {
         this.fields.push(...val.map(item => {
           return {
             ...item,
-            type: 'input',
-            options: {}
+            type: item.fieldInfo.htmlType,
+            options: {
+              fieldType: item.fieldInfo.fieldType
+            }
           }
         }))
       }

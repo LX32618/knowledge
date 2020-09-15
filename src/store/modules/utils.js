@@ -212,25 +212,25 @@ const state = {
   // 基础搜索配置
   baseFields: [
     {
-      type: 'input',
+      type: 0,
       name: '知识名称',
       key: 'name',
       options: {}
     },
     {
-      type: 'input',
+      type: 0,
       name: '知识编号',
       key: 'code',
       options: {}
     },
     {
-      type: 'input',
+      type: 0,
       name: '关键字',
       key: 'keyword',
       options: {}
     },
     {
-      type: 'datePicker',
+      type: 11,
       name: '创建日期',
       key: 'createDate',
       options: {
