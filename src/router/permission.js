@@ -28,6 +28,11 @@ const routerGuide = async (to, from, next) => {
       return next(`/login?redirect=${to.path}`)
     }
   }
+
+
+
+
+
   next()
 
 }

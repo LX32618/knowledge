@@ -4,12 +4,16 @@
     <el-table ref="tb"
               stripe
               border
+              :row-key="settings.rowKey"
               style="width: 100%;"
               :data="tableData"
               :height="settings.height"
+              :tree-props="{children: 'children'}"
+              :default-expand-all="settings.default_expand_all"
               @current-change="currentChange"
               @selection-change="selectionChange"
               @sort-change="sortChange"
+              @row-dblclick="rowDbClick"
               class="cs-table">
       <el-table-column
               v-if="settings.checkbox"
@@ -32,6 +36,7 @@
                 :prop="item.prop"
                 :label="item.label"
                 :min-width="item.width ? item.width : 50"
+                :width="item.width"
                 align="center">
           <template slot-scope="scope">
             <template v-if="item.formatter">{{
@@ -95,6 +100,9 @@
       sortChange({column, prop, order}) {
         this.$emit("sortChange",{sort:prop,order:order == "descending"?"desc":"asc"});
       },
+      rowDbClick(row, column, cell, event){
+        this.$emit("rowDbClick",{row:row,column:column,cell:cell,event:event});
+      }
     },
     mounted() {
     }

@@ -5,7 +5,11 @@ module.exports = {
     devServer: {
         proxy: {
             '/api1': {
+<<<<<<< HEAD
                 target: 'http://192.168.3.48:8083', // 刘珏先 api
+=======
+                target: 'http://192.168.3.99:8083', // 刘珏先 api
+>>>>>>> 7229304835657d23d078f4f7992f53f71f1ec107
                 changeOrigin: true,
                 pathRewrite: {
                     '^/api1': '/'
@@ -19,7 +23,7 @@ module.exports = {
                 }
             },
             '/api3': {
-                target: 'http://192.168.0.120:3000', // 夏添 api
+                target: 'http://192.168.3.120:3000', // 夏添 api
                 changeOrigin: true,
                 pathRewrite: {
                     '^/api3': '/api'
@@ -33,7 +37,7 @@ module.exports = {
                 }
             },
             '/api5': {
-                target: 'http://192.168.0.48:8083/',
+                target: 'http://192.168.3.48:8083/',
                 changeOrigin: true,
                 pathRewrite: {
                     '^/api5': '/'

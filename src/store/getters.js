@@ -1,3 +1,4 @@
+
 const getters = {
   userInfo: state => state.user.userInfo,
   token: state => state.user.token,
@@ -9,7 +10,9 @@ const getters = {
   defaultIcon: state => state.utils.defaultIcon,
   icons: state => state.utils.icons,
   historyStates: state => state.formMaking.historyStates,
-  stateIndex: state => state.formMaking.stateIndex
+  stateIndex: state => state.formMaking.stateIndex,
+  sidebar: state => state.routerMenu.sidebar,
+  sidebarRouter: state => state.routerMenu.sidebarRouter
 }
 
 export default getters

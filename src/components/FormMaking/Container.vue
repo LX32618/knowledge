@@ -276,7 +276,7 @@ export default {
       tempLoading:false,
       basicComponents,
       layoutComponents,
-      advanceComponents,
+   /*   advanceComponents,*/
       mainForm:{},
       subForm:[],
       savedModel:{},
@@ -413,7 +413,6 @@ export default {
                     })
                   }
                 })
-
               }
             });//剔除已经加载过的数据
             this.setJSON(loadedModel);//界面显示初始化的模板

@@ -6,15 +6,19 @@
         <div class="knowlist main">
             <el-tabs v-model="activeName" type="border-card" v-if="basicFormData.pid!='0' && Object.keys(basicFormData).length != 0" @tab-click="tabClick" :style="{height:'100%'}">
                 <el-tab-pane :key="0" label="基本信息" name="basic">
-                    <div>
+                    <div style="width:100%">
                         <cs-basic :settings="basicFormSettings" :form-data="basicFormData" @submitSuccess="submitSuccess"></cs-basic>
                     </div>
                 </el-tab-pane>
-                <el-tab-pane :key="1" v-if="basicFormData.type==2 && clickData.formId" label="模板配置" name="template" v-loading="tempLoading">
+                <el-tab-pane :key="1" v-if="basicFormData.type==2 && clickData.formId" label="模板配置" name="template" v-loading="tabLoading">
                     <cs-template :form-data="tempFormData" :category-id="basicFormData.id"></cs-template>
                 </el-tab-pane>
-                <el-tab-pane :key="2" v-if="basicFormData.type==2 && clickData.formId" label="列表配置" name="list">列表配置</el-tab-pane>
-                <el-tab-pane :key="3" v-if="basicFormData.type!=0" label="权限配置" name="permission">权限配置</el-tab-pane>
+                <el-tab-pane :key="2" v-if="basicFormData.type==2 && clickData.formId" label="列表配置" name="list" v-loading="tabLoading">
+                    <cs-table-config :config-data="configData"></cs-table-config>
+                </el-tab-pane>
+                <el-tab-pane :key="3" v-if="basicFormData.type!=0" label="权限配置" name="permission">
+                    <cs-authority-config></cs-authority-config>
+                </el-tab-pane>
                 <el-tab-pane :key="4" v-if="basicFormData.type==2 && clickData.formId" label="接口配置" name="interface">接口配置</el-tab-pane>
             </el-tabs>
       <!--      <cs-template :form-data="tempFormData"></cs-template>-->
@@ -29,10 +33,13 @@
 <script>
     import basic from "./Form/Basic"
     import template from "./Form/Template"
+    import tableConfig from "./Form/TableConfig"
+    import authorityConfig from "./Form/AuthorityConfig"
     import _ from 'lodash'
     import request from '@/utils/request'
     import {mapGetters} from "vuex";
-    import {fetchModel,fetchTestModel} from "@/api/formMaking.js"
+    import {fetchModel} from "@/api/formMaking.js"
+    import {fetchTableConfig} from "@/api/knowledgeList.js"
 
     const rootUrl = '/api4/app/authcenter/api/categoryTree/';
 
@@ -43,7 +50,7 @@
                 activeName:'basic',
                 clickData:{},
                 appendFormVisible:false,
-                tempLoading:false,
+                tabLoading:false,
                 fileList:[],
                 treeSettings:{
                     root_id:"0",//根节点id
@@ -71,7 +78,8 @@
                 basicFormData:{
                 },
                 appendFormData:{
-                }
+                },
+                configData:{}
             }
         },
         methods:{
@@ -81,7 +89,7 @@
                     let option = {
                         categeryId:this.basicFormData.id
                     };
-                    this.tempLoading = true;
+                    this.tabLoading = true;
                     fetchModel(option).then(resp=>{
                         if(resp.status == "success")
                         {
@@ -90,7 +98,27 @@
                         else{
                             this.$error(resp.msg);
                         }
-                        this.tempLoading = false;
+                        this.tabLoading = false;
+                    });
+                }
+                else if(tab.label == '列表配置')
+                {
+                    let option = {
+                        categoryId:this.basicFormData.id,
+                        formId:this.basicFormData.formId
+                    };
+                    this.tabLoading = true;
+                    fetchTableConfig(option).then(resp=>{
+                        if(resp.status == "success")
+                        {
+                            let  configData = _.cloneDeep(resp.content);
+                            configData.categoryId = this.basicFormData.id;
+                            this.configData = configData;
+                        }
+                        else{
+                            this.$error(resp.msg);
+                        }
+                        this.tabLoading = false;
                     });
                 }
             },
@@ -218,7 +246,9 @@
         },
         components:{
             "cs-basic":basic,
-            "cs-template":template
+            "cs-template":template,
+            "cs-table-config":tableConfig,
+            "cs-authority-config":authorityConfig
         },
         computed: {
             ...mapGetters([
@@ -254,7 +284,7 @@
         flex-basis: 15%;
     }
     .knowlist.main{
-        flex-basis:85%;
+        flex-basis:84%;
     }
     .el-tabs--border-card{
         width:100%;

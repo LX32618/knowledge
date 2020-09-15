@@ -6,29 +6,29 @@ const sidebar = {
     redirect:{name:"Keywords"},
     items: [{
         name: "Setting",
-        meta:{title:"设置中心",paths:[]},
+        meta:{title:"设置中心"},
         icon: 'el-icon-setting',
         children: [{
             name: "Basic",
-            meta:{title:"基础设置",paths:[]},
+            meta:{title:"基础设置"},
             children: [{
                 name: 'Keywords',
-                path: "keywords",
-                meta:{title:"检索关键字统计",paths:[]},
+                path: "Keywords",
+                meta:{title:"检索关键字统计"},
                 component:()=>import('@/views/Home')
             }, {
                 name: 'Interface',
-                path: "interface",
+                path: "Interface",
                 meta:{title:"接口测试"},
-                component:()=>import('@/views/About')
+                component:()=>import('@/views/Home')
             },{
                 name: 'Dictionary',
-                path: "dictionary",
+                path: "Dictionary",
                 meta:{title:"字典数据"},
                 component:()=>import('@/views/bms/DictionaryTag/Dictionary')
             },{
-                name: 'Tag',
-                path: "tag",
+                name: '标签管理',
+                path: "Tag",
                 meta:{title:"标签管理"},
                 component:()=>import('@/views/bms/DictionaryTag/Tag')
             }]
@@ -37,33 +37,32 @@ const sidebar = {
             meta:{title:"知识库设置"},
             children: [{
                 name: 'RationalView',
-                path: "rationalview",
+                path: "RationalView",
                 meta:{title:"标准关系视图"},
                 component:()=>import('@/views/Home')
             }, {
                 name: 'KnowledgeManagement',
-                path: "knowledgemanagement",
+                path: "KnowledgeManagement",
                 meta:{title:"知识管理"},
                 component:()=>import('@/views/bms/KnowledgeManagement')
             }, {
                 name: 'KnowledgeList',
-                path: "knowledgelist",
+                path: "KnowledgeList",
                 meta:{title:"知识目录"},
                 component:()=>import('@/views/bms/KnowledgeList'),
 
             }, {
                 name: 'KonwledgeModel',
-                path: "konwledgemodel",
                 meta:{title:"知识模型"},
                 children:[
                     {
                         name: "ModelForm",
-                        path: "modelform",
+                        path: "ModelForm",
                         meta:{title:"模型表单"},
                         component:()=>import('@/views/bms/ModelForm')
                     },{
                         name: "BrowseButton",
-                        path: "browsebutton",
+                        path: "BrowseButton",
                         meta:{title:"浏览按钮"},
                         component:()=>import('@/views/bms/BrowseButton')
                     }
@@ -75,12 +74,12 @@ const sidebar = {
             meta:{title:"管理员设置"},
             children: [{
                 name: "SecretAdministrator",
-                path: "secretadministrator",
+                path: "SecretAdministrator",
                 meta:{title:"定密审核员"},
-                component:()=>import('@/views/About')
+                component:()=>import('@/views/Home')
             }, {
                 name: "KnowledgeAdministrator",
-                path: "knowledgeadministrator",
+                path: "KnowledgeAdministrator",
                 meta:{title:"知识管理员"},
                 component:()=>import('@/views/Home')
             }]
@@ -89,7 +88,22 @@ const sidebar = {
         name: 'System',
         meta:{title:"系统管理"},
         icon: 'el-icon-setting',
-        children: []
+        children: [{
+            name: "RoleManagement",
+            path: "RoleManagement",
+            meta:{title:"角色管理"},
+            component:()=>import('@/views/bms/RoleManagement')
+        },{
+            name: "PriorityManagement",
+            path: "PriorityManagement",
+            meta:{title:"权限管理"},
+            component:()=>import('@/views/bms/PriorityManagement')
+        },{
+            name: "MenuManagement",
+            path: "MenuManagement",
+            meta:{title:"导航菜单管理"},
+            component:()=>import('@/views/bms/MenuManagement')
+        }]
     }, {
         name: 'Audit',
         meta:{title:"安全审计"},
