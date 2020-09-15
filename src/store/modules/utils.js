@@ -1,3 +1,5 @@
+import { dateTime } from '@/filters'
+
 const secretLevels = [
   { value: 10, label: '非密' },
   { value: 20, label: '内部' },
@@ -8,79 +10,6 @@ const secretLevels = [
 const state = {
   // 密级
   secretLevels,
-  // 知识基础信息表单配置
-  baseFormConfig2: {
-    id: '0',
-    formName: '基础信息',
-    datas: [
-      {
-        fieldName: 'name',
-        displayName: '知识名称',
-        htmlType: 0,
-        fieldType: '',
-      },
-      {
-        fieldName: 'code',
-        displayName: '知识编码',
-        htmlType: 0,
-        fieldType: '',
-        disabled: true
-      },
-      {
-        fieldName: 'secretLevel',
-        displayName: '密级',
-        htmlType: 98,
-        fieldType: secretLevels,
-      },
-      {
-        fieldName: 'abbrev',
-        displayName: '缩略语',
-        htmlType: 0,
-        fieldType: '',
-      },
-      {
-        fieldName: 'classificationName',
-        displayName: '类别',
-        htmlType: 0,
-        fieldType: '',
-        disabled: true
-      },
-      {
-        fieldName: 'creatorName',
-        displayName: '创建人',
-        htmlType: 0,
-        fieldType: '',
-        disabled: true
-      },
-      {
-        fieldName: 'labelsEnt',
-        displayName: '标签',
-        htmlType: 99,
-        fieldType: '',
-      },
-      {
-        fieldName: 'createDate',
-        displayName: '创建时间',
-        htmlType: 11,
-        fieldType: 'YYYY-MM-DD hh:mm:ss',
-        disabled: true
-      },
-      {
-        fieldName: 'keyword',
-        displayName: '关键字',
-        htmlType: 0,
-        fieldType: '',
-        span: 24
-      },
-      {
-        fieldName: 'describe',
-        displayName: '描述',
-        htmlType: 9,
-        fieldType: '',
-        span: 24
-      }
-    ]
-  },
   // 知识基础信息表单配置
   baseFormConfig: [
     {
@@ -231,6 +160,82 @@ const state = {
       model: 'describe',
       rules: [],
       options: {}
+    }
+  ],
+  // 知识基础信息列表配置
+  baseColumnsConfig: [
+    {
+      label: '序号',
+      key: 'index',
+      width: 50,
+      fixed: true
+    },
+    {
+      label: '操作',
+      key: 'option',
+      width: 200,
+    },
+    {
+      label: '知识名称',
+      key: 'name'
+    }, {
+      label: '知识编号',
+      key: 'code'
+    }, {
+      label: '目录',
+      key: 'classificationName'
+    }, {
+      label: '创建人',
+      key: 'creatorName'
+    }, {
+      label: '创建时间',
+      key: 'createDate',
+      width: 100,
+      formatter (row, index) {
+        return dateTime(row.createDate)
+      }
+    }, {
+      label: '关键字',
+      key: 'keyword'
+    }, {
+      label: '标签',
+      key: 'labels',
+      formatter (row, index) {
+        const labels = row.labelsEnt
+        if (!labels || !Array.isArray(labels)) {
+          return ''
+        }
+        return labels.map(item => item.name).join(',')
+      }
+    }
+  ],
+  // 基础搜索配置
+  baseFields: [
+    {
+      type: 'input',
+      name: '知识名称',
+      key: 'name',
+      options: {}
+    },
+    {
+      type: 'input',
+      name: '知识编号',
+      key: 'code',
+      options: {}
+    },
+    {
+      type: 'input',
+      name: '关键字',
+      key: 'keyword',
+      options: {}
+    },
+    {
+      type: 'datePicker',
+      name: '创建日期',
+      key: 'createDate',
+      options: {
+        type: 'daterange'
+      }
     }
   ],
   defaultIcon: 'fa fa-book',

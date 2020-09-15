@@ -39,6 +39,14 @@ export default {
     currentKnowledgeBase: {
       type: Object,
       default: () => ({})
+    },
+    searchColumns: {
+      type: Array,
+      default: () => ({})
+    },
+    preView: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -53,34 +61,7 @@ export default {
         labelWidth: 100,
         size: 'small'
       },
-      fields: [
-        {
-          type: 'input',
-          name: '知识名称',
-          key: 'name',
-          options: {}
-        },
-        {
-          type: 'input',
-          name: '知识编号',
-          key: 'code',
-          options: {}
-        },
-        {
-          type: 'input',
-          name: '关键字',
-          key: 'keyword',
-          options: {}
-        },
-        {
-          type: 'datePicker',
-          name: '创建日期',
-          key: 'createDate',
-          options: {
-            type: 'daterange'
-          }
-        }
-      ],
+      fields: [],
       labels: [],
       isLoading: false,
       isSubscribe: false,
@@ -89,7 +70,8 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'userInfo'
+      'userInfo',
+      'baseFields'
     ])
   },
   watch: {
@@ -98,6 +80,7 @@ export default {
         labels: []
       }
       this.isSubscribe = val.isSubscribe
+      this.fields = [...this.baseFields]
       if (val.type === 2 && val.labelInfo && val.labelInfo.length > 0) {
         const labelInputConfig = {
           type: 'knowledgeLabelsInput',
@@ -108,20 +91,27 @@ export default {
             options: val.labelInfo
           }
         }
-        const index = this.fields.findIndex(field => field.key === 'labels')
-        this.$nextTick(() => {
-          index >= 0 ? this.fields.splice(index, 1, labelInputConfig) : this.fields.push(labelInputConfig)
-        })
-      } else {
-        const index = this.fields.findIndex(field => field.key === 'labels')
-        index >= 0 && this.fields.splice(index, 1)
+        this.fields.push(labelInputConfig)
+      }
+    },
+    searchColumns (val) {
+      if (val && val.length > 0) {
+        this.fields.push(...val.map(item => {
+          return {
+            ...item,
+            type: 'input',
+            options: {}
+          }
+        }))
       }
     }
   },
   methods: {
     // 点击查询按钮，触发表单提交
     handleSearch () {
+      if (this.preView) return
       this.$refs['dynamic-form'].submitForm()
+      
     },
     // 表单提交，向上传递查询事件
     handleSumbit (val) {
@@ -129,6 +119,7 @@ export default {
     },
     // 重置
     handleReset () {
+      if (this.preView) return
       this.searchOption = {}
       this.$refs['dynamic-form'].resetForm()
     },
@@ -142,6 +133,7 @@ export default {
       //   }
       // })
       // window.open(routeData.href, '_blank')
+      if (this.preView) return
       this.$router.push({
         name: "knowledgeForm",
         params: {
@@ -152,6 +144,7 @@ export default {
     },
     // 订阅 / 取消订阅目录
     handleSubscribe () {
+      if (this.preView) return
       const id = this.selectedCategory.id
       const userId = this.userInfo.id
       const text = `${this.isSubscribe ? '取消' : ''}订阅`

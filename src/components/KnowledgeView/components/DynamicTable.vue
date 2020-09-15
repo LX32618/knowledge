@@ -5,7 +5,8 @@
       :label="column.label"
       :prop="column.key"
       :width="column.width"
-      :fixed="column.fixed">
+      :fixed="column.fixed"
+      :sortable="column.sortable ? 'custom' : false">
       <template slot-scope="scope">
         <slot :name="column.key" :scope="scope">
           {{ defaultDisplay(scope.row, scope.$index, column) }}
