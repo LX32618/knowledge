@@ -93,14 +93,17 @@ export default {
     ])
   },
   watch: {
-    selectedCategory (newValue) {
-      if (!newValue || !newValue.id) {
-        return
-      }
-      this.searchOption = {}
-      this.page = 1
-      this.rows = 10
-      this.updateKnowledges()
+    selectedCategory: {
+      handler (newValue) {
+        if (!newValue || !newValue.id) {
+          return
+        }
+        this.searchOption = {}
+        this.page = 1
+        this.rows = 10
+        this.updateKnowledges()
+      },
+      immediate: true
     }
   },
   methods: {
@@ -142,7 +145,10 @@ export default {
               if (item.isSearch) {
                 this.searchColumns.push({
                   key: `${item.formId}_${item.fieldInfo.fieldName}`,
-                  name: item.showName
+                  name: item.showName,
+                  fieldInfo: {
+                    ...item.fieldInfo
+                  }
                 })
               }
               return result
@@ -166,9 +172,12 @@ export default {
           }
           Object.keys(fieldMap).forEach(key => {
             const fields = fieldMap[key]
-            const mainFormData = item.formData.find(mainForm => mainForm.formId === key)
+            const mainFormData = item.formData.find(form => {
+              if (!form || !form.mainForm) return false
+              return form.mainForm.formId === key
+            })
             fields.forEach(field => {
-              result[`${key}_${field}`] = mainFormData ? mainFormData[field] : null
+              result[`${key}_${field}`] = (mainFormData && mainFormData.mainForm) ? mainFormData.mainForm[field] : null
             })
           })
           return result
