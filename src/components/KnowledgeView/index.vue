@@ -134,7 +134,7 @@ export default {
           const formData = model.formData
           formData.forEach(mainForm => {
             fieldMap[mainForm.formId] = []
-            this.columns.push(...mainForm.fieldData.map(item => {
+            this.columns.push(...mainForm.fieldData.filter(item => item.isShow).map(item => {
               const result = {
                 ...item,
                 key: `${item.formId}_${item.fieldInfo.fieldName}`,

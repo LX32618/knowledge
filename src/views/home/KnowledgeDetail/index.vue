@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <tool-bar />
+    <tool-bar :isSubscribe.sync="isSubscribe" />
     <!-- <form-making upload preview generate-code generate-json clearable></form-making> -->
     <div v-loading="isLoading">
       <el-tabs v-if="formConfig" type="card">
@@ -64,7 +64,8 @@ export default {
       isLoading: false,
       baseData: {},
       formData: {},
-      formConfig: undefined
+      formConfig: undefined,
+      isSubscribe: false
     }
   },
   methods: {

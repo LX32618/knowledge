@@ -1,6 +1,6 @@
 <template>
   <el-form-item
-    :label="table ? '' : widget.name"
+    :label="table || widget.type == 'text' ? '' : widget.name"
     :prop="widget.model"
     :label-width="table ? '0px' : undefined"
     :style="{
@@ -266,7 +266,7 @@
     </template>
 
     <template v-if="widget.type == 'text'">
-      <h2>{{widget.title}}</h2>
+      <h2>{{widget.name}}</h2>
     </template>
 
     <template v-if="widget.type == 'secrectSelect'">

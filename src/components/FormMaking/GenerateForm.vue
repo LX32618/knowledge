@@ -68,7 +68,7 @@
                   </template>
                 </el-table-column>
               </el-table>
-              <el-button type="text" icon="el-icon-plus" @click="handleRowAppend(item)">添加</el-button>
+              <el-button v-if="edit" type="text" icon="el-icon-plus" @click="handleRowAppend(item)">添加</el-button>
             </div>
           </el-form-item>
         </template>
@@ -107,7 +107,7 @@ export default {
   components: {
     GenetateFormItem
   },
-  props: ['data', 'remote', 'value', 'insite', 'edit','preview'],
+  props: ['data', 'remote', 'value', 'insite', 'edit', 'preview'],
   data () {
     return {
       models: {},
@@ -181,6 +181,7 @@ export default {
     },
     reset () {
       this.$refs.generateForm.resetFields()
+      this.generateModle(this.data.list)
     },
     onInputChange (value, field) {
       this.$emit('on-change', field, value, this.models)

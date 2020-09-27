@@ -21,39 +21,20 @@
             >
           </template>
         </el-button-group>
-        <!-- <form-making upload preview generate-code generate-json clearable>
-          <template slot="action">
-          </template>
-        </form-making> -->
         <!-- 基础信息表 -->
-        <!-- <dynamic-form
+        <form-generate 
           v-if="showBase"
           ref="baseForm"
-          :config="baseFormConfig2"
-          :formData="baseData"
-          :isViewMode="isViewMode"
-          @save="handleSubFormSave"
-        ></dynamic-form> -->
-        <!-- 主表 -->
-        <!-- <dynamic-form
+          :data="widgetForm"
+          :value="baseData"
+          :edit="!isViewMode"></form-generate>
+         <!-- 实体表单 -->
+         <form-generate
           ref="mainForm"
-          :config="convertUpperFieldName(formConfig)"
-          :formData="formData.mainForm || {}"
-          :isViewMode="isViewMode"
-          @save="handleSubFormSave"
-        ></dynamic-form> -->
-        <!-- 子表 -->
-        <!-- <html-form></html-form> -->
-        <!-- <dynamic-form
-          v-for="subForm of formConfig.subForm"
-          :key="subForm.id"
-          :ref="`Form-${subForm.id}`"
-          :config="convertUpperFieldName(subForm)"
-          :formData="getSubFormDataById(subForm.formId)"
-          :isViewMode="isViewMode"
-          @save="handleSubFormSave"
-        ></dynamic-form> -->
-        <form-generate :data="widgetForm" :value="baseData" :edit="!isViewMode"></form-generate>
+          :data="mainFormConfig"
+          :value="mainValue"
+          :edit="!isViewMode">
+         </form-generate>
       </el-card>
     </el-col>
     <el-col :offset="1" :span="4">
@@ -70,19 +51,14 @@
 import { mapGetters } from 'vuex'
 import { saveData, saveFormData } from '@/api/knowledgeData'
 import KnowledgePush from './components/KnowledgePush'
-import DynamicForm from '@/components/Form/DynamicForm'
-import HtmlForm from '@/components/Form/HtmlForm'
-import DynamicInput from '@/components/Input/DynamicInput'
 import KnowledgeShareForm from './components/KnowledgeShareForm'
+import _ from 'lodash'
 
 export default {
   name: 'KnoweledgeDetailContentContainer',
   components: {
     KnowledgePush,
     KnowledgeShareForm,
-    DynamicForm,
-    HtmlForm,
-    DynamicInput
   },
   props: {
     formConfig: Object,
@@ -107,24 +83,24 @@ export default {
           size: 'small'
         },
       },
+      mainValue: {}
     }
   },
   computed: {
     ...mapGetters([
       'baseFormConfig',
-      'baseFormConfig2',
       'userInfo'
-    ])
+    ]),
+    mainFormConfig () {
+      return this.convertFormConfig(this.formConfig)
+    }
   },
   methods: {
-    convertUpperFieldName (config) {
-      if (!config || !config.datas) {
-        return config
+    convertFormConfig (config) {
+      if (config && config.datas && config.datas[0] && config.datas[0].content) {
+        return JSON.parse(config.datas[0].content)
       }
-      config.datas.forEach(field => {
-        field.fieldName = field.fieldName.toUpperCase()
-      })
-      return config
+      return {}
     },
     getSubFormDataById (id) {
       const subFormData = this.formData.subForm.find(item => {
@@ -143,73 +119,66 @@ export default {
           creator: this.userInfo.id
         },
         mainFormData: {},
-        associatedFormData: []
+        subForms: []
       }
       Object.keys(this.editFormData).forEach(key => {
-        const value = this.editFormData[key]
-        if (key === '0') {
-          value.labels = value.labelsEnt.join(',')
+        const value = _.cloneDeep(this.editFormData[key])
+        if (key === 'base') {
+          value.labels = value.labels.join(',')
           knowledgeModel.knowledgeBase = value
-        } else if (key === this.formConfig.id) {
-          knowledgeModel.mainFormData = {
-            formId: key,
-            datas: value
-          }
         } else {
-          knowledgeModel.associatedFormData.push({
-            formId: key,
-            datas: value
+          knowledgeModel.mainFormData = {
+            formId: this.formConfig.id,
+            datas: {}
+          }
+          Object.keys(value).forEach(valueKey => {
+            if (valueKey.startsWith("table_") && valueKey.length === 38) {
+              const subFormKey = valueKey.split('_')[1]
+              const subFormData = {
+                formId: subFormKey,
+                datas: value[valueKey]
+              }
+              knowledgeModel.subForms.push(subFormData)
+            } else {
+              knowledgeModel.mainFormData.datas[valueKey] = value[valueKey]
+            }
           })
         }
       })
       return knowledgeModel
     },
-    save () {
+    async save () {
+      this.editFormData = {
+        base: {},
+        main: {}
+      }
       // 提交基础信息表
       if (this.showBase) {
-        this.$refs.baseForm.save()
+        this.editFormData.base = await this.$refs.baseForm.getData()
       }
       // 提交主表
-      this.$refs.mainForm.save()
-      // 提交子表
-      this.formConfig.subForm.forEach(subForm => {
-        const refs = this.$refs[`Form-${subForm.id}`]
-        if (refs && refs.length > 0) {
-          refs[0].save()
-        }
-      })
-      for (let key of Object.keys(this.editFormData)) {
-        if (!this.editFormData[key]) {
-          this.$error('输入有误，请检查')
-          return
-        }
-      }
-      this.saveButtonLoading = true
+      this.editFormData.main = await this.$refs.mainForm.getData()
+      console.log(this.editFormData)
+      // this.saveButtonLoading = true
       const knowledgeModel = this.createKnowledgeModel()
-      const saveHandler = this.showBase ? saveData : saveFormData
-      saveHandler(knowledgeModel).then(res => {
-        this.$success('保存成功')
-        this.isViewMode = true
-        this.saveButtonLoading = false
-        this.$emit('saveSuccess')
-      }).catch(() => {
-        this.saveButtonLoading = false
-      })
+      console.log(knowledgeModel)
+      // const saveHandler = this.showBase ? saveData : saveFormData
+      // saveHandler(knowledgeModel).then(res => {
+      //   this.$success('保存成功')
+      //   this.isViewMode = true
+      //   this.saveButtonLoading = false
+      //   this.$emit('saveSuccess')
+      // }).catch(() => {
+      //   this.saveButtonLoading = false
+      // })
     },
     cancel () {
       // 重置基础信息表
-      // if (this.showBase) {
-      //   this.$refs.baseForm.resetView()
-      // }
+      if (this.showBase) {
+        this.$refs.baseForm.reset()
+      }
       // 重置主表
-      // this.$refs.mainForm.resetView()
-      // 重置子表
-      // this.formConfig.subForm.forEach(subForm => {
-      //   const refs = this.$refs[`Form-${subForm.id}`]
-      //   if (refs && refs.length > 0) {
-      //     refs[0].resetView()
-      //   }
-      // })
+      this.$refs.mainForm.reset()
       this.isViewMode = true
     },
     share () {

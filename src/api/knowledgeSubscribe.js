@@ -2,6 +2,19 @@ import request from '@/utils/request'
 
 const rootUrl = '/api4/app/authcenter/api/knowledgeSubscribe/'
 
+// 是否订阅知识 / 目录
+export function isSubscribe (option) {
+  return request({
+    url: `${rootUrl}isSubscribe`,
+    method: 'post',
+    data: {
+      id: option.id,
+      type: option.type || '1', // 目录: 0 知识: 1
+      userId: option.userId
+    } 
+  })
+}
+
 // 订阅知识 / 目录
 export function subscribe (option) {
   return request({

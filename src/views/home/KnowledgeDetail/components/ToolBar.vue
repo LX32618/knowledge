@@ -5,7 +5,7 @@
         >首页</el-button
       >
       <el-button type="warning" icon="el-icon-star-off">收藏</el-button>
-      <el-button type="primary" icon="el-icon-s-claim" @click="handleSubscribe">{{ isSubscribe ? '取消订阅' : '订阅'}}</el-button>
+      <el-button type="primary" icon="el-icon-s-claim" @click="handleSubscribe" :loading="subscribeLoading">{{ isSubscribe ? '取消订阅' : '订阅'}}</el-button>
       <el-button type="danger" icon="el-icon-document-add">新建版本</el-button>
       <el-button type="info" icon="el-icon-document-copy">历史版本</el-button>
     </el-button-group>
@@ -14,12 +14,18 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { subscribe, cancelSubscribe } from '@/api/knowledgeSubscribe'
+import { isSubscribe, subscribe, cancelSubscribe } from '@/api/knowledgeSubscribe'
 
 export default {
   name: 'ToolBar',
-  props: {
-    isSubscribe: Boolean
+  // props: {
+  //   isSubscribe: Boolean
+  // },
+  data () {
+    return {
+      isSubscribe: false,
+      subscribeLoading: true
+    }
   },
   computed: {
     ...mapGetters([
@@ -35,31 +41,45 @@ export default {
       const id = this.$route.params.id
       const userId = this.userInfo.id
       const text = `${this.isSubscribe ? '取消' : ''}订阅`
+      this.subscribeLoading = true
       if (this.isSubscribe) {
         cancelSubscribe({
           ids: `${id}-0`,
           userId
         }).then(() => {
           this.isSubscribe = false
+          // this.$emit('update:isSubscribe', false)
           this.$success(`${text}成功`)
+          this.subscribeLoading = false
         }).catch(() => {
           this.$error(`${text}失败`)
+          this.subscribeLoading = false
         })
       } else {
         subscribe({
           id,
           userId,
-          type: '0'
         }).then(() => {
           this.isSubscribe = true
+          // this.$emit('update:isSubscribe', true)
           this.$success(`${text}成功`)
+          this.subscribeLoading = false
         }).catch(() => {
           this.$error(`${text}失败`)
+          this.subscribeLoading = false
         })
       }
     },
   },
-  mounted () { }
+  mounted () {
+    isSubscribe({
+      id: this.$route.params.id,
+      userId: this.userInfo.id
+    }).then(res => {
+      this.isSubscribe = res.content
+      this.subscribeLoading = false
+    })
+  }
 }
 </script>
 

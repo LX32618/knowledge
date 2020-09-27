@@ -14,7 +14,7 @@ const state = {
   baseFormConfig: [
     {
       type: 'text',
-      title: '基础信息',
+      name: '基础信息',
       options: {},
       rules: []
     },

@@ -82,6 +82,9 @@ export default {
       immediate: true
     },
     data () {
+      if (this.classificationid) {
+        return
+      }
       this.labels = this.convertLabelTree(this.data)
     }
   },
