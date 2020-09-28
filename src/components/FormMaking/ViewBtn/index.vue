@@ -23,7 +23,7 @@
                     </div>
                 </template>
             </cs-table>
-            <el-button type="primary" icon="el-icon-search" circle slot="reference" :disabled="disabled"  v-if="edit"></el-button>
+            <el-button type="primary" icon="el-icon-search" circle slot="reference" :disabled="disabled"  v-show="edit"></el-button>
         </el-popover>
         <el-tag v-for="tag in tagData"
                 :key="tag.id"

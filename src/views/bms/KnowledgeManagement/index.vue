@@ -1,14 +1,16 @@
 <template>
-    <div class="knowmgt box" v-loading="loading">
-        <div class="knowmgt sidebar">
+    <div class="knowmgtbox" v-loading="loading">
+        <div class="knowmgtsidebar">
             <cs-lazytree ref="lazytree" :settings="treeSettings" :dataFormat="treeDataFormat" @treeNodeClick="treeNodeClick"></cs-lazytree>
         </div>
-        <div class="knowmgt main" v-if="JSON.stringify(clickData) != '{}' && clickData.type != -1">
+        <div class="knowmgtmain" v-if="JSON.stringify(clickData) != '{}' && clickData.type != -1">
             <cs-table ref="tb"
                       :settings="tableSettings"
                       :table-data="tableData"
                       @selectionChange="selectionChange"
-                      @pageSizeChange="pageSizeChange">
+                      @pageSizeChange="pageSizeChange"
+                      @sortChange="sortChange"
+                        style="width: 100%">
                 <template v-slot:horizontalSlot>
                     <div class="knowmgt operationNav">
                         <el-button-group>
@@ -17,7 +19,7 @@
                             <el-button type="primary" v-if="clickData.type == 2" icon="element-icons el-custom-batchedit" size="mini">批量修改</el-button>
                             <el-button type="primary" v-if="clickData.type == 2" icon="element-icons el-custom-import" size="mini" @click="batchImport()">批量导入</el-button>
                             <el-button type="primary" icon="element-icons el-custom-share" size="mini" @click="batchShare()">批量分享</el-button>
-                            <el-button type="primary" icon="element-icons el-custom-export" size="mini">导出</el-button>
+                            <el-button type="primary" icon="element-icons el-custom-export" size="mini" @click="batchExport()">导出</el-button>
                         </el-button-group>
                         <div style="font-size: 12px">
                             <el-switch v-model="exportAttach" :width="30">
@@ -49,7 +51,7 @@
                     </el-form-item>
                     <el-form-item style="float: right;margin-right: 20px">
                         <el-button @click="drawer = false">取 消</el-button>
-                        <el-button type="primary" @click="seniorSearch()" :loading="seniorSearchLoading">{{ seniorSearchLoading ? '查询中 ...' : '确 定' }}</el-button>
+                        <el-button type="primary" @click="seniorSearch()">确 定</el-button>
                     </el-form-item>
                 </el-form>
             </div>
@@ -58,7 +60,7 @@
         <el-dialog title="批量导入" :visible.sync="importDialogVisible" :close-on-click-modal="false">
             <el-form label-width="80px">
                 <el-form-item label="1.下载模板">
-                    <el-link type="primary" :underline="false">点击下载知识导入模板</el-link>
+                    <el-link type="primary" :underline="false" @click.native.prevent="downloadTemp()">点击下载知识导入模板</el-link>
                 </el-form-item>
                 <el-form-item label="2.上传文件">
                     <el-upload ref="upload"
@@ -113,7 +115,7 @@
 
 <script>
     import _ from "lodash";
-    import {fetchCategoryByNodeId} from "@/api/knowledgeManagement.js";
+    import {fetchCategoryByNodeId,exportKnowExcel} from "@/api/knowledgeManagement.js";
     import KnowledgeLabelsInput from '@/components/Input/KnowledgeLabelsInput'
     import CatTreeSelect from "@/components/CatTreeSelect";
 
@@ -163,13 +165,13 @@
                     fields: [
                         {prop: "id", label: "id", sortable: false, visible: false},
                         {prop: "name", label: "名称", sortable: true},
-                        {prop: "code", label: "编号", sortable: true},
-                        {prop: "keyWord", label: "关键字", sortable: true},
-                        {prop: "tag", label: "标签", sortable: true},
-                        {prop: "sort", label: "知识分类", sortable: true},
-                        {prop: "description", label: "描述", sortable: true},
-                        {prop: "createDate", label: "创建时间", sortable: true},
-                        {prop: "creator", label: "创建人", sortable: true}
+                        {prop: "code", label: "编号"},
+                        {prop: "keyWord", label: "关键字"},
+                        {prop: "tag", label: "标签"},
+                        {prop: "categoryname", label: "知识分类", sortable: true},
+                        {prop: "description", label: "描述"},
+                        {prop: "createDate", label: "创建时间"},
+                        {prop: "creator", label: "创建人"}
                     ]
                 },
                 tableData:[],
@@ -207,7 +209,6 @@
             },
             treeNodeClick({data,node})
             {
-                console.log(JSON.stringify(data.labelInfo));
                 this.classificationid = data.id;
                 this.seniorKeyWords.labels = data.labelInfo;
                 let temp = {
@@ -217,8 +218,8 @@
                     condition:{
                         auditing:"1",//固定
                         classification:data.id,//左侧节点id
-                        sort:"",//
-                        order:"",//
+                        sort:"CREATEDATE",//
+                        order:"desc",//
                         name:"",//搜索-知识名称
                         code:"",//搜索-知识编码
                         keyword:"",//搜索-keyword
@@ -242,7 +243,7 @@
                         data.code = d.knowledgeBase.code;
                         data.keyWord = d.knowledgeBase.keyword;
                         data.tag = _.map(d.knowledgeBase.labelsEnt, 'name').join();
-                        data.sort = d.knowledgeBase.classificationEnt.categoryname;
+                        data.categoryname = d.knowledgeBase.classificationEnt.categoryname;
                         data.description = d.knowledgeBase.describe;
                         data.createDate = d.knowledgeBase.createDate;
                         data.creator = d.knowledgeBase.creatorEnt.username;
@@ -267,8 +268,8 @@
                     condition:{
                         auditing:"1",//固定
                         classification:this.clickData.id,//左侧节点id
-                        sort:"",//
-                        order:"",//
+                        sort:"CREATEDATE",//
+                        order:"desc",//
                         keyword:this.keywords,//搜索-keyword
                         name:this.seniorKeyWords.knowName,//搜索-知识名称
                         code:this.seniorKeyWords.knowCode,//搜索-知识编码
@@ -287,16 +288,16 @@
                 this.$set(this.seniorKeyWords,"knowCode","");
                 this.$set(this.seniorKeyWords,"selectedLabelIds",[]);
                 let temp = {
-                    page:this.tableSettings.currentPage,
-                    rows:this.tableSettings.pageSizes,
+                    page:1,
+                    rows:this.tableSettings.pageSize,
                     userId:"",
                     condition:{
                         auditing:"1",//固定
                         classification:this.clickData.id,//左侧节点id
-                        sort:"",//
-                        order:"",//
-                        keyword:this.keywords,//搜索-keyword
-                        name:"",//搜索-知识名称
+                        sort:"CREATEDATE",//
+                        order:"desc",//
+                        keyword:"",//搜索-keyword
+                        name:this.keywords,//搜索-知识名称
                         code:"",//搜索-知识编码
                         labels:"",//
                         createdateMin:"",//固定
@@ -306,16 +307,17 @@
                 this.loadTableData(temp);
             },
             seniorSearch(){
+                this.drawer = false;
                 this.keywords = "";
                 let temp = {
-                    page:this.tableSettings.currentPage,
-                    rows:this.tableSettings.pageSizes,
+                    page:1,
+                    rows:this.tableSettings.pageSize,
                     userId:"",
                     condition:{
                         auditing:"1",//固定
                         classification:this.clickData.id,//左侧节点id
-                        sort:"",//
-                        order:"",//
+                        sort:"CREATEDATE",//
+                        order:"desc",//
                         keyword:"",//搜索-keyword
                         name:this.seniorKeyWords.knowName,//搜索-知识名称
                         code:this.seniorKeyWords.knowCode,//搜索-知识编码
@@ -324,7 +326,26 @@
                         createdateMax:""//固定
                     }
                 };
-                console.log(temp)
+                this.loadTableData(temp);
+            },
+            sortChange({sort, order}) {
+                let temp = {
+                    page:1,
+                    rows:this.tableSettings.pageSize,
+                    userId:"",
+                    condition:{
+                        auditing:"1",//固定
+                        classification:this.clickData.id,//左侧节点id
+                        sort:sort,//
+                        order:order,//
+                        keyword:this.keywords,//搜索-keyword
+                        name:this.seniorKeyWords.knowName,//搜索-知识名称
+                        code:this.seniorKeyWords.knowCode,//搜索-知识编码
+                        labels:_.map(this.seniorKeyWords.selectedLabels, 'id').join(),//
+                        createdateMin:"",//固定
+                        createdateMax:""//固定
+                    }
+                };
                 this.loadTableData(temp);
             },
             handleExceed(files, fileList) {
@@ -334,8 +355,11 @@
                 this.$refs.upload.submit();
             },
             batchImport(){
+                this.importDialogVisible = true;
+            },
+            batchExport(){
                 if(this.tableSelectData.length > 0){
-                    this.importDialogVisible = true;
+
                 }
                 else{
                     this.$error("请先选择需要操作的知识");
@@ -348,6 +372,18 @@
                 else{
                     this.$error("请先选择需要分享的知识");
                 }
+            },
+            exportExcel(option){
+                exportKnowExcel(option);
+            },
+            downloadTemp(){
+                let option = {
+                    categoryId:this.clickData.id,
+                    exp:"",
+                    isExpAttach:"",
+                    ids:""
+                };
+                this.exportExcel(option);
             }
         },
         mounted() {
@@ -360,18 +396,22 @@
 </script>
 
 <style scoped>
-    .knowmgt.box{
-        display: flex;
-        flex-direction: row;
-        height: 100%;
-        width: 99%;
-    }
-    .knowmgt.sidebar{
-        flex-basis: 15%;
-    }
-    .knowmgt.main{
-        flex-basis:84%;
-    }
+   .knowmgtbox{
+       display: flex;
+       flex-direction: row;
+       height: 100%;
+       width: 100%;
+   }
+   .knowmgtsidebar{
+       flex-basis: 15%;
+   }
+   .knowmgtmain{
+       flex-basis:85%;
+   }
+   .el-tabs--border-card{
+       width:100%;
+       border:0px;
+   }
     .el-tabs--border-card{
         width:100%;
         border:0px;

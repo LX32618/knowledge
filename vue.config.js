@@ -19,7 +19,7 @@ module.exports = {
                 }
             },
             '/api3': {
-                target: 'http://192.168.3.120:3000', // 夏添 api
+                target: 'http://192.168.4.111:3000', // 夏添 api
                 changeOrigin: true,
                 pathRewrite: {
                     '^/api3': '/api'
@@ -37,6 +37,13 @@ module.exports = {
                 changeOrigin: true,
                 pathRewrite: {
                     '^/api5': '/'
+                }
+            },
+            '/api6': {
+                target: 'http://localhost:8080/',
+                changeOrigin: true,
+                pathRewrite: {
+                    '^/api6': '/'
                 }
             },
         }
