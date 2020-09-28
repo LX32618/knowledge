@@ -1,6 +1,6 @@
 <template>
     <div class="knowmgtbox" v-loading="loading">
-        <div class="knowmgtsidebar">
+        <div class="knowmgtsidebar" style="border-right: 1px solid #DCDFE6">
             <cs-lazytree ref="lazytree" :settings="treeSettings" :dataFormat="treeDataFormat" @treeNodeClick="treeNodeClick"></cs-lazytree>
         </div>
         <div class="knowmgtmain" v-if="JSON.stringify(clickData) != '{}' && clickData.type != -1">
@@ -22,7 +22,7 @@
                             <el-button type="primary" icon="element-icons el-custom-export" size="mini" @click="batchExport()">导出</el-button>
                         </el-button-group>
                         <div style="font-size: 12px">
-                            <el-switch v-model="exportAttach" :width="30">
+                            <el-switch v-model="exportAttach" :width="30"  active-value="true" inactive-value="false">
                             </el-switch>
                             导出附件
                         </div>
@@ -63,18 +63,19 @@
                     <el-link type="primary" :underline="false" @click.native.prevent="downloadTemp()">点击下载知识导入模板</el-link>
                 </el-form-item>
                 <el-form-item label="2.上传文件">
-                    <el-upload ref="upload"
-                               style="width:80px;"
-                            class="upload-demo"
-                            drag
-                            action="https://jsonplaceholder.typicode.com/posts/"
-                            :multiple="false"
-                            :auto-upload="false"
-                            accept=".xls"
-                            :limit="1"
-                            :on-exceed="handleExceed">
+                    <el-upload  ref="upload"
+                                class="upload-demo"
+                                action
+                                drag
+                                :multiple="false"
+                                :auto-upload="false"
+                                accept=".zip"
+                                :limit="1"
+                                :http-request="handleUploadForm"
+                                :on-exceed="handleExceed">
                         <i class="el-icon-upload"></i>
                         <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+                        <div class="el-upload__tip" slot="tip">只能上传zip文件</div>
                     </el-upload>
                 </el-form-item>
                 <el-form-item label="3.导入">
@@ -118,6 +119,7 @@
     import {fetchCategoryByNodeId,exportKnowExcel} from "@/api/knowledgeManagement.js";
     import KnowledgeLabelsInput from '@/components/Input/KnowledgeLabelsInput'
     import CatTreeSelect from "@/components/CatTreeSelect";
+    import axios from "axios"
 
     const rootUrl = '/api4/app/authcenter/api/categoryTree/';
 
@@ -354,12 +356,39 @@
             submitUpload() {
                 this.$refs.upload.submit();
             },
+            handleUploadForm(param){
+                let formData = new FormData()
+                formData.append('categoryId', this.clickData.id) // 额外参数
+                formData.append('file', param.file)
+                let loading = this.$loading({
+                    lock: true,
+                    text: '上传中，请稍候...',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                })
+                axios.post('/api4/app/authcenter/api/knowledgeUpload/post', formData).then(({resp}) => {
+                    if (resp.status === "success") {
+                        this.$message('上传文件成功' )
+                    } else {
+                        this.$message('上传文件失败:' + resp.message)
+                    }
+                    loading.close()
+                })
+            },
             batchImport(){
                 this.importDialogVisible = true;
             },
             batchExport(){
                 if(this.tableSelectData.length > 0){
-
+                    //console.log(this.tableSelectData);
+                    let option = {
+                        categoryId:this.clickData.id,
+                        exp:"exp",
+                        isExpAttach:this.exportAttach,
+                        ids:_.map(this.tableSelectData,"id").join(",")
+                    };
+                    console.log(option);
+                    exportKnowExcel(option);
                 }
                 else{
                     this.$error("请先选择需要操作的知识");
@@ -373,9 +402,6 @@
                     this.$error("请先选择需要分享的知识");
                 }
             },
-            exportExcel(option){
-                exportKnowExcel(option);
-            },
             downloadTemp(){
                 let option = {
                     categoryId:this.clickData.id,
@@ -383,7 +409,7 @@
                     isExpAttach:"",
                     ids:""
                 };
-                this.exportExcel(option);
+                exportKnowExcel(option);
             }
         },
         mounted() {
@@ -406,7 +432,7 @@
        flex-basis: 15%;
    }
    .knowmgtmain{
-       flex-basis:85%;
+       flex-basis:84%;
    }
    .el-tabs--border-card{
        width:100%;
