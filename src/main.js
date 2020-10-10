@@ -4,6 +4,7 @@ import router from './router'
 import store from './store'
 
 import '@/plugins/element'
+import '@/plugins/antDesign'
 import '@/plugins/notify'
 import '@/plugins/formMaking'
 import '@/components'

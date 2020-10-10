@@ -33,8 +33,9 @@
 </template>
 
 <script>
-import { getCategoryTree } from '@/api/knowledge'
+import { fetchCategoryTreeAndNum } from '@/api/docCategory'
 import { unflatCategoryTree } from '@/utils/tree'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'MyKnowledge',
@@ -42,9 +43,16 @@ export default {
     return {
       isLoading: false,
       treeData: [],
-      selectedCategoryId: '0',
+      tableData: [],
+      selectedCategoryId: '',
       selectedTab: '0'
     }
+  },
+  computed: {
+    ...mapGetters([
+      'userInfo',
+      'rootCategoryId'
+    ])
   },
   methods: {
     handleTreeNodeClick ({ data }) {
@@ -54,8 +62,12 @@ export default {
   },
   async mounted () {
     this.isLoading = true
-    const data = await getCategoryTree({})
-    this.treeData = unflatCategoryTree(data.content, '0', true)
+    const data = await fetchCategoryTreeAndNum({
+      id: this.rootCategoryId,
+      userId: this.userInfo.id
+    })
+    this.treeData = unflatCategoryTree(data.content, this.rootCategoryId, true)
+    this.selectedCategoryId = this.rootCategoryId
     this.isLoading = false
   }
 }

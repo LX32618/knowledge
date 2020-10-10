@@ -28,7 +28,8 @@
                   :widget="citem"
                   :edit="edit"
                   :preview="preview"
-                  @input-change="onInputChange">
+                  @input-change="onInputChange"
+                  :options="options">
                 </genetate-form-item>
               </template>
             </el-col>
@@ -88,7 +89,8 @@
             :edit="edit"
             :preview="preview"
             @input-change="onInputChange"
-            :remote="remote">
+            :remote="remote"
+            :options="options">
           </genetate-form-item>
         </template>
 
@@ -112,6 +114,7 @@ export default {
     return {
       models: {},
       rules: {},
+      options: {},
       hoverIndex: ''
     }
   },
@@ -127,6 +130,8 @@ export default {
           genList[i].columns.forEach(item => {
             this.generateModle(item.list)
           })
+        } else if (genList[i].type === 'text') {
+          continue
         } else if (genList[i].type === 'table') {
           if (this.value && Object.keys(this.value).indexOf(genList[i].model) >= 0) {
             this.models[genList[i].model] = this.value[genList[i].model]
@@ -166,7 +171,12 @@ export default {
         }
       }
       // 传入类别以生成标签选择器
-      this.models.classification = this.value.classification
+      // console.log(this.value.labelsEnt)
+      // if (this.models.labels || this.models.labels === []) {
+      //   console.log(1)
+      //   this.models.classification = this.value.classification
+      // }
+      this.options.classification = this.value.classification
     },
     getData () {
       return new Promise((resolve, reject) => {
@@ -214,8 +224,8 @@ export default {
     }
   },
   computed: {
-    rowPercent(element,scale){
-      return function(element,scale){
+    rowPercent(element, scale){
+      return function(element, scale){
         if(element.type=='grid')
         {
           if(element.options.rowConfig == 'scale')

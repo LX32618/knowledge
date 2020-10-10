@@ -12,6 +12,7 @@
         ref="tree"
         v-bind="$attrs"
         show-checkbox
+        :data="data"
         :props="props"
         :node-key="props.key"
         :expand-on-click-node="false"
@@ -26,6 +27,7 @@
         <el-tree
           ref="tree"
           v-bind="$attrs"
+          :data="data"
           :props="props"
           :node-key="props.key"
           :expand-on-click-node="false"
@@ -134,6 +136,7 @@ export default {
   props: {
     id: String,
     name: String,
+    data: Array,
     value: {
       required: true
     },
@@ -238,6 +241,13 @@ export default {
     }
   },
   methods: {
+    // 更新选中节点
+    updateCheckedNodes () {
+      this.$nextTick(() => {
+        this.$refs.tree.setCheckedKeys(this.value)
+        this.checkedNodes = this.$refs.tree.getCheckedNodes()
+      })
+    },
     handleFocus (event) {
       if (!this.softFocus) {
         setTimeout(() => {

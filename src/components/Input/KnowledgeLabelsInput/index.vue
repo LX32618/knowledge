@@ -74,9 +74,9 @@ export default {
         }
         this.isLoading = true;
         getLabelesTree({ id: this.classificationid }).then(res => {
-          this.labels = this.convertLabelTree(res.content.labelInfo);
-          this.$emit('loadingSuccess', this.labels);// 向上发出加载成功事件
-          this.isLoading = false;
+          this.labels = this.convertLabelTree(res.content.labelInfo)
+          this.$emit('loadingSuccess', this.labels)// 向上发出加载成功事件
+          this.isLoading = false
         })
       },
       immediate: true
