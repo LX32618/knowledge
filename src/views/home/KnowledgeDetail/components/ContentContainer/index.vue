@@ -32,7 +32,7 @@
          <form-generate
           ref="mainForm"
           :data="mainFormConfig"
-          :value="mainValue"
+          :value="formModel"
           :edit="!isViewMode">
          </form-generate>
       </el-card>
@@ -93,6 +93,23 @@ export default {
     ]),
     mainFormConfig () {
       return this.convertFormConfig(this.formConfig)
+    },
+    formModel () {
+      let model = {}
+      const mainForm = this.formData.mainForm
+      const subForm = this.formData.subForm
+      const omitArray = ['BASEID', 'CREATEDATE', 'CREATERID', 'ISDELETE', 'PORDER', 'VER']
+      if (mainForm && mainForm.datas) {
+        model = {
+          ..._.omit(mainForm.datas, omitArray)
+        }
+      }
+      if (subForm) {
+        subForm.forEach(item => {
+          model[`table_${item.formId}`] = item.data.map(subData => _.omit(subData, omitArray))
+        })
+      }
+      return model
     }
   },
   methods: {
@@ -114,18 +131,18 @@ export default {
     },
     createKnowledgeModel () {
       const knowledgeModel = {
-        knowledgeBase: {
-          id: this.$route.params.id,
-          creator: this.userInfo.id
-        },
+        knowledgeBase: {},
         mainFormData: {},
         subForms: []
       }
       Object.keys(this.editFormData).forEach(key => {
         const value = _.cloneDeep(this.editFormData[key])
         if (key === 'base') {
-          value.labels = value.labels.join(',')
-          knowledgeModel.knowledgeBase = value
+          knowledgeModel.knowledgeBase = {
+            id: this.$route.params.id,
+            creator: this.userInfo.id,
+            ...value
+          }
         } else {
           knowledgeModel.mainFormData = {
             formId: this.formConfig.id,
@@ -159,18 +176,18 @@ export default {
       // 提交主表
       this.editFormData.main = await this.$refs.mainForm.getData()
       console.log(this.editFormData)
-      // this.saveButtonLoading = true
+      this.saveButtonLoading = true
       const knowledgeModel = this.createKnowledgeModel()
       console.log(knowledgeModel)
-      // const saveHandler = this.showBase ? saveData : saveFormData
-      // saveHandler(knowledgeModel).then(res => {
-      //   this.$success('保存成功')
-      //   this.isViewMode = true
-      //   this.saveButtonLoading = false
-      //   this.$emit('saveSuccess')
-      // }).catch(() => {
-      //   this.saveButtonLoading = false
-      // })
+      const saveHandler = this.showBase ? saveData : saveFormData
+      saveHandler(knowledgeModel).then(res => {
+        this.$success('保存成功')
+        this.isViewMode = true
+        this.saveButtonLoading = false
+        this.$emit('saveSuccess')
+      }).catch(() => {
+        this.saveButtonLoading = false
+      })
     },
     cancel () {
       // 重置基础信息表

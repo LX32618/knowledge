@@ -174,6 +174,8 @@
       <el-switch
         v-model="dataModel"
         :disabled="isDisabled"
+        :active-value="1"
+        :inactive-value="0"
       >
       </el-switch>
     </template>
@@ -276,12 +278,11 @@
     </template>
 
     <template v-if="widget.type == 'labelSelect'">
-      <knowledge-labels-input
+      <form-labels-input
         v-model="dataModel"
-        :classificationid="models.classification"
+        :classificationId="options.classification"
         :disabled="isDisabled"
-        :data="[]"
-      ></knowledge-labels-input>
+      ></form-labels-input>
     </template>
   </el-form-item>
 </template>
@@ -293,10 +294,10 @@ import FmViewBtn from './ViewBtn'
 import FmLink from './Link'
 import DictSelect from "../Input/DictSelect"
 import SecretLevelInput from '@/components/Input/SecretLevelInput'
-import KnowledgeLabelsInput from '@/components/Input/KnowledgeLabelsInput'
+import FormLabelsInput from '@/components/Input/FormLabelsInput'
 
 export default {
-  props: ['widget', 'models', 'rules', 'remote', 'edit', 'table', 'preview'],
+  props: ['widget', 'models', 'rules', 'remote', 'edit', 'table', 'preview','options'],
   components: {
     FmUpload,
     FileUpload,
@@ -304,7 +305,7 @@ export default {
     FmLink,
     DictSelect,
     SecretLevelInput,
-    KnowledgeLabelsInput
+    FormLabelsInput
   },
   data () {
     return {

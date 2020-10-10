@@ -10,6 +10,8 @@ const secretLevels = [
 const state = {
   // 密级
   secretLevels,
+  // 知识目录根目录Id
+  rootCategoryId: 'E91AE12C441D468F875A236FFB034A98',
   // 知识基础信息表单配置
   baseFormConfig: [
     {
@@ -124,7 +126,7 @@ const state = {
             {
               type: 'labelSelect',
               name: '标签',
-              model: 'labels',
+              model: 'lables',
               rules: [],
               options: {}
             }

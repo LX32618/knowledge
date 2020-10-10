@@ -70,16 +70,19 @@ export default {
   },
   methods: {
     handleSaveSuccess () {
-      location.reload()
+      // location.reload()
+      this.update
     },
     update () {
       this.isLoading = true
       getModelAndData({ id: this.id }).then(res => {
         const baseData = res.content.knowledgeData.knowledgeBase
         baseData.classificationName = baseData.classificationEnt.categoryname
-        baseData.creatorName = baseData.creatorEnt.username
+        if (baseData.creatorEnt) {
+          baseData.creatorName = baseData.creatorEnt.username
+        }
         this.baseData = baseData
-        this.formData = res.content.knowledgeData.formData
+        this.formData = res.content.knowledgeData.formData[0] || {}
         const formConfig = res.content.knowledgeModel.formModel
         this.formConfig = Array.isArray(formConfig) ? {
           formType: 1,

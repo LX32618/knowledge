@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 import { dateTime } from '@/filters'
 
-const rootUrl = '/api4/system/knowledgeDataController/'
+const rootUrl = '/api1/system/knowledgeDataController/'
 
 // 获取知识模型配置信息
 export function getModelAndData (option) {
@@ -10,7 +10,7 @@ export function getModelAndData (option) {
     method: 'post',
     data: {
       knowledgeId: option.id
-    } 
+    }
   })
 }
 

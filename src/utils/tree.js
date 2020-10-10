@@ -41,7 +41,7 @@ export function unflatCategoryTree (nodes, rootId, makeRoot = false) {
   })
   if (makeRoot) {
     const root = {
-      id: '0',
+      id: rootId,
       name: '知识工程',
       children: data
     }
