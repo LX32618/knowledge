@@ -2,7 +2,7 @@
     <div style="width:100%" :loading="loading">
         <el-button-group>
             <el-button type="primary" icon="fa fa-save" @click.native="configSave()">保存</el-button>
-            <el-button type="primary" icon="el-icon-view" @click.native="">预览</el-button>
+            <el-button type="primary" icon="el-icon-view" @click.native="previewDialogVisible=true">预览</el-button>
         </el-button-group>
         <p><i class="el-icon-s-operation"></i>知识基础信息</p>
         <cs-table :settings="tableSettings"
@@ -74,16 +74,21 @@
                 </template>
             </cs-table>
         </div>
+        <el-dialog title="列表预览" :visible.sync="previewDialogVisible" :close-on-click-modal="false">
+            <knowledge-view :selectedCategory="{id:configData.categoryId}" preView></knowledge-view>
+        </el-dialog>
+
     </div>
 </template>
 
 
 <script>
+    import KnowledgeView from "@/components/KnowledgeView"
     import {saveTableConfig} from "@/api/knowledgeList.js"
 
 
     export default {
-        name: "TableConfig",
+        name: "TableConfig", 
 
         props:{
             configData:{
@@ -94,6 +99,7 @@
         data(){
             return{
                 loading:false,
+                previewDialogVisible:false,
                 tableSettings: {
                     radio:false,//是否显示单选框
                     checkbox: false,//是否显示checkbox
@@ -128,6 +134,9 @@
                     this.loading = false;
                 });
             }
+        },
+        components:{
+            KnowledgeView
         }
     }
 </script>

@@ -105,10 +105,23 @@ const sidebar = {
             component:()=>import('@/views/bms/MenuManagement')
         }]
     }, {
-        name: 'Audit',
+        name: 'SecurityAudit',
         meta:{title:"安全审计"},
         icon: 'el-icon-setting',
-        children: []
+        children: [{
+            name: "SystemLog",
+            meta:{title:"系统日志"},
+            children: [
+                {
+                    name: "OperationLog",
+                    path: "OperationLog",
+                    meta:{title:"系统操作日志"},
+                    component:()=>import('@/views/bms/LogManagement/OperationLog')
+                }
+            ]
+
+
+        }]
     }]
 }
 //endregion

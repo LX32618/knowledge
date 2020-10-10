@@ -111,9 +111,11 @@
                     fetchTableConfig(option).then(resp=>{
                         if(resp.status == "success")
                         {
+
                             let  configData = _.cloneDeep(resp.content);
                             configData.categoryId = this.basicFormData.id;
                             this.configData = configData;
+                            console.log(configData);
                         }
                         else{
                             this.$error(resp.msg);
