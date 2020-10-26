@@ -1,5 +1,5 @@
 <template>
-    <el-upload :action="uploadUrl"
+    <el-upload :action="realUrl"
                :accept="acceptFiles"
                :limit="limit"
                :disabled="disabled"
@@ -63,6 +63,10 @@
             btnTitle:{
               type:String,
               default:""
+            },
+            knowledgeId: {
+                type: String,
+                default: ''
             }
         },
         data(){
@@ -73,6 +77,9 @@
         computed:{
             acceptFiles(){
                 return this.accept.map(a=>"."+a).join(",");
+            },
+            realUrl () {
+                return `/api4/app/authcenter/api/knowledgeUpload/post?categoryId=${this.knowledgeId}`
             }
         },
         methods:{

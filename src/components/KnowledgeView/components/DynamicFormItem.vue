@@ -57,7 +57,7 @@ export default {
       switch (this.field.type) {
         case 0:
           return this.renderInput(h)
-        case 'textarea':
+        case 9:
           return this.renderTextArea(h)
         case 'inputNumber':
           return this.renderInputNumber(h)

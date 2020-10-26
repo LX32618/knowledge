@@ -109,6 +109,7 @@ export default {
           model[`table_${item.formId}`] = item.data.map(subData => _.omit(subData, omitArray))
         })
       }
+      model.knowledgeId = this.baseData.id
       return model
     }
   },
@@ -150,7 +151,7 @@ export default {
           }
           Object.keys(value).forEach(valueKey => {
             if (valueKey.startsWith("table_") && valueKey.length === 38) {
-              const subFormKey = valueKey.split('_')[1]
+              const subFormKey = valueKey.slice(6)
               const subFormData = {
                 formId: subFormKey,
                 datas: value[valueKey]

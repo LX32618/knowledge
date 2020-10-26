@@ -4,7 +4,7 @@
       v-for="column in columns" :key="column.key"
       :label="column.label"
       :prop="column.key"
-      :width="column.width"
+      :width="column.width || 100"
       :fixed="column.fixed"
       :sortable="column.sortable ? 'custom' : false">
       <template slot-scope="scope">

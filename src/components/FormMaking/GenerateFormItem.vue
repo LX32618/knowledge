@@ -223,7 +223,8 @@
                    :multiple="widget.options.multiple"
                    :tips="widget.options.tips"
                    :disabled="isDisabled"
-                   :edit="edit">
+                   :edit="edit"
+                   :knowledge-id="options.knowledgeId">
       </file-upload>
     </template>
 

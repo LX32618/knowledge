@@ -113,7 +113,7 @@ export default {
       getKnowledgeByClassifications({
         id: this.selectedCategory.id,
         userId: this.userInfo.id,
-        ...this.searchOption,
+        searchOption: this.searchOption,
         rows: this.rows,
         page: this.page
       }).then(res => {
@@ -126,7 +126,6 @@ export default {
           this.columns = this.baseColumnsConfig
         } else {
           this.columns = this.baseColumnsConfig.slice(0, 2)
-          console.log(model)
           // 基础知识配置生成
           const sortedBaseConfig = model.base.sort((a, b) => a.pOrder - b.pOrder)
           this.columns.push(...sortedBaseConfig.map(this.handleBadeColumnConfig))
@@ -135,16 +134,20 @@ export default {
           formData.forEach(mainForm => {
             fieldMap[mainForm.formId] = []
             this.columns.push(...mainForm.fieldData.filter(item => item.isShow).map(item => {
+              let key = `${mainForm.tableName}${item.fieldInfo.fieldName}`
+              if (item.fieldInfo.htmlType !== 0 && item.fieldInfo.htmlType !== 9) {
+                key += 'TEXT'
+              }
               const result = {
                 ...item,
-                key: `${item.formId}_${item.fieldInfo.fieldName}`,
+                key,
                 label: item.showName,
                 width: item.colWidth
               }
               fieldMap[mainForm.formId].push(item.fieldInfo.fieldName)
               if (item.isSearch) {
                 this.searchColumns.push({
-                  key: `${item.formId}_${item.fieldInfo.fieldName}`,
+                  key: `FIELD_${item.fieldId}`,
                   name: item.showName,
                   fieldInfo: {
                     ...item.fieldInfo
@@ -162,26 +165,7 @@ export default {
           return
         }
         // 处理知识列表数据
-        this.knowledges = res.content.datas.map(item => {
-          const result = item.knowledgeBase || {}
-          result.classificationName = result.classificationEnt ? result.classificationEnt.categoryname : ''
-          result.creatorName = result.creatorEnt ? result.creatorEnt.username : ''
-          result.isSubscribe = item.isSubscribe
-          if (!result.id) {
-            result.id = item.knowledgeId
-          }
-          Object.keys(fieldMap).forEach(key => {
-            const fields = fieldMap[key]
-            const mainFormData = item.formData.find(form => {
-              if (!form || !form.mainForm) return false
-              return form.mainForm.formId === key
-            })
-            fields.forEach(field => {
-              result[`${key}_${field}`] = (mainFormData && mainFormData.mainForm) ? mainFormData.mainForm[field] : null
-            })
-          })
-          return result
-        })
+        this.knowledges = res.content.page.datas
         this.total = res.content.total
         this.isLoading = false
       })
@@ -190,28 +174,15 @@ export default {
     handleBadeColumnConfig (item) {
       const result = {
         ...item,
-        key: item.fieldName,
+        key: item.fieldNameUpper,
         label: item.showName,
         width: item.colWidth,
         sortable: item.isOrder
       }
-      if (result.key === 'labelsEnt') {
-        result.key = 'labels'
-        result.formatter = (row, index) => {
-          const labels = row.labelsEnt
-          if (!labels || !Array.isArray(labels)) {
-            return ''
-          }
-          return labels.map(item => item.name).join(',')
-        }
-      } else if (result.key === 'creator') {
-        result.key = 'creatorName'
-      } else if (result.key === 'category') {
-        result.key = 'classificationName'
-      } else if (result.key === 'createDate') {
-        result.formatter = (row, index) => {
-          return dateTime(row.createDate)
-        }
+      if (item.fieldName === 'category') {
+        result.key = 'CLASSIFICATIONTEXT'
+      } else if (item.fieldName === 'creator') {
+        result.key = 'CREATORNAME'
       }
       return result
     },

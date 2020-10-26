@@ -179,36 +179,26 @@ const state = {
     },
     {
       label: '知识名称',
-      key: 'name'
+      key: 'NAME'
     }, {
       label: '知识编号',
-      key: 'code'
+      key: 'CODE'
     }, {
       label: '目录',
-      key: 'classificationName'
+      key: 'CLASSIFICATIONTEXT'
     }, {
       label: '创建人',
-      key: 'creatorName'
+      key: 'CREATORNAME'
     }, {
       label: '创建时间',
-      key: 'createDate',
+      key: 'CREATEDATE',
       width: 100,
-      formatter (row, index) {
-        return dateTime(row.createDate)
-      }
     }, {
       label: '关键字',
-      key: 'keyword'
+      key: 'KEYWORD'
     }, {
       label: '标签',
-      key: 'labels',
-      formatter (row, index) {
-        const labels = row.labelsEnt
-        if (!labels || !Array.isArray(labels)) {
-          return ''
-        }
-        return labels.map(item => item.name).join(',')
-      }
+      key: 'LABELSTEXT'
     }
   ],
   // 基础搜索配置

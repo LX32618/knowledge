@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import _ from 'lodash'
 
 const rootUrl = '/api4/app/authcenter/api/'
 
@@ -25,6 +26,8 @@ export function fetchCategoryTreeAndNum (option) {
 
 // 根据目录id数组获取knowledgebase
 export function getKnowledgeByClassifications (option={}) {
+  const searchOption = option.searchOption
+  const baseOption = ['code', 'name', 'keyword', 'labels', 'createDate']
   const data = {
     page: option.page || 1,
     rows: option.rows || 10,
@@ -34,15 +37,20 @@ export function getKnowledgeByClassifications (option={}) {
       order: option.order || 'desc',
       auditing: option.auditing || '1',
       classification: option.id,
-      name: option.name,
-      keyword: option.keyword    }
+      code: searchOption.code,
+      name: searchOption.name,
+      keyword: searchOption.keyword,
+      mainFormField: {
+        ..._.omit(searchOption, baseOption)
+      }
+    }
   }
-  data.condition.labels = (option.labels && option.labels.length > 0)
-    ? option.labels.join(',')
+  data.condition.labels = (searchOption.labels && searchOption.labels.length > 0)
+    ? searchOption.labels.join(',')
     : ''
-  if (option.createDate && option.createDate.length === 2) {
-    data.condition.createdateMin = option.createDate[0]
-    data.condition.createdateMax = option.createDate[1]
+  if (searchOption.createDate && searchOption.createDate.length === 2) {
+    data.condition.createdateMin = searchOption.createDate[0]
+    data.condition.createdateMax = searchOption.createDate[1]
   }
   return request({
     url: `${rootUrl}categoryKnowledgeItemsByNodeId/get`,

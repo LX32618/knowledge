@@ -132,6 +132,8 @@ export default {
           })
         } else if (genList[i].type === 'text') {
           continue
+        } else if (genList[i].type === 'imgupload') {
+          this.models[genList[i].model] = this.value[genList[i].model] ? JSON.parse(this.value[genList[i].model]) : []
         } else if (genList[i].type === 'table') {
           if (this.value && Object.keys(this.value).indexOf(genList[i].model) >= 0) {
             this.models[genList[i].model] = this.value[genList[i].model]
@@ -177,6 +179,7 @@ export default {
       //   this.models.classification = this.value.classification
       // }
       this.options.classification = this.value.classification
+      this.options.knowledgeId = this.value.knowledgeId
     },
     getData () {
       return new Promise((resolve, reject) => {

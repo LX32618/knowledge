@@ -96,6 +96,7 @@ export default {
     },
     searchColumns (val) {
       if (val && val.length > 0) {
+        this.fields = this.fields.slice(0, 5)
         this.fields.push(...val.map(item => {
           return {
             ...item,
@@ -113,7 +114,6 @@ export default {
     handleSearch () {
       if (this.preView) return
       this.$refs['dynamic-form'].submitForm()
-      
     },
     // 表单提交，向上传递查询事件
     handleSumbit (val) {
