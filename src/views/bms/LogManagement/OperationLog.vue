@@ -30,19 +30,19 @@
                 <el-col :span=8>
                     <el-form-item label="事件类型">
                         <el-select v-model="searchForm.operation" placeholder="事件类型" style="width:188px;">
-                            <el-option label="全部" :value=9999></el-option>
+                            <el-option label="全部" :value=-1></el-option>
                             <el-option label="新建" :value=999></el-option>
-                            <el-option label="编辑" :value=99></el-option>
-                            <el-option label="删除" :value=9></el-option>
+                            <el-option label="编辑" :value=3></el-option>
+                            <el-option label="删除" :value=4></el-option>
                         </el-select>
                     </el-form-item>
                 </el-col>
                 <el-col :span=8>
                     <el-form-item label="对象类型">
                         <el-select v-model="searchForm.objType" placeholder="对象类型" style="width:188px;">
-                            <el-option label="全部" :value=999></el-option>
-                            <el-option label="知识目录" :value=99></el-option>
-                            <el-option label="临时项目组" :value=9></el-option>
+                            <el-option label="全部" :value=9999></el-option>
+                            <el-option label="知识目录" :value=2></el-option>
+                            <el-option label="临时项目组" :value=40></el-option>
                         </el-select>
                     </el-form-item>
                 </el-col>
