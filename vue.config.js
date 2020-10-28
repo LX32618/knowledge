@@ -12,7 +12,7 @@ module.exports = {
                 }
             },
             '/api2': {
-                target: 'http://192.168.4.111:8088', // 王夏冰 api
+                target: 'http://192.168.3.100:8088', // 王夏冰 api
                 changeOrigin: true,
                 pathRewrite: {
                     '^/api2': '/app/authcenter/api'
@@ -26,7 +26,7 @@ module.exports = {
                 }
             },
             '/api4': {
-                target: 'http://192.168.4.111:8083', // 王夏冰 api2
+                target: 'http://192.168.3.100:8083', // 王夏冰 api2
                 changeOrigin: true,
                 pathRewrite: {
                     '^/api4': '/'
@@ -45,6 +45,13 @@ module.exports = {
                 pathRewrite: {
                     '^/api6': '/'
                 }
+            },
+            '/cas': {
+                target: 'http://192.168.3.100:8088/',
+                changeOrigin: true,
+                // pathRewrite: {
+                //     '^/login': '/'
+                // }
             },
         }
     },

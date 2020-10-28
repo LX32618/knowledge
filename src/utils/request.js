@@ -11,7 +11,7 @@ const service = axios.create({
 service.interceptors.request.use(
   config => {
     if (store.getters.token) {
-      config.headers.Authorization = getToken()
+      // config.headers.Authorization = getToken()
     }
     return config
   },
@@ -25,7 +25,10 @@ service.interceptors.response.use(
   response => {
     if (response.status === 200 && response.data.status === 'success') {
       return response.data
-    } else {
+    } else if (response.status === 302) {
+      return null
+    }
+    else {
       errorMsg(response.data.message)
       return Promise.reject(response.data.message || 'error')
     }

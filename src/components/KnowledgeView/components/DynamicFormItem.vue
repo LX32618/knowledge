@@ -67,7 +67,9 @@ export default {
           return this.renderRadio(h)
         case 'checkbox':
           return this.renderCheckbox(h)
+        case 1:
         case 3:
+        case 8:
           return this.renderDictSelect(h)
         case 'timePicker':
           return this.renderTimePicker(h)
@@ -129,10 +131,18 @@ export default {
       )
     },
     renderDictSelect (h) {
+      let type
+      if (this.field.type === 1) {
+        type = 'radio'
+      }
+      else if (this.field.type === 8) {
+        type = 'checkbox'
+      }
       return (
         <dict-select
           vModel={ this.dataModel }
-          dictId={ this.field.options.fieldType }></dict-select>
+          dictId={ this.field.options.fieldType }
+          type={ type }></dict-select>
       )
     },
     renderTimePicker (h) {

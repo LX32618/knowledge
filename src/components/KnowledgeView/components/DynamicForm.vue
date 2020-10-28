@@ -50,7 +50,7 @@ export default {
     // 列样式
     colStyle (formConfig, field) {
       return {
-        height: `${formConfig.fieldHeight}px`
+        // height: `${formConfig.fieldHeight}px`
       }
     },
     // 生成表单模型

@@ -48,7 +48,17 @@ const actions = {
   getInfo ({ commit, state }) {
     return new Promise((resolve, reject) => {
       getInfo(state.token).then(response => {
-        const data = response.content
+        // const data = response.content
+        const data = {
+          id: 'EFB3BCDFBC0B4B5B91991B49B96D26CF',
+          username: 'admin',
+          name: '系统管理员',
+          token: 'admin-token',
+          department: '流程与信息化部',
+          email: 'admin@mei29.scgb.com',
+          phone: '028-87552252',
+          roles: [0, 1]
+        }
         commit('SET_INFO', data)
         resolve(data)
       }).catch(error => {

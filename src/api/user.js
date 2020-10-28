@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-const rootUrl = '/api3/users/'
+const rootUrl = '/cas/'
 
 export function login (data) {
   return request({
@@ -12,7 +12,8 @@ export function login (data) {
 
 export function getInfo (token) {
   return request({
-    url: `${rootUrl}info`,
+    url: `${rootUrl}getToken`,
+    // url: 'http://192.168.3.100:8088/cas/getToken',
     method: 'get',
     params: { token }
   })
