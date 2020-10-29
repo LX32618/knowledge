@@ -5,7 +5,7 @@ module.exports = {
     devServer: {
         proxy: {
             '/api1': {
-                target: 'http://192.168.4.100:8083', // 刘珏先 api
+                target: 'http://192.168.3.108:8083', // 刘珏先 api
                 changeOrigin: true,
                 pathRewrite: {
                     '^/api1': '/'
@@ -33,7 +33,7 @@ module.exports = {
                 }
             },
             '/api5': {
-                target: 'http://192.168.4.100:8083/',
+                target: 'http://192.168.3.108:8083/',
                 changeOrigin: true,
                 pathRewrite: {
                     '^/api5': '/'
@@ -48,11 +48,12 @@ module.exports = {
             },
             '/cas': {
                 target: 'http://192.168.3.100:8088/',
-                changeOrigin: true,
-                // pathRewrite: {
-                //     '^/login': '/'
-                // }
+                changeOrigin: true
             },
+            '/fms-basic': {
+                target: 'http://glaway.soft.net/',
+                changeOrigin: true
+            }
         }
     },
     //webpack 链式配置   默认已经配置好了  node_moudles/@vue

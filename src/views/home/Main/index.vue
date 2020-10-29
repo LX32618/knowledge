@@ -2,6 +2,7 @@
   <div>
     <knowledge-catalog></knowledge-catalog>
     <div>
+      <el-button @click="open">新建流程</el-button>
       <div class="home-content">
         <home-knowledge-list></home-knowledge-list>
         <div class="right-area">
@@ -10,6 +11,9 @@
         </div>
       </div>
     </div>
+    <!-- <el-dialog :visible.sync="show">
+      <iframe src="/fms-basic/processDesignerController.do?init&oper=create##" width="100%" height="900px" frameborder="0"></iframe>
+    </el-dialog> -->
   </div>
 </template>
 
@@ -27,6 +31,16 @@ export default {
     HomeKnowledgeList,
     HomePersonCenter,
     HomeHistory
+  },
+  data () {
+    return {
+      show: true
+    }
+  },
+  methods: {
+    open () {
+      window.open('http://glaway.soft.net/fms-basic/processDesignerController.do?init&oper=create##')
+    }
   }
 }
 </script>

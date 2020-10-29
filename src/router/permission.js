@@ -24,6 +24,7 @@ const routerGuide = async (to, from, next) => {
     if (!user) {
       await getUser(next)
     }
+    
     // redirect ? next(redirect) : next({ path: '/' })
   } else {
     const { redirect, jsessionid } = to.query
@@ -35,8 +36,7 @@ const routerGuide = async (to, from, next) => {
     setToken(jsessionid)
     await getUser(next, redirect)
   }
-
-  next()
+  to.query.jsessionid ? next({ path: '/' }) : next()
 
   // 未使用统一认证平台调试用
   // 已登录
