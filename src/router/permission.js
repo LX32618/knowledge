@@ -3,10 +3,10 @@ import store from '@/store'
 import user from '../store/modules/user'
 
 // 获取用户信息
-async function getUser (next) {
+async function getUser () {
   try {
-    user = await store.dispatch('user/getInfo')
-  } catch(_) {
+    await store.dispatch('user/getInfo')
+  } catch(err) {
     // 获取用户信息失败重定向到登录页面
     // window.location.href = `/cas/login?redirect=${redirect}`
   }
@@ -24,8 +24,6 @@ const routerGuide = async (to, from, next) => {
     if (!user) {
       await getUser(next)
     }
-    
-    // redirect ? next(redirect) : next({ path: '/' })
   } else {
     const { redirect, jsessionid } = to.query
     if (!jsessionid) {
@@ -36,7 +34,8 @@ const routerGuide = async (to, from, next) => {
     setToken(jsessionid)
     await getUser(next, redirect)
   }
-  to.query.jsessionid ? next({ path: '/' }) : next()
+  next()
+  // to.query.jsessionid ? next({ path: '/' }) : next()
 
   // 未使用统一认证平台调试用
   // 已登录
