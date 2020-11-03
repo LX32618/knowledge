@@ -5,10 +5,13 @@ import user from '../store/modules/user'
 // 获取用户信息
 async function getUser () {
   try {
-    await store.dispatch('user/getInfo')
+    const user = await store.dispatch('user/getInfo')
+    if (!user) {
+      throw new Error('无法获取用户信息')
+    }
   } catch(err) {
     // 获取用户信息失败重定向到登录页面
-    // window.location.href = `/cas/login?redirect=${redirect}`
+    window.location.href = `/cas/login?redirect=${redirect}`
   }
 }
 
