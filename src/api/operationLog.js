@@ -1,31 +1,32 @@
 import request from '@/utils/request'
-import axios from "axios"
+import axios from "axios";
 
 const rootUrl = '/api4/app/authcenter/api/'
 
 
-//获取列表配置
-export function fetchCategoryByNodeId(option) {
+
+//获取浏览按钮
+export function fetchOpertionLog (option) {
     return request({
-        url: `${rootUrl}categoryKnowledgeItemsByNodeId_Old/get`,
+        url: `${rootUrl}SysOperationLog/get`,
         method: 'post',
         data: option
     })
 }
 
-//获取列表配置
-export function exportKnowExcel(option) {
+export function exportOpertionLog(option) {
     axios({
         method:"post",
-        url:`${rootUrl}knowledgeManageTemplate/get`,
+        url: `${rootUrl}SysOperationLogExport/get`,
         data:option,
         responseType:"blob",
     }).then(function (response) {
+        console.log(response);
         let fileName = response.headers['content-disposition'].match(
             /fileName=(.*)/
         )[1]
 
-        fileName = decodeURIComponent(fileName).split(".")[0]+".zip";
+        fileName = decodeURIComponent(fileName).split(".")[0]+".xlsx";
 
         // 将二进制流转为blob
         const blob = new Blob([response.data], { type: 'application/octet-stream' });
@@ -54,7 +55,4 @@ export function exportKnowExcel(option) {
         }
     })
 }
-
-
-
 

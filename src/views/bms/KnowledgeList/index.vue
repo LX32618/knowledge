@@ -10,8 +10,8 @@
                         <cs-basic :settings="basicFormSettings" :form-data="basicFormData" @submitSuccess="submitSuccess"></cs-basic>
                     </div>
                 </el-tab-pane>
-                <el-tab-pane :key="1" v-if="basicFormData.type==2 && clickData.formId" label="模板配置" name="template" v-loading="tabLoading">
-                    <cs-template :form-data="tempFormData" :category-id="basicFormData.id"></cs-template>
+                <el-tab-pane :key="1" v-if="basicFormData.type==2 && clickData.formId" label="模板配置" name="template" >
+                    <cs-template :form-data="tempFormData" :category-id="basicFormData.id" v-loading="tabLoading"></cs-template>
                 </el-tab-pane>
                 <el-tab-pane :key="2" v-if="basicFormData.type==2 && clickData.formId" label="列表配置" name="list" v-loading="tabLoading">
                     <cs-table-config :config-data="configData"></cs-table-config>

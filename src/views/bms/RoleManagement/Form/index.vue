@@ -55,7 +55,6 @@
         data(){
             return {
                 peopleDialogVisible:false,
-
             }
         },
         methods:{
