@@ -196,13 +196,13 @@ export default {
       this.$router.push({
         name: "knowledgeDetail",
         params: {
-          id: row.id,
+          id: row.ID,
         }
       })
     },
     // 订阅 / 取消订阅知识
     handleSubscribe (row, index) {
-      const id = row.id
+      const id = row.ID
       const userId = this.userInfo.id
       const text = `${row.isSubscribe ? '取消' : ''}订阅`
       if (row.isSubscribe) {

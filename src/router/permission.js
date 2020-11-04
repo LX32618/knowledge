@@ -20,7 +20,6 @@ const routerGuide = async (to, from, next) => {
   document.title = `${to.meta.title} | 知识工程`
 
   const token = getToken()
-  console.log(getToken())
 
   // 与平台对接用
   if (token) {
