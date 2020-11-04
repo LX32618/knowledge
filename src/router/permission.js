@@ -1,6 +1,5 @@
-import { getToken, setToken } from '@/utils/auth'
+import { getToken, setToken, removeToken } from '@/utils/auth'
 import store from '@/store'
-import user from '../store/modules/user'
 
 // 获取用户信息
 async function getUser () {
@@ -11,6 +10,7 @@ async function getUser () {
     }
   } catch(err) {
     // 获取用户信息失败重定向到登录页面
+    removeToken()
     window.location.href = `/cas/login?redirect=${redirect}`
   }
 }
@@ -37,8 +37,8 @@ const routerGuide = async (to, from, next) => {
     setToken(jsessionid)
     await getUser(next, redirect)
   }
-  next()
-  // to.query.jsessionid ? next({ path: '/' }) : next()
+  // next()
+  to.query.jsessionid ? next({ path: '/' }) : next()
 
   // 未使用统一认证平台调试用
   // 已登录
