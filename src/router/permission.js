@@ -20,6 +20,7 @@ const routerGuide = async (to, from, next) => {
   document.title = `${to.meta.title} | 知识工程`
 
   const token = getToken()
+  console.log(getToken())
 
   // 与平台对接用
   if (token) {
@@ -34,12 +35,13 @@ const routerGuide = async (to, from, next) => {
     const { redirect, jsessionid } = to.query
     if (!jsessionid) {
       // 无token且无JSESSIONID时重定向到登录页面
+      removeToken()
       window.location.href = `/cas/login?redirect=${to.path}`
       return
     }
     setToken(jsessionid)
     await getUser(next, redirect);
-    await store.dispatch('routerMenu/getRouterMenu',"F36A946243D34506A6BE625412739725").then(() => {
+    await store.dispatch('routerMenu/getRouterMenu', "F36A946243D34506A6BE625412739725").then(() => {
     }).catch(() => {
     })
   }
