@@ -87,8 +87,8 @@
           <el-header class="btn-bar" style="height: 45px;">
             <slot name="action">
             </slot>
-            <el-button :disabled="stateIndex < 0" type="text" size="medium" icon="el-icon-arrow-left" @click="handleUndo">撤销</el-button>
-            <el-button :disabled="stateIndex >= historyStates.length - 1" type="text" size="medium" icon="el-icon-arrow-right" @click="handleRedo">重做</el-button>
+            <!-- <el-button :disabled="stateIndex < 0" type="text" size="medium" icon="el-icon-arrow-left" @click="handleUndo">撤销</el-button>
+            <el-button :disabled="stateIndex >= historyStates.length - 1" type="text" size="medium" icon="el-icon-arrow-right" @click="handleRedo">重做</el-button> -->
             <el-button v-if="upload" type="text" size="medium" icon="el-icon-upload2" @click="handleUpload">导入JSON</el-button>
             <el-button v-if="initial" type="text" size="medium" icon="element-icons el-custom-initialize" @click="handleInitial">&nbsp;&nbsp;初始化</el-button>
             <el-button v-if="clearable" type="text" size="medium" icon="el-icon-delete" @click="handleClear">清空</el-button>
