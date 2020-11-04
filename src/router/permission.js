@@ -25,7 +25,10 @@ const routerGuide = async (to, from, next) => {
   if (token) {
     let user = store.getters.userInfo
     if (!user) {
-      await getUser(next)
+      await getUser(next);
+      await  store.dispatch('routerMenu/getRouterMenu',"F36A946243D34506A6BE625412739725").then(() => {
+      }).catch(() => {
+      })
     }
   } else {
     const { redirect, jsessionid } = to.query
@@ -35,7 +38,10 @@ const routerGuide = async (to, from, next) => {
       return
     }
     setToken(jsessionid)
-    await getUser(next, redirect)
+    await getUser(next, redirect);
+    await store.dispatch('routerMenu/getRouterMenu',"F36A946243D34506A6BE625412739725").then(() => {
+    }).catch(() => {
+    })
   }
   // next()
   to.query.jsessionid ? next({ path: '/' }) : next()

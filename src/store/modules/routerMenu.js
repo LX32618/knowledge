@@ -56,6 +56,7 @@ const actions = {
     getRouterMenu ({commit}, userId) {
         return new Promise((resolve, reject) => {
             fetchMenuByUser({userId: userId}).then(response => {
+                console.log(response.content);
                 sidebar.children = response.content;
                 sidebarMapper(sidebar.children);
                 commit('SET_SIDEBAR', sidebar);

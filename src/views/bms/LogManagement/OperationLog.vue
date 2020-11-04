@@ -1,5 +1,5 @@
 <template>
-    <div style="width: 100%;margin-top: 10px;margin-left: 20px">
+    <div style="width: 100%;margin-top: 10px;margin-left: 20px"  v-loading="loading">
         <el-form :inline="true" :model="searchForm">
             <el-row>
                 <el-col :span=8>
@@ -16,6 +16,7 @@
                     <el-form-item label="时间">
                         <el-date-picker
                                 v-model="searchForm.dateRange"
+                                value-format="yyyy-MM-dd"
                                 type="daterange"
                                 :picker-options="pickerOptions"
                                 range-separator="-"
@@ -30,19 +31,19 @@
                 <el-col :span=8>
                     <el-form-item label="事件类型">
                         <el-select v-model="searchForm.operation" placeholder="事件类型" style="width:188px;">
-                            <el-option label="全部" :value=-1></el-option>
-                            <el-option label="新建" :value=999></el-option>
-                            <el-option label="编辑" :value=3></el-option>
-                            <el-option label="删除" :value=4></el-option>
+                            <el-option label="全部" value=""></el-option>
+                            <el-option label="新建" value="999"></el-option>
+                            <el-option label="编辑" value="3"></el-option>
+                            <el-option label="删除" value="4"></el-option>
                         </el-select>
                     </el-form-item>
                 </el-col>
                 <el-col :span=8>
                     <el-form-item label="对象类型">
                         <el-select v-model="searchForm.objType" placeholder="对象类型" style="width:188px;">
-                            <el-option label="全部" :value=9999></el-option>
-                            <el-option label="知识目录" :value=2></el-option>
-                            <el-option label="临时项目组" :value=40></el-option>
+                            <el-option label="全部" value="9999"></el-option>
+                            <el-option label="知识目录" value="2"></el-option>
+                            <el-option label="临时项目组" value="40"></el-option>
                         </el-select>
                     </el-form-item>
                 </el-col>
@@ -58,9 +59,6 @@
         </el-form>
         <cs-table :settings="tableSettings"
                   :table-data="tableData"
-                  v-loading="loading"
-                  @currentChange="tableCurrentChange"
-                  @sortChange="tableSortChange"
                   @pageSizeChange="tablePageSizeChange"
         style="width: 99%">
         </cs-table>
@@ -68,6 +66,10 @@
 </template>
 
 <script>
+    import moment from 'moment'
+    import {fetchOpertionLog,exportOpertionLog} from "@/api/operationLog.js"
+
+
     export default {
         name: "OperationLog",
         data(){
@@ -77,8 +79,8 @@
                 searchForm:{
                     objName:"",
                     dateRange:"",
-                    objType:999,
-                    operation:9999
+                    objType:"9999",
+                    operation:""
                 },
                 pickerOptions: {
                     shortcuts: [{
@@ -128,21 +130,103 @@
             }
         },
         methods:{
+            loadData(option){
+                fetchOpertionLog(option).then(resp=>{
+                    this.tableSettings.total = resp.content.total;
+                    this.tableData = resp.content.datas;
+                    this.loading = false;
+                }).catch((msg)=>{
+                    this.$error(msg);
+                    this.loading = false;
+                })
+            },
             exportData(){
-
+                let option = {
+                    userId: "",
+                    logType: "",
+                    operation: this.searchForm.operation,
+                    userName: this.searchForm.userName,
+                    objName:this.searchForm.objName,
+                    beginTime:this.searchForm.dateRange?this.searchForm.dateRange[0]+" 00:00:00":"",
+                    endTime:this.searchForm.dateRange?this.searchForm.dateRange[1]+" 23:59:59":"",
+                    objType:this.searchForm.objType,
+                    check: "",
+                    exportType: "0",
+                    exportData:this.exportOnePage?this.tableData:[]
+                };
+                exportOpertionLog(option);
             },
             search(){
-
+                let  option= {
+                    page:this.tableSettings.currentPage,
+                    rows:this.tableSettings.pageSize,
+                    condition:{
+                        userId: "",
+                        logType: "",
+                        operation: this.searchForm.operation,
+                        userName: this.searchForm.userName,
+                        objName:this.searchForm.objName,
+                        beginTime:this.searchForm.dateRange?this.searchForm.dateRange[0]+" 00:00:00":"",
+                        endTime:this.searchForm.dateRange?this.searchForm.dateRange[1]+" 23:59:59":"",
+                        objType:this.searchForm.objType,
+                        sort: "DATETIME",
+                        order: "desc",
+                        check: "",
+                        exportType: "0"
+                    }
+                };
+                this.loadData(option);
             },
-            tableCurrentChange(currentRow){
+/*            tableCurrentChange(currentRow){
 
             },
             tableSortChange({sort, order}){
 
-            },
+            },*/
             tablePageSizeChange({page,rows}){
-
+                console.log({page,rows});
+                console.log(this.searchForm);
+                let  option= {
+                    page:page,
+                    rows:rows,
+                    condition:{
+                        userId: "",
+                        logType: "",
+                        operation: this.searchForm.operation,
+                        userName: this.searchForm.userName,
+                        objName:this.searchForm.objName,
+                        beginTime:this.searchForm.dateRange?this.searchForm.dateRange[0]+" 00:00:00":"",
+                        endTime:this.searchForm.dateRange?this.searchForm.dateRange[1]+" 23:59:59":"",
+                        objType:this.searchForm.objType,
+                        sort: "DATETIME",
+                        order: "desc",
+                        check: "",
+                        exportType: "0"
+                    }
+                };
+                this.loadData(option);
             }
+        },
+        mounted() {
+            let  option= {
+                page:this.tableSettings.currentPage,
+                rows:this.tableSettings.pageSize,
+                condition:{
+                    userId: "",
+                    logType: "",
+                    operation: "",
+                    userName: "",
+                    objName:"",
+                    beginTime:"",
+                    endTime:"",
+                    objType:"9999",
+                    sort: "DATETIME",
+                    order: "desc",
+                    check: "",
+                    exportType: "0"
+                }
+            };
+            this.loadData(option);
         }
     }
 </script>

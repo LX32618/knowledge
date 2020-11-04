@@ -40,7 +40,7 @@
             vHeader
         },
         mounted() {
-            console.log(this.$store.state.routerMenu.sidebar.children);
+            //console.log(this.$store.state.routerMenu.sidebar.children);
         }
     }
 </script>

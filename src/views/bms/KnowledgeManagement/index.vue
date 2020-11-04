@@ -27,7 +27,7 @@
                             导出附件
                         </div>
                         <el-button-group class="knowmgt search">
-                            <el-input  placeholder="请输入关键字" prefix-icon="el-icon-search" v-model="keywords"></el-input>
+                            <el-input  placeholder="请输入关键字" prefix-icon="el-icon-search" v-model="seniorKeyWords.keyWord"></el-input>
                             <el-button type="primary" @click="search()">搜索</el-button>
                             <el-button type="primary" @click="drawer = true">高级搜索</el-button>
                         </el-button-group>
@@ -46,8 +46,23 @@
                     <el-form-item label="知识编号">
                         <el-input v-model="seniorKeyWords.knowCode" style="width:90%"></el-input>
                     </el-form-item>
-                    <el-form-item label="标签选择">
-                        <cat-tree-select v-model="seniorKeyWords.selectedLabels" :props="treeSelectSettings" :data="seniorKeyWords.labels" multiple size="mini" style="width:90%"></cat-tree-select>
+                    <el-form-item label="关键字">
+                        <el-input v-model="seniorKeyWords.keyWord" style="width:90%"></el-input>
+                    </el-form-item>
+                    <el-form-item label="创建人">
+                        <el-input v-model="seniorKeyWords.creator" style="width:90%"></el-input>
+                    </el-form-item>
+                    <el-form-item label="创建时间">
+                        <el-date-picker
+                                v-model="seniorKeyWords.dateRange"
+                                value-format="yyyy-MM-dd"
+                                type="daterange"
+                                :picker-options="pickerOptions"
+                                range-separator="-"
+                                start-placeholder="开始日期"
+                                end-placeholder="结束日期"
+                                align="right">
+                        </el-date-picker>
                     </el-form-item>
                     <el-form-item style="float: right;margin-right: 20px">
                         <el-button @click="drawer = false">取 消</el-button>
@@ -55,7 +70,6 @@
                     </el-form-item>
                 </el-form>
             </div>
-
         </el-drawer>
         <el-dialog title="批量导入" :visible.sync="importDialogVisible" :close-on-click-modal="false">
             <el-form label-width="80px">
@@ -134,8 +148,34 @@
                 importDialogVisible:false,
                 shareDialogVisible:false,
                 exportAttach:false,
-                keywords:"",
                 clickData:{},
+                pickerOptions: {
+                    shortcuts: [{
+                        text: '最近一周',
+                        onClick(picker) {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }, {
+                        text: '最近一个月',
+                        onClick(picker) {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }, {
+                        text: '最近三个月',
+                        onClick(picker) {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }]
+                },
                 treeSettings:{
                     root_id:"0",//根节点id
                     expand_root:true,//是否默认展开根节点
@@ -181,8 +221,9 @@
                 seniorKeyWords:{
                     knowName:"",
                     knowCode:"",
-                    labels:[],
-                    selectedLabels:[]
+                    keyword:"",
+                    creator:"",
+                    dateRange:""
                 },
                 shareForm:{}
             }
@@ -213,7 +254,7 @@
             {
                 this.classificationid = data.id;
                 this.seniorKeyWords.labels = data.labelInfo;
-                let temp = {
+        /*        let temp = {
                     page:this.tableSettings.currentPage,
                     rows:this.tableSettings.pageSize,
                     userId:"",
@@ -229,12 +270,38 @@
                         createdateMin:"",//固定
                         createdateMax:""//固定
                     }
+                };*/
+                let temp = {
+                    page:this.tableSettings.currentPage,
+                    rows:this.tableSettings.pageSize,
+                    sort:"CREATEDATE",//
+                    order:"desc",
+                    classification:data.id
                 };
                 this.loadTableData(temp);
                 this.$set(this, 'clickData', data);
             },
-            loadTableData(option){
+            loadTableData({page,rows,sort,order,classification}){
                 this.loading = true;
+                let option = {
+                    page:page,
+                    rows:rows,
+                    userId:"",
+                    condition:{
+                        auditing:"1",//固定
+                        classification:classification,//左侧节点id
+                        sort:sort,//
+                        order:order,//
+                        keyword:this.seniorKeyWords.keyWord,//搜索-keyword
+                        name:this.seniorKeyWords.knowName,//搜索-知识名称
+                        code:this.seniorKeyWords.knowCode,//搜索-知识编码
+                        labels:"",//
+                        //creator:this.seniorKeyWords.creator,
+                        createdateMin:this.seniorKeyWords.dateRange?this.seniorKeyWords.dateRange[0]+" 00:00:00":"",//固定
+                        createdateMax:this.seniorKeyWords.dateRange?this.seniorKeyWords.dateRange[1]+" 23:59:59":""//固定
+                    }
+                };
+                console.log(option);
                 fetchCategoryByNodeId(option).then(resp=>{
                     this.$set(this.tableSettings,"total",resp.content.total);
                     let datas = [];
@@ -266,19 +333,9 @@
                 let temp = {
                     page:page,
                     rows:rows,
-                    userId:"",
-                    condition:{
-                        auditing:"1",//固定
-                        classification:this.clickData.id,//左侧节点id
-                        sort:"CREATEDATE",//
-                        order:"desc",//
-                        keyword:this.keywords,//搜索-keyword
-                        name:this.seniorKeyWords.knowName,//搜索-知识名称
-                        code:this.seniorKeyWords.knowCode,//搜索-知识编码
-                        labels:"",//
-                        createdateMin:"",//固定
-                        createdateMax:""//固定
-                    }
+                    sort:"CREATEDATE",//
+                    order:"desc",
+                    classification:this.clickData.id
                 };
                 this.loadTableData(temp);
             },
@@ -288,45 +345,25 @@
             search(){
                 this.$set(this.seniorKeyWords,"knowName","");
                 this.$set(this.seniorKeyWords,"knowCode","");
-                this.$set(this.seniorKeyWords,"selectedLabelIds",[]);
+                this.$set(this.seniorKeyWords,"creator","");
+                this.$set(this.seniorKeyWords,"dateRange",[]);
                 let temp = {
                     page:1,
                     rows:this.tableSettings.pageSize,
-                    userId:"",
-                    condition:{
-                        auditing:"1",//固定
-                        classification:this.clickData.id,//左侧节点id
-                        sort:"CREATEDATE",//
-                        order:"desc",//
-                        keyword:"",//搜索-keyword
-                        name:this.keywords,//搜索-知识名称
-                        code:"",//搜索-知识编码
-                        labels:"",//
-                        createdateMin:"",//固定
-                        createdateMax:""//固定
-                    }
+                    sort:"CREATEDATE",//
+                    order:"desc",
+                    classification:this.clickData.id
                 };
                 this.loadTableData(temp);
             },
             seniorSearch(){
                 this.drawer = false;
-                this.keywords = "";
                 let temp = {
                     page:1,
                     rows:this.tableSettings.pageSize,
-                    userId:"",
-                    condition:{
-                        auditing:"1",//固定
-                        classification:this.clickData.id,//左侧节点id
-                        sort:"CREATEDATE",//
-                        order:"desc",//
-                        keyword:"",//搜索-keyword
-                        name:this.seniorKeyWords.knowName,//搜索-知识名称
-                        code:this.seniorKeyWords.knowCode,//搜索-知识编码
-                        labels:_.map(this.seniorKeyWords.selectedLabels, 'id').join(),//
-                        createdateMin:"",//固定
-                        createdateMax:""//固定
-                    }
+                    sort:"CREATEDATE",//
+                    order:"desc",
+                    classification:this.clickData.id
                 };
                 this.loadTableData(temp);
             },
@@ -334,19 +371,9 @@
                 let temp = {
                     page:1,
                     rows:this.tableSettings.pageSize,
-                    userId:"",
-                    condition:{
-                        auditing:"1",//固定
-                        classification:this.clickData.id,//左侧节点id
-                        sort:sort,//
-                        order:order,//
-                        keyword:this.keywords,//搜索-keyword
-                        name:this.seniorKeyWords.knowName,//搜索-知识名称
-                        code:this.seniorKeyWords.knowCode,//搜索-知识编码
-                        labels:_.map(this.seniorKeyWords.selectedLabels, 'id').join(),//
-                        createdateMin:"",//固定
-                        createdateMax:""//固定
-                    }
+                    sort:sort,//
+                    order:order,
+                    classification:this.clickData.id
                 };
                 this.loadTableData(temp);
             },
@@ -426,7 +453,7 @@
        display: flex;
        flex-direction: row;
        height: 100%;
-       width: 100%;
+       width: 99%;
    }
    .knowmgtsidebar{
        flex-basis: 15%;

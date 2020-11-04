@@ -27,10 +27,15 @@ const sidebar = {
                 meta:{title:"字典数据"},
                 component:()=>import('@/views/bms/DictionaryTag/Dictionary')
             },{
-                name: '标签管理',
+                name: 'Tag',
                 path: "Tag",
                 meta:{title:"标签管理"},
                 component:()=>import('@/views/bms/DictionaryTag/Tag')
+            },,{
+                name: 'SystemParameter',
+                path: "SystemParameter",
+                meta:{title:"系统参数管理"},
+                component:()=>import('@/views/bms/SystemParameter')
             }]
         }, {
             name: "Repository",
