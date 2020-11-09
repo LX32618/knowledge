@@ -39,3 +39,18 @@ export function cancelSubscribe (option) {
     } 
   })
 }
+
+// 订阅知识列表
+export function getSubscribedKnowledge (option) {
+  return request({
+    url: `${rootUrl}get`,
+    method: 'post',
+    data: {
+      page: option.page || 1,
+      rows: option.rows || 10,
+      condition: {
+        userId: option.userId
+      }
+    } 
+  })
+}

@@ -12,7 +12,7 @@
     ></search-area>
     <!-- 知识显示列表 -->
     <div>
-      <dynamic-table :data="knowledges" :columns="columns" :props="props" border>
+      <dynamic-table ref="dynamicTable" :data="knowledges" :columns="columns" :props="props" border @sort-change="handleSort">
         <!-- 序号列 -->
         <template v-slot:index="{ scope }">{{ scope.$index + 1 }}</template>
         <!-- 操作列 -->
@@ -78,6 +78,8 @@ export default {
       page: 1,
       rows: 10,
       total: 0,
+      sort: undefined,
+      order: undefined,
       columns: [],
       props: {
         index: true
@@ -101,6 +103,11 @@ export default {
         this.searchOption = {}
         this.page = 1
         this.rows = 10
+        this.sort = undefined
+        this.order = undefined
+        if (this.$refs.dynamicTable) {
+          this.$refs.dynamicTable.clearSort()
+        }
         this.updateKnowledges()
       },
       immediate: true
@@ -115,7 +122,9 @@ export default {
         userId: this.userInfo.id,
         searchOption: this.searchOption,
         rows: this.rows,
-        page: this.page
+        page: this.page,
+        sort: this.sort,
+        order: this.order
       }).then(res => {
         // 处理知识列表配置
         const model = res.content.model
@@ -237,6 +246,12 @@ export default {
     // 当前页面变化
     pageChange (page) {
       this.page = page
+      this.updateKnowledges()
+    },
+    // 处理排序
+    handleSort ({ column, prop, order }) {
+      this.sort = prop
+      this.order = order === 'descending' ? 'desc' : 'asc'
       this.updateKnowledges()
     }
   }

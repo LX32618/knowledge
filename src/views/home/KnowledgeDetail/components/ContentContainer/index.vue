@@ -106,7 +106,7 @@ export default {
       }
       if (subForm) {
         subForm.forEach(item => {
-          model[`table_${item.formId}`] = item.data.map(subData => _.omit(subData, omitArray))
+          model[`table_${item.formId}`] = item.data ? item.data.map(subData => _.omit(subData, omitArray)) : []
         })
       }
       model.knowledgeId = this.baseData.id

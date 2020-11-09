@@ -5,7 +5,7 @@ module.exports = {
     devServer: {
         proxy: {
             '/api1': {
-                target: 'http://192.168.3.108:8083', // 刘珏先 api
+                target: 'http://192.168.3.166:8083', // 刘珏先 api
                 changeOrigin: true,
                 pathRewrite: {
                     '^/api1': '/'
@@ -33,7 +33,7 @@ module.exports = {
                 }
             },
             '/api5': {
-                target: 'http://192.168.3.108:8083/',
+                target: 'http://192.168.3.166:8083/',
                 changeOrigin: true,
                 pathRewrite: {
                     '^/api5': '/'
