@@ -5,14 +5,14 @@ module.exports = {
     devServer: {
         proxy: {
             '/api1': {
-                target: 'http://192.168.3.166:8083', // 刘珏先 api
+                target: 'http://192.168.4.166:8083', // 刘珏先 api
                 changeOrigin: true,
                 pathRewrite: {
                     '^/api1': '/'
                 }
             },
             '/api2': {
-                target: 'http://192.168.3.100:8088', // 王夏冰 api
+                target: 'http://192.168.4.100:8088', // 王夏冰 api
                 changeOrigin: true,
                 pathRewrite: {
                     '^/api2': '/app/authcenter/api'
@@ -26,14 +26,14 @@ module.exports = {
                 }
             },
             '/api4': {
-                target: 'http://192.168.3.100:8083', // 王夏冰 api2
+                target: 'http://192.168.4.100:8083', // 王夏冰 api2
                 changeOrigin: true,
                 pathRewrite: {
                     '^/api4': '/'
                 }
             },
             '/api5': {
-                target: 'http://192.168.3.166:8083/',
+                target: 'http://192.168.4.166:8083/',
                 changeOrigin: true,
                 pathRewrite: {
                     '^/api5': '/'
@@ -47,7 +47,7 @@ module.exports = {
                 }
             },
             '/cas': {
-                target: 'http://192.168.3.100:8088/',
+                target: 'http://192.168.4.100:8088/',
                 changeOrigin: true
             },
             '/fms-basic': {
