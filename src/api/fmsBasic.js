@@ -8,10 +8,20 @@ const request = axios.create({
 
 request.interceptors.request.use(
   config => {
-    config.headers['Content-Type'] = 'application/x-www-form-urlencoded'
+    config.headers['Content-Type'] = 'application/json'
     return config
   }
 )
+
+export function logout () {
+  return request({
+    url: `${rootUrl}logout.do`,
+    method: 'post',
+    params: {
+      casDemo: 'http://www.baidu.com'
+    }
+  })
+}
 
 export function test () {
   const data = {

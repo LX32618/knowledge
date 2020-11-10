@@ -66,3 +66,21 @@ export function getRecycleKnowledge (option={}) {
     }
   })
 }
+
+// 删除知识还原
+export function revertKnowledge (option={}) {
+  return request({
+    url: `${rootUrl}revertKnowledge`,
+    method: 'post',
+    data: option
+  })
+}
+
+// 物理删除知识
+export function reDeleteKnowledge (option={}) {
+  return request({
+    url: `${rootUrl}reDelete`,
+    method: 'post',
+    data: option
+  })
+}

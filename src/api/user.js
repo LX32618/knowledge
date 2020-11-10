@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import { getToken } from '@/utils/auth'
 
 const rootUrl = '/cas/'
 
@@ -10,12 +11,10 @@ export function login (data) {
   })
 }
 
-export function getInfo (token) {
+export function getInfo () {
   return request({
     url: `${rootUrl}getToken`,
-    // url: 'http://192.168.3.100:8088/cas/getToken',
-    method: 'get',
-    params: { token }
+    method: 'get'
   })
 }
 

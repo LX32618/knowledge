@@ -30,6 +30,7 @@ const routerGuide = async (to, from, next) => {
       }).catch(() => {
       })
     }
+    next()
   } else {
     const { redirect, jsessionid } = to.query
     if (!jsessionid) {
@@ -39,13 +40,15 @@ const routerGuide = async (to, from, next) => {
       return
     }
     setToken(jsessionid)
+    
     await getUser(next, redirect);
     await store.dispatch('routerMenu/getRouterMenu', "F36A946243D34506A6BE625412739725").then(() => {
     }).catch(() => {
     })
+    next()
   }
-  // next()
-  to.query.jsessionid ? next({ path: '/' }) : next()
+  
+  // to.query.jsessionid ? next({ path: '/' }) : next()
 
   // 未使用统一认证平台调试用
   // 已登录

@@ -3,10 +3,10 @@
     <!-- 按钮工具条 -->
     <el-form inline>
       <el-form-item>
-        <el-button type="primary" icon="el-icon-refresh-right" @click="handleBack">还原</el-button>
+        <el-button type="primary" icon="el-icon-refresh-right" @click="handleBack" :loading="isLoading">还原</el-button>
       </el-form-item>
       <el-form-item>
-        <el-button type="danger" icon="el-icon-delete" @click="handleDelete">删除</el-button>
+        <el-button type="danger" icon="el-icon-delete" @click="handleDelete" :loading="isLoading">删除</el-button>
       </el-form-item>
     </el-form>
     <!-- 删除知识列表 -->
@@ -24,7 +24,7 @@
 <script>
 import DynamicTable from '@/components/KnowledgeView/components/DynamicTable'
 import { mapGetters } from 'vuex'
-import { getRecycleKnowledge } from '@/api/knowledgeBase'
+import { getRecycleKnowledge, revertKnowledge, reDeleteKnowledge } from '@/api/knowledgeBase'
 
 export default {
   name: 'RecycleBin',
@@ -81,10 +81,27 @@ export default {
     },
     handleBack () {
       const selection = this.$refs.table.getSelection()
-      console.log(selection)
+      const id = selection.map(item => item.id).join(',')
+      this.isLoading = true
+      revertKnowledge({
+        id,
+        userId: this.userInfo.id
+      }).then(() => {
+        this.updateRecycleKnowledge()
+      })
     },
     handleDelete () {
       const selection = this.$refs.table.getSelection()
+      const id = selection.map(item => item.id).join(',')
+      this.isLoading = true
+      reDeleteKnowledge({
+        id,
+        userId: this.userInfo.id
+      }).then(() => {
+        this.updateRecycleKnowledge()
+      }).catch(() => {
+        this.isLoading = false
+      })
     }
   },
   mounted () {

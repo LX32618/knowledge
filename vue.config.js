@@ -18,32 +18,11 @@ module.exports = {
                     '^/api2': '/app/authcenter/api'
                 }
             },
-            '/api3': {
-                target: 'http://192.168.4.111:3000', // 夏添 api
-                changeOrigin: true,
-                pathRewrite: {
-                    '^/api3': '/api'
-                }
-            },
             '/api4': {
                 target: 'http://192.168.4.100:8083', // 王夏冰 api2
                 changeOrigin: true,
                 pathRewrite: {
                     '^/api4': '/'
-                }
-            },
-            '/api5': {
-                target: 'http://192.168.4.166:8083/',
-                changeOrigin: true,
-                pathRewrite: {
-                    '^/api5': '/'
-                }
-            },
-            '/api6': {
-                target: 'http://localhost:8080/',
-                changeOrigin: true,
-                pathRewrite: {
-                    '^/api6': '/'
                 }
             },
             '/cas': {

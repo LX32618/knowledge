@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 const rootUrl = '/api1/sysRole/'
 
-// 获取分享知识列表
+// 获取分享/申请知识列表
 export function getSharedKnowledge (option) {
   return request({
     url: `${rootUrl}sysPermissionsController/getShare`,
