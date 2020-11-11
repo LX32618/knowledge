@@ -28,6 +28,9 @@ export function findKnowledges (option) {
         sort: option.sort || 'CREATEDATE',
         order: option.order || 'desc',
         auditing: option.auditing || '1',
+        isApplyDel: option.isApplyDel,
+        knowledgeLock: option.knowledgeLock,
+        typeId: option.typeId,
         creator: option.creator
       }
     }

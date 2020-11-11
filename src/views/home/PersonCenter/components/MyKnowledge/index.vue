@@ -1,19 +1,8 @@
 <template>
   <el-container>
     <el-header height="50">
-      <el-tabs type="card">
-        <el-tab-pane @tab-click="handleTabClick">
-          <span slot="label" index="0">已发布</span>
-        </el-tab-pane>
-        <el-tab-pane>
-          <span slot="label" index="1">待审核</span>
-        </el-tab-pane>
-        <el-tab-pane>
-          <span slot="label" index="2">审核未通过</span>
-        </el-tab-pane>
-        <el-tab-pane>
-          <span slot="label" index="3">待发布</span>
-        </el-tab-pane>
+      <el-tabs type="card" v-model="selectedTab" @tab-click="handleTab">
+        <el-tab-pane v-for="tab of tabs" :key="tab.name" :name="tab.name" :label="tab.label"></el-tab-pane>
       </el-tabs>
     </el-header>
     <el-main>
@@ -22,43 +11,205 @@
           <cs-tree
             :data="treeData"
             :treeOptions="{}"
-            @treeNodeClick="handleTreeNodeClick"
-          >
+            @treeNodeClick="handleTreeNodeClick">
           </cs-tree
         ></el-col>
-        <el-col :span="18">{{ selectedCategoryId }}</el-col>
+        <el-col :span="18">
+          <el-button type="primary" icon="el-icon-s-promotion" v-if="selectedTab === 'toPublish'">发布</el-button>
+          <dynamic-table :data="knowledges" :columns="columns" :props="tableProps">
+            <template v-slot:name="{ scope }">
+              <router-link :to="{ path: `/knowledgeDetail/${scope.row.id}`}">{{ scope.row.name }}</router-link>
+            </template>
+            <template v-slot:option=" { scope }">
+              <el-button v-if="selectedTab === 'published'" type="primary" icon="el-icon-delete" @click="applyDelete(scope.row)">申请删除</el-button>
+            </template>
+          </dynamic-table>
+          <el-pagination
+            :page-size="rows"
+            :total="total"
+            :current-page.sync="page"
+            @current-change="pageChange"
+            layout="total, prev, pager, next, jumper">
+          </el-pagination>
+        </el-col>
       </el-row>
     </el-main>
   </el-container>
 </template>
 
 <script>
+import DynamicTable from '@/components/KnowledgeView/components/DynamicTable'
 import { fetchCategoryTreeAndNum } from '@/api/docCategory'
+import { findKnowledges } from '@/api/knowledgeBase'
 import { unflatCategoryTree } from '@/utils/tree'
 import { mapGetters } from 'vuex'
 
 export default {
   name: 'MyKnowledge',
+  components: {
+    DynamicTable
+  },
   data () {
     return {
+      page: 1,
+      rows: 10,
+      total: 0,
       isLoading: false,
       treeData: [],
       tableData: [],
       selectedCategoryId: '',
-      selectedTab: '0'
+      selectedTab: 'published',
+      isLoading: false,
+      knowledges: [],
+      tabs: [
+        { name: 'published', label: '已发布' },
+        { name: 'toAudit', label: '待审核' },
+        { name: 'noPass', label: '审核未通过' },
+        { name: 'toPublish', label: '待发布' }
+      ]
     }
   },
   computed: {
     ...mapGetters([
       'userInfo',
       'rootCategoryId'
-    ])
+    ]),
+    tableProps () {
+      return {
+        checkbox: this.selectedTab === 'toPublish'
+      }
+    },
+    condition () {
+      const conditionConfig = {
+        published: {
+          auditing: '1',
+          isApplyDel: 'applydel'
+        },
+        toAudit: {
+          auditing: '-1,0',
+          knowledgeLock: 'lock'
+        },
+        noPass: {
+          auditing: '-2,3',
+          knowledgeLock: 'lock'
+        },
+        toPublish: {
+          auditing: '-3',
+          knowledgeLock: 'lock'
+        }
+      }
+      return conditionConfig[this.selectedTab]
+    },
+    columns () {
+      const columnConfig = {
+        published: [
+          {
+            key: 'name',
+            label: '名称'
+          },
+          {
+            key: 'classificationName',
+            label: '知识目录'
+          },
+          {
+            key: 'creatorName',
+            label: '创建人'
+          },{
+            key: 'option',
+            label: '操作'
+          }
+        ],
+        toAudit: [
+          {
+            key: 'name',
+            label: '名称'
+          },
+          {
+            key: 'classificationName',
+            label: '知识目录'
+          },
+          {
+            key: '',
+            label: '审核状态'
+          },
+          {
+            key: '',
+            label: '审核人'
+          },
+          {
+            key: 'creatorName',
+            label: '创建人'
+          },
+          {
+            key: 'option',
+            label: '操作'
+          }
+        ],
+        noPass: [
+          {
+            key: 'name',
+            label: '名称'
+          },
+          {
+            key: 'classificationName',
+            label: '知识目录'
+          },
+          {
+            key: '',
+            label: '审核未通过原因'
+          },
+          {
+            key: 'creatorName',
+            label: '创建人'
+          }
+        ],
+        toPublish: [
+          {
+            key: 'name',
+            label: '名称'
+          },
+          {
+            key: 'classificationName',
+            label: '知识目录'
+          },
+          {
+            key: 'creatorName',
+            label: '创建人'
+          },{
+            key: 'option',
+            label: '操作'
+          }
+        ]
+      }
+      return columnConfig[this.selectedTab]
+    }
   },
   methods: {
+    pageChange () {
+      this.updateKnowledge()
+    },
     handleTreeNodeClick ({ data }) {
       this.selectedCategoryId = data.id
+      this.updateKnowledge()
     },
-    handleTabClick () { }
+    updateKnowledge () {
+      this.isLoading = true
+      findKnowledges({
+        page: this.page,
+        rows: this.rows,
+        ...this.condition,
+        typeId: this.selectedCategoryId,
+        creator: this.userInfo.id
+      }).then(res => {
+        this.knowledges = res.content.datas
+        this.total = res.content.total
+        this.isLoading = false
+      })
+    },
+    handleTab () {
+      this.updateKnowledge()
+    },
+    applyDelete (row) {}
   },
   async mounted () {
     this.isLoading = true
@@ -68,7 +219,7 @@ export default {
     })
     this.treeData = unflatCategoryTree(data.content, this.rootCategoryId, true)
     this.selectedCategoryId = this.rootCategoryId
-    this.isLoading = false
+    this.updateKnowledge()
   }
 }
 </script>
