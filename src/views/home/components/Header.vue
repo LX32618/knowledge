@@ -66,7 +66,8 @@
       </el-col>
       <!-- 用户头像 -->
       <el-col :span="2">
-        <img class="user-avator" src="@/assets/img/home/head.jpg" />
+        <!-- <img class="user-avator" src="@/assets/img/home/head.jpg" /> -->
+        <el-avatar class="user-avator" :size="45" icon="el-icon-user-solid"></el-avatar>
       </el-col>
       <!-- 用户名下拉菜单 -->
       <el-col :span="3">
@@ -239,10 +240,6 @@ export default {
   margin-left: 20px;
 }
 .user-avator {
-  width: 46px;
-  height: 46px;
-  line-height: 70px;
-  border-radius: 50%;
   margin: 10px 20px 0;
 }
 .user-name {

@@ -20,7 +20,7 @@
           <el-card>
             <!-- 头像、名称信息 -->
             <div class="sidebar-info">
-              <el-avatar :src="headUrl"></el-avatar>
+              <el-avatar icon="el-icon-user-solid" :size="76"></el-avatar>
               <div class="info-wrapper">
                 <p class="user-name">系统管理员</p>
                 <p class="user-department">
@@ -102,8 +102,7 @@ export default {
 }
 .el-avatar {
   margin-top: 40px;
-  width: 76px;
-  height: 76px;
+  font-size: 36px;
 }
 .el-menu {
   width: 100%;

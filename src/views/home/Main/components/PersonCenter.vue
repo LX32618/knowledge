@@ -2,7 +2,7 @@
   <div class="person-info-wrapper" v-loading="isLoading">
     <!-- 头像框 -->
     <div class="head-box">
-      <el-avatar :src="headUrl"></el-avatar>
+      <el-avatar class="user-avator" :size="76" icon="el-icon-user-solid"></el-avatar>
       <div class="info-wrapper">
         <p class="info-name">{{ userInfo.name }}</p>
       </div>
@@ -119,8 +119,7 @@ export default {
 .el-avatar {
   float: left;
   margin: 20px;
-  width: 76px;
-  height: 76px;
+  font-size: 36px;
 }
 .info-wrapper {
   float: left;

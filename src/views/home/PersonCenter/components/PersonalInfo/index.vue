@@ -1,6 +1,6 @@
 <template>
   <div class="info-wrapper">
-    <el-avatar :src="headUrl" :size="150"></el-avatar>
+    <el-avatar icon="el-icon-user-solid" :size="150"></el-avatar>
     <div class="user-name">{{ userInfo.name }}</div>
     <div class="user-info">
       <i class="el-icon-phone"></i> {{ userInfo.phone }}
@@ -43,5 +43,8 @@ export default {
 .user-info {
   margin: 20px;
   font-size: 16px;
+}
+.el-avatar {
+  font-size: 70px;
 }
 </style>
