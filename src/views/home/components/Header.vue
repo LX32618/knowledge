@@ -147,8 +147,8 @@ export default {
           break
         // 登出
         case 'logout':
-          await this.$store.dispatch('user/logout')
-          this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+          this.$store.commit('user/REMOVE_TOKEN')
+          window.location.href="http://glaway.soft.net/cas/logout?ssologin=http://192.168.4.200:8080/knowledge"
       }
     },
     // 进入帮助页面

@@ -29,9 +29,12 @@ module.exports = {
                 target: 'http://192.168.4.100:8088/',
                 changeOrigin: true
             },
-            '/fms-basic': {
-                target: 'http://glaway.soft.net/',
-                changeOrigin: true
+            '/glaway': {
+                target: 'http://glaway.soft.net',
+                changeOrigin: true,
+                pathRewrite: {
+                    '^/glaway': '/'
+                }
             }
         }
     },

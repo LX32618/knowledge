@@ -70,7 +70,11 @@ export default {
         },
         {
           label: '状态',
-          key: 'status'
+          key: 'status',
+          formatter (row) {
+            const statuses = ['待审核', '通过', '', '未通过']
+            return statuses[row.status]
+          }
         }
       ]
     }

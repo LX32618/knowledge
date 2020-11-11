@@ -1,5 +1,6 @@
 import { getToken, setToken, removeToken } from '@/utils/auth'
-import { login, logout, getInfo } from '@/api/user'
+import { login, getInfo } from '@/api/user'
+import { logout} from '@/api/fmsBasic'
 
 const state = {
   token: getToken(),
@@ -12,6 +13,10 @@ const mutations = {
   },
   SET_INFO: (state, info) => {
     state.userInfo = info
+  },
+  REMOVE_TOKEN: (state) => {
+    removeToken()
+    state.token = ''
   }
 }
 

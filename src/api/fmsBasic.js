@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const rootUrl = '/fms-basic/'
+const rootUrl = '/glaway/'
 const request = axios.create({
   withCredentials: true,
   timeout: 30000
@@ -15,10 +15,10 @@ request.interceptors.request.use(
 
 export function logout () {
   return request({
-    url: `${rootUrl}logout.do`,
+    url: `${rootUrl}cas/logout`,
     method: 'post',
     params: {
-      casDemo: 'http://www.baidu.com'
+      ssologin: 'http://192.168.4.200:8080/knowledge'
     }
   })
 }
