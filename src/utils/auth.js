@@ -2,16 +2,28 @@ import Cookies from 'js-cookie'
 
 const TokenKey = 'JSESSIONID'
 
+// export function getToken () {
+//   return Cookies.get(TokenKey, { path: '/' })
+// }
+
+// export function setToken (token) {
+//   return Cookies.set(TokenKey, token, { path: '/' })
+// }
+
+// export function removeToken () {
+//   return Cookies.remove(TokenKey, { path: '/' })
+// }
+
 export function getToken () {
-  return Cookies.get(TokenKey, { path: '/' })
+  return localStorage.getItem(TokenKey)
 }
 
 export function setToken (token) {
-  return Cookies.set(TokenKey, token, { path: '/' })
+  localStorage.setItem(TokenKey, token)
 }
 
 export function removeToken () {
-  return Cookies.remove(TokenKey, { path: '/' })
+  localStorage.removeItem(TokenKey)
 }
 
 // export function getSessionKey () {

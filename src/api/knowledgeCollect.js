@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-const rootUrl = '/api4/knowledgeCollect/'
+const rootUrl = '/api1/knowledgeCollect/'
 
 // 获取收藏知识总条数
 export function fetchCollectKnowledgeCount (option) {
@@ -14,10 +14,20 @@ export function fetchCollectKnowledgeCount (option) {
 }
 
 // 获取收藏知识的列表
-export function fetchCollectKnowledge (data) {
+export function fetchCollectKnowledge (option) {
   return request({
     url: `${rootUrl}finds`,
     method: 'post',
-    data
+    data: {
+      page: option.page || 1,
+      rows: option.rows || 10,
+      condition: {
+        sort: option.sort || 'TIME',
+        order: option.order || 'desc',
+        auditing: option.auditing || '1',
+        typeId: option.typeId,
+        userId: option.userId
+      }
+    }
   })
 }

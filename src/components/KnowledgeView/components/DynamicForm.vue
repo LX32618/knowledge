@@ -3,6 +3,7 @@
     <el-form
       ref="dynamic-form"
       :model="models"
+      :rules="rules"
       :label-position="formConfig.labelPosition"
       :label-width="`${formConfig.labelWidth}px`"
       :size="formConfig.size">
@@ -38,7 +39,8 @@ export default {
   },
   data () {
     return {
-      models: {}
+      models: {},
+      rules: {}
     }
   },
   watch: {
@@ -73,10 +75,21 @@ export default {
     resetForm () {
       this.generateModels()
       this.$emit('reset')
+    },
+    // 生成验证
+    generateRules () {
+      const rules = {}
+      for (const field of this.fields) {
+        if (field.options.required) {
+          rules[field.key] = [{ required: true, message: `${field.name}不能为空`, trigger: 'blur' }]
+        }
+      }
+      this.rules = rules
     }
   },
   created () {
     this.generateModels()
+    this.generateRules()
   }
 }
 </script>

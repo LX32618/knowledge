@@ -17,11 +17,16 @@
         <el-col :span="18">
           <el-button type="primary" icon="el-icon-s-promotion" v-if="selectedTab === 'toPublish'">发布</el-button>
           <dynamic-table :data="knowledges" :columns="columns" :props="tableProps">
-            <template v-slot:name="{ scope }">
-              <router-link :to="{ path: `/knowledgeDetail/${scope.row.id}`}">{{ scope.row.name }}</router-link>
+            <template v-slot:NAME="{ scope }">
+              <router-link :to="{ path: `/knowledgeDetail/${scope.row.id}`}">{{ scope.row.NAME }}</router-link>
+            </template>
+            <template v-slot:reason="{ scope }">
+              <el-tooltip effect="light" :content="scope.row.reason" placement="bottom" popper-class="popper-tip">
+                <div>{{ sliceReason(scope.row.reason) }}</div>
+              </el-tooltip>
             </template>
             <template v-slot:option=" { scope }">
-              <el-button v-if="selectedTab === 'published'" type="primary" icon="el-icon-delete" @click="applyDelete(scope.row)">申请删除</el-button>
+              <el-button v-if="selectedTab === 'published'" size="mini" type="primary" icon="el-icon-delete" @click="applyDelete(scope.row)">申请删除</el-button>
             </template>
           </dynamic-table>
           <el-pagination
@@ -104,15 +109,15 @@ export default {
       const columnConfig = {
         published: [
           {
-            key: 'name',
+            key: 'NAME',
             label: '名称'
           },
           {
-            key: 'classificationName',
+            key: 'CATEGORYNAME',
             label: '知识目录'
           },
           {
-            key: 'creatorName',
+            key: 'CREATORNAME',
             label: '创建人'
           },{
             key: 'option',
@@ -121,23 +126,24 @@ export default {
         ],
         toAudit: [
           {
-            key: 'name',
-            label: '名称'
+            key: 'NAME',
+            label: '名称',
+            width: 120
           },
           {
-            key: 'classificationName',
+            key: 'CATEGORYNAME',
             label: '知识目录'
           },
           {
-            key: '',
+            key: 'audits',
             label: '审核状态'
           },
           {
-            key: '',
+            key: 'auditor',
             label: '审核人'
           },
           {
-            key: 'creatorName',
+            key: 'CREATORNAME',
             label: '创建人'
           },
           {
@@ -147,33 +153,33 @@ export default {
         ],
         noPass: [
           {
-            key: 'name',
+            key: 'NAME',
             label: '名称'
           },
           {
-            key: 'classificationName',
+            key: 'CATEGORYNAME',
             label: '知识目录'
           },
           {
-            key: '',
+            key: 'reason',
             label: '审核未通过原因'
           },
           {
-            key: 'creatorName',
+            key: 'CREATORNAME',
             label: '创建人'
           }
         ],
         toPublish: [
           {
-            key: 'name',
+            key: 'NAME',
             label: '名称'
           },
           {
-            key: 'classificationName',
+            key: 'CATEGORYNAME',
             label: '知识目录'
           },
           {
-            key: 'creatorName',
+            key: 'CREATORNAME',
             label: '创建人'
           },{
             key: 'option',
@@ -209,6 +215,9 @@ export default {
     handleTab () {
       this.updateKnowledge()
     },
+    sliceReason (text) {
+      return (!text || text.length < 10) ? text : `${text.slice(0, 8)}...`
+    },
     applyDelete (row) {}
   },
   async mounted () {
@@ -228,5 +237,8 @@ export default {
 .tree-area {
   height: 615px;
   overflow-y: auto;
+}
+.popper-tip {
+  width: 200px;
 }
 </style>

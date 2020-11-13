@@ -13,6 +13,7 @@
           v-loading="isCategoriesLoading"
           value-key="id"
         >
+          <el-option label="知识库" :value="undefined"></el-option>
           <el-option
             v-for="category of docCategories"
             :key="category.id"

@@ -16,13 +16,13 @@
       <div class="knowledge-list">
         <div v-for="item of list" :key="item.id" class="knowledge-item">
           <el-link type="primary" @click="handleLinkClick(item.id)">
-            <span>{{ item.name }}</span>
+            <span>{{ item.NAME }}</span>
           </el-link>
-          <div class="item-content">{{ item.describe }}</div>
+          <div class="item-content">{{ item.CATEGORYNAME }}</div>
           <div class="item-footer">
-            <span>{{ item.creator }}</span
+            <span>{{ item.CREATORNAME }}</span
             >&nbsp;&nbsp;&nbsp;&nbsp;
-            <span>{{ item.createDate | dateTime }}</span>
+            <span>{{ item.CREATEDATE | dateTime }}</span>
           </div>
         </div>
       </div>
