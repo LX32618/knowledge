@@ -54,7 +54,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       getInfo(state.token).then(response => {
         // const data = response.content
-        // console.log(response)
+        console.log(response)
         // if (!response.content.token) {
         //   resolve(null)
         // }
