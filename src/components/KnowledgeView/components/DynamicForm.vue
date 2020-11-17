@@ -44,8 +44,11 @@ export default {
     }
   },
   watch: {
-    data (val) {
-      this.generateModels()
+    data: {
+      handler (val) {
+        this.generateModels()
+      },
+      immediate: true
     }
   },
   methods: {
@@ -59,6 +62,10 @@ export default {
     generateModels () {
       this.models = {}
       for (const field of this.fields) {
+        if (this.data && Object.keys(this.data).indexOf(field.key) >= 0) {
+          this.models[field.key] = _.cloneDeep(this.data[field.key])
+          continue
+        }
         this.models[field.key] = _.cloneDeep(field.options.defaultValue)
       }
     },

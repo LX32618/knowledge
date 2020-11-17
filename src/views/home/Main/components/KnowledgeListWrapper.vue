@@ -15,7 +15,7 @@
       <el-tab-pane label="热点知识" name="2"></el-tab-pane>
       <div class="knowledge-list">
         <div v-for="item of list" :key="item.id" class="knowledge-item">
-          <el-link type="primary" @click="handleLinkClick(item.id)">
+          <el-link type="primary" @click="handleLinkClick(item.ID)">
             <span>{{ item.NAME }}</span>
           </el-link>
           <div class="item-content">{{ item.CATEGORYNAME }}</div>

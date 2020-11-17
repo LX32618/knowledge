@@ -36,7 +36,7 @@ const routerGuide = async (to, from, next) => {
         next()
       } catch (error) {
         removeToken()
-        window.location.href = `/cas/login?redirect=${redirect}`
+        window.location.href = `/cas/login?redirect=${to.path}`
       }
     }
   } else {
@@ -50,7 +50,6 @@ const routerGuide = async (to, from, next) => {
     setToken(jsessionid)
     next({ path: to.path })
   }
-  // to.query.jsessionid ? next({ path: '/' }) : next()
 }
 
 export {

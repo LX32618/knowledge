@@ -17,7 +17,8 @@ export default {
         class={{
           'dynamic-form-item': true
         }}
-        label={ this.field.name }>
+        label={ this.field.name }
+        prop={ this.field.key }>
         { this.renderComponent(h) }
       </el-form-item>
     )
@@ -59,14 +60,10 @@ export default {
           return this.renderInput(h)
         case 9:
           return this.renderTextArea(h)
-        case 'inputNumber':
+        case 2:
           return this.renderInputNumber(h)
         case 'switch':
           return this.renderSwitch(h)
-        case 'radio':
-          return this.renderRadio(h)
-        case 'checkbox':
-          return this.renderCheckbox(h)
         case 1:
         case 3:
         case 8:

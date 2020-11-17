@@ -26,10 +26,19 @@ export function fetchCollectTree (option) {
   })
 }
 
-// 新增 / 删除树节点
+// 新增 / 编辑树节点
 export function saveTreeNode (data) {
   return request({
     url: `${rootUrl2}treeNode/save`,
+    method: 'post',
+    data
+  })
+}
+
+// 删除树节点
+export function deleteTreeNode (data) {
+  return request({
+    url: `${rootUrl2}treeNode/delete`,
     method: 'post',
     data
   })

@@ -31,3 +31,21 @@ export function fetchCollectKnowledge (option) {
     }
   })
 }
+
+// 取消收藏
+export function deleteCollect (data) {
+  return request({
+    url: `${rootUrl}delete`,
+    method: 'post',
+    data
+  })
+}
+
+// 收藏知识 / 移动收藏
+export function saveCollect (data) {
+  return request({
+    url: `${rootUrl}save`,
+    method: 'post',
+    data
+  })
+}
