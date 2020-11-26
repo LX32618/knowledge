@@ -13,13 +13,15 @@
                 <el-tab-pane :key="1" v-if="basicFormData.type==2 && clickData.formId" label="模板配置" name="template" >
                     <cs-template :form-data="tempFormData" :category-id="basicFormData.id" v-loading="tabLoading"></cs-template>
                 </el-tab-pane>
-                <el-tab-pane :key="2" v-if="basicFormData.type==2 && clickData.formId" label="列表配置" name="list" v-loading="tabLoading">
-                    <cs-table-config :config-data="configData"></cs-table-config>
+                <el-tab-pane :key="2" v-if="basicFormData.type==2 && clickData.formId" label="列表配置" name="list" >
+                    <cs-table-config :config-data="configData" v-loading="tabLoading"></cs-table-config>
                 </el-tab-pane>
                 <el-tab-pane :key="3" v-if="basicFormData.type!=0" label="权限配置" name="permission">
-                    <cs-authority-config></cs-authority-config>
+                    <cs-authority-config v-loading="tabLoading"></cs-authority-config>
                 </el-tab-pane>
-                <el-tab-pane :key="4" v-if="basicFormData.type==2 && clickData.formId" label="接口配置" name="interface">接口配置</el-tab-pane>
+                <el-tab-pane :key="4" v-if="basicFormData.type==2 && clickData.formId" label="流程配置" name="interface">
+                    <cs-flow-config :flow-data="flowData" :default-row="flowDefaultRow" v-loading="tabLoading"></cs-flow-config>
+                </el-tab-pane>
             </el-tabs>
       <!--      <cs-template :form-data="tempFormData"></cs-template>-->
         </div>
@@ -35,11 +37,13 @@
     import template from "./Form/Template"
     import tableConfig from "./Form/TableConfig"
     import authorityConfig from "./Form/AuthorityConfig"
+    import flowConfig from "./Form/FlowConfig"
     import _ from 'lodash'
     import request from '@/utils/request'
     import {mapGetters} from "vuex";
     import {fetchModel} from "@/api/formMaking.js"
     import {fetchTableConfig} from "@/api/knowledgeList.js"
+    import {fetchFlowList} from "@/api/fmsBasic.js"
 
     const rootUrl = '/api4/app/authcenter/api/categoryTree/';
 
@@ -79,46 +83,68 @@
                 },
                 appendFormData:{
                 },
-                configData:{}
+                configData:{},
+                flowData:[],
+                flowDefaultRow:{}
             }
         },
         methods:{
-            tabClick(tab){
-                if(tab.label=='模板配置')
-                {
+            tabClick: function (tab) {
+                if (tab.label == '模板配置') {
                     let option = {
-                        categeryId:this.basicFormData.id
+                        categeryId: this.basicFormData.id
+                    };
+
+                    let loading = this.$loading({
+                        lock: true,
+                        text: '',
+                        spinner: 'el-icon-loading',
+                        background: 'rgba(255, 255, 255, 0.9)'
+                    })
+                    //this.tabLoading = true;
+                    fetchModel(option).then(resp => {
+                        if (resp.status == "success") {
+                            this.tempFormData = resp.content.knowledgeModel.formModel;
+                        } else {
+                            this.$error(resp.msg);
+                        }
+                        loading.close();
+                    });
+                } else if (tab.label == '列表配置') {
+                    let option = {
+                        categoryId: this.basicFormData.id,
+                        formId: this.basicFormData.formId
                     };
                     this.tabLoading = true;
-                    fetchModel(option).then(resp=>{
-                        if(resp.status == "success")
-                        {
-                           this.tempFormData = resp.content.knowledgeModel.formModel;
-                        }
-                        else{
+                    fetchTableConfig(option).then(resp => {
+                        if (resp.status == "success") {
+                            let configData = _.cloneDeep(resp.content);
+                            configData.categoryId = this.basicFormData.id;
+                            this.configData = configData;
+                        } else {
                             this.$error(resp.msg);
                         }
                         this.tabLoading = false;
                     });
-                }
-                else if(tab.label == '列表配置')
-                {
+                } else if (tab.label == '流程配置') {
                     let option = {
-                        categoryId:this.basicFormData.id,
-                        formId:this.basicFormData.formId
+                        searchName: '',
+                        searchKey: '',
+                        ifPage: 'false',
+                        page: "",
+                        rows: ""
                     };
                     this.tabLoading = true;
-                    fetchTableConfig(option).then(resp=>{
-                        if(resp.status == "success")
-                        {
-
-                            let  configData = _.cloneDeep(resp.content);
-                            configData.categoryId = this.basicFormData.id;
-                            this.configData = configData;
-                            console.log(configData);
-                        }
-                        else{
-                            this.$error(resp.msg);
+                    fetchFlowList(option).then(resp => {
+                        if (resp.data.success) {
+                            this.flowData = JSON.parse(resp.data.obj).rows.filter(d => {
+                               return d.status == "已发布";
+                            });
+                            console.log(this.flowData);
+                            this.flowDefaultRow = JSON.parse(resp.data.obj).rows.filter(d => {
+                                return d.id == "1b7e00c0-5e7c-4399-9a49-57281d8b2539";
+                            })[0];
+                            console.log(this.flowDefaultRow);
                         }
                         this.tabLoading = false;
                     });
@@ -250,7 +276,8 @@
             "cs-basic":basic,
             "cs-template":template,
             "cs-table-config":tableConfig,
-            "cs-authority-config":authorityConfig
+            "cs-authority-config":authorityConfig,
+            "cs-flow-config":flowConfig
         },
         computed: {
             ...mapGetters([

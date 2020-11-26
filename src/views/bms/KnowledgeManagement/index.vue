@@ -231,7 +231,10 @@
         methods:{
             treeDataFormat({node,data}){
                 const temp = _.cloneDeep(data);
-                let formatData = temp.map((item,index,arr)=>{
+                console.log(data);
+                let formatData = temp.filter(item=>{
+                    return !(item.type == 2 && item.enable != 0);
+                }).map((item,index,arr)=>{
                     if(item.pid==this.treeSettings.root_id)
                     {
                         item.icon = "element-icons el-custom-book";
@@ -301,7 +304,6 @@
                         createdateMax:this.seniorKeyWords.dateRange?this.seniorKeyWords.dateRange[1]+" 23:59:59":""//固定
                     }
                 };
-                console.log(option);
                 fetchCategoryByNodeId(option).then(resp=>{
                     this.$set(this.tableSettings,"total",resp.content.total);
                     let datas = [];
@@ -391,13 +393,13 @@
                     lock: true,
                     text: '上传中，请稍候...',
                     spinner: 'el-icon-loading',
-                    background: 'rgba(0, 0, 0, 0.7)'
+                    background: 'rgba(255, 255, 255, 0.9)'
                 })
-                axios.post('/api4/app/authcenter/api/knowledgeUpload/post', formData).then(({resp}) => {
-                    if (resp.status === "success") {
+                axios.post('/api4/app/authcenter/api/knowledgeUpload/post', formData).then((resp) => {
+                    if (resp.data.status === "success") {
                         this.$message('上传文件成功' )
                     } else {
-                        this.$message('上传文件失败:' + resp.message)
+                        this.$message('上传文件失败:' + resp.data.message)
                     }
                     loading.close()
                 })

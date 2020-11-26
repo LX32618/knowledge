@@ -5,6 +5,7 @@
 <script>
 
     import DictionaryTag from "./DictionaryTag";
+
     export default {
         name: "Dictionary",
         components:{

@@ -90,7 +90,7 @@
             <!-- <el-button :disabled="stateIndex < 0" type="text" size="medium" icon="el-icon-arrow-left" @click="handleUndo">撤销</el-button>
             <el-button :disabled="stateIndex >= historyStates.length - 1" type="text" size="medium" icon="el-icon-arrow-right" @click="handleRedo">重做</el-button> -->
             <el-button v-if="upload" type="text" size="medium" icon="el-icon-upload2" @click="handleUpload">导入JSON</el-button>
-            <el-button v-if="initial" type="text" size="medium" icon="element-icons el-custom-initialize" @click="handleInitial">&nbsp;&nbsp;初始化</el-button>
+            <el-button v-if="initial" type="text" size="medium" icon="element-icons el-custom-initialize" @click="handleInitial">&nbsp初始化</el-button>
             <el-button v-if="clearable" type="text" size="medium" icon="el-icon-delete" @click="handleClear">清空</el-button>
             <el-button v-if="preview" type="text" size="medium" icon="el-icon-view" @click="handlePreview">预览</el-button>
             <el-button v-if="generateJson" type="text" size="medium" icon="el-icon-tickets" @click="handleGenerateJson">生成JSON</el-button>
@@ -366,12 +366,13 @@ export default {
         sub.data = [];
       });
       this.setJSON(view);
-      this.updateState();
+      //this.updateState();
     },
     initialModelData(){
       this.tempLoading = true;
       let {model,view} = this.transModelData();
       this.dataBak = _.cloneDeep(model);//将数据复制储存起来
+      model.main.data = [];
       let savedModel = {};
       let option = {
         categoryId:this.categoryId,
@@ -719,7 +720,7 @@ export default {
         })
         this.subForm.splice(index,1,removeModelData[0]);
       }
-      this.updateState();
+      //this.updateState();
     },
     removeCol({index,removeData}){
         removeData.list.forEach(m=>{
@@ -730,7 +731,7 @@ export default {
             this.mainForm.data.push(removeModelData[0]);
           }
         })
-        this.updateState();
+        //this.updateState();
     },
     removeWidget({index,removeData}){
         let formId = removeData.formId;
@@ -761,7 +762,7 @@ export default {
             })
           }
         }
-        this.updateState();
+        //this.updateState();
     },
     handleGoGithub () {
       //window.location.href = 'https://github.com/GavinZhuLei/vue-form-making'
@@ -777,7 +778,6 @@ export default {
       return true
     },
     handlePreview () {
-      // console.log(this.widgetForm)
       this.previewVisible = true
     },
     handlePreviewClose () {
@@ -847,10 +847,11 @@ export default {
           customClass: ''
         },
       }
+      this.mainForm = _.cloneDeep(this.dataBak.main);
+      this.subForm = _.cloneDeep(this.dataBak.sub);
+      //this.updateState()
 
-      this.updateState()
-
-      this.widgetFormSelect = {}
+      this.widgetFormSelect = {};
     },
     handleSave(){
       this.tempLoading = true;
@@ -893,11 +894,9 @@ export default {
       }
     },
     handleInput (val) {
-      // console.log(val)
       this.blank = val
     },
     handleDataChange (field, value, data) {
-      // console.log(field, value, data)
     },
     handleUndo () {
       this.$store.commit('formMaking/UNDO')
@@ -932,7 +931,7 @@ export default {
   mounted () {
     this.$store.commit('formMaking/RESET_STATES');
   },
-  created(){
+ /* created(){
     let self = this;
     let ctrlKey = false;
     let zKey = false;
@@ -976,7 +975,7 @@ export default {
         yKey = false;
       }
     };
-  },
+  },*/
 }
 </script>
 
