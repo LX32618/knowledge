@@ -50,7 +50,7 @@ const routerGuide = async (to, from, next) => {
     if (!jsessionid) {
       // 无token且无JSESSIONID时重定向到登录页面
       removeToken()
-      window.location.href = `/casKnowledge/login?redirect=${to.path}`
+      window.location.href = `/cas/login?redirect=${to.path}`
       return
     }
     setToken(jsessionid)

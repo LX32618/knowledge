@@ -32,7 +32,7 @@ module.exports = {
                     '^/api4': '/'
                 }
             },
-            '/casKnowledge': {
+            '/cas': {
                 target: 'http://192.168.4.100:8088/',
                 changeOrigin: true
             },
