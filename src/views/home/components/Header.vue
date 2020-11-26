@@ -28,8 +28,9 @@
           v-model="searchStr"
           placeholder="请输入你想搜索的内容"
           size="large"
+          @keyup.enter.native="search"
         >
-          <el-button slot="append" icon="el-icon-search"></el-button>
+          <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
         </el-input>
       </el-col>
       <el-col :span="2" :offset="2">
@@ -193,6 +194,14 @@ export default {
       // this.messages.splice(index, 1)
       // this.toolTipDisable = false
       // this.dialogShow = true
+    },
+    search () {
+      this.$router.push({
+        name: 'KnowledgeSearch',
+        query: {
+          search: this.searchStr
+        }
+      })
     }
   },
   mounted () {
