@@ -112,6 +112,16 @@ const homeRouter = [
     meta: {
       title: '知识详情'
     }
+  }, {
+    path: '/knowledgeSearch',
+    name: 'KnowledgeSearch',
+    component: () => import("@/views/home/KnowledgeSearch"),
+    props: route => ({
+      query: route.query.search
+    }),
+    meta: {
+      title: '知识查询'
+    }
   }
 ]
 
