@@ -1,8 +1,8 @@
 import request from '@/utils/request'
 
 const rootUrl = '/api/formMaking/'
-const rootUrl1 = '/api5/system/knowledgeDataController/'
-const templateUrl = '/api5//system/KnowledgeFormTemplateController/'
+const rootUrl1 = '/api1/system/knowledgeDataController/'
+const templateUrl = '/api1//system/KnowledgeFormTemplateController/'
 
 
 //获取浏览按钮

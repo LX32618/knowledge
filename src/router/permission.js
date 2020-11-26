@@ -1,4 +1,4 @@
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import { getToken, setToken, removeToken} from '@/utils/auth'
 import store from '@/store'
 
 // 获取用户信息
@@ -21,18 +21,24 @@ const routerGuide = async (to, from, next) => {
 
   const token = getToken()
 
+  console.log(token);
+
+
+
   // 与平台对接用
   if (token) {
     const hasMenu = Object.keys(store.getters.sidebar).length > 0 && Object.keys(store.getters.sidebarRouter).length > 0
     if (hasMenu) {
-      next()
+      next();
     } else {
       try {
-        const user = await store.dispatch('user/getInfo')
+        const user = await store.dispatch('user/getInfo');
+
         if (!user) {
           throw new Error('无法获取用户信息')
         }
-        await store.dispatch('routerMenu/getRouterMenu', 'F36A946243D34506A6BE625412739725')
+
+        await store.dispatch('routerMenu/getRouterMenu', 'F36A946243D34506A6BE625412739725');
         next()
       } catch (error) {
         removeToken()
@@ -44,7 +50,7 @@ const routerGuide = async (to, from, next) => {
     if (!jsessionid) {
       // 无token且无JSESSIONID时重定向到登录页面
       removeToken()
-      window.location.href = `/cas/login?redirect=${to.path}`
+      window.location.href = `/casKnowledge/login?redirect=${to.path}`
       return
     }
     setToken(jsessionid)

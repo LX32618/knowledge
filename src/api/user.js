@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 import { getToken } from '@/utils/auth'
 
-const rootUrl = '/cas/'
+const rootUrl = '/casKnowledge/'
 
 export function login (data) {
   return request({

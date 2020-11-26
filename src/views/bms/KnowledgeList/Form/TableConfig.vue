@@ -1,5 +1,5 @@
 <template>
-    <div style="width:100%" :loading="loading">
+    <div style="width:99%" :loading="loading">
         <el-button-group>
             <el-button type="primary" icon="fa fa-save" @click.native="configSave()">保存</el-button>
             <el-button type="primary" icon="el-icon-view" @click.native="previewDialogVisible=true">预览</el-button>
@@ -88,7 +88,7 @@
 
 
     export default {
-        name: "TableConfig", 
+        name: "TableConfig",
 
         props:{
             configData:{

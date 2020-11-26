@@ -17,11 +17,6 @@ const sidebar = {
                 meta:{title:"检索关键字统计"},
                 component:()=>import('@/views/Home')
             }, {
-                name: 'Interface',
-                path: "Interface",
-                meta:{title:"接口测试"},
-                component:()=>import('@/views/Home')
-            },{
                 name: 'Dictionary',
                 path: "Dictionary",
                 meta:{title:"字典数据"},
@@ -108,6 +103,11 @@ const sidebar = {
             path: "MenuManagement",
             meta:{title:"导航菜单管理"},
             component:()=>import('@/views/bms/MenuManagement')
+        },{
+            name: "FlowManagement",
+            path: "FlowManagement",
+            meta:{title:"流程管理"},
+            component:()=>import('@/views/bms/FlowManagement')
         }]
     }, {
         name: 'SecurityAudit',

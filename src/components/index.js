@@ -13,6 +13,7 @@ import CatTreeSelect from "./CatTreeSelect"
 import PeopleSelect from "./PeopleSelect"
 import DynamicTable from '@/components/KnowledgeView/components/DynamicTable'
 import DynamicForm from '@/components/KnowledgeView/components/DynamicForm'
+import ProcessNode from './ProcessNode'
 
 //第三方组件
 import Treeselect from '@riophae/vue-treeselect'
@@ -29,6 +30,7 @@ Vue.component("cs-people-select",PeopleSelect);
 Vue.component("json-editor",JsonEditor);
 Vue.component("dynamic-table",DynamicTable)
 Vue.component("dynamic-form",DynamicForm)
+Vue.component("cs-processnode",ProcessNode)
 
 //注册全局第三方组件
 Vue.component('treeselect', Treeselect)

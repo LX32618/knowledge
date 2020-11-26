@@ -16,7 +16,9 @@
                  <span slot-scope="{ node, data }">
                     <span>
                         <i :class="data.icon?data.icon:data.isLeaf?'el-icon-document':node.expanded?'el-icon-folder-opened':'el-icon-folder'"></i>
+
                         <span :style="{fontSize:'14px'}"> {{ node.label }}</span>
+                         <span v-if= "data.icon1"><i  :class="data.icon1"></i></span>
                     </span>
                 </span>
         </el-tree2>

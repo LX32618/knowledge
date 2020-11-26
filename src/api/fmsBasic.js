@@ -23,18 +23,28 @@ export function logout () {
   })
 }
 
-export function test () {
-  const data = {
-    searchName: '',
-    searchKey: '',
-    ifPage: '',
-    page: '',
-    rows: ''
-  }
+
+export function fetchFlowList(option) {
   return request({
-    url: `${rootUrl}feign/activitiRestController/queryEnableFlowList.do`,
+    url: `${rootUrl}fms-basic/feign/customActivitiRestController/queryEnableFlowList.do`,
     method: 'post',
-    data: genFormData(data)
+    data: genFormData(option)
+  })
+}
+
+export function deployFlowList(option) {
+  return request({
+    url: `${rootUrl}fms-basic/feign/customActivitiRestController/deployProcessDefById.do`,
+    method: 'post',
+    data: genFormData(option)
+  })
+}
+
+export function fetchProcessList(option) {
+  return request({
+    url: `${rootUrl}fms-basic/feign/customActivitiRestController/getProcessByprocessDefinitionId.do`,
+    method: 'get',
+    params:option
   })
 }
 
