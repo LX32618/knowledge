@@ -18,7 +18,7 @@ import store from '@/store'
 const routerGuide = async (to, from, next) => {
   // 设置网站title
   document.title = `${to.meta.title} | 知识工程`
-  
+
   const token = getToken()
 
   // 与平台对接用
