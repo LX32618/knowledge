@@ -21,6 +21,10 @@ const routerGuide = async (to, from, next) => {
 
   const token = getToken()
 
+  console.log(token);
+
+
+
   // 与平台对接用
   if (token) {
     const hasMenu = Object.keys(store.getters.sidebar).length > 0 && Object.keys(store.getters.sidebarRouter).length > 0
