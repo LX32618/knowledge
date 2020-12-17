@@ -1,7 +1,6 @@
 import request from '@/utils/request'
 
-const rootUrl = '/api1/system/knowledge/'
-// const rootUrl2 = '/api4/system/knowledge/'
+const rootUrl = '/system/knowledge/'
 
 // 获取我的知识总数
 export function fetchKnowledgeCount (option) {

@@ -1,6 +1,5 @@
 import { getToken, setToken, removeToken } from '@/utils/auth'
-import { login, getInfo } from '@/api/user'
-import { logout} from '@/api/fmsBasic'
+import { login, getInfo, logout } from '@/api/user'
 
 const state = {
   token: getToken(),
@@ -42,7 +41,7 @@ const actions = {
       logout().then(_ => {
         commit('SET_TOKEN', '')
         commit('SET_INFO', undefined)
-        removeToken()
+        // removeToken()
         resolve()
       }).catch(error => {
         reject(error)
@@ -53,11 +52,11 @@ const actions = {
   getInfo ({ commit, state }) {
     return new Promise((resolve, reject) => {
       getInfo(state.token).then(response => {
-        // const data = response.content
-        if (!response.content.token) {
-          resolve(null)
+        let data = response
+        if (!response.token) {
+          reject(new Error('用户登录已过期'))
         }
-        const data = {
+        data = {
           id: 'EFB3BCDFBC0B4B5B91991B49B96D26CF',
           username: 'admin',
           name: '系统管理员',

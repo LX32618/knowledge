@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 
 const testUrl = '/api/tableConfig/'
-const rootUrl = '/api4/app/authcenter/api/knowledgeReport/'
+const rootUrl = '/knowledgeReport/'
 
 
 //获取列表配置

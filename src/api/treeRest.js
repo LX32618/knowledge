@@ -1,12 +1,9 @@
-import request from '@/utils/request'
-
-const rootUrl = '/api2/'
-const rootUrl2 = '/api3/'
+import { treeRequest } from '@/utils/request'
 
 // 获取字典树
 export function fetchDictTree (option) {
-  return request({
-    url: `${rootUrl}dicTree/get`,
+  return treeRequest({
+    url: `/dicTree/get`,
     method: 'post',
     data: {
       id: option.id
@@ -16,8 +13,8 @@ export function fetchDictTree (option) {
 
 // 获取收藏目录树
 export function fetchCollectTree (option) {
-  return request({
-    url: `${rootUrl2}collectTree/findZtree`,
+  return treeRequest({
+    url: `/collectTree/findZtree`,
     method: 'post',
     data: {
       rootid: option.id,
@@ -28,8 +25,8 @@ export function fetchCollectTree (option) {
 
 // 新增 / 编辑树节点
 export function saveTreeNode (data) {
-  return request({
-    url: `${rootUrl2}treeNode/save`,
+  return treeRequest({
+    url: `/treeNode/save`,
     method: 'post',
     data
   })
@@ -37,8 +34,8 @@ export function saveTreeNode (data) {
 
 // 删除树节点
 export function deleteTreeNode (data) {
-  return request({
-    url: `${rootUrl2}treeNode/delete`,
+  return treeRequest({
+    url: `/treeNode/delete`,
     method: 'post',
     data
   })

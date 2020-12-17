@@ -1,11 +1,9 @@
 import request from '@/utils/request'
 import _ from 'lodash'
 
-const rootUrl = '/api4/app/authcenter/api/'
-
 export function fetchCategoryTree (option) {
   return request({
-    url: `${rootUrl}categoryTree/get`,
+    url: '/categoryTree/get',
     method: 'post',
     data: {
       id: option.id
@@ -15,7 +13,7 @@ export function fetchCategoryTree (option) {
 
 export function fetchCategoryTreeAndNum (option) {
   return request({
-    url: `${rootUrl}categoryTreeAndNum/get`,
+    url: '/categoryTreeAndNum/get',
     method: 'post',
     data: {
       id: option.id,
@@ -53,7 +51,7 @@ export function getKnowledgeByClassifications (option={}) {
     data.condition.createdateMax = searchOption.createDate[1]
   }
   return request({
-    url: `${rootUrl}categoryKnowledgeItemsByNodeId/get`,
+    url: `/categoryKnowledgeItemsByNodeId/get`,
     method: 'post',
     data
   })
@@ -62,7 +60,7 @@ export function getKnowledgeByClassifications (option={}) {
 // 根据目录ID获取对应的标签数据
 export function getLabelesTree (option) {
   return request({
-    url: `${rootUrl}labels/get`,
+    url: `/labels/get`,
     method: 'post',
     data: {
       id: option.id

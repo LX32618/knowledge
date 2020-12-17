@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-const rootUrl = '/knowledge/'
+const rootUrl = '/xknowledge/'
 
 export function fetchKnowledges (option) {
   return request({

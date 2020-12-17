@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 import axios from "axios"
 
-const rootUrl = '/api4/app/authcenter/api/'
+const rootUrl = '/'
 
 
 //获取列表配置

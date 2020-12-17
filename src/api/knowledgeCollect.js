@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-const rootUrl = '/api1/knowledgeCollect/'
+const rootUrl = '/knowledgeCollect/'
 
 // 获取收藏知识总条数
 export function fetchCollectKnowledgeCount (option) {

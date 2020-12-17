@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-const rootUrl = '/api1/sysRole/'
+const rootUrl = '/sysRole/'
 
 // 获取分享/申请知识列表
 export function getSharedKnowledge (option) {

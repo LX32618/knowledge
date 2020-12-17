@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-const rootUrl = '/api4/SysMenuInfoController/'
+const rootUrl = '/SysMenuInfoController/'
 
 export function fetchMenuByUser (option) {
     return request({

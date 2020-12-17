@@ -6,32 +6,33 @@
       </el-col>
       <el-col :span="3" class="search-select">
         <!-- 搜索库筛选 -->
-        <el-select
-          v-model="searchFilter"
-          placeholder="知识库"
-          size="large"
-          v-loading="isCategoriesLoading"
-          value-key="id"
-        >
-          <el-option label="知识库" :value="undefined"></el-option>
-          <el-option
-            v-for="category of docCategories"
-            :key="category.id"
-            :label="category.categoryName"
-            :value="category.id"
-          ></el-option>
-        </el-select>
+        <slot name="searchCategory">
+          <el-select
+            v-model="searchFilter"
+            placeholder="知识库"
+            size="large"
+            v-loading="isCategoriesLoading"
+            value-key="id">
+            <el-option label="知识库" :value="undefined"></el-option>
+            <el-option
+              v-for="category of docCategories"
+              :key="category.id"
+              :label="category.categoryName"
+              :value="category.id"></el-option>
+          </el-select>
+        </slot>
       </el-col>
       <el-col :span="9" class="search-input">
         <!-- 搜索框 -->
-        <el-input
-          v-model="searchStr"
-          placeholder="请输入你想搜索的内容"
-          size="large"
-          @keyup.enter.native="search"
-        >
-          <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
-        </el-input>
+        <slot name="searchText">
+          <el-input
+            v-model="searchStr"
+            placeholder="请输入你想搜索的内容"
+            size="large"
+            @keyup.enter.native="search">
+            <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
+          </el-input>
+        </slot>
       </el-col>
       <el-col :span="2" :offset="2">
         <!-- <a href="#" class="header-help">帮助</a> -->
@@ -150,8 +151,12 @@ export default {
           break
         // 登出
         case 'logout':
-          // this.$store.commit('user/REMOVE_TOKEN')
-          window.location.href=`http://glaway.soft.net/cas/logout?ssologin=${window.location.href}/knowledge`
+          try {
+            await this.$store.dispatch('user/logout')
+            window.location.replace('/app-zuul/login')
+          } catch (err) {
+            this.$error('登出失败，请刷新重试')
+          }
       }
     },
     // 进入帮助页面

@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-const rootUrl = '/api4/app/authcenter/api/knowledgeSubscribe/'
+const rootUrl = '/knowledgeSubscribe/'
 
 // 是否订阅知识 / 目录
 export function isSubscribe (option) {
