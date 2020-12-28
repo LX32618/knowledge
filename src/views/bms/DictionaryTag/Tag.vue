@@ -11,8 +11,8 @@
         },
         data(){
             return {
-                getUrl:'/api2/labelTree/',
-                editUrl:'/api2/treeNode/',
+                getUrl:'/labelTree/',
+                editUrl:'/treeNode/',
                 category:'tag'
             }
         }

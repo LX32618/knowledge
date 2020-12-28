@@ -135,7 +135,7 @@
     import CatTreeSelect from "@/components/CatTreeSelect";
     import axios from "axios"
 
-    const rootUrl = '/api4/app/authcenter/api/categoryTree/';
+    const rootUrl = '/categoryTree/';
 
     export default {
         name: "KonwledgeManagement",
@@ -395,7 +395,7 @@
                     spinner: 'el-icon-loading',
                     background: 'rgba(255, 255, 255, 0.9)'
                 })
-                axios.post('/api4/app/authcenter/api/knowledgeUpload/post', formData).then((resp) => {
+                axios.post('/knowledgeApi/knowledgeUpload/post', formData).then((resp) => {
                     if (resp.data.status === "success") {
                         this.$message('上传文件成功' )
                     } else {

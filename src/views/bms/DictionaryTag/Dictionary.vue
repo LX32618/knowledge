@@ -13,8 +13,8 @@
         },
         data(){
             return {
-                getUrl:'/api2/dicTree/',
-                editUrl:'/api2/treeNode/',
+                getUrl:'/dicTree/',
+                editUrl:'/treeNode/',
                 type:'dictionary'
             }
         }

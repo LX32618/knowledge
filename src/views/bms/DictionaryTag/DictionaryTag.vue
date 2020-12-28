@@ -26,7 +26,7 @@
 <script>
     import _ from 'lodash';
     import dicForm from "./Form";
-    import request from '@/utils/request'
+    import { treeRequest } from '@/utils/request'
 
     export default {
         name: "Dictionary",
@@ -117,7 +117,7 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    request({
+                    treeRequest({
                         url: `${this.editUrl}delete`,
                         method: 'post',
                         data:{id:node.object.id},

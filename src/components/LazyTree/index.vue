@@ -32,7 +32,7 @@
 
 <script>
     import Tree2 from "../Tree2"
-    import request from '@/utils/request'
+    import { treeRequest } from '@/utils/request'
 
     export default {
         name: "LazyTree",
@@ -94,7 +94,7 @@
                 {
                     pid = node.data.id;
                 }
-                request({
+                treeRequest({
                     url: this.settings.request.url,
                     method: this.settings.request.method,
                     data:{id:pid}

@@ -36,7 +36,7 @@
     import form from "./Form"
     import request from '@/utils/request'
 
-    let modelUrl = "/api1/system/knowledgeFormController/";
+    let modelUrl = "/system/knowledgeFormController/";
 
     export default {
         name: "ModelForm",

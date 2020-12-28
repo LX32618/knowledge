@@ -1,5 +1,5 @@
 import { getToken, setToken, removeToken } from '@/utils/auth'
-import { login, getInfo, logout } from '@/api/user'
+import { getInfo, logout } from '@/api/user'
 
 const state = {
   token: getToken(),
@@ -21,20 +21,20 @@ const mutations = {
 
 const actions = {
   // 用户登录
-  login ({ commit }, userInfo) {
-    const { username, password } = userInfo
-    return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password }).then(response => {
-        const data = response.content
-        commit('SET_TOKEN', data.token)
-        setToken(data.token)
-        resolve()
-      }).catch(error => {
-        console.log('error')
-        reject(error)
-      })
-    })
-  },
+  // login ({ commit }, userInfo) {
+  //   const { username, password } = userInfo
+  //   return new Promise((resolve, reject) => {
+  //     login({ username: username.trim(), password }).then(response => {
+  //       const data = response.content
+  //       commit('SET_TOKEN', data.token)
+  //       setToken(data.token)
+  //       resolve()
+  //     }).catch(error => {
+  //       console.log('error')
+  //       reject(error)
+  //     })
+  //   })
+  // },
   // 用户登出
   logout ({ commit }) {
     return new Promise((resolve, reject) => {

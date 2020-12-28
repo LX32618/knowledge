@@ -29,9 +29,11 @@ const responseInterceptor = response => {
     window.location.replace('/app-zuul/login')
   } else if (response.status === 200 && response.data.status === 'success') {
     return response.data
+  } else if (response.headers["content-type"] === 'application/x-msdownload;charset=UTF-8') {
+    return response.data
   }
   else {
-    errorMsg(response.data.message)
+    response.data.message && errorMsg(response.data.message)
     return Promise.reject(response.data.message || 'error')
   }
 }

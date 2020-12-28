@@ -60,6 +60,11 @@ export default {
     KnowledgePush,
     KnowledgeShareForm,
   },
+  provide () {
+    return {
+      contentContainer: this
+    }
+  },
   props: {
     formConfig: Object,
     showBase: Boolean,

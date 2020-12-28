@@ -24,7 +24,7 @@
 
 <script>
     import _ from 'lodash';
-    import request from '@/utils/request'
+    import { treeRequest } from '@/utils/request'
 
     export default {
         name: "From",
@@ -71,7 +71,7 @@
             submitForm() {
                 this.$refs['form'].validate((valid) => {
                     if (valid) {
-                        request({
+                        treeRequest({
                             url: this.settings.request.url,
                             method: this.settings.request.method,
                             data:this.data

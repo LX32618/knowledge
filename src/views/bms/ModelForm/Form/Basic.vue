@@ -61,8 +61,8 @@
     import _ from 'lodash'
     import request from '@/utils/request'
 
-    let modelUrl = "/api1/system/knowledgeFormController/";
-    let formUrl = "/api4//app/authcenter/api/categoryTree/";
+    let modelUrl = "/system/knowledgeFormController/";
+    let formUrl = "/categoryTree/";
 
     export default {
         name: "Basic",

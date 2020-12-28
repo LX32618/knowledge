@@ -23,7 +23,8 @@
         <el-input
           v-model="searchText"
           placeholder="请输入你想搜索的内容"
-          size="large">
+          size="large"
+          @keyup.enter.native="updateSearch">
           <el-button slot="append" icon="el-icon-search" @click="updateSearch"></el-button>
         </el-input>
       </div>
@@ -46,29 +47,47 @@
         </el-radio-group>
         <!-- 查询结构列表 -->
         <div v-loading="searchLoading">
-
+          <div v-if="searchResults.length === 0" class="empty-text">
+            没有搜索到记录
+          </div>
           <div class="knowledge-item" v-for="item of searchResults" :key="item.id">
-            <el-link type="primary" @click="handleLinkClick(item.id)">
-              <span v-html="item.showName"></span>
-            </el-link>
-            <el-row class="item-bottom">
-              <el-col :span="4">
-                <i class="fa fa-clock-o"></i>
-                {{ item.createDate }}
-              </el-col>
-              <el-col :span="4">
-                <i class="fa fa-user-o"></i>
-                系统管理员
-                <!-- {{ item.creator }} -->
-              </el-col>
-              <el-col :span="4">
-                <i class="fa fa-book"></i>
-                {{ item.baseLibrary }}
-              </el-col>
-            </el-row>
+            <template v-if="searchType === 'category'">
+              <el-link type="primary" @click="handleCategoryLinkClick(item.baseId)">{{ item.CATEGORYNAME }}</el-link>
+              <el-row class="item-bottom">
+                <el-col :span="4">
+                  <i class="fa fa-database"></i>
+                  {{ item.baseName }}
+                </el-col>
+                <el-col :span="4">
+                  <i class="fa fa-book"></i>
+                  {{ item.parentCategory }}
+                </el-col>
+              </el-row>
+            </template>
+            <template v-else>
+              <el-link type="primary" @click="handleLinkClick(item.id)">
+                <span v-if="isCodeSearch">{{ item.NAME }}</span>
+                <span v-else v-html="item.showName"></span>
+              </el-link>
+              <el-row class="item-bottom">
+                <el-col :span="4">
+                  <i class="fa fa-clock-o"></i>
+                  {{ isCodeSearch ? item.CREATEDATE : item.createDate }}
+                </el-col>
+                <el-col :span="4">
+                  <i class="fa fa-user-o"></i>
+                  {{ isCodeSearch ? item.CREATORNAME : item.creatorName }}
+                </el-col>
+                <el-col :span="4">
+                  <i class="fa fa-book"></i>
+                  {{ isCodeSearch ? item.BASELIBRARY : item.baseLibrary }}
+                </el-col>
+              </el-row>
+            </template>
           </div>
         </div>
         <el-pagination
+          v-if="searchResults.length > 0"
           :total="total"
           :page-size.sync="rows"
           :current-page.sync="page"
@@ -86,7 +105,6 @@
 import HomeHeader from '../components/Header'
 import { mapGetters } from 'vuex'
 import { solrSearch } from '@/api/solr'
-import { ntkoBrowser } from '@/plugins/ntkobackground.min.js'
 
 export default {
   name: 'Search',
@@ -120,10 +138,18 @@ export default {
   computed: {
     ...mapGetters([
       'docCategories'
-    ])
+    ]),
+    isCodeSearch () {
+      return this.searchType === 'knowcode_text'
+    }
   },
   methods: {
     updateSearch () {
+      if (!this.searchText.trim()) {
+        this.$warning('请输入搜索内容')
+        this.searchResults = []
+        return
+      }
       this.searchLoading = true
       solrSearch({
         page: this.page,
@@ -135,6 +161,9 @@ export default {
         this.searchResults = res.content.datas
         this.total = res.content.total
         this.searchLoading = false
+      }).catch(_  => {
+        this.searchResults = []
+        this.searchLoading = false
       })
     },
     handleLinkClick (id) {
@@ -142,6 +171,15 @@ export default {
         name: 'knowledgeDetail',
         params: {
           id
+        }
+      })
+    },
+    handleCategoryLinkClick (baseId) {
+      this.$router.push({
+        name: 'knowledgeBase',
+        params: {
+          id: baseId
+          // categoryId:
         }
       })
     }
@@ -191,5 +229,8 @@ export default {
 .item-bottom {
   color: #909399;
   margin-top: 10px;
+}
+.empty-text {
+  margin: 20px 0;
 }
 </style>

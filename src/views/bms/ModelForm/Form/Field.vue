@@ -79,9 +79,9 @@
 </template>
 
 <script>
-    let dictUrl = '/api2/dicTree/';
-    let modelUrl = '/api4/app/authcenter/api/knowledgeModel/knowledgeFormField/';
-    let viewBtnUrl = '/api4/app/authcenter/api/SysRefObjServer/';
+    let dictUrl = '/dicTree/';
+    let modelUrl = '/knowledgeModel/knowledgeFormField/';
+    let viewBtnUrl = '/SysRefObjServer/';
     import request from '@/utils/request';
 
 

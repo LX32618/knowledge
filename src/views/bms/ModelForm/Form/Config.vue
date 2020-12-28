@@ -87,7 +87,7 @@
     import Basic from "./Basic";
     import Field from "./Field"
 
-    let modelSubFormUrl = "/api4/app/authcenter/api/knowledgeModel/knowledgeFormField/";
+    let modelSubFormUrl = "/knowledgeModel/knowledgeFormField/";
     export default {
         name: "Config",
         components: {Field, Basic},

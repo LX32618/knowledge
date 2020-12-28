@@ -201,6 +201,10 @@ export default {
       // this.dialogShow = true
     },
     search () {
+      if (!this.searchStr.trim()) {
+        this.$warning('请输入搜索内容')
+        return
+      }
       this.$router.push({
         name: 'KnowledgeSearch',
         query: {

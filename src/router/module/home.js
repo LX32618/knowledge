@@ -112,7 +112,8 @@ const homeRouter = [
     meta: {
       title: '知识详情'
     }
-  }, {
+  }, 
+  {
     path: '/knowledgeSearch',
     name: 'KnowledgeSearch',
     component: () => import("@/views/home/KnowledgeSearch"),
@@ -121,6 +122,19 @@ const homeRouter = [
     }),
     meta: {
       title: '知识查询'
+    }
+  }, 
+  {
+    path: '/officePreview',
+    name: 'OfficePreview',
+    component: () => import("@/views/home/OfficePreview"),
+    props: route => ({
+      attachId: route.query.attachId,
+      baseId: route.query.baseId,
+      categoryId: route.query.categoryId
+    }),
+    meta: {
+      title: 'Office预览'
     }
   }
 ]

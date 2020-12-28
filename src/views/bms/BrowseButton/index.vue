@@ -37,7 +37,7 @@
     import form from './Form'
     import {mapGetters} from "vuex";
 
-    let browseBtnUrl = '/api4/app/authcenter/api/SysRefObjServer/';
+    let browseBtnUrl = '/SysRefObjServer/';
 
     export default {
         name: "BrowseButton",

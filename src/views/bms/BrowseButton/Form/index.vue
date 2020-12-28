@@ -60,8 +60,8 @@
     import _ from 'lodash'
     import request from '@/utils/request'
 
-    let konwledgeDirUrl ='/api4/app/authcenter/api/categoryTree/';
-    let browseBtnUrl = '/api4/app/authcenter/api/SysRefObjServer/';
+    let konwledgeDirUrl ='/categoryTree/';
+    let browseBtnUrl = '/SysRefObjServer/';
 
     export default {
         name: "Form",

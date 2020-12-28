@@ -214,17 +214,18 @@
     </template>
 
     <template v-if="widget.type=='upload'">
-      <file-upload :fileList="dataModel"
-                   :auto-upload="!preview"
-                   :btnTitle="widget.options.btnTitle"
-                   :upload-url="widget.options.uploadUrl"
-                   :accept="widget.options.accept"
-                   :limit="widget.options.limit"
-                   :multiple="widget.options.multiple"
-                   :tips="widget.options.tips"
-                   :disabled="isDisabled"
-                   :edit="edit"
-                   :knowledge-id="options.knowledgeId">
+      <file-upload 
+        v-model="dataModel"
+        :auto-upload="!preview"
+        :btnTitle="widget.options.btnTitle"
+        :upload-url="widget.options.uploadUrl"
+        :accept="widget.options.accept"
+        :limit="widget.options.limit"
+        :multiple="widget.options.multiple"
+        :tips="widget.options.tips"
+        :disabled="isDisabled"
+        :edit="edit"
+        :knowledge-id="options.knowledgeId">
       </file-upload>
     </template>
 

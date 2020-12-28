@@ -49,3 +49,12 @@ export function saveCollect (data) {
     data
   })
 }
+
+// 判断知识是否收藏
+export function isCollect (data) {
+  return request({
+    url: `${rootUrl}iscollect`,
+    method: 'post',
+    data
+  })
+}
