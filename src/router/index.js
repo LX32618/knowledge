@@ -23,8 +23,7 @@ const routes = [
 
 const router = new VueRouter({
   mode: 'history',
-  // base: process.env.BASE_URL,
-  base: 'knowledge',
+  base: process.env.BASE_URL,
   routes,
   // 切换路由时滚动到最顶部
   scrollBehavior () {
