@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div v-loading="loading">
         <cs-table ref="tb"
                   :settings="tableSettings"
                   :table-data="tableData">
@@ -20,6 +20,9 @@
                 </el-table-column>
             </template>
         </cs-table>
+        <div style="display: flex;flex-direction:row-reverse">
+            <el-button type="primary" size="mini" style="margin-top: 10px;" @click="releaseProcess">确认</el-button>
+        </div>
         <el-dialog title="审核人" :visible.sync="dialogVisible" :close-on-click-modal="false" append-to-body>
             <el-transfer  style="margin-left: 80px;"
                           v-model="selectUser"
@@ -31,13 +34,12 @@
             </el-transfer>
             <el-button type="primary" style="float:right" size="mini" @click="selectUserCentain">确认</el-button>
         </el-dialog>
-
     </div>
 </template>
 
 <script>
     import _ from "lodash"
-    import {fetchProcessList} from "@/api/fmsBasic.js"
+    import {fetchProcessList,startProcess} from "@/api/fmsBasic.js"
 
     export default {
         name: "index",
@@ -45,18 +47,26 @@
             processId:{
                 type:String,
                 default:""
+            },
+            processKey:{
+                type:String,
+                default:""
             }
         },
         data(){
             const generateData = _ => {
                 const data = [];
-                data.push({id:"lisy1",name:"李书洋"})
-                data.push({id:"yedm",name:"叶冬梅"})
-                data.push({id:"wanhx",name:"万海旭"})
-                data.push({id:"zhangho",name:"张海鸥"})
+                data.push({id:"lisy1",name:"李书洋"});
+                data.push({id:"yedm",name:"叶冬梅"});
+                data.push({id:"wanhx",name:"万海旭"});
+                data.push({id:"IDS1001",name:"IDS1001"});
+                data.push({id:"IDS0003",name:"IDS0003"});
+                data.push({id:"xtgl",name:"xtgl"});
+                data.push({id:"IDS1002",name:"IDS1002"});
                 return data;
             };
            return{
+               loading:false,
                selectRow:{},
                selectUser:[],
                userData:generateData(),
@@ -117,9 +127,74 @@
                         });
                     }
                 })
+            },
+            releaseProcess(){
+                let flag = this.tableData.some(tb=>{
+                    return tb.approver.length == 0;
+                });
+                if(flag)
+                {
+                    this.$error("还有未设置审核人的节点");
+                }
+                else
+                {
+                    let variables = {};
+                    this.tableData.forEach(tb=>{
+                        let key = tb.assignee;
+                        let value = [];
+                        tb.approver.forEach(a=>{
+                            value.push(a.id);
+                        })
+                        variables[key] = value;
+                    });
+                    let option = {
+                        processDefinitionKey:this.processKey,
+                        variables:JSON.stringify(variables)
+                    };
+                    console.log(option);
+                    startProcess(option).then(resp=>{
+                        if(resp.data.success)
+                        {
+                        }
+                        else
+                        {
+                            this.$error(resp.data.msg);
+                        }
+                    }).catch((msg)=>{
+                        this.$error(msg);
+                    });
+                }
+
+       /*         let variables = {};
+                this.tableData.forEach(tb=>{
+                    let key = tb.assignee;
+                    let value = [];
+                    tb.approver.forEach(a=>{
+                        value.push(a.id);
+                    })
+                    variables[key] = value;
+                });
+                let option = {
+                    processDefinitionKey:this.processKey,
+                    variables:JSON.stringify( variables)
+                };
+                console.log(option);
+                startProcess(option).then(resp=>{
+                    console.log(resp);
+                    if(resp.data.success)
+                    {
+                    }
+                    else
+                    {
+                        this.$error(resp.data.msg);
+                    }
+                }).catch((msg)=>{
+                    this.$error(msg);
+                });*/
             }
         },
         mounted() {
+            this.loading = true;
             let option = {
                 processDefinitionId:this.processId,
                 proInstancId:""
@@ -143,6 +218,7 @@
             }).catch((msg)=>{
                 this.$error(msg);
             });
+            this.loading = false;
         }
     }
 </script>

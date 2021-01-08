@@ -135,7 +135,7 @@
     import CatTreeSelect from "@/components/CatTreeSelect";
     import axios from "axios"
 
-    const rootUrl = '/categoryTree/';
+    const rootUrl = '/app-zuul/knowledge/app/authcenter/api/categoryTree/';
 
     export default {
         name: "KonwledgeManagement",

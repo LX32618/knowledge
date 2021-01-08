@@ -58,7 +58,7 @@
                     // 登出
                     case 'logout':
                         this.$store.commit('user/REMOVE_TOKEN')
-                        window.location.href="http://glaway.soft.net/cas/logout?ssologin=http://192.168.4.200:8080/knowledge"
+                        window.location.href=`http://glaway.soft.net/cas/logout?ssologin=${window.location.href}/knowledge`
                 }
             }
         }

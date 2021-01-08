@@ -1,7 +1,7 @@
 const path = require("path");
 const resolve = dir => path.join(__dirname, dir);
 module.exports = {
-    publicPath: '/knowledge',
+    publicPath: process.env.BASE_URL,//'/knowledge',
     devServer: {
         disableHostCheck: true
     },

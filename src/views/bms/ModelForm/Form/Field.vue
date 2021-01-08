@@ -79,7 +79,7 @@
 </template>
 
 <script>
-    let dictUrl = '/dicTree/';
+    let dictUrl = '/app-zuul/treeManage/tree/authcenter/api/dicTree/';
     let modelUrl = '/knowledgeModel/knowledgeFormField/';
     let viewBtnUrl = '/SysRefObjServer/';
     import request from '@/utils/request';
