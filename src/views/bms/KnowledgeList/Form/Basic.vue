@@ -97,11 +97,12 @@
     import _ from 'lodash'
     import iconWall from '@/views/bms/components/IconWall'
     import request from '@/utils/request'
+    import {treeRequset} from '@/utils/request'
     import {mapGetters} from "vuex";
 
-    let labelUrl = "/api2/labelTree/";
-    let formUrl = "/api1/system/knowledgeFormController/";
-    let knowListUrl = "/api4/app/authcenter/api/categoryTree/";
+    let labelUrl = "/app-zuul/treeManage/tree/authcenter/api/labelTree/";
+    let formUrl = "/system/knowledgeFormController/";
+    let knowListUrl = "/authcenter/api/categoryTree/";
 
 
     export default {

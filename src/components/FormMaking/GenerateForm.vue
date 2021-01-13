@@ -124,33 +124,38 @@ export default {
   methods: {
     generateModle (genList) {
       for (let i = 0; i < genList.length; i++) {
+
         if (genList[i].type === 'grid') {
           genList[i].columns.forEach(item => {
             this.generateModle(item.list)
           })
-        } else if (genList[i].type === 'text') {
+        }
+        else if (genList[i].type === 'text') {
           continue
-        } else if (genList[i].type === 'imgupload' || 'upload') {
+        }
+        else if (genList[i].type === 'imgupload' || genList[i].type === 'upload') {
           this.models[genList[i].model] = this.value[genList[i].model] || ''
-        } else if (genList[i].type === 'table') {
+        }
+        else if (genList[i].type === 'table') {
           if (this.value && Object.keys(this.value).indexOf(genList[i].model) >= 0) {
             this.models[genList[i].model] = this.value[genList[i].model]
           } else {
             this.models[genList[i].model] = []
           }
-        } else {
+        }
+        else {
           if (this.value && Object.keys(this.value).indexOf(genList[i].model) >= 0) {
             this.models[genList[i].model] = this.value[genList[i].model]
-          } else {
+          }
+          else {
             if (genList[i].type === 'blank') {
               this.$set(this.models, genList[i].model, genList[i].options.defaultType === 'String' ? '' : (genList[i].options.defaultType === 'Object' ? {} : []))
-            } else {
+            }
+            else {
               this.models[genList[i].model] = genList[i].options.defaultValue
             }
           }
-
           if (this.rules[genList[i].model]) {
-
             this.rules[genList[i].model] = [...this.rules[genList[i].model], ...genList[i].rules.map(item => {
               if (item.pattern) {
                 return {...item, pattern: eval(item.pattern)}
@@ -158,8 +163,8 @@ export default {
                 return {...item}
               }
             })]
-          } else {
-
+          }
+          else {
             this.rules[genList[i].model] = [...genList[i].rules.map(item => {
               if (item.pattern) {
                 return {...item, pattern: eval(item.pattern)}

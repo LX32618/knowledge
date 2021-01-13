@@ -2,17 +2,15 @@
     <div>
         <span>关联的流程：<el-button type="primary" icon="el-icon-s-platform" circle @click="dialogVisible = true"></el-button></span>
         <el-divider></el-divider>
-        <el-dialog :visible.sync="dialogVisible" :show-close="true" title="" @opened="dialogOpen">
+        <el-dialog :visible.sync="dialogVisible" :show-close="true" title="" @opened="dialogOpen" :close-on-click-modal="false">
             <cs-table ref="tb"
                       :settings="tableSettings"
                       :table-data="flowData">
             </cs-table>
         </el-dialog>
-
-
         <el-button type="primary" icon="el-icon-s-platform" circle @click="dialogVisible1 = true"></el-button>
-        <el-dialog :visible.sync="dialogVisible1" :show-close="true" title="">
-            <cs-processnode process-id="process1605080548130:3:7516"></cs-processnode>
+        <el-dialog :visible.sync="dialogVisible1" :show-close="true" title="设置审核人" :close-on-click-modal="false">
+            <cs-processnode process-id="process1605080548130:3:7516"  process-key="process1605080548130"></cs-processnode>
         </el-dialog>
     </div>
 </template>

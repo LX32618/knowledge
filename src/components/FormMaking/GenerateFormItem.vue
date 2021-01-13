@@ -214,7 +214,7 @@
     </template>
 
     <template v-if="widget.type=='upload'">
-      <file-upload 
+      <file-upload
         v-model="dataModel"
         :auto-upload="!preview"
         :btnTitle="widget.options.btnTitle"
@@ -230,6 +230,7 @@
     </template>
 
     <template v-if="widget.type == 'viewBtn'">
+      {{dataModel}}
       <fm-view-btn
               :tagData.sync="dataModel"
               :multiple="widget.options.multiple"
@@ -358,7 +359,9 @@ export default {
     models: {
       deep: true,
       handler (val) {
-        this.dataModel = val[this.widget.model]
+        this.dataModel = val[this.widget.model];
+        //.log(this.widget.model);
+        //console.log(this.dataModel);
       }
     }
   }

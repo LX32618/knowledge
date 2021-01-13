@@ -39,13 +39,13 @@
     import authorityConfig from "./Form/AuthorityConfig"
     import flowConfig from "./Form/FlowConfig"
     import _ from 'lodash'
-    import request from '@/utils/request'
+    import {treeRequest,request} from '@/utils/request'
     import {mapGetters} from "vuex";
     import {fetchModel} from "@/api/formMaking.js"
     import {fetchTableConfig} from "@/api/knowledgeList.js"
     import {fetchFlowList} from "@/api/fmsBasic.js"
 
-    const rootUrl = '/api4/app/authcenter/api/categoryTree/';
+    const rootUrl = '/app-zuul/knowledge/app/authcenter/api/categoryTree/';
 
     export default {
         name: "KnowledgeList",
@@ -313,7 +313,7 @@
         flex-basis: 15%;
     }
     .knowlist.main{
-        flex-basis:84%;
+        flex-basis:83%;
     }
     .el-tabs--border-card{
         width:100%;

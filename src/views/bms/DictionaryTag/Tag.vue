@@ -11,7 +11,7 @@
         },
         data(){
             return {
-                getUrl:'/labelTree/',
+                getUrl:'/app-zuul/treeManage/tree/authcenter/api/labelTree/',
                 editUrl:'/treeNode/',
                 category:'tag'
             }

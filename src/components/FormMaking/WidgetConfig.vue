@@ -231,9 +231,9 @@
           <el-input-number v-model="data.options.length" :min="0" :max="10" :step="1"></el-input-number>
         </el-form-item>
 
-        <el-form-item label="是否支持多选图片">
+<!--        <el-form-item label="是否支持多选图片">
           <el-switch v-model="data.options.multiple" @change="handleSelectMuliple"></el-switch>
-        </el-form-item>
+        </el-form-item>-->
       </template>
 
       <template v-if="data.type=='upload'">
@@ -257,10 +257,10 @@
         <el-form-item label="最大上传数">
           <el-input-number v-model="data.options.limit"  :min="1" :max="5" ></el-input-number>
         </el-form-item>
-        <el-form-item label="是否支持多选文件">
+<!--        <el-form-item label="是否支持多选文件">
           <el-switch v-model="data.options.multiple">
           </el-switch>
-        </el-form-item>
+        </el-form-item>-->
         <el-form-item label="提示">
           <el-input v-model="data.options.tips">
           </el-input>

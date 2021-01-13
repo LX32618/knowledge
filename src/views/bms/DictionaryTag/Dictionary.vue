@@ -13,7 +13,7 @@
         },
         data(){
             return {
-                getUrl:'/dicTree/',
+                getUrl:'/app-zuul/treeManage/tree/authcenter/api/dicTree/',
                 editUrl:'/treeNode/',
                 type:'dictionary'
             }

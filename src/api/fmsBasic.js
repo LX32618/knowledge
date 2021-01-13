@@ -48,6 +48,15 @@ export function fetchProcessList(option) {
   })
 }
 
+export function startProcess(option) {
+  return request({
+    url: `${rootUrl}fms-basic/feign/customActivitiRestController/startProcess.do`,
+    method: 'post',
+    params:option
+  })
+}
+
+
 function genFormData (data) {
   const formData = new FormData()
   for (let key of Object.keys(data)) {

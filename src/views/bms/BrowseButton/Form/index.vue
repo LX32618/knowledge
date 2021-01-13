@@ -60,7 +60,7 @@
     import _ from 'lodash'
     import request from '@/utils/request'
 
-    let konwledgeDirUrl ='/categoryTree/';
+    let konwledgeDirUrl ='/app-zuul/knowledge/app/authcenter/api/categoryTree/';
     let browseBtnUrl = '/SysRefObjServer/';
 
     export default {

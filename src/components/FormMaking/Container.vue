@@ -617,16 +617,16 @@ export default {
           tran.options.limit = 1;
           tran.options.accept = [];
           tran.options.defaultAccept = ["txt","jpg","xls","xlsx","rar","zip"];
-          tran.options.uploadUrl = "/api5/upload";
+          //tran.options.uploadUrl = "/api5/upload";
           tran.options.disabled = false;
-          tran.options.multiple = true;
+          //tran.options.multiple = true;
           tran.options.btnTitle = "点击上传";
         }
         else if(d.htmlType == 5)
         {
           tran.type = "imgupload";
           tran.icon = "icon iconfont icon-tupian";
-          tran.options.defaultValue = [];
+          tran.options.defaultValue = "";
           tran.options.size = {};
           tran.options.size.width = 100;
           tran.options.size.height = 100;
@@ -634,8 +634,7 @@ export default {
           tran.options.multiple = true;
           tran.options.isDelete = false;
           tran.options.isEdit = false;
-          tran.options.action = 'https://jsonplaceholder.typicode.com/photos/';
-
+          //tran.options.action = 'https://jsonplaceholder.typicode.com/photos/';
         }
         else if(d.htmlType == 6 || d.htmlType == 7){
           tran.type = "viewBtn";
