@@ -14,7 +14,7 @@
         :key="index"
       >
         <router-link
-          :to="`/knoweldgeBase/${item.id}`"
+          :to="`/knoweldgeBase/${item.id}/0`"
           tag="div"
           class="catalog-item"
           v-for="item of slicedArray"

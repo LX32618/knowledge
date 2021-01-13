@@ -52,7 +52,7 @@
           </div>
           <div class="knowledge-item" v-for="item of searchResults" :key="item.id">
             <template v-if="searchType === 'category'">
-              <el-link type="primary" @click="handleCategoryLinkClick(item.baseId)">{{ item.CATEGORYNAME }}</el-link>
+              <el-link type="primary" @click="handleCategoryLinkClick(item)">{{ item.CATEGORYNAME }}</el-link>
               <el-row class="item-bottom">
                 <el-col :span="4">
                   <i class="fa fa-database"></i>
@@ -167,21 +167,23 @@ export default {
       })
     },
     handleLinkClick (id) {
-      this.$router.push({
+      const url = this.$router.resolve({
         name: 'knowledgeDetail',
         params: {
           id
         }
       })
+      window.open(url.href)
     },
-    handleCategoryLinkClick (baseId) {
-      this.$router.push({
+    handleCategoryLinkClick (item) {
+      const url = this.$router.resolve({
         name: 'knowledgeBase',
         params: {
-          id: baseId
-          // categoryId:
+          id: item.baseId,
+          categoryId: item.ID
         }
       })
+      window.open(url.href)
     }
   },
   async mounted () {

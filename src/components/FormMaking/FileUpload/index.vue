@@ -13,9 +13,9 @@
       <el-button size="small" type="primary" :disabled="disabled" v-if="edit" :loading="isLoading">{{ btnTitle }}</el-button>
       <div slot="tip" class="el-upload__tip">{{tips}}</div>
     </el-upload>
-    <div class="file-list" v-for="(file, index) of fileList" :key="file.id">
+    <div class="file-list" v-for="(file, index) of fileList" :key="file.id" :id="file.id">
       <div>
-        <i class="el-icon-document"></i> {{ showFileName(file) }}
+        <i :class="iconClass(file.type)"></i> {{ showFileName(file) }}
       </div>
       <div>
         <el-button
@@ -55,9 +55,11 @@
 </template>
 
 <script>
+import Viewer from 'viewerjs'
 import { ntkoBrowser } from '@/plugins/officePreview/ntkobackground.min.js'
 import { getAttachInfo, downloadFile } from '@/api/file'
 
+require('viewerjs/dist/viewer.css')
 export default {
   name: "FileUpload",
   inject: {
@@ -124,10 +126,12 @@ export default {
       fileList: [],
       videoTypes: ['mp4'],
       officeTypes: ['doc', 'docx', 'xlx', 'xlsx'],
+      imageTypes: ['png', 'jpg', 'jpeg', 'gif'],
       isLoading: false,
       previewShow: false,
       previewFile: {},
-      previewUrl: ''
+      previewUrl: '',
+      selfUpdate: false
     }
 },
   computed:{
@@ -146,29 +150,48 @@ export default {
     }
   },
   watch: {
-    fileList (val) {
-      const ids = val.map(item => item.id)
-      this.$emit('input', ids.join(','))
+    value () {
+      this.updateFileList()
     }
   },
   methods:{
+    iconClass (type) {
+      if (this.videoTypes.indexOf(type) >= 0) {
+        return 'el-icon-video-camera'
+      } else if (this.imageTypes.indexOf(type) >= 0) {
+        return 'el-icon-picture-outline'
+      } else {
+        return 'el-icon-document'
+      }
+    },
+    updateValue () {
+      const ids = this.fileList.map(item => item.id)
+      this.$emit('input', ids.join(','))
+      this.selfUpdate = true
+    },
+    async updateFileList () {
+      if (this.selfUpdate) {
+        this.selfUpdate = false
+        return
+      }
+      this.isLoading = true
+      const { content } = await getAttachInfo(this.value)
+      this.fileList = content
+      this.isLoading = false
+    },
     async handlePreview(file){
       if (this.officeTypes.indexOf(file.type) >= 0) {
-        // ntkoBrowser.openWindow('./office.html', false,)
-        const routerUrl = this.$router.resolve({
-          name: 'OfficePreview',
-          query: {
-            baseId: this.baseId,
-            categoryId: this.categoryId,
-            attachId: file.id
-          }
-        })
-        window.open(routerUrl.href, '_blank')
+        // ntkoBrowser.openWindow(`http://glaway.soft.net/app-zuul/knowledge/app/authcenter/api/viewImage?attachid=${file.id}`)
+        this.$info('文件格式暂不支持预览')
       } else if (this.videoTypes.indexOf(file.type) >= 0) {
-        // this.previewFile = file
-        // // await this.viedoPreview(file)
-        // this.previewShow = true
-        window.open(`http://glaway.soft.net/app-zuul/knowledge/app/authcenter/api/viewImage?attachid=${file.id}`)
+        window.open(`/app-zuul/knowledge/app/authcenter/api/viewImage?attachid=${file.id}`)
+      } else if (this.imageTypes.indexOf(file.type) >= 0) {
+        this.viewer && this.viewer.destroy()
+
+        this.$nextTick(() => {
+          this.viewer = new Viewer(document.getElementById(file.id))
+          this.viewer.view(0)
+        })
       } else {
         this.$info('文件格式不支持预览')
       }
@@ -176,6 +199,7 @@ export default {
     handleRemove(file, index){
       this.$confirm(`确定移除${ file.name }？`).then(() => {
         this.fileList.splice(index, 1)
+        this.updateValue()
       }).catch(() => {})
     },
     handleExceed(files, fileList) {
@@ -195,9 +219,11 @@ export default {
       if (content.isExist) {
         this.$confirm('系统中已存在该文件，是否关联到本条知识?', '提示', { type: 'info' }).then(() => {
           this.fileList.push(info)
+          this.updateValue()
         }).catch(() => {})
       } else {
         this.fileList.push(info)
+        this.updateValue()
       }
       this.isLoading = false
     },
@@ -232,7 +258,7 @@ export default {
         ? `${file.name.slice(0, 8)}....${file.type}`
         : file.name
     },
-    async viedoPreview (fileConfig) {
+    async initialPreview (fileConfig) {
       this.isLoading = true
       try {
         const file = await downloadFile({
@@ -249,11 +275,8 @@ export default {
       }
     }
   },
-  async mounted () {
-    this.isLoading = true
-    const { content } = await getAttachInfo(this.value)
-    this.fileList = content
-    this.isLoading = false
+  mounted () {
+    this.updateFileList()
   }
 }
 </script>

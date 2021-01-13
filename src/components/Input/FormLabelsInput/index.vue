@@ -43,10 +43,10 @@ export default {
     },
     model (val) {
       if (val.length === 0) {
-        this.$emit('update', null)
+        this.$emit('input', '')
         return
       }
-      this.$emit('update', val)
+      this.$emit('input', val.join(','))
     },
     // 根据知识库目录生成可选标签集
     classificationId: {

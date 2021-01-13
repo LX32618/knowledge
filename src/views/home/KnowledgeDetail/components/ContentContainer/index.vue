@@ -5,9 +5,9 @@
         <!-- 功能按钮 -->
         <el-button-group>
           <template v-if="isViewMode">
-            <el-button type="primary" icon="el-icon-share" @click="share"
+            <!-- <el-button type="primary" icon="el-icon-share" @click="share"
               >分享</el-button
-            >
+            > -->
             <el-button type="warning" icon="el-icon-edit" @click="edit"
               >编辑</el-button
             >
@@ -38,7 +38,7 @@
       </el-card>
     </el-col>
     <el-col :offset="1" :span="4">
-      <knowledge-push />
+      <!-- <knowledge-push /> -->
     </el-col>
     <!-- 分享对话框 -->
     <el-dialog :visible.sync="dialogShow" title="知识分享">

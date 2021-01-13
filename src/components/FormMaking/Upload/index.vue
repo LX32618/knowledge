@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="list-wrap">
-      <div v-for="(file, index) of fileList" :key="file.id" :ref="file.id" :id="file.id" class="list-item" :style="borderStyle(file)">
+      <div v-for="(file, index) of fileList" :key="file.id" :ref="file.id" :id="file.id" class="list-item" :style="{...borderStyle(file), ...sizeStyle}">
         <img v-if="file.url" :src="file.url">
         <img v-else src="~@/assets/img/error/imgNotFound.png">
         <div class="uplaod-action">
@@ -10,7 +10,7 @@
           <i v-show="!disabled" class="action-btn el-icon-delete" @click="handleRemove(index)"></i>
         </div>
       </div>
-      <div v-show="!disabled" class="list-item upload-icon" @click="handleUpload(-1)">
+      <div v-show="!disabled" class="list-item upload-icon" :style="sizeStyle" @click="handleUpload(-1)">
         <i class="el-icon-plus"></i>
       </div>
     </div>
@@ -43,6 +43,18 @@ export default {
       type: String,
       default: ''
     },
+    width: {
+      type: Number,
+      default: 100
+    },
+    height: {
+      type: Number,
+      default: 100
+    },
+    length: {
+      type: Number,
+      default: 9
+    },
     preView: {
       type: Boolean,
       default: false
@@ -59,7 +71,8 @@ export default {
       dialogImageUrl: '',
       dialogVisible: false,
       editIndex: -1,
-      viewer: null
+      viewer: null,
+      selfUpdate: false
     }
   },
   computed: {
@@ -68,10 +81,25 @@ export default {
     },
     categoryId () {
       return this.contentContainer.baseData.classification
+    },
+    sizeStyle () {
+      return {
+        width: this.width + 'px',
+        height: this.height + 'px'
+      }
+    }
+  },
+  watch: {
+    value () {
+      this.updateFileList()
     }
   },
   methods: {
     handleUpload (editIndex) {
+      if (editIndex === -1 && this.fileList.length >= this.length) {
+        this.$warning('超过最大上传数')
+        return
+      }
       this.editIndex = editIndex
       this.$refs['file-upload'].click()
     },
@@ -123,7 +151,32 @@ export default {
     },
     updateValue () {
       const ids = this.fileList.map(file => file.id)
+      this.selfUpdate = true
       this.$emit('input', ids.join(','))
+    },
+    async updateFileList () {
+      if (this.selfUpdate) {
+        this.selfUpdate = false
+        return
+      }
+      this.fileList = []
+      if (!this.value) return
+      const ids = this.value.split(',')
+      for(let index in ids) {
+        const id = ids[index]
+        const item = { id }
+        try {
+          const file = await downloadFile({
+            baseId: this.baseId,
+            categoryId: this.categoryId,
+            attachId: id
+          })
+          item.url = file ? URL.createObjectURL(new Blob([ file ])) : ''
+        } catch (err) {
+          this.$error('图片加载失败')
+        }
+        this.fileList.push(item)
+      }
     },
     borderStyle (file) {
       return {
@@ -132,24 +185,8 @@ export default {
     }
   },
   created () {},
-  async mounted () {
-    if (!this.value) return
-    const ids = this.value.split(',')
-    for(let index in ids) {
-      const id = ids[index]
-      const item = { id }
-      try {
-        const file = await downloadFile({
-          baseId: this.baseId,
-          categoryId: this.categoryId,
-          attachId: id
-        })
-        item.url = file ? URL.createObjectURL(new Blob([ file ])) : ''
-      } catch (err) {
-        this.$error('图片加载失败')
-      }
-      this.fileList.push(item)
-    }
+  mounted () {
+    this.updateFileList()
   }
 }
 </script>
@@ -164,8 +201,6 @@ export default {
     margin: 5px;
     font-size: 28px;
     color: #8c939d;
-    width: 100px;
-    height: 100px;
     line-height: 100px;
     text-align: center;
     border-radius: 5px;

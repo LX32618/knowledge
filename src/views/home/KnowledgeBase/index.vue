@@ -53,6 +53,10 @@ export default {
     id: {
       type: String,
       default: '0'
+    },
+    categoryId: {
+      type: String,
+      default: '0'
     }
   },
   data () {

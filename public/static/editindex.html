@@ -1,0 +1,112 @@
+<html>
+<head>
+	<meta content="IE=10" http-equiv="X-UA-Compatible" />
+	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <title>首页 - OFFICE文档控件演示示例</title>
+    <link href="officecontrol/ntkoStyle.css" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" src="officecontrol/ntko.js"></script>
+	<script type="text/javascript">
+	var cmd;	//命令类型
+	var datatext;
+	var datavalue;
+	function getQueryString(name) { 
+		var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i"); 
+		var r = window.location.search.substr(1).match(reg); 
+		if (r != null) return unescape(r[2]); 
+	
+		return null; 
+		
+	}
+	
+	function CurentTime()
+	{ 
+		var now = new Date();
+	   
+		var year = now.getFullYear();       //年
+		var month = now.getMonth() + 1;     //月
+		var day = now.getDate();            //日
+	   
+		var hh = now.getHours();            //时
+		var mm = now.getMinutes();          //分
+		var ss = now.getSeconds();          //分
+	   
+		var clock = year + "-";
+	   
+		if(month < 10)
+			clock += "0";
+	   
+		clock += month + "-";
+	   
+		if(day < 10)
+			clock += "0";
+		   
+		clock += day + " ";
+	   
+		if(hh < 10)
+			clock += "0";
+		   
+		clock += hh + ":";
+		if (mm < 10) clock += '0'; 
+		clock += mm + ":";  
+		if (ss < 10) clock += '0'; 
+		clock += ss; 		
+		return(clock); 
+	}
+	
+	//在子页面定义的向父页面回传值的方法，方法名可以自定义
+	function ntkoSendDataToParentPage()
+	{
+		var varData = new Array();
+		varData.push(ntko.docsize);
+		varData.push(CurentTime());
+		ntkoBrowser.ntkoSetReturnValueToParentPage("OnData",varData);
+		
+	}	
+	function ntkoDataToChild(data){
+	ntko.SetBookmarkValue("ntko",data);
+	var ntkoc= ntko.ActiveDocument.bookMarks.count;
+	 for(var i=1;i<=ntkoc;i++){
+	  var ntkoname= ntko.ActiveDocument.bookMarks.item(i).name;
+	  if(ntkoname=="ntko"){
+	  ntko.ActiveDocument.bookMarks.item(i).select();
+	  ntko.ActiveDocument.Application.Selection.Font.Color=255;
+	  ntko.ActiveDocument.Application.Selection.Font.Bold=9999998;
+	  ntko.ActiveDocument.Application.Selection.Font.Size = 16;
+	  }
+	 }
+	}
+	function ntkoGetParentData(data){//该方法用于接收父页面传递的值
+	datatext=data;
+	}
+   function ntkocloseparentpage(){
+   	if(cmd==4){
+	ntkoSendDataToParentPage();
+	}
+   }
+	</script>
+
+	
+</head>
+
+
+
+<body onload="cmd=getQueryString('cmd');init(cmd);" onbeforeunload="ntkocloseparentpage()">
+<script type="text/javascript" for="TANGER_OCX" event="OnDocumentOpened(File, Document)" >
+ if(cmd==5){
+     ntko.ShowTipMessage("注意","已经接收到父页面传过来的值,请注意文档中内容的变化");	 
+     ntkoDataToChild(datatext);
+	 
+ }
+</script>
+	<!-- <div class="divTop">
+		<div class="divTopInner">
+			<div class="divTopInnerCaption">重庆软航科技有限公司</div>
+			<div class="divTopInnerNtko"><a href="http://www.ntko.com" title="点击访问NTKO官网">官网</a></div>
+		</div>
+	</div> -->
+	<div class="divBody">
+	
+		<script type="text/javascript" src="officecontrol/ntkoofficecontrol.min.js"></script>
+	</div>
+</body>
+</html>

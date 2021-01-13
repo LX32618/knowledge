@@ -34,10 +34,10 @@
           </el-tab-pane>
         </template>
         <!-- 知识评论 -->
-        <el-tab-pane>
+        <!-- <el-tab-pane>
           <span slot="label">知识评论</span>
           <knowledge-comment></knowledge-comment>
-        </el-tab-pane>
+        </el-tab-pane> -->
       </el-tabs>
     </div>
   </div>

@@ -78,7 +78,7 @@ const homeRouter = [
         title: '主页'
       },
     }, {
-      path: '/knoweldgeBase/:id',
+      path: '/knoweldgeBase/:id/:categoryId',
       name: 'knowledgeBase',
       props: true,
       component: () => import("@/views/home/KnowledgeBase"),
@@ -122,19 +122,6 @@ const homeRouter = [
     }),
     meta: {
       title: '知识查询'
-    }
-  }, 
-  {
-    path: '/officePreview',
-    name: 'OfficePreview',
-    component: () => import("@/views/home/OfficePreview"),
-    props: route => ({
-      attachId: route.query.attachId,
-      baseId: route.query.baseId,
-      categoryId: route.query.categoryId
-    }),
-    meta: {
-      title: 'Office预览'
     }
   }
 ]

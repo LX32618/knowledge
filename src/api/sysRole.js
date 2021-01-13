@@ -1,11 +1,11 @@
 import request from '@/utils/request'
 
-const rootUrl = '/sysRole/'
+const rootUrl = '/permission/'
 
 // 获取分享/申请知识列表
 export function getSharedKnowledge (option) {
   return request({
-    url: `${rootUrl}sysPermissionsController/getShare`,
+    url: `${rootUrl}PermissionAppliedController/getShare`,
     method: 'post',
     data: {
       page: option.page || 1,
