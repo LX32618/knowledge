@@ -16,6 +16,7 @@
 </template>
 
 <script>
+    import _ from "lodash"
 
     export default {
         name: "Template",
@@ -31,7 +32,7 @@
                 this.dialogVisible = false;
             },
             openModel(id){
-              this.modelData =  this.formData.find(f=>f.id==id);
+              this.modelData =  _.cloneDeep(this.formData.find(f=>f.id==id));
               this.dialogVisible = true;
             }
         },
