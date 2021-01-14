@@ -181,34 +181,6 @@ export default {
       indexData.model = (indexData.type=='grid' || indexData.type == 'table' || indexData.type == "text")?indexData.type+"_"+key:indexData.options.model;
 
       this.$set(this.data.list, newIndex,indexData);
-
-      //region old code
-      /*this.$set(this.data.list, newIndex, {
-        ...this.data.list[newIndex],
-        options: {
-          ...this.data.list[newIndex].options,
-          //remoteFunc: 'func_' + key
-        },
-        key:(this.data.list[newIndex].type=='grid' || this.data.list[newIndex].type == 'table')?key:this.data.list[newIndex].options.key,
-        // 绑定键值
-        model:(this.data.list[newIndex].type=='grid' || this.data.list[newIndex].type == 'table')?this.data.list[newIndex].type + '_' + key:this.data.list[newIndex].options.model,
-      })
-      if (this.data.list[newIndex].type === 'grid') {
-        this.$set(this.data.list, newIndex, {
-          ...this.data.list[newIndex],
-          columns: this.data.list[newIndex].columns.map(item => ({...item}))
-        })
-      }
-
-      if (this.data.list[newIndex].type === 'table') {
-        this.$set(this.data.list, newIndex, {
-          ...this.data.list[newIndex],
-          columns: this.data.list[newIndex].columns.map(item => ({...item}))
-        })
-      }*/
-      //endregion
-
-
       this.selectWidget = this.data.list[newIndex]
       this.updateState()
     },
@@ -236,34 +208,6 @@ export default {
       indexData.key = (indexData.type=="text")?key:indexData.options.key;
       indexData.model = (indexData.type=="text")?"text_"+key:indexData.options.model;
       this.$set(row.columns[colIndex].list, newIndex,indexData);
-
-      //region old code
-      /*this.$set(row.columns[colIndex].list, newIndex, {
-        ...row.columns[colIndex].list[newIndex],
-        options: {
-          ...row.columns[colIndex].list[newIndex].options
-          //remoteFunc: 'func_' + key
-        },
-        key,
-        // 绑定键值
-        model: row.columns[colIndex].list[newIndex].type + '_' + key,
-        rules: []
-      })
-
-      if (row.columns[colIndex].list[newIndex].type === 'radio' || row.columns[colIndex].list[newIndex].type === 'checkbox' || row.columns[colIndex].list[newIndex].type === 'select') {
-        this.$set(row.columns[colIndex].list, newIndex, {
-          ...row.columns[colIndex].list[newIndex],
-          options: {
-            ...row.columns[colIndex].list[newIndex].options
-         /!*   options: row.columns[colIndex].list[newIndex].options.options.map(item => ({
-              ...item
-            }))*!/
-          }
-        })
-      }
-*/
-      //endregion
-
       this.selectWidget = row.columns[colIndex].list[newIndex]
       this.updateState()
     },
@@ -277,21 +221,6 @@ export default {
       indexData.model = indexData.options.model;
       indexData.options.width = '200px';
       this.$set(table.tableColumns, newIndex,indexData);
-
-      //region old code
-/*      this.$set(table.tableColumns, newIndex, {
-        ...table.tableColumns[newIndex],
-        options: {
-          ...table.tableColumns[newIndex].options,
-          width: '200px'
-          //remoteFunc: 'func_' + key
-        },
-        key,
-        // 绑定键值
-        model: table.tableColumns[newIndex].type + '_' + key,
-        rules: []
-      })*/
-//endregion
       this.updateState()
     },
     handleWidgetDelete(index) {
