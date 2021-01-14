@@ -51,8 +51,11 @@
                 switch (cmd) {
                     // 进入后台管理
                     case 'home':
-                        this.$router.push('/')
-                        break
+                        this.$router.push('/');
+                        break;
+                    case  'center':
+                        this.$router.push('/personCenter');
+                        break;
                     // 登出
                     case 'logout':
                         this.$store.commit('user/REMOVE_TOKEN')
