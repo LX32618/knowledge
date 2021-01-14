@@ -78,11 +78,40 @@ export function revertKnowledge (option={}) {
   })
 }
 
+// 逻辑删除知识
+export function deleteKnowledge (option={}) {
+  return request({
+    url: `${rootUrl}delete`,
+    method: 'post',
+    data: option
+  })
+}
+
 // 物理删除知识
 export function reDeleteKnowledge (option={}) {
   return request({
     url: `${rootUrl}reDelete`,
     method: 'post',
     data: option
+  })
+}
+
+// 知识审核
+export function passKnowledge (option={}) {
+  return request({
+    url: `${rootUrl}passKnowledge`,
+    method: 'post',
+    data: option
+  })
+}
+
+// 知识发布
+export function releaseKnowledge (ids) {
+  return request({
+    url: `${rootUrl}releaseAll`,
+    method: 'post',
+    data: {
+      ids
+    }
   })
 }
