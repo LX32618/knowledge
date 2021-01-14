@@ -225,7 +225,7 @@ export default {
       this.isLoading = true
       const res = await deleteKnowledge({
         id: row.ID,
-        useId: 'AF91641D39A848B2838351A892EA7C89'
+        // userId: 'AF91641D39A848B2838351A892EA7C89'
       })
       if (!res.content) {
         this.$error(res.message)

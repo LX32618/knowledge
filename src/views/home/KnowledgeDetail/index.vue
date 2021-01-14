@@ -12,7 +12,7 @@
               :formConfig="formConfig"
               :showBase="true"
               :baseData="baseData"
-              :formData="formData"
+              :formData="formData[0]"
               @saveSuccess="handleSaveSuccess"
             />
           </el-tab-pane>
@@ -29,6 +29,7 @@
               :formConfig="relationForm"
               :showBase="index === 0"
               :baseData="baseData"
+              :formData="formData[index]"
               @saveSuccess="handleSaveSuccess"
             />
           </el-tab-pane>
@@ -63,7 +64,7 @@ export default {
     return {
       isLoading: false,
       baseData: {},
-      formData: {},
+      formData: [],
       formConfig: undefined,
       isSubscribe: false
     }
@@ -82,7 +83,7 @@ export default {
           baseData.creatorName = baseData.creatorEnt.username
         }
         this.baseData = baseData
-        this.formData = res.content.knowledgeData.formData[0] || {}
+        this.formData = res.content.knowledgeData.formData
         const formConfig = res.content.knowledgeModel.formModel
         this.formConfig = Array.isArray(formConfig) ? {
           formType: 1,

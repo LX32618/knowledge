@@ -70,7 +70,6 @@
           :key="item"
           :closable="!treeSelectDisabled"
           :size="collapseTagSize"
-          type="info"
           @close="deleteTag($event, item)"
           disable-transitions>
           <span class="cat-tree-select__tags-text">{{ checkedNodes[index][props.label ? props.label: 'label'] }}</span>
