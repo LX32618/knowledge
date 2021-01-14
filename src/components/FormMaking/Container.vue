@@ -369,6 +369,8 @@ export default {
       //this.updateState();
     },
     initialModelData(){
+      console.log("initial ModelData");
+      console.log(this.modelData);
       this.tempLoading = true;
       let {model,view} = this.transModelData();
       this.dataBak = _.cloneDeep(model);//将数据复制储存起来
@@ -416,7 +418,20 @@ export default {
                 })
               }
             });//剔除已经加载过的数据
+            console.log("loadedModel");
+            console.log(loadedModel);
             this.setJSON(loadedModel);//界面显示初始化的模板
+          }
+          else{
+            let nullView = {
+              list: [],
+              config: {
+                labelWidth: 100,
+                labelPosition: "right",
+                size: "small"
+              }
+            }
+            this.setJSON(nullView);//界面显示初始化的模板
           }
           this.savedModel = savedModel;
           this.mainForm = model.main;

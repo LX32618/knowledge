@@ -33,6 +33,7 @@
             },
             openModel(id){
               this.modelData =  _.cloneDeep(this.formData.find(f=>f.id==id));
+              console.log(this.modelData);
               this.dialogVisible = true;
             }
         },
