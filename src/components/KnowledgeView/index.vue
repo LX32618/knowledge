@@ -136,8 +136,10 @@ export default {
         } else {
           this.columns = this.baseColumnsConfig.slice(0, 2)
           // 基础知识配置生成
-          const sortedBaseConfig = model.base.sort((a, b) => a.pOrder - b.pOrder)
-          this.columns.push(...sortedBaseConfig.map(this.handleBadeColumnConfig))
+          const sortedBaseConfig = model.base
+            .filter(item => item.isShow)
+            .sort((a, b) => a.pOrder - b.pOrder)
+          this.columns.push(...sortedBaseConfig.map(this.handleBaseColumnConfig))
           // 主表知识配置生成
           const formData = model.formData
           formData.forEach(mainForm => {
@@ -180,7 +182,7 @@ export default {
       })
     },
     // 转化基础知识配置
-    handleBadeColumnConfig (item) {
+    handleBaseColumnConfig (item) {
       const result = {
         ...item,
         key: item.fieldNameUpper,

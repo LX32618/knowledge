@@ -1,5 +1,5 @@
 <template>
-  <el-table ref="table" class="dynamic-table" v-bind="$attrs" v-on="$listeners" @selection-change="handleSelect">
+  <el-table ref="table" class="dynamic-table" v-bind="$attrs" v-on="$listeners" :data="data" @selection-change="handleSelect">
     <el-table-column v-if="props.checkbox" type="selection" width="55"></el-table-column>
     <el-table-column
       v-for="column in columns" :key="column.key"
@@ -28,11 +28,22 @@ export default {
     columns: {
       type: Array,
       default () { return [] }
+    },
+    data: {
+      type: Array,
+      default () { return [] }
     }
   },
   data () {
     return {
       selection: []
+    }
+  },
+  watch: {
+    data () {
+      this.$nextTick(() => {
+        this.$refs.table.doLayout();
+      })
     }
   },
   methods: {
