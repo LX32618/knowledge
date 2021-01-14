@@ -1,10 +1,8 @@
 <template>
     <div class="header-content" v-if="userInfo">
-        <div class="header-logo" >
-            <img src="@/assets/img/bms/logo.png" />
-        </div>
+        <h2 style="color:white;margin-left:20px">信息资源库</h2>
         <div class="user-info">
-            <el-tooltip class="header-tool-tip" placement="bottom">
+<!--            <el-tooltip class="header-tool-tip" placement="bottom">
                 <el-badge value="+0">
                     <i class="el-icon-bell header-bell"></i>
                 </el-badge>
@@ -12,8 +10,8 @@
                     <i class="el-icon-warning"></i>
                     +0条消息
                 </div>
-            </el-tooltip>
-            <el-avatar :size="40" :src="avatar_url" class="header-avatar"></el-avatar>
+            </el-tooltip>-->
+            <el-avatar class="user-avator" :size="40" icon="el-icon-user-solid"></el-avatar>
             <el-dropdown class="user-name" @command="handleCommand">
                     <span class="el-dropdown-link">
                         {{ userInfo.name }}<i class="el-icon-caret-bottom"></i>

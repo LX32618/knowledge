@@ -230,9 +230,9 @@
     </template>
 
     <template v-if="widget.type == 'viewBtn'">
-      {{dataModel}}
       <fm-view-btn
               :tagData.sync="dataModel"
+              :ref-id="widget.options.refId"
               :multiple="widget.options.multiple"
               :disabled="isDisabled"
               :edit="edit">

@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 
 //const rootUrl = '/api/formMaking/'
-const rootUrl = '/SysRefObjServer/browserData/'
+const rootUrl = '/SysRefObjServer/'
 const rootUrl1 = '/system/knowledgeDataController/'
 const templateUrl = '/system/KnowledgeFormTemplateController/'
 
@@ -9,7 +9,7 @@ const templateUrl = '/system/KnowledgeFormTemplateController/'
 //获取浏览按钮
 export function fetchViewBtns (option) {
     return request({
-        url: `${rootUrl}get`,
+        url: `${rootUrl}browserData/get`,
         method: 'post',
         data: option
     })

@@ -53,13 +53,13 @@
         },
         methods:{
             add(){
-                window.open("/glaway/fms-basic/processDesignerController.do?init&oper=create&type=kes_29_type")
+                window.open("/fms-basic/processDesignerController.do?init&oper=create&type=kes_29_type")
             },
             edit(){
 
                 if("{}" != JSON.stringify(this.selectRow))
                 {
-                    window.open("/glaway/fms-basic/processDesignerController.do?init&oper=edit&deployId="+this.selectRow.id+"&type=kes_29_type")
+                    window.open("/fms-basic/processDesignerController.do?init&oper=edit&deployId="+this.selectRow.id+"&type=kes_29_type")
                 }
                 else
                 {
@@ -120,7 +120,6 @@
                 if(resp.data.success)
                 {
                     let result = JSON.parse(resp.data.obj);
-                    console.log(result);
                     this.tableSettings.total = result.total;
                     this.tableData = result.rows;
                 }

@@ -98,7 +98,8 @@
                     page:this.tableSettings.currentPage,
                     rows:this.tableSettings.pageSize,
                     condition:{
-                        refName:this.searchKeyWord
+                        refId:this.refId,
+                        refname:this.searchKeyWord
                     }
                 };
                 this.loadData(option);
@@ -118,7 +119,8 @@
                     page:this.tableSettings.currentPage,
                     rows:this.tableSettings.pageSize,
                     condition:{
-                        refName:this.searchKeyWord
+                        refId:this.refId,
+                        refname:this.searchKeyWord
                     }
                 };
                 this.loadData(option);
@@ -149,12 +151,14 @@
                     page:page,
                     rows:rows,
                     condition:{
-                        refName:this.searchKeyWord
+                        refId:this.refId,
+                        refname:this.searchKeyWord
                     }
                 };
                 this.loadData(option);
             },
             loadData(option){
+                console.log(option);
                 fetchViewBtns(option).then(resp=>{
                     if(resp.status == "success")
                     {

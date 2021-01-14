@@ -3,7 +3,7 @@ const sidebar = {
     name:"layout",
     path:"/bms",
     component:()=>import('@/views/bms/Layout'),
-    redirect:{name:"Keywords"},
+    redirect:{name:"KnowledgeList"},
     items: [{
         name: "Setting",
         meta:{title:"设置中心"},

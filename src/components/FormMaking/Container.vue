@@ -640,6 +640,7 @@ export default {
           tran.type = "viewBtn";
           tran.icon = "icon el-icon-collection-tag";
           tran.options.disabled = false;
+          tran.options.refId = d.fieldType;
         }
         else if(d.htmlType == 8){
           tran.type = "checkbox";

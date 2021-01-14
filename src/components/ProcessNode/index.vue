@@ -153,6 +153,7 @@
                     };
                     console.log(option);
                     startProcess(option).then(resp=>{
+                        console.log(resp);
                         if(resp.data.success)
                         {
                         }
