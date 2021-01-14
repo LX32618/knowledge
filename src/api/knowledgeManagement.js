@@ -17,15 +17,21 @@ export function fetchCategoryByNodeId(option) {
 export function exportKnowExcel(option) {
     axios({
         method:"post",
-        url:`${rootUrl}knowledgeManageTemplate/get`,
+        //url:`${rootUrl}knowledgeManageTemplate/get`,
+        url:"/app-zuul/knowledge/app/authcenter/api/knowledgeManageTemplate/get",
+        //url:"http://192.168.4.100:8083/app/authcenter/api/knowledgeManageTemplate/get",
         data:option,
         responseType:"blob",
     }).then(function (response) {
-        let fileName = response.headers['content-disposition'].match(
+
+/*        let fileName = response.headers['content-disposition'].match(
             /fileName=(.*)/
         )[1]
 
-        fileName = decodeURIComponent(fileName).split(".")[0]+".zip";
+        fileName = decodeURIComponent(fileName).split(".")[0]+".zip";*/
+
+        let fileName = "知识条目.zip";
+
 
         // 将二进制流转为blob
         const blob = new Blob([response.data], { type: 'application/octet-stream' });

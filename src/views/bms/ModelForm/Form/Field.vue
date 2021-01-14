@@ -112,7 +112,7 @@
                 else{
                     return callback();
                 }
-            })
+            });
             return {
                 data:_.cloneDeep(this.fieldData),
                 submitBtnLoading:false,
@@ -259,7 +259,9 @@
                                 this.$emit("submitSuccess",{type:type,data:data.content});
                             }
                             this.submitBtnLoading = false;
-                        });
+                        }).catch(()=>{
+                            this.submitBtnLoading = false;
+                        })
                     } else {
                         return false;
                     }

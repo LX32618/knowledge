@@ -372,7 +372,7 @@ export default {
       this.tempLoading = true;
       let {model,view} = this.transModelData();
       this.dataBak = _.cloneDeep(model);//将数据复制储存起来
-      model.main.data = [];
+      //model.main.data = [];
       let savedModel = {};
       let option = {
         categoryId:this.categoryId,
@@ -438,6 +438,8 @@ export default {
         formName:this.modelData.formName,
         data:this.initialTransform(this.modelData.id,this.modelData.datas)
       };
+      console.log("model.main");
+      console.log(model.main);
       let textKey = Date.parse(new Date()) + '_' + Math.ceil(Math.random() * 99999);
       let gridKey = Date.parse(new Date()) + '_' + Math.ceil(Math.random() * 99999);
       let view = {
@@ -560,6 +562,8 @@ export default {
       return {model,view};
     },
     initialTransform(formId,data){
+      console.log("initialTransform");
+      console.log(data);
       data = data.filter(d=>d.htmlType != -1);
       let tranferData = [];
       data.forEach(d=>{

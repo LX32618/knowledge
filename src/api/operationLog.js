@@ -17,11 +17,11 @@ export function fetchOpertionLog (option) {
 export function exportOpertionLog(option) {
     axios({
         method:"post",
-        url: `${rootUrl}SysOperationLogExport/get`,
+        //url: `${rootUrl}SysOperationLogExport/get`,
+        url: "/app-zuul/knowledge/app/authcenter/api/SysOperationLogExport/get",
         data:option,
         responseType:"blob",
     }).then(function (response) {
-        console.log(response);
         let fileName = response.headers['content-disposition'].match(
             /fileName=(.*)/
         )[1]

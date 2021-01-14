@@ -14,8 +14,7 @@
                 <template v-slot:horizontalSlot>
                     <div class="knowmgt operationNav">
                         <el-button-group>
-                            <el-button type="primary" icon="el-icon-delete" @click.native="remove">删除</el-button>
-                          <!--  <el-button type="primary" icon="element-icons el-custom-transfer1" size="mini">权限转移</el-button>-->
+                            <!--<el-button type="primary" icon="el-icon-delete" @click.native="remove">删除</el-button>-->
                             <el-button type="primary" v-if="clickData.type == 2" icon="element-icons el-custom-batchedit" size="mini">批量修改</el-button>
                             <el-button type="primary" v-if="clickData.type == 2" icon="element-icons el-custom-import" size="mini" @click="batchImport()">批量导入</el-button>
                             <el-button type="primary" icon="element-icons el-custom-share" size="mini" @click="batchShare()">批量分享</el-button>
@@ -231,7 +230,6 @@
         methods:{
             treeDataFormat({node,data}){
                 const temp = _.cloneDeep(data);
-                console.log(data);
                 let formatData = temp.filter(item=>{
                     return !(item.type == 2 && item.enable != 0);
                 }).map((item,index,arr)=>{
@@ -257,23 +255,6 @@
             {
                 this.classificationid = data.id;
                 this.seniorKeyWords.labels = data.labelInfo;
-        /*        let temp = {
-                    page:this.tableSettings.currentPage,
-                    rows:this.tableSettings.pageSize,
-                    userId:"",
-                    condition:{
-                        auditing:"1",//固定
-                        classification:data.id,//左侧节点id
-                        sort:"CREATEDATE",//
-                        order:"desc",//
-                        name:"",//搜索-知识名称
-                        code:"",//搜索-知识编码
-                        keyword:"",//搜索-keyword
-                        labels:"",//
-                        createdateMin:"",//固定
-                        createdateMax:""//固定
-                    }
-                };*/
                 let temp = {
                     page:this.tableSettings.currentPage,
                     rows:this.tableSettings.pageSize,
@@ -300,8 +281,8 @@
                         code:this.seniorKeyWords.knowCode,//搜索-知识编码
                         labels:"",//
                         //creator:this.seniorKeyWords.creator,
-                        createdateMin:this.seniorKeyWords.dateRange?this.seniorKeyWords.dateRange[0]+" 00:00:00":"",//固定
-                        createdateMax:this.seniorKeyWords.dateRange?this.seniorKeyWords.dateRange[1]+" 23:59:59":""//固定
+                        createdateMin:this.seniorKeyWords.dateRange[0]?this.seniorKeyWords.dateRange[0]+" 00:00:00":"",//固定
+                        createdateMax:this.seniorKeyWords.dateRange[1]?this.seniorKeyWords.dateRange[1]+" 23:59:59":""//固定
                     }
                 };
                 fetchCategoryByNodeId(option).then(resp=>{
@@ -416,7 +397,6 @@
                         isExpAttach:this.exportAttach,
                         ids:_.map(this.tableSelectData,"id").join(",")
                     };
-                    console.log(option);
                     exportKnowExcel(option);
                 }
                 else{

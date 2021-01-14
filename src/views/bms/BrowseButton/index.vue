@@ -12,7 +12,7 @@
                     <el-button-group>
                         <el-button type="primary" icon="el-icon-circle-plus" @click.native="append">添加</el-button>
                         <el-button type="primary" icon="el-icon-edit" @click.native="edit">编辑</el-button>
-                        <el-button type="primary" icon="el-icon-delete" @click.native="remove">删除</el-button>
+                <!--        <el-button type="primary" icon="el-icon-delete" @click.native="remove">删除</el-button>-->
                     </el-button-group>
                     <el-button-group class="model search">
                         <el-input  placeholder="请输入关键字" prefix-icon="el-icon-search" v-model="searchKeyword" @keyup.enter.native="search"></el-input>
