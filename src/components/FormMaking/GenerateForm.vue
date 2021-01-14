@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="generateForm">
     <el-form ref="generateForm"
       label-suffix=":"
       :size="data.config.size"
@@ -262,5 +262,18 @@ export default {
 <style>
 .form-table .el-table__empty-block {
   display: none;
+}
+.generateForm .el-input.is-disabled .el-input__inner {
+  background-color: white;
+  border-color: #DCDFE6;
+  color: #606266;
+}
+.generateForm .el-textarea.is-disabled .el-textarea__inner {
+  background-color: white;
+  border-color: #DCDFE6;
+  color: #606266;
+}
+.generateForm .is-disabled {
+  cursor: not-allowed;
 }
 </style>
