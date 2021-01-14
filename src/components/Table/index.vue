@@ -104,7 +104,16 @@
         this.$emit("rowDbClick",{row:row,column:column,cell:cell,event:event});
       }
     },
-    mounted() {
+    watch:{
+      tableData:{
+        handler(newVal,oldVal){
+          this.$nextTick(() => {
+            this.$refs.tb.doLayout();
+          });
+        },
+        deep:true,
+        immediate:true
+      }
     }
   }
 

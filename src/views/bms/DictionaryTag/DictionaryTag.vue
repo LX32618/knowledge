@@ -170,8 +170,8 @@
                     if(this.category=="dictionary"){//对于字典操作
                         item.right_click_option.append = true;
                     }
-                    else{//对于标签操作，子节点不能添加
-                        if(item.isLeaf)
+                    else{//对于标签操作，只能新建两层label
+                        if(2 == node.level)
                         {
                             item.right_click_option.append = false;
                         }
@@ -208,7 +208,7 @@
         flex-basis: 15%;
     }
     .dict.main{
-        flex-basis:85%;
+        flex-basis:80%;
         margin-top:20px;
     }
     .el-tabs--border-card{
