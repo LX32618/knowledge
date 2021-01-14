@@ -1,8 +1,12 @@
 import axios from 'axios'
 
-const rootUrl = '/glaway/'
+const rootUrl = '/'
 const request = axios.create({
   withCredentials: true,
+  timeout: 30000
+})
+
+const request1 = axios.create({
   timeout: 30000
 })
 
@@ -49,7 +53,7 @@ export function fetchProcessList(option) {
 }
 
 export function startProcess(option) {
-  return request({
+  return request1({
     url: `${rootUrl}fms-basic/feign/customActivitiRestController/startProcess.do`,
     method: 'post',
     params:option

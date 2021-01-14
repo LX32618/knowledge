@@ -165,6 +165,7 @@
 
       <template v-if="element.type == 'viewBtn'">
           <fm-view-btn
+                  :ref-id="element.options.refId"
                   :multiple="element.options.multiple"
                   :disabled="element.options.disabled">
           </fm-view-btn>

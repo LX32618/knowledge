@@ -6,7 +6,7 @@
         <div class="knowlist main">
             <el-tabs v-model="activeName" type="border-card" v-if="basicFormData.pid!='0' && Object.keys(basicFormData).length != 0" @tab-click="tabClick" :style="{height:'100%'}">
                 <el-tab-pane :key="0" label="基本信息" name="basic">
-                    <div style="width:100%">
+                    <div>
                         <cs-basic :settings="basicFormSettings" :form-data="basicFormData" @submitSuccess="submitSuccess"></cs-basic>
                     </div>
                 </el-tab-pane>
@@ -19,9 +19,9 @@
                 <el-tab-pane :key="3" v-if="basicFormData.type!=0" label="权限配置" name="permission">
                     <cs-authority-config v-loading="tabLoading"></cs-authority-config>
                 </el-tab-pane>
-                <el-tab-pane :key="4" v-if="basicFormData.type==2 && clickData.formId" label="流程配置" name="interface">
+         <!--       <el-tab-pane :key="4" v-if="basicFormData.type==2 && clickData.formId" label="流程配置" name="interface">
                     <cs-flow-config :flow-data="flowData" :default-row="flowDefaultRow" v-loading="tabLoading"></cs-flow-config>
-                </el-tab-pane>
+                </el-tab-pane>-->
             </el-tabs>
       <!--      <cs-template :form-data="tempFormData"></cs-template>-->
         </div>
@@ -39,13 +39,14 @@
     import authorityConfig from "./Form/AuthorityConfig"
     import flowConfig from "./Form/FlowConfig"
     import _ from 'lodash'
-    import {treeRequest,request} from '@/utils/request'
+    import request from '@/utils/request'
     import {mapGetters} from "vuex";
     import {fetchModel} from "@/api/formMaking.js"
     import {fetchTableConfig} from "@/api/knowledgeList.js"
     import {fetchFlowList} from "@/api/fmsBasic.js"
 
-    const rootUrl = '/app-zuul/knowledge/app/authcenter/api/categoryTree/';
+    const treeUrl = '/app-zuul/knowledge/app/authcenter/api/categoryTree/';
+    const rootUrl = '/categoryTree/';
 
     export default {
         name: "KnowledgeList",
@@ -66,7 +67,7 @@
                     expand_on_click_node:false,//点击接点是否进行展开收缩
                     right_click:true,//是否具有右键功能
                     request:{//访问路径设置
-                        url:`${rootUrl}get`,
+                        url:`${treeUrl}get`,
                         method:"post"
                     }
                 },
@@ -151,9 +152,6 @@
                 }
             },
             onSuccess(response, file, fileList){
-                console.log(response);
-                console.log(file);
-                console.log(fileList);
             },
             submitUpload(){
                 this.$refs.upload.submit();
@@ -200,8 +198,9 @@
                     request({
                         url: `${rootUrl}delete`,
                         method: 'post',
-                        data:{id:node.object.id},
+                        data:{id:node.object.id}
                     }).then(data=>{
+                        console.log(data);
                         if(data.status == "success")
                         {
                             this.$success("删除成功");
@@ -212,7 +211,8 @@
                         }
 
                     });
-                }).catch(() => {
+                }).catch((e) => {
+                    console.log(e);
                 });
             },
             submitSuccess({type,data}){
@@ -313,7 +313,7 @@
         flex-basis: 15%;
     }
     .knowlist.main{
-        flex-basis:83%;
+        flex-basis:81%;
     }
     .el-tabs--border-card{
         width:100%;

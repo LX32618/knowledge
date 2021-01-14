@@ -102,7 +102,7 @@
 
     let labelUrl = "/app-zuul/treeManage/tree/authcenter/api/labelTree/";
     let formUrl = "/system/knowledgeFormController/";
-    let knowListUrl = "/authcenter/api/categoryTree/";
+    let knowListUrl = "/categoryTree/";
 
 
     export default {
