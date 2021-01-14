@@ -140,10 +140,16 @@
                         let data = _.cloneDeep(this.data);
                         if(this.data.formType==0)//实体表单
                         {
-                            data.associatedForm = [];
+                            data.associatedForm = "";
+                        }
+                        else{
+                            data.associatedForm = this.data.associatedForm.map(a=>{
+                                return a.id;
+                            }).join(",");
                         }
                         let formType = data.mainId==""?"mainForm":"subForm";//判断本次操作是子表还是主表
                         let type = data.id==""?"append":"edit";//判断本次操作是新增还是编辑
+                        console.log(data);
                         request({
                             url: `${modelUrl}save`,
                             method: 'post',
@@ -164,6 +170,8 @@
                                 }
                                 this.$emit("submitSuccess",{type:type,data:data.content.datas[0]});
                             }
+                            this.savtBtnLoading = false;
+                        }).catch(()=>{
                             this.savtBtnLoading = false;
                         });
                     } else {

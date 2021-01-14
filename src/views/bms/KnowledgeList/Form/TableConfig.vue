@@ -5,7 +5,8 @@
             <el-button type="primary" icon="el-icon-view" @click.native="previewDialogVisible=true">预览</el-button>
         </el-button-group>
         <p><i class="el-icon-s-operation"></i>知识基础信息</p>
-        <cs-table :settings="tableSettings"
+        <cs-table ref="baseInfoTable"
+                  :settings="tableSettings"
                   :table-data="configData.base">
             <template v-slot:suffix-column>
                 <el-table-column label="是否显示" >
@@ -135,6 +136,12 @@
                 });
             }
         },
+/*        mounted() {
+            console.log(this.$refs.baseInfoTable);
+            this.$nextTick(() => {
+                this.$refs.baseInfoTable.$refs.tb.doLayout();
+            });
+        },*/
         components:{
             KnowledgeView
         }

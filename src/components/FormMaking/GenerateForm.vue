@@ -118,7 +118,6 @@ export default {
   },
   created () {
     this.generateModle(this.data.list);
-    console.log(this.data.list);
   },
   mounted () {
   },
