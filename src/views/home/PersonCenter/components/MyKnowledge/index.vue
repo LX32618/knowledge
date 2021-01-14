@@ -15,8 +15,8 @@
           </cs-tree
         ></el-col>
         <el-col :span="18">
-          <el-button type="primary" icon="el-icon-s-promotion" v-if="selectedTab === 'toPublish'">发布</el-button>
-          <dynamic-table :data="knowledges" :columns="columns" :props="tableProps">
+          <el-button type="primary" icon="el-icon-s-promotion" v-if="selectedTab === 'toPublish'" @click="handlePublishAll" :loading="isLoading">发布</el-button>
+          <dynamic-table ref="dynamicTable" :data="knowledges" :columns="columns" :props="tableProps">
             <template v-slot:NAME="{ scope }">
               <router-link :to="{ path: `/knowledgeDetail/${scope.row.id}`}">{{ scope.row.NAME }}</router-link>
             </template>
@@ -26,7 +26,9 @@
               </el-tooltip>
             </template>
             <template v-slot:option=" { scope }">
-              <el-button v-if="selectedTab === 'published'" size="mini" type="primary" icon="el-icon-delete" @click="applyDelete(scope.row)">申请删除</el-button>
+              <el-button v-if="selectedTab === 'published'" size="mini" type="primary" icon="el-icon-delete" :loading="isLoading" @click="applyDelete(scope.row)">删除</el-button>
+              <el-button v-if="selectedTab === 'toAudit'" size="mini" type="primary" icon="el-icon-view" :loading="isLoading" @click="handleAudit(scope.row)">审核</el-button>
+              <el-button v-if="selectedTab === 'toPublish'" size="mini" type="primary" icon="el-icon-s-promotion" :loading="isLoading" @click="handlePublish(scope.row.ID)">发布</el-button>
             </template>
           </dynamic-table>
           <el-pagination
@@ -45,7 +47,7 @@
 <script>
 import DynamicTable from '@/components/KnowledgeView/components/DynamicTable'
 import { fetchCategoryTreeAndNum } from '@/api/docCategory'
-import { findKnowledges } from '@/api/knowledgeBase'
+import { findKnowledges, passKnowledge, releaseKnowledge, deleteKnowledge } from '@/api/knowledgeBase'
 import { unflatCategoryTree } from '@/utils/tree'
 import { mapGetters } from 'vuex'
 
@@ -119,7 +121,8 @@ export default {
           {
             key: 'CREATORNAME',
             label: '创建人'
-          },{
+          },
+          {
             key: 'option',
             label: '操作'
           }
@@ -218,7 +221,40 @@ export default {
     sliceReason (text) {
       return (!text || text.length < 10) ? text : `${text.slice(0, 8)}...`
     },
-    applyDelete (row) {}
+    async applyDelete (row) {
+      this.isLoading = true
+      const res = await deleteKnowledge({
+        id: row.ID,
+        useId: 'AF91641D39A848B2838351A892EA7C89'
+      })
+      if (!res.content) {
+        this.$error(res.message)
+        this.isLoading = false
+        return
+      }
+      this.$success('知识已放入回收站')
+      this.updateKnowledge()
+    },
+    async handleAudit (row) {
+      this.isLoading = true
+      await passKnowledge({
+        id: row.ID,
+        auditor: 'songyg',
+        auditing: '1'
+      })
+      this.$success('知识审核成功')
+      this.updateKnowledge()
+    },
+    async handlePublish (id) {
+      this.isLoading = true
+      await releaseKnowledge(id)
+      this.$success('知识发布成功')
+      this.updateKnowledge()
+    },
+    handlePublishAll () {
+      const ids = this.$refs.dynamicTable.getSelection().map(item => item.ID)
+      this.handlePublish(ids.join(','))
+    }
   },
   async mounted () {
     this.isLoading = true

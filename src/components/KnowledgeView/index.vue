@@ -18,8 +18,8 @@
         <!-- 操作列 -->
         <template v-slot:option="{ scope }">
           <el-button size="mini" icon="el-icon-view" @click="handleView(scope.row)" type="success">查看</el-button>
-          <el-button size="small" @click="handleSubscribe(scope.row, scope.$index)" :type="scope.row.isSubscribe ? 'warning' : 'primary'">
-            <template v-if="scope.row.isSubscribe">
+          <el-button size="small" @click="handleSubscribe(scope.row, scope.$index)" :type="scope.row.ISSUBSCRIBE ? 'warning' : 'primary'">
+            <template v-if="scope.row.ISSUBSCRIBE">
               <i class="el-icon-s-release"></i> 取消订阅
             </template>
             <template v-else>
@@ -192,6 +192,8 @@ export default {
         result.key = 'CLASSIFICATIONTEXT'
       } else if (item.fieldName === 'creator') {
         result.key = 'CREATORNAME'
+      } else if (item.fieldName === 'labelsEnt') {
+        result.key = 'LABELSTEXT'
       }
       return result
     },
@@ -213,13 +215,13 @@ export default {
     handleSubscribe (row, index) {
       const id = row.ID
       const userId = this.userInfo.id
-      const text = `${row.isSubscribe ? '取消' : ''}订阅`
-      if (row.isSubscribe) {
+      const text = `${row.ISSUBSCRIBE ? '取消' : ''}订阅`
+      if (row.ISSUBSCRIBE) {
         cancelSubscribe({
-          ids: `${row.id}-1`,
+          ids: `${row.ID}-1`,
           userId
         }).then(() => {
-          row.isSubscribe = false
+          row.ISSUBSCRIBE = false
           this.knowledges.splice(index, 1, row)
           this.$success(`${text}成功`)
         }).catch(() => {
@@ -230,7 +232,7 @@ export default {
           id,
           userId
         }).then(() => {
-          row.isSubscribe = true
+          row.ISSUBSCRIBE = true
           this.knowledges.splice(index, 1, row)
           this.$success(`${text}成功`)
         }).catch(() => {

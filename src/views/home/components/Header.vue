@@ -1,8 +1,11 @@
 <template>
   <header class="header">
     <el-row class="header-content">
-      <el-col :span="2">
-        <img class="header-logo" src="@/assets/img/home/LOGO.png" />
+      <el-col :span="3" :offset="1" class="header-title">
+        <h2>信息资源库</h2>
+        <!-- <span class="title-wrap">
+          <img class="header-logo" src="@/assets/img/home/LOGO.png" />          
+        </span>       -->
       </el-col>
       <el-col :span="3" class="search-select">
         <!-- 搜索库筛选 -->
@@ -43,12 +46,12 @@
           <div slot="content">帮助</div>
         </el-tooltip> -->
         <!-- 全屏显示 -->
-        <el-tooltip placement="bottom">
+        <!-- <el-tooltip placement="bottom">
           <i class="el-icon-rank header-icon" @click="handleFullScreen"></i>
           <div slot="content">{{ fullScreen ? "取消全屏" : "全屏" }}</div>
-        </el-tooltip>
+        </el-tooltip> -->
         <!-- 消息提示 -->
-        <el-tooltip placement="bottom" :disabled="toolTipDisable">
+        <!-- <el-tooltip placement="bottom" :disabled="toolTipDisable">
           <el-badge :value="`+${messages.length}`">
             <i class="el-icon-bell header-icon"></i>
           </el-badge>
@@ -65,7 +68,7 @@
               {{ message.title }}
             </div>
           </div>
-        </el-tooltip>
+        </el-tooltip> -->
       </el-col>
       <!-- 用户头像 -->
       <el-col :span="2">
@@ -239,6 +242,10 @@ export default {
 }
 .header-logo {
   margin-top: 12px;
+}
+.header-title {
+  text-align: right;
+  color: #409EFF;
 }
 .search-select {
   margin: 15px 0 0 20px;

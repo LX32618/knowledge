@@ -21,11 +21,11 @@ const requestInterceptor = config => {
   if (store.getters.token) {
     config.headers.Authorization = getToken()
   }
-  // const userInfo = store.getters.userInfo
+  const userInfo = store.getters.userInfo
   
-  // if (userInfo && config.data) {
-  //   config.data.userId = userInfo.id
-  // }
+  if (userInfo && config.data && !config.data.userId) {
+    config.data.userId = userInfo.id
+  }
   return config
 }
 

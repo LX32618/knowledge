@@ -17,7 +17,7 @@ import store from '@/store'
 
 const routerGuide = async (to, from, next) => {
   // 设置网站title
-  document.title = `${to.meta.title} | 知识工程`
+  document.title = `${to.meta.title} | 信息资源库`
 
   await store.dispatch('user/getInfo')
   await store.dispatch('routerMenu/getRouterMenu', 'F36A946243D34506A6BE625412739725')

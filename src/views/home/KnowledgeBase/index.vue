@@ -103,6 +103,13 @@ export default {
       })
       this.categories = data
       this.categoriesLoading = false
+      // 初始化选中目录
+      if (this.categoryId === '0') return
+      walkTree(this.categories, item => {
+        if (item.id === this.categoryId) {
+          this.selectedCategory = item
+        }
+      })
     })
     document.title = `${this.currentKnowledgeBase.categoryName} | 知识工程`
   },
