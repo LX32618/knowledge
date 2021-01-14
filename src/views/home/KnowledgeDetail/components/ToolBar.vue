@@ -8,6 +8,7 @@
       <el-button type="primary" icon="el-icon-s-claim" @click="handleSubscribe" :loading="subscribeLoading">{{ isSubscribe ? '取消订阅' : '订阅'}}</el-button>
       <!-- <el-button type="danger" icon="el-icon-document-add">新建版本</el-button>
       <el-button type="info" icon="el-icon-document-copy">历史版本</el-button> -->
+      <el-button type="info" icon="el-icon-view" @click="test">发布</el-button>
     </el-button-group>
     <collect-dialog :show.sync="collectShow" :knowledge="knowledge" @success="collectSuccess"></collect-dialog>
   </div>
@@ -18,6 +19,8 @@ import CollectDialog from '@/components/Input/CollectDialog'
 import { mapGetters } from 'vuex'
 import { isSubscribe, subscribe, cancelSubscribe } from '@/api/knowledgeSubscribe'
 import { isCollect, saveCollect, deleteCollect } from '@/api/knowledgeCollect'
+import { passKnowledge } from '@/api/knowledgeBase'
+import TagVue from '../../../bms/DictionaryTag/Tag.vue'
 
 export default {
   name: 'ToolBar',
@@ -49,6 +52,14 @@ export default {
     }
   },
   methods: {
+    async test () {
+      await passKnowledge({
+        id: this.knowledge.KNOWLEDGE_ID,
+        auditor: 'songyg',
+        auditing: '1'
+      })
+      this.$success('知识发布成功')
+    },
     handleHomeClick () {
       this.$router.push('/')
     },

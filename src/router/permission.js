@@ -20,8 +20,10 @@ const routerGuide = async (to, from, next) => {
   document.title = `${to.meta.title} | 信息资源库`
 
   await store.dispatch('user/getInfo')
-  await store.dispatch('routerMenu/getRouterMenu', 'F36A946243D34506A6BE625412739725')
-
+  const hasMenu = Object.keys(store.getters.sidebar).length > 0 && Object.keys(store.getters.sidebarRouter).length > 0
+  if (!hasMenu) {
+    await store.dispatch('routerMenu/getRouterMenu', 'F36A946243D34506A6BE625412739725')
+  }
   next()
 
   // const hasMenu = Object.keys(store.getters.sidebar).length > 0 && Object.keys(store.getters.sidebarRouter).length > 0
