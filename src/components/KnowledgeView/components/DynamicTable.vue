@@ -1,20 +1,22 @@
 <template>
-  <el-table ref="table" class="dynamic-table" v-bind="$attrs" v-on="$listeners" :data="data" @selection-change="handleSelect">
-    <el-table-column v-if="props.checkbox" type="selection" width="55"></el-table-column>
-    <el-table-column
-      v-for="column in columns" :key="column.key"
-      :label="column.label"
-      :prop="column.key"
-      :width="column.width"
-      :fixed="column.fixed"
-      :sortable="column.sortable ? 'custom' : false">
-      <template slot-scope="scope">
-        <slot :name="column.key" :scope="scope">
-          {{ defaultDisplay(scope.row, scope.$index, column) }}
-        </slot>
-      </template>
-    </el-table-column>
-  </el-table>
+  <div class="dynamic-table">
+    <el-table ref="table" v-bind="$attrs" v-on="$listeners" :data="data" @selection-change="handleSelect">
+      <el-table-column v-if="props.checkbox" type="selection" width="55"></el-table-column>
+      <el-table-column
+        v-for="column in columns" :key="column.key"
+        :label="column.label"
+        :prop="column.key"
+        :width="column.width"
+        :fixed="column.fixed"
+        :sortable="column.sortable ? 'custom' : false">
+        <template slot-scope="scope">
+          <slot :name="column.key" :scope="scope">
+            {{ defaultDisplay(scope.row, scope.$index, column) }}
+          </slot>
+        </template>
+      </el-table-column>
+    </el-table>
+  </div>
 </template>
 
 <script>
@@ -70,3 +72,7 @@ export default {
   }
 }
 </script>
+
+<style>
+
+</style>
