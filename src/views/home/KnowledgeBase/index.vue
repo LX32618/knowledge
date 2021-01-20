@@ -111,7 +111,7 @@ export default {
         }
       })
     })
-    document.title = `${this.currentKnowledgeBase.categoryName} | 知识工程`
+    document.title = `${this.currentKnowledgeBase.categoryName} | 信息资源库`
   },
   methods: {
     handleCategoryChange (data) {

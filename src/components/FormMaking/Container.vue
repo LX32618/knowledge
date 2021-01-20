@@ -369,8 +369,6 @@ export default {
       //this.updateState();
     },
     initialModelData(){
-      console.log("initial ModelData");
-      console.log(this.modelData);
       this.tempLoading = true;
       let {model,view} = this.transModelData();
       this.dataBak = _.cloneDeep(model);//将数据复制储存起来
@@ -418,8 +416,6 @@ export default {
                 })
               }
             });//剔除已经加载过的数据
-            console.log("loadedModel");
-            console.log(loadedModel);
             this.setJSON(loadedModel);//界面显示初始化的模板
           }
           else{
@@ -448,6 +444,7 @@ export default {
         main:{},
         sub:[]
       };
+      console.log(this.modelData.datas);
       model.main = {
         formId:this.modelData.id,
         formName:this.modelData.formName,
@@ -652,6 +649,7 @@ export default {
           //tran.options.action = 'https://jsonplaceholder.typicode.com/photos/';
         }
         else if(d.htmlType == 6 || d.htmlType == 7){
+          console.log(d);
           tran.type = "viewBtn";
           tran.icon = "icon el-icon-collection-tag";
           tran.options.disabled = false;

@@ -142,6 +142,9 @@ export default {
             this.models[genList[i].model] = []
           }
         }
+        else if(genList[i].type === 'viewBtn'){
+          this.models[genList[i].model] = JSON.parse(this.value[genList[i].model]); 
+        }
         else {
           if (this.value && Object.keys(this.value).indexOf(genList[i].model) >= 0) {
             this.models[genList[i].model] = this.value[genList[i].model]

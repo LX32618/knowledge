@@ -185,7 +185,7 @@ export default {
     handleBaseColumnConfig (item) {
       const result = {
         ...item,
-        key: item.fieldNameUpper,
+        key: item.fieldName.toUpperCase(),
         label: item.showName,
         width: item.colWidth,
         sortable: item.isOrder

@@ -112,7 +112,13 @@
                 this.$emit("update:tagData",filterTags);
             },
             tagClick(tag){
-                window.open(tag.url);
+                const url = this.$router.resolve({
+                    path: tag.url,
+                    params: {
+                        id: tag.id
+                    }
+                })
+                window.open(url.href);
             },
             searchClick(){
                 let option = {

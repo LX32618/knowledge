@@ -26,7 +26,7 @@
     </template>
 
     <template v-if="widget.type == 'textarea'">
-      <el-input type="textarea" :rows="5"
+      <el-input type="textarea" :rows="2"
         v-model="dataModel"
         :disabled="isDisabled"
         :placeholder="widget.options.placeholder"

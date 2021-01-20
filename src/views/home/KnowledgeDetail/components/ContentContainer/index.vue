@@ -185,7 +185,8 @@ export default {
       this.saveButtonLoading = true
       const knowledgeModel = this.createKnowledgeModel()
       console.log(knowledgeModel)
-      const saveHandler = this.showBase ? saveData : saveFormData
+      // const saveHandler = this.showBase ? saveData : saveFormData
+      const saveHandler = saveData
       saveHandler(knowledgeModel).then(res => {
         this.$success('保存成功')
         this.isViewMode = true

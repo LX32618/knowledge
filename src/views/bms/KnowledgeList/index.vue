@@ -145,7 +145,6 @@
                             this.flowDefaultRow = JSON.parse(resp.data.obj).rows.filter(d => {
                                 return d.id == "1b7e00c0-5e7c-4399-9a49-57281d8b2539";
                             })[0];
-                            console.log(this.flowDefaultRow);
                         }
                         this.tabLoading = false;
                     });
