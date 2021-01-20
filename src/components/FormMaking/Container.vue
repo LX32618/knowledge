@@ -40,17 +40,19 @@
               </template>
 
               <template v-if="JSON.stringify(mainForm) != '{}'">
-                <div class="widget-cate">主表{{mainForm.formName}}</div>
+                <div class="widget-cate">主表-{{mainForm.formName}}</div>
                   <draggable tag="ul" v-model="mainForm.data"
                              v-bind="{group:{ name:'grid', pull:true,put:false},sort:false, ghostClass: 'ghost'}"
                              @end="handleMoveEnd"
                              @start="handleMoveStart"
                              :move="handleMove">
                     <li class="form-edit-widget-label" :class="{'no-put': item.type == 'divider'}" v-for="(item, index) in mainForm.data" :key="index">
-                      <a>
-                        <i :class="item.icon"></i>
-                        <span>{{item.name}}</span>
-                      </a>
+                      <el-tooltip class="item" effect="dark" :content="item.name" placement="top-end">
+                        <a>
+                          <i :class="item.icon"></i>
+                          <span>{{item.name}}</span>
+                        </a>
+                      </el-tooltip>
                     </li>
                   </draggable>
                   <div v-if="!mainForm.data.length">
@@ -60,17 +62,21 @@
 
               <template v-if="subForm.length">
                 <div v-for="sub in subForm" :key="sub.formId">
-                  <div class="widget-cate">子表{{sub.formName}}</div>
+                  <div class="widget-cate">子表-{{sub.formName}}</div>
                   <draggable tag="ul" :list="sub.data"
                              v-bind="{group:{ name: sub.formId, pull:true,put:false},sort:false, ghostClass: 'ghost'}"
                              @end="handleMoveEnd"
                              @start="handleMoveStart"
                              :move="handleMove">
+
+
                     <li class="form-edit-widget-label" :class="{'no-put': item.type == 'divider'}" v-for="(item, index) in sub.data" :key="index">
-                      <a>
-                        <i :class="item.icon"></i>
-                        <span>{{item.name}}</span>
-                      </a>
+                      <el-tooltip class="item" effect="dark" :content="item.name" placement="top-end">
+                        <a>
+                          <i :class="item.icon"></i>
+                          <span>{{item.name}}</span>
+                        </a>
+                      </el-tooltip>
                     </li>
                   </draggable>
                   <div v-if="!sub.data.length">
@@ -406,7 +412,7 @@ export default {
                 model.sub.forEach(s=>{
                   if(s.formId == tableId){//找到对应的子表
                     lm.tableColumns.forEach(c=>{
-                      let key = lm.key;
+                      let key = c.key;
                       let index = s.data.findIndex(d=>{
                         return d.options.key == key;
                       })
@@ -444,11 +450,10 @@ export default {
         main:{},
         sub:[]
       };
-      console.log(this.modelData.datas);
       model.main = {
         formId:this.modelData.id,
         formName:this.modelData.formName,
-        data:this.initialTransform(this.modelData.id,this.modelData.datas)
+        data:_.cloneDeep(this.initialTransform(this.modelData.id,this.modelData.datas))
       };
       let textKey = Date.parse(new Date()) + '_' + Math.ceil(Math.random() * 99999);
       let gridKey = Date.parse(new Date()) + '_' + Math.ceil(Math.random() * 99999);
@@ -569,7 +574,7 @@ export default {
         })
         view.list.push(table);
       })
-      return {model,view};
+      return _.cloneDeep({model,view});
     },
     initialTransform(formId,data){
       data = data.filter(d=>d.htmlType != -1);
@@ -698,7 +703,7 @@ export default {
           tran.options.blank = true;
         }
         tranferData.push(tran);
-      })
+      });
       return tranferData;
     },
     removeGrid({index,removeData}){
