@@ -120,6 +120,7 @@
                 if(resp.data.success)
                 {
                     let result = JSON.parse(resp.data.obj);
+                    console.log(result);
                     this.tableSettings.total = result.total;
                     this.tableData = result.rows;
                 }

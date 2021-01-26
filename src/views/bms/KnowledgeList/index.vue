@@ -19,9 +19,9 @@
                 <el-tab-pane :key="3" v-if="basicFormData.type!=0" label="权限配置" name="permission">
                     <cs-authority-config v-loading="tabLoading"></cs-authority-config>
                 </el-tab-pane>
-         <!--       <el-tab-pane :key="4" v-if="basicFormData.type==2 && clickData.formId" label="流程配置" name="interface">
+                <el-tab-pane :key="4" v-if="basicFormData.type==2 && clickData.formId" label="流程配置" name="interface">
                     <cs-flow-config :flow-data="flowData" :default-row="flowDefaultRow" v-loading="tabLoading"></cs-flow-config>
-                </el-tab-pane>-->
+                </el-tab-pane>
             </el-tabs>
       <!--      <cs-template :form-data="tempFormData"></cs-template>-->
         </div>
@@ -143,7 +143,8 @@
                             });
                             console.log(this.flowData);
                             this.flowDefaultRow = JSON.parse(resp.data.obj).rows.filter(d => {
-                                return d.id == "1b7e00c0-5e7c-4399-9a49-57281d8b2539";
+                                //return d.id == "1b7e00c0-5e7c-4399-9a49-57281d8b2539";
+                                return d.id == "2cac4a22-aedd-4d2e-b9f1-86bdb9306e1f";
                             })[0];
                         }
                         this.tabLoading = false;

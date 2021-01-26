@@ -603,7 +603,8 @@ export default {
           tran.icon = "icon iconfont icon-radio-active";
           tran.options.width = "";
           tran.options.defaultValue = "";
-          tran.options.dictId = d.fieldType;
+          //tran.options.dictId = d.fieldType;
+          tran.options.dictId = d.id;
           tran.options.required = false;
           tran.options.placeholder = "";
         }
@@ -620,7 +621,8 @@ export default {
           tran.icon = "icon iconfont icon-select";
           tran.options.defaultValue = '';
           tran.options.width = "";
-          tran.options.dictId = d.fieldType;
+          //tran.options.dictId = d.fieldType;
+          tran.options.dictId = d.id;
           tran.options.required = false;
           tran.options.disabled = false;
           tran.options.clearable = false;
@@ -658,7 +660,8 @@ export default {
           tran.type = "viewBtn";
           tran.icon = "icon el-icon-collection-tag";
           tran.options.disabled = false;
-          tran.options.refId = d.fieldType;
+          //tran.options.refId = d.fieldType;
+          tran.options.refId = d.id;
         }
         else if(d.htmlType == 8){
           tran.type = "checkbox";
@@ -666,7 +669,8 @@ export default {
           tran.options.width = "";
           tran.options.disabled = false;
           tran.options.required = false;
-          tran.options.dictId = d.fieldType;
+          //tran.options.dictId = d.fieldType;
+          tran.options.dictId = d.id;
           tran.options.defaultValue = '';
         }
         else if(d.htmlType == 9){
