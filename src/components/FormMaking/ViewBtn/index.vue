@@ -41,6 +41,7 @@
 
     import _ from 'lodash'
     import {fetchViewBtns} from "@/api/formMaking.js"
+    import {getKnowledgeFormFieldType} from "@/api/knowlegeModel.js"
 
     export default {
         name: "ViewBtn",
@@ -95,12 +96,10 @@
         methods:{
             toggle(){
                 let option = {
+                    id:this.refId,
+                    refName:this.searchKeyWord,
                     page:this.tableSettings.currentPage,
-                    rows:this.tableSettings.pageSize,
-                    condition:{
-                        refId:this.refId,
-                        refname:this.searchKeyWord
-                    }
+                    rows:this.tableSettings.pageSize
                 };
                 this.loadData(option);
             },
@@ -122,12 +121,10 @@
             },
             searchClick(){
                 let option = {
+                    id:this.refId,
+                    refName:this.searchKeyWord,
                     page:this.tableSettings.currentPage,
                     rows:this.tableSettings.pageSize,
-                    condition:{
-                        refId:this.refId,
-                        refname:this.searchKeyWord
-                    }
                 };
                 this.loadData(option);
             },
@@ -154,18 +151,16 @@
             },
             pageSizeChange({page,rows}){
                 let option = {
+                    id:this.refId,
+                    refName:this.searchKeyWord,
                     page:page,
-                    rows:rows,
-                    condition:{
-                        refId:this.refId,
-                        refname:this.searchKeyWord
-                    }
+                    rows:rows
                 };
                 this.loadData(option);
             },
             loadData(option){
                 console.log(option);
-                fetchViewBtns(option).then(resp=>{
+                getKnowledgeFormFieldType(option).then(resp=>{
                     if(resp.status == "success")
                     {
                         this.tableSettings.total = resp.content.total;
