@@ -32,7 +32,6 @@
                 this.dialogVisible = false;
             },
             openModel(id){
-              console.log(this.formData);
               this.modelData =  _.cloneDeep(this.formData.find(f=>f.id==id));
               this.dialogVisible = true;
             }
