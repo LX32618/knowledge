@@ -1,9 +1,11 @@
 import request from '@/utils/request'
 
+const rootUrl = '/knowledgeModel/'
+
 // 根据字段ID获取字段类型信息
 export function getKnowledgeFormFieldType (option) {
   return request({
-    url: `${rootUrl}get`,
+    url: `${rootUrl}knowledgeFormFieldType/get`,
     method: 'post',
     data: {
       page: option.page || 1,
