@@ -184,7 +184,7 @@ export default {
       console.log(this.editFormData)
       this.saveButtonLoading = true
       const knowledgeModel = this.createKnowledgeModel()
-      console.log(knowledgeModel)
+      // console.log(knowledgeModel)
       // const saveHandler = this.showBase ? saveData : saveFormData
       const saveHandler = saveData
       saveHandler(knowledgeModel).then(res => {

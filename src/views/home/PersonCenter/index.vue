@@ -22,10 +22,10 @@
             <div class="sidebar-info">
               <el-avatar icon="el-icon-user-solid" :size="76"></el-avatar>
               <div class="info-wrapper">
-                <p class="user-name">系统管理员</p>
-                <p class="user-department">
+                <p class="user-name">{{ userInfo.realName }}</p>
+                <!-- <p class="user-department">
                   所属部门：{{ userInfo.department }}
-                </p>
+                </p> -->
               </div>
             </div>
             <!-- 侧边栏菜单 -->

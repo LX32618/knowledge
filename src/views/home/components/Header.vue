@@ -79,7 +79,7 @@
       <el-col :span="3">
         <el-dropdown class="user-name" @command="handleCommand" trigger="click">
           <span class="el-dropdown-link">
-            {{ userInfo.name }}<i class="el-icon-caret-bottom"></i>
+            {{ userInfo.realName }}<i class="el-icon-caret-bottom"></i>
           </span>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item command="manage"

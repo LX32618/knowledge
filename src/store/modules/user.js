@@ -1,5 +1,6 @@
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { getInfo, logout } from '@/api/user'
+import { getUserInfoByLoginName } from '@/api/sysUserDbServer'
 
 const state = {
   token: getToken(),
@@ -56,18 +57,15 @@ const actions = {
         if (!response.token) {
           reject(new Error('用户登录已过期'))
         }
-        data = {
-          id: 'EFB3BCDFBC0B4B5B91991B49B96D26CF',
-          username: 'admin',
-          name: '系统管理员',
-          token: 'admin-token',
-          department: '流程与信息化部',
-          email: 'admin@mei29.scgb.com',
-          phone: '028-87552252',
-          roles: [0, 1]
-        }
-        commit('SET_INFO', data)
-        resolve(data)
+        const [username] = response.token.split('###')
+        getUserInfoByLoginName(username).then(res => {
+          if (!res.content) {
+            reject(new Error('未找到用户'))
+          }
+          data = res.content
+          commit('SET_INFO', data)
+          resolve(data)
+        })
       }).catch(error => {
         reject(error)
       })

@@ -1,13 +1,13 @@
 <template>
   <div class="info-wrapper">
     <el-avatar icon="el-icon-user-solid" :size="150"></el-avatar>
-    <div class="user-name">{{ userInfo.name }}</div>
-    <div class="user-info">
+    <div class="user-name">{{ userInfo.realName }}</div>
+    <!-- <div class="user-info">
       <i class="el-icon-phone"></i> {{ userInfo.phone }}
     </div>
     <div class="user-info">
       <i class="el-icon-message"></i> {{ userInfo.email }}
-    </div>
+    </div> -->
   </div>
 </template>
 

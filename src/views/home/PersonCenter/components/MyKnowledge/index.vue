@@ -18,7 +18,7 @@
           <el-button type="primary" icon="el-icon-s-promotion" v-if="selectedTab === 'toPublish'" @click="handlePublishAll" :loading="isLoading">发布</el-button>
           <dynamic-table ref="dynamicTable" :data="knowledges" :columns="columns" :props="tableProps">
             <template v-slot:NAME="{ scope }">
-              <router-link :to="{ path: `/knowledgeDetail/${scope.row.id}`}">{{ scope.row.NAME }}</router-link>
+              <router-link :to="{ path: `/knowledgeDetail/${scope.row.ID}`}">{{ scope.row.NAME }}</router-link>
             </template>
             <template v-slot:reason="{ scope }">
               <el-tooltip effect="light" :content="scope.row.reason" placement="bottom" popper-class="popper-tip">
