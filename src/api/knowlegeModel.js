@@ -12,9 +12,10 @@ export function getKnowledgeFormFieldType (option) {
       rows: option.rows || 10,
       condition: {
         id: option.id,
+        knowId:option.knowId || '',
         refName: option.refName || '',
         isMulti: option.isMulti || 0
       }
-    } 
+    }
   })
 }
