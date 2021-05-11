@@ -96,7 +96,11 @@ export default {
     },
     searchColumns (val) {
       if (val && val.length > 0) {
-        this.fields = this.fields.slice(0, 5)
+        let lastIndex = this.fields.findIndex(item => item.key === 'labels')
+        if (lastIndex = -1) {
+          lastIndex = 3
+        }
+        this.fields = this.fields.slice(0, lastIndex + 1)
         this.fields.push(...val.map(item => {
           return {
             ...item,
