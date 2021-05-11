@@ -145,7 +145,7 @@ export default {
           formData.forEach(mainForm => {
             fieldMap[mainForm.formId] = []
             this.columns.push(...mainForm.fieldData.filter(item => item.isShow).map(item => {
-              let key = `${mainForm.tableName}${item.fieldInfo.fieldName}`
+              let key = `${mainForm.tableName}${item.fieldInfo.fieldName}`.toUpperCase()
               if (item.fieldInfo.htmlType !== 0 && item.fieldInfo.htmlType !== 9) {
                 key += 'TEXT'
               }
