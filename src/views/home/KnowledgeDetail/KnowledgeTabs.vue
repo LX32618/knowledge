@@ -9,6 +9,7 @@
           :showBase="true"
           :baseData="baseData"
           :formData="formData[0]"
+          :editType="editType"
           @saveSuccess="handleSaveSuccess"
         />
       </el-tab-pane>
@@ -26,6 +27,7 @@
           :showBase="index === 0"
           :baseData="baseData"
           :formData="formData[index]"
+          :editType="editType"
           @saveSuccess="handleSaveSuccess"
         />
       </el-tab-pane>
@@ -50,6 +52,7 @@ export default {
   },
   props: {
     id: String,
+    editType: Number,
     isHistory: {
       type: Boolean,
       default: false

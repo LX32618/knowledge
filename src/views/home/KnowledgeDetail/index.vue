@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <tool-bar :baseData="knowledge.baseData" />
-    <KnowledgeTabs :id="id" :knowledge="knowledge" />
+    <KnowledgeTabs :id="id" :knowledge="knowledge" :editType="editType" />
   </div>
 </template>
 
@@ -24,11 +24,15 @@ export default {
     return {
       knowledge: {
         baseData: {}
-      }
+      },
+      editType: undefined
     }
   },
   mounted () {
+    const { editType } = this.$route.query
+    this.editType = editType
     getModelAndData({ id: this.id }).then(res => {
+      console.log(res)
       this.knowledge = handleGetKnowledgeModelAndDataResponse(res.content)
     })
   }
