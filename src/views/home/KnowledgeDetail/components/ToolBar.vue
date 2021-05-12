@@ -20,7 +20,6 @@ import { mapGetters } from 'vuex'
 import { isSubscribe, subscribe, cancelSubscribe } from '@/api/knowledgeSubscribe'
 import { isCollect, saveCollect, deleteCollect } from '@/api/knowledgeCollect'
 import { passKnowledge } from '@/api/knowledgeBase'
-import TagVue from '../../../bms/DictionaryTag/Tag.vue'
 
 export default {
   name: 'ToolBar',
