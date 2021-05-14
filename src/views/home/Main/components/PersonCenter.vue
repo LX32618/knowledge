@@ -4,7 +4,7 @@
     <div class="head-box">
       <el-avatar class="user-avator" :size="76" icon="el-icon-user-solid"></el-avatar>
       <div class="info-wrapper">
-        <p class="info-name">{{ userInfo.name }}</p>
+        <p class="info-name">{{ userInfo.realName }}</p>
       </div>
     </div>
     <!-- 知识信息 -->
