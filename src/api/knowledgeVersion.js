@@ -11,3 +11,13 @@ export function createKnowledgeVersion (baseId) {
     }
   })
 }
+
+export function getKnowledgeVersions (baseId) {
+  return request({
+    url: `${rootUrl}versions`,
+    method: 'post',
+    data: {
+      baseId
+    }
+  })
+}

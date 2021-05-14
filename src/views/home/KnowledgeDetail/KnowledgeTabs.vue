@@ -1,10 +1,11 @@
 <template>
-  <el-tabs v-loading="isLoading" v-if="formConfig && !isLoading" type="card">
+  <el-tabs v-loading="isLoading" v-if="formConfig && !isLoading" :type="isHistory ? 'border-card' : 'card'">
     <!-- 实体表单 -->
     <template v-if="formConfig.formType === 0">
       <el-tab-pane>
         <span slot="label">{{ formConfig.formName }}</span>
         <content-container
+          :isHistory="isHistory"
           :formConfig="formConfig"
           :showBase="true"
           :baseData="baseData"
@@ -23,6 +24,7 @@
         <span slot="label">{{ relationForm.formName }}</span>
         <!-- 虚拟表单第一个Tab页显示基础信息表单 -->
         <content-container
+          :isHistory="isHistory"
           :formConfig="relationForm"
           :showBase="index === 0"
           :baseData="baseData"
@@ -83,9 +85,9 @@ export default {
       // location.reload()
       this.update()
     },
-    update () {
+    update (ver) {
       this.isLoading = true
-      getModelAndData({ id: this.id }).then(res => {
+      getModelAndData({ id: this.id, ver }).then(res => {
         this.setData(handleGetKnowledgeModelAndDataResponse(res.content))
         this.isLoading = false
       })

@@ -4,21 +4,23 @@
       <el-card>
         <!-- 功能按钮 -->
         <el-button-group>
-          <template v-if="isViewMode">
-            <!-- <el-button type="primary" icon="el-icon-share" @click="share"
-              >分享</el-button
-            > -->
-            <el-button type="warning" icon="el-icon-edit" @click="edit"
-              >编辑</el-button
-            >
-          </template>
-          <template v-else>
-            <el-button type="success" icon="fa fa-save" @click="save" :loading="saveButtonLoading"
-              >&nbsp;保存</el-button
-            >
-            <el-button type="danger" icon="el-icon-share" @click="cancel"
-              >取消</el-button
-            >
+          <template v-if="!isHistory">
+            <template v-if="isViewMode">
+              <!-- <el-button type="primary" icon="el-icon-share" @click="share"
+                >分享</el-button
+              > -->
+              <el-button type="warning" icon="el-icon-edit" @click="edit"
+                >编辑</el-button
+              >
+            </template>
+            <template v-else>
+              <el-button type="success" icon="fa fa-save" @click="save" :loading="saveButtonLoading"
+                >&nbsp;保存</el-button
+              >
+              <el-button type="danger" icon="el-icon-share" @click="cancel"
+                >取消</el-button
+              >
+            </template>
           </template>
         </el-button-group>
         <!-- 基础信息表 -->
@@ -58,7 +60,7 @@ export default {
   name: 'KnoweledgeDetailContentContainer',
   components: {
     KnowledgePush,
-    KnowledgeShareForm,
+    KnowledgeShareForm
   },
   provide () {
     return {
@@ -73,6 +75,10 @@ export default {
     formData: {
       type: Object,
       default () { return {} }
+    },
+    isHistory: {
+      type: Boolean,
+      default: false
     }
   },
   data () {

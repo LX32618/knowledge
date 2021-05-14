@@ -9,7 +9,8 @@ export function getModelAndData (option) {
     url: `${rootUrl}getModelAndData`,
     method: 'post',
     data: {
-      knowledgeId: option.id
+      knowledgeId: option.id,
+      ver: option.ver
     }
   })
 }
