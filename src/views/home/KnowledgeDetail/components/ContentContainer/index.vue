@@ -69,6 +69,7 @@ export default {
     formConfig: Object,
     showBase: Boolean,
     baseData: Object,
+    editType: Number,
     formData: {
       type: Object,
       default () { return {} }
@@ -214,6 +215,9 @@ export default {
   },
   mounted () {
     this.widgetForm.list = this.baseFormConfig
+    if (this.editType) {
+      this.isViewMode = false
+    }
   }
 }
 </script>

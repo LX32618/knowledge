@@ -6,9 +6,9 @@
       >
       <el-button type="warning" icon="el-icon-star-off" @click="handleCollect" :loading="collectLoading">{{ isCollect ? '取消收藏' : '收藏'}}</el-button>
       <el-button type="primary" icon="el-icon-s-claim" @click="handleSubscribe" :loading="subscribeLoading">{{ isSubscribe ? '取消订阅' : '订阅'}}</el-button>
-      <!-- <el-button type="danger" icon="el-icon-document-add">新建版本</el-button>
-      <el-button type="info" icon="el-icon-document-copy">历史版本</el-button> -->
-      <el-button type="info" icon="el-icon-view" @click="test">发布</el-button>
+      <el-button type="danger" icon="el-icon-document-add" @click="addVersion">新建版本</el-button>
+      <el-button type="info" icon="el-icon-document-copy" @click="viewHistoryVersion">历史版本 V{{ baseData.ver }}</el-button>
+      <el-button type="success" icon="el-icon-view" @click="test">发布</el-button>
     </el-button-group>
     <collect-dialog :show.sync="collectShow" :knowledge="knowledge" @success="collectSuccess"></collect-dialog>
   </div>
@@ -18,8 +18,10 @@
 import CollectDialog from '@/components/Input/CollectDialog'
 import { mapGetters } from 'vuex'
 import { isSubscribe, subscribe, cancelSubscribe } from '@/api/knowledgeSubscribe'
-import { isCollect, saveCollect, deleteCollect } from '@/api/knowledgeCollect'
+import { isCollect, deleteCollect } from '@/api/knowledgeCollect'
 import { passKnowledge } from '@/api/knowledgeBase'
+import { createKnowledgeVersion } from '@/api/knowledgeVersion'
+import { openNewWindows } from '@/utils/html'
 
 export default {
   name: 'ToolBar',
@@ -125,6 +127,29 @@ export default {
         }
         this.collectLoading = false
       })
+    },
+    // 新建版本
+    async addVersion () {
+      try {
+        await this.$confirm('新建版本后当前版本将进入历史版本中，新版本数据为待发布状态', '提示', {
+          type: 'info'
+        })
+        await createKnowledgeVersion(this.baseData.id)
+        const url = this.$router.resolve({
+          path: this.$route.path,
+          query: {
+            editType: 1
+          }
+        })
+        window.location.href = url.href
+      } catch (err) {
+        if (err === 'cancel') return
+        this.$error('新建版本失败')
+      }
+    },
+    // 查看历史版本
+    viewHistoryVersion () {
+      openNewWindows(this.$router, `/knowledgeVersion/${this.baseData.id}`)
     }
   },
   mounted () {

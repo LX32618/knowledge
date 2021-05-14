@@ -112,6 +112,15 @@ const homeRouter = [
     meta: {
       title: '知识详情'
     }
+  },
+  {
+    path: '/knowledgeVersion/:id',
+    name: 'knowledgeVersion',
+    props: true,
+    component: () => import("@/views/home/KnowledgeDetail/HistoryVersion"),
+    meta: {
+      title: '历史版本'
+    }
   }, 
   {
     path: '/knowledgeSearch',

@@ -2,12 +2,12 @@ import request from '@/utils/request'
 
 const rootUrl = '/knowledgeversion/KnowledgeVersionController/'
 
-export function createKnowledgeVersion (basId) {
+export function createKnowledgeVersion (baseId) {
   return request({
     url: `${rootUrl}index`,
     method: 'post',
     data: {
-      basId
+      baseId
     }
   })
 }

@@ -30,9 +30,8 @@ export default {
   },
   mounted () {
     const { editType } = this.$route.query
-    this.editType = editType
+    this.editType = parseInt(editType)
     getModelAndData({ id: this.id }).then(res => {
-      console.log(res)
       this.knowledge = handleGetKnowledgeModelAndDataResponse(res.content)
     })
   }
