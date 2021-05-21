@@ -26,11 +26,16 @@ const sidebar = {
                 path: "Tag",
                 meta:{title:"标签管理"},
                 component:()=>import('@/views/bms/DictionaryTag/Tag')
-            },,{
+            },{
                 name: 'SystemParameter',
                 path: "SystemParameter",
                 meta:{title:"系统参数管理"},
                 component:()=>import('@/views/bms/SystemParameter')
+            },{
+                name: 'TempGroup',
+                path: "TempGroup",
+                meta:{title:"临时项目组"},
+                component:()=>import('@/views/bms/TempGroup')
             }]
         }, {
             name: "Repository",
@@ -50,7 +55,6 @@ const sidebar = {
                 path: "KnowledgeList",
                 meta:{title:"知识目录"},
                 component:()=>import('@/views/bms/KnowledgeList'),
-
             }, {
                 name: 'KonwledgeModel',
                 meta:{title:"知识模型"},
@@ -67,7 +71,17 @@ const sidebar = {
                         component:()=>import('@/views/bms/BrowseButton')
                     }
                 ]
-
+            },{
+                name:"KnowledgeStatistics",
+                meta:{title:"知识统计"},
+                children:[
+                    {
+                        name: "KnowledgeCount",
+                        path: "KnowledgeCount",
+                        meta: {title:"知识数量统计"},
+                        component:()=>import("@/views/bms/KnowledgeStatistics/KnowledgeCount")
+                    }
+                ]
             }]
         }, {
             name: "Administrator",

@@ -10,7 +10,7 @@
         </el-dialog>
         <el-button type="primary" icon="el-icon-s-platform" circle @click="dialogVisible1 = true"></el-button>
         <el-dialog :visible.sync="dialogVisible1" :show-close="true" title="设置审核人" :close-on-click-modal="false">
-            <cs-processnode process-id="process1605080548130:3:7516"  process-key="process1605080548130"></cs-processnode>
+            <cs-processnode process-id="process1605080548130:10:22546"  process-key="process1605080548130"></cs-processnode>
         </el-dialog>
     </div>
 </template>

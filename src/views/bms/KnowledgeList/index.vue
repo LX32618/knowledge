@@ -17,7 +17,7 @@
                     <cs-table-config :config-data="configData" v-loading="tabLoading"></cs-table-config>
                 </el-tab-pane>
                 <el-tab-pane :key="3" v-if="basicFormData.type!=0" label="权限配置" name="permission">
-                    <cs-authority-config v-loading="tabLoading"></cs-authority-config>
+                    <cs-authority-config :authority-data="authorityData" v-loading="tabLoading"></cs-authority-config>
                 </el-tab-pane>
                 <el-tab-pane :key="4" v-if="basicFormData.type==2 && clickData.formId" label="流程配置" name="interface">
                     <cs-flow-config :flow-data="flowData" :default-row="flowDefaultRow" v-loading="tabLoading"></cs-flow-config>
@@ -44,6 +44,7 @@
     import {fetchModel} from "@/api/formMaking.js"
     import {fetchTableConfig} from "@/api/knowledgeList.js"
     import {fetchFlowList} from "@/api/fmsBasic.js"
+    import {fetchPermissionList} from "@/api/authorityConfig.js"
 
     const treeUrl = '/app-zuul/knowledge/app/authcenter/api/categoryTree/';
     const rootUrl = '/categoryTree/';
@@ -85,12 +86,13 @@
                 appendFormData:{
                 },
                 configData:{},
+                authorityData:{},
                 flowData:[],
                 flowDefaultRow:{}
             }
         },
         methods:{
-            tabClick: function (tab) {
+            async tabClick(tab) {
                 if (tab.label == '模板配置') {
                     let option = {
                         categeryId: this.basicFormData.id
@@ -149,6 +151,15 @@
                         }
                         this.tabLoading = false;
                     });
+                } else if(tab.label == '权限配置'){
+                    let option = {
+                        id:this.basicFormData.id
+                    };
+                    let resp = await fetchPermissionList(option);
+                    this.authorityData={
+                        ruleLevel:resp.content.rightlevel0,
+                        ruleData:resp.content.ruleList
+                    };
                 }
             },
             onSuccess(response, file, fileList){

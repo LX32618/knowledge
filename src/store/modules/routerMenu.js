@@ -62,7 +62,6 @@ const actions = {
                 commit('SET_SIDEBARROUTER', sidebarRouter);
                 resolve();
             }).catch(error => {
-                console.log(error)
                 reject(error)
             })
         })

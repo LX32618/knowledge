@@ -16,10 +16,10 @@
             </template>
         </cs-table>
         <el-dialog :visible.sync="addDialogVisible"  title="角色信息" append-to-body :close-on-click-modal="false" append-to-body>
-            <role-select type="add" :form-data="addFormData"  @submitSuccess="submitSuccess"></role-select>
+            <role-select type="add" :form-data="addFormData"  @submitSuccess="submitSuccess" @cancelSuccess="cancelSuccess"></role-select>
         </el-dialog>
         <el-dialog :visible.sync="editDialogVisible"  title="角色信息" append-to-body :close-on-click-modal="false" append-to-body>
-            <role-select type="edit" :form-data="editFormData" @submitSuccess="submitSuccess"></role-select>
+            <role-select type="edit" :form-data="editFormData" @submitSuccess="submitSuccess" @cancelSuccess="cancelSuccess"></role-select>
         </el-dialog>
     </div>
 </template>
@@ -107,7 +107,7 @@
                 }
                 else{
                     let val = this.tableSelect;
-                    console.log(this.tableSelect);
+
                     let userArray = _.zip(val.userIds.split(","),val.userNames.split(","),val.orgNames.split(","));
                     let roles = [];
                     userArray.forEach(u=>{
@@ -120,6 +120,7 @@
                         permissions:val.permissionIds.split(","),
                         roles:roles
                     }
+                    console.log(data);
                     this.$set(this,"editFormData",data);
                     this.editDialogVisible = true;
                 }
@@ -138,6 +139,15 @@
                         return d.id == data.id;
                     });
                     this.tableData.splice(index,1,data);
+                    this.editDialogVisible = false;
+                }
+            },
+            cancelSuccess({type}){
+                if("add" == type)
+                {
+                    this.addDialogVisible = false;
+                }
+                else{
                     this.editDialogVisible = false;
                 }
             }

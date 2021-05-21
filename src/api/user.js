@@ -1,12 +1,6 @@
+import request from '@/utils/request'
 import { baseRequest } from '@/utils/request'
 
-// export function login (data) {
-//   return request({
-//     url: `${rootUrl}login`,
-//     method: 'post',
-//     data
-//   })
-// }
 
 export function getInfo () {
   return baseRequest({
@@ -19,6 +13,14 @@ export function logout () {
   return baseRequest({
     url: '/cas/logout',
     method: 'get'
+  })
+}
+
+export function fetchUserByDeptUser (option) {
+  return request({
+    url: '/sys-user-info-by-name/get',
+    method: 'post',
+    data:option
   })
 }
 

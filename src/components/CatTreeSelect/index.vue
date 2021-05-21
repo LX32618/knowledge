@@ -215,11 +215,13 @@ export default {
       }
       this.selectedLabel = node.label;
       this.visible = false
-      this.$emit('input', val)
+      this.$emit('input', val);
+      this.emitChange(val);
     },
     // 监听多选值变化
     checkedKeys (val) {
-      this.$emit('input', val)
+      this.$emit('input', val);
+      this.emitChange(val);
     },
     value (val) {
       if (this.multiple) {

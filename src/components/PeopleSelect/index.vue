@@ -17,7 +17,7 @@
                         closable
                         @close="closeTag(tag)"
                         type="danger">
-                    {{tag.userName}}
+                    {{tag.realName}}
                 </el-tag>
 
             </el-form-item>
@@ -29,15 +29,14 @@
                         closable
                         @close="closeTag(tag)"
                         type="danger">
-                    {{tag.orgName}}
+                    {{tag.departName}}
                 </el-tag>
             </el-form-item>
             <el-form-item v-if="form.object == 'group'" label="选择专业组">
                 <el-select v-model="form.group" placeholder="请选择">
-                    <el-option label="x1项目组" value="x1"></el-option>
-                    <el-option label="x2项目组" value="x2"></el-option>
-                    <el-option label="x3项目组" value="x3"></el-option>
-                    <el-option label="x4项目组" value="x4"></el-option>
+                    <template v-for="group in groupList">
+                        <el-option :label="group.name" :value="group.id" :key="group.id"></el-option>
+                    </template>
                 </el-select>
             </el-form-item>
             <el-form-item label="权限类型" v-if="priority">
@@ -65,6 +64,9 @@
 <script>
     import PeopleTransfer from "../Transfer/PeopleTransfer";
     import DeptTransfer from "../Transfer/DeptTransfer";
+    import {fetchGroupList} from "@/api/group.js";
+    import Template from "../../views/bms/KnowledgeList/Form/Template";
+
     export default {
         name: "PeopleSelect",
         props:{
@@ -81,11 +83,13 @@
             return {
                 deptDialogVisible:false,
                 peopleDialogVisible:false,
+                groupList:[],
                 selectList:[]
             }
         },
         methods:{
             objectChange(){
+                console.log(this.groupList);
                 this.selectList = [];
             },
             deptCancel(){
@@ -101,9 +105,28 @@
             peopleCertain(selectList){
                 this.selectList = selectList;
                 this.peopleDialogVisible = false;
-            }
+            },
+            closeTag(tag)
+            {
+                let index = this.selectList.findIndex(s=>{
+                    return tag.id == s.id;
+                });
+                this.selectList.splice(index,1);
+            },
+        },
+        async mounted() {
+            let option = {
+                page:1,
+                rows:10000,
+                condition:{
+                    name:""
+                }
+            };
+            let resp = await fetchGroupList(option);
+            this.groupList = resp.content.datas;
         },
         components:{
+            Template,
             PeopleTransfer,
             DeptTransfer
         }

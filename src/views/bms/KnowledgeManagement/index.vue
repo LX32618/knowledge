@@ -298,7 +298,7 @@
                         data.categoryname = d.knowledgeBase.classificationEnt.categoryname;
                         data.description = d.knowledgeBase.describe;
                         data.createDate = d.knowledgeBase.createDate;
-                        data.creator = d.knowledgeBase.creatorEnt.username;
+                        data.creator = d.knowledgeBase.creatorEnt?d.knowledgeBase.creatorEnt.username:"";
                         datas.push(data);
                     })
                     this.$set(this,"tableData",datas);

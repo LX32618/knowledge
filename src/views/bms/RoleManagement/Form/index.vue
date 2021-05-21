@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-form :model="formData" label-width="100px" :rules="rules" ref="roleForm">
+        <el-form :model="formData" label-width="100px"  ref="roleForm">
             <el-form-item label="角色名称" prop="roleName">
                 <el-input v-model="formData.roleName" style="width:203px"></el-input>
             </el-form-item>
@@ -13,7 +13,7 @@
                         size="mini"
                         @close="closeTag(tag)"
                         type="danger">
-                    {{tag.userName}}
+                    {{tag.realName}}
                 </el-tag>
             </el-form-item>
             <el-form-item label="角色权限">
@@ -28,16 +28,17 @@
         </el-form>
         <div style="text-align:end">
             <el-button type="primary" @click="submitForm">保存</el-button>
-            <el-button @click="">取消</el-button>
+            <el-button @click="cancelForm">取消</el-button>
         </div>
         <el-dialog :visible.sync="peopleDialogVisible"  title="选择人员" append-to-body :close-on-click-modal="false" append-to-body>
-            <people-transfer :selectList="formData.roles" @cancel="peopleCancel" @certain="peopleCertain"></people-transfer>
+            <people-transfer :iniList="formData.roles" @cancel="peopleCancel" @certain="peopleCertain"></people-transfer>
         </el-dialog>
     </div>
 </template>
 
 <script>
     import PeopleTransfer from "@/components/Transfer/PeopleTransfer";
+
     import _ from "lodash";
 
     export default {
@@ -90,6 +91,9 @@
                     }
                 });
             },
+            cancelForm(){
+                this.$emit("cancelSuccess",{type:this.type});
+            }
         },
         components:{
             PeopleTransfer

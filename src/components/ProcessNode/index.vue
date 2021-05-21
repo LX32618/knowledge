@@ -138,22 +138,21 @@
                 }
                 else
                 {
-                    let variables = {};
-                    this.tableData.forEach(tb=>{
+                    let variables =  {leaders:["IDS1001"],user:"IDS1001"};
+
+              /*      this.tableData.forEach(tb=>{
                         let key = tb.assignee;
                         let value = [];
                         tb.approver.forEach(a=>{
                             value.push(a.id);
                         })
                         variables[key] = value;
-                    });
+                    });*/
                     let option = {
                         processDefinitionKey:this.processKey,
                         variables:JSON.stringify(variables)
                     };
-                    console.log(option);
                     startProcess(option).then(resp=>{
-                        console.log(resp);
                         if(resp.data.success)
                         {
                         }
@@ -205,8 +204,16 @@
                 {
                     let nodes = [];
                     resp.data.obj.userTasks.forEach(u=>{
-                      let  node = _.pick(u,["name","id","assignee"]);
-                      node.assignee = node.assignee.split("${")[1].split("}")[0];
+                      let  node = _.pick(u,["name","id","assignee","loopCharacteristics"]);
+                      if(node.loopCharacteristics)//不为空，说明是多实例
+                      {
+                          node.assignee = node.loopCharacteristics.inputDataItem.split("${")[1].split("}")[0];
+                      }
+                      else
+                      {
+                          node.assignee = node.assignee.split("${")[1].split("}")[0];
+                      }
+
                       node.approver = [];
                       nodes.push(node);
                     })

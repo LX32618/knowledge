@@ -22,7 +22,7 @@ const requestInterceptor = config => {
     config.headers.Authorization = getToken()
   }
   const userInfo = store.getters.userInfo
-  
+
   if (userInfo && config.data && !config.data.userId) {
     config.data.userId = userInfo.id
   }
@@ -38,6 +38,7 @@ const responseInterceptor = response => {
     return response.data
   }
   else {
+    console.log(1234)
     response.data.message && errorMsg(response.data.message)
     return Promise.reject(response.data.message || 'error')
   }

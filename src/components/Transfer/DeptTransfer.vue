@@ -2,13 +2,13 @@
     <div>
         <div class="box" style="margin-top: 0px">
             <div class="unselect">
-                <cs-table :settings="tableSettings" :table-data="unSelectList" @rowDbClick="rowDbClick">
+                <cs-table :settings="tableSettings" :table-data="unSelectList" @rowDbClick="rowDbClick" @pageSizeChange="pageSizeChange">
                     <template v-slot:horizontalSlot>
                         部门列表
                         <div class="search oper">
                             <el-button-group class="oper">
                                 <el-input  placeholder="请输入关键字" prefix-icon="el-icon-search" v-model="keyWord"></el-input>
-                                <el-button type="primary" size="mini">搜索</el-button>
+                                <el-button type="primary" size="mini" @click="search">搜索</el-button>
                             </el-button-group>
                         </div>
                     </template>
@@ -28,7 +28,7 @@
                     <div  v-for="tag in selectList" :key="tag.id"
                           class="tag" style="cursor: pointer">
                         <el-tag  type="danger" @dblclick.native="closeTag(tag)">
-                            <i class="el-icon-s-flag"/>{{tag.orgName}}
+                            <i class="el-icon-s-flag"/>{{tag.departName}}
                         </el-tag>
                     </div>
                     <br/>
@@ -44,6 +44,10 @@
 </template>
 
 <script>
+
+    import {fetchDepartmentInfoById} from "@/api/department"
+
+
     export default {
         name: "DeptTransfer",
         data() {
@@ -52,44 +56,38 @@
                     radio:false,//是否显示单选框
                     checkbox: false,//是否显示checkbox
                     pagination:true,//是否显示分页
-                    total:20,//一共有多少条数据
+                    total:0,//一共有多少条数据
                     pageSize:10,//默认每页多少条数据
                     pageSizes:[10,20,50],//设置每页显示多少条数据
                     currentPage:1,//默认显示第几页
                     height:280,
                     fields: [
                         {prop: "id", label: "id", sortable: false, visible: false},
-                        {prop: "orgName", label: "部门"}
+                        {prop: "departName", label: "部门"}
                     ]
                 },
-                selectList: [
-                    {
-                        id: 'lhb',
-                        orgName: '流程与信息化部'
-                    },
-                ],
-                unSelectList: [
-                    {
-                        id: 'lhb',
-                        orgName: '流程与信息化部'
-                    },
-                    {
-                        id: 'jhb',
-                        orgName: '综合计划部'
-                    },
-                    {
-                        id: 'kfb',
-                        orgName: '科技发展部'
-                    },   {
-                        id: 'htb',
-                        orgName: '航天部'
-                    },
-
-                ],
+                selectList: [],
+                unSelectList: [],
                 keyWord:""
             }
         },
         methods: {
+            async getDepartmentList(page,rows,departmentName){
+                let option = {
+                    page:page,
+                    rows:rows,
+                    condition:{
+                        orgId: "4028e4667598521a017598612215000b",
+                        departName:departmentName
+                    }
+                };
+                let resp = await fetchDepartmentInfoById(option);
+                this.unSelectList = resp.content.datas;
+                this.tableSettings.total = resp.content.total;
+            },
+            search(){
+                this.getDepartmentList(this.tableSettings.currentPage,this.tableSettings.pageSize,this.keyWord);
+            },
             rowDbClick({row, column, cell, event}){
                 let index = this.selectList.findIndex(s=>{
                     return s.id == row.id
@@ -98,6 +96,10 @@
                 {
                     this.selectList.push(row);
                 }
+            },
+            pageSizeChange({page,rows})//每页显示数量、页码变化
+            {
+                this.getDepartmentList(page,rows,this.keyWord);
             },
             closeTag(tag)
             {
@@ -126,6 +128,9 @@
             certain(){
                 this.$emit("certain",this.selectList);
             }
+        },
+        mounted() {
+            this.getDepartmentList(this.tableSettings.currentPage,this.tableSettings.pageSize,"");
         }
     }
 </script>

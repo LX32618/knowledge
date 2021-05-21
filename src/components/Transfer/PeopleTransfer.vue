@@ -2,14 +2,21 @@
     <div>
         <div class="box" style="margin-top: 0px">
             <div class="unselect">
-                <cs-table :settings="tableSettings" :table-data="unSelectList" @rowDbClick="rowDbClick">
+                <cs-table :settings="tableSettings" :table-data="unSelectList" @rowDbClick="rowDbClick" @pageSizeChange="pageSizeChange">
                     <template v-slot:horizontalSlot>
                         人员列表
                         <div class="search">
-                            <cat-tree-select style="margin-bottom: 5px;width: 150px" v-model="deptSelect" placeholder="请选择部门" :props="treeSelectSettings" :data="treeSelectData"></cat-tree-select>
+                            <cat-tree-select
+                                    style="margin-bottom: 5px;width: 150px"
+                                    v-model="deptSelect" placeholder="请选择部门"
+                                    :props="treeSelectSettings"
+                                    :data="treeSelectData"
+                                    clearable
+                                    @change="deptChange">
+                            </cat-tree-select>
                             <el-button-group style="margin-bottom: 5px;width: 200px;display: flex">
-                                <el-input  placeholder="请输入关键字" prefix-icon="el-icon-search" v-model="keyWord"></el-input>
-                                <el-button type="primary" size="mini">搜索</el-button>
+                                <el-input  placeholder="请输入关键字" prefix-icon="el-icon-search" clearable v-model="keyWord"></el-input>
+                                <el-button type="primary" size="mini" @click="searchUser">搜索</el-button>
                             </el-button-group>
                         </div>
                     </template>
@@ -29,7 +36,7 @@
                     <div  v-for="tag in selectList" :key="tag.id"
                           class="tag" style="cursor: pointer">
                         <el-tag  type="danger" @dblclick.native="closeTag(tag)">
-                            <i class="el-icon-user"/>{{tag.userName}}({{tag.orgName}})
+                            <i class="el-icon-user"/>{{tag.realName}}({{tag.departName}})
                         </el-tag>
                     </div>
                     <br/>
@@ -45,11 +52,14 @@
 </template>
 <script>
     import CatTreeSelect from "../CatTreeSelect/index";
+    import {fetchDepartmentInfoById} from "@/api/department"
+    import {fetchUserByDeptUser} from "@/api/user"
+
     export default {
         name:'PeopleTranfer',
         components: {CatTreeSelect},
         props:{
-            selectList:{
+            iniList:{
                 type:Array,
                 default:()=>[]
             }
@@ -60,65 +70,55 @@
                     radio:false,//是否显示单选框
                     checkbox: false,//是否显示checkbox
                     pagination:true,//是否显示分页
-                    total:20,//一共有多少条数据
+                    total:0,//一共有多少条数据
                     pageSize:10,//默认每页多少条数据
                     pageSizes:[10,20,50],//设置每页显示多少条数据
                     currentPage:1,//默认显示第几页
                     height:280,
                     fields: [
-                        {prop: "id", label: "id", sortable: false, visible: false},
-                        {prop: "userName", label: "用户名"},
-                        {prop: "orgName", label: "部门"}
+                        {prop: "id", label: "id", visible: false},
+                        {prop: "userName", label: "userName", visible: false},
+                        {prop: "realName", label: "用户名"},
+                        {prop: "departName", label: "部门"}
                     ]
                 },
                 deptSelect:"",
                 treeSelectSettings:{
                     key:"id",
-                    label:"orgName",
+                    label:"departName",
                     children:"children"
                 },
-                treeSelectData: [{
-                    id:"root",
-                    orgName:"二十九所",
-                    children:[
-                        {id:"liuhua",orgName:"流程与信息化部"},
-                        {id:"jihua",orgName:"综计部"},
-                        {id:"kefa",orgName:"科发部"}
-                    ]}
-                ],
-/*                selectList: [
-                    {
-                        id: 'lsy1',
-                        userName: '李书洋',
-                        orgName: '流程与信息化部'
-                    },
-                ],*/
-                unSelectList: [
-                    {
-                        id: 'lsy1',
-                        userName: '李书洋',
-                        orgName: '流程与信息化部'
-                    },
-                    {
-                        id: 'xt',
-                        userName: '夏添',
-                        orgName: '流程与信息化部'
-                    },
-                    {
-                        id: 'wxb',
-                        userName: '王夏冰',
-                        orgName: '流程与信息化部'
-                    },   {
-                        id: 'ljx',
-                        userName: '刘珏先',
-                        orgName: '流程与信息化部'
-                    },
-
-                ],
+                treeSelectData: [],
+                selectList:[],
+                unSelectList: [],
                 keyWord:""
             }
         },
         methods: {
+            async getUser(page,rows,realName,deptId){
+                let option = {
+                    page:page,
+                    rows:rows,
+                    condition:{
+                        realName:realName,
+                        deptId:deptId
+                    }
+                };
+                let resp = await fetchUserByDeptUser(option);
+                this.unSelectList = resp.content.datas;
+                this.tableSettings.total = resp.content.total;
+            },
+            async loadTableData(page,rows){
+                let option = {
+                    page:page,
+                    rows:rows,
+                    condition:{
+                        orgId:"4028e4667598521a017598612215000b"
+                    }
+                };
+                let resp = await fetchDepartmentInfoById(option);
+                this.treeSelectData= resp.content.datas;
+            },
             rowDbClick({row, column, cell, event}){
                 let index = this.selectList.findIndex(s=>{
                     return s.id == row.id
@@ -127,6 +127,10 @@
                 {
                     this.selectList.push(row);
                 }
+            },
+            pageSizeChange({page,rows})//每页显示数量、页码变化
+            {
+                this.getUser(page,rows,this.keyWord,this.deptSelect);
             },
             closeTag(tag)
             {
@@ -154,10 +158,28 @@
             },
             certain(){
                 this.$emit("certain",this.selectList);
+            },
+            searchUser(){
+                this.getUser(1,this.tableSettings.pageSize,this.keyWord,this.deptSelect);
+            },
+            async deptChange(newDept){
+                this.getUser(this.tableSettings.currentPage,this.tableSettings.pageSize,this.keyWord,newDept);
             }
+        },
+        watch:{
+            iniList:{
+                handler(newValue,oldValue){
+                    this.selectList = _.cloneDeep(newValue);
+                },
+                immediate:true
+            }
+        },
+        mounted() {
+            this.loadTableData(1,10000);
         }
     }
 </script>
+
 <style  scoped>
     .box{
         display: flex;
