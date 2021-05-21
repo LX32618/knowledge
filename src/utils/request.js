@@ -26,6 +26,9 @@ const requestInterceptor = config => {
   if (userInfo && config.data && !config.data.userId) {
     config.data.userId = userInfo.id
   }
+  if (userInfo) {
+    config.headers['User-Id'] = userInfo.id
+  }
   return config
 }
 
