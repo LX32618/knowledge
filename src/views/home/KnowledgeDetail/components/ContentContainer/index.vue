@@ -6,9 +6,9 @@
         <el-button-group>
           <template v-if="!isHistory">
             <template v-if="isViewMode">
-              <!-- <el-button type="primary" icon="el-icon-share" @click="share"
+              <el-button type="primary" icon="el-icon-share" @click="share"
                 >分享</el-button
-              > -->
+              >
               <el-button type="warning" icon="el-icon-edit" @click="edit"
                 >编辑</el-button
               >

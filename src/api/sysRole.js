@@ -20,3 +20,12 @@ export function getSharedKnowledge (option) {
     } 
   })
 }
+
+// 分享知识
+export function saveShare (data) {
+  return request({
+    url: `${rootUrl}PermissionAppliedController/save`,
+    method: 'post',
+    data
+  })
+}
