@@ -2,6 +2,7 @@
   <div class="info-wrapper">
     <el-avatar icon="el-icon-user-solid" :size="150"></el-avatar>
     <div class="user-name">{{ userInfo.realName }}</div>
+    <div class="user-info">{{ userInfo.departName }}</div>
     <!-- <div class="user-info">
       <i class="el-icon-phone"></i> {{ userInfo.phone }}
     </div>
