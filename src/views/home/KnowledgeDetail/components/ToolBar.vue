@@ -8,9 +8,12 @@
       <el-button type="primary" icon="el-icon-s-claim" @click="handleSubscribe" :loading="subscribeLoading">{{ isSubscribe ? '取消订阅' : '订阅'}}</el-button>
       <el-button type="danger" icon="el-icon-document-add" @click="addVersion">新建版本</el-button>
       <el-button type="info" icon="el-icon-document-copy" @click="viewHistoryVersion">历史版本 V{{ baseData.ver }}</el-button>
-      <el-button type="success" icon="el-icon-view" @click="test">发布</el-button>
+      <el-button type="success" icon="el-icon-view" @click="publish">发布</el-button>
     </el-button-group>
     <collect-dialog :show.sync="collectShow" :knowledge="knowledge" @success="collectSuccess"></collect-dialog>
+    <!-- <el-dialog :visible.sync="flowShow" title="知识发布" fullscreen>
+      <iframe v-if="flowShow" class="flow-iframe" src="http://glaway.soft.net/fms-basic/customWorkFlowFormConfigController.do?getDynamicFormByFormKey&processDefinitionId=process1621997049651:2:25030"></iframe>
+    </el-dialog> -->
   </div>
 </template>
 
@@ -38,7 +41,8 @@ export default {
       collectInfo: {},
       subscribeLoading: true,
       collectLoading: true,
-      collectShow: false
+      collectShow: false,
+      flowShow: false
     }
   },
   computed: {
@@ -53,6 +57,11 @@ export default {
     }
   },
   methods: {
+    publish () {
+      // console.log(this.baseData)
+      // this.flowShow = true
+      window.open('http://glaway.soft.net/fms-basic/customWorkFlowFormConfigController.do?getDynamicFormByFormKey&processDefinitionId=process1621997049651:2:25030')
+    },
     async test () {
       await passKnowledge({
         id: this.knowledge.KNOWLEDGE_ID,
@@ -170,5 +179,9 @@ export default {
   position: absolute;
   top: 5px;
   left: 5px;
+}
+.flow-iframe {
+  width: 100%;
+  height: 80vh;
 }
 </style>

@@ -17,6 +17,11 @@ const knowledgeRequest = axios.create({
   timeout: 30000
 })
 
+export const fmsBasicRequest = axios.create({
+  baseURL: '/fms-basic',
+  timeout: 30000
+})
+
 const requestInterceptor = config => {
   if (store.getters.token) {
     config.headers.Authorization = getToken()
@@ -71,6 +76,9 @@ treeRequest.interceptors.response.use(responseInterceptor, errorInterceptor)
 
 knowledgeRequest.interceptors.request.use(requestInterceptor, errorInterceptor)
 knowledgeRequest.interceptors.response.use(responseInterceptor, errorInterceptor)
+
+fmsBasicRequest.interceptors.request.use(requestInterceptor, errorInterceptor)
+fmsBasicRequest.interceptors.response.use(baseResponseInterceptor, errorInterceptor)
 
 
 export default knowledgeRequest
