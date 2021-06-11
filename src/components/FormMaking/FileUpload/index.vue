@@ -181,7 +181,7 @@ export default {
     },
     async handlePreview(file){
       if (this.officeTypes.indexOf(file.type) >= 0) {
-        ntkoBrowser.openWindow(`http://glaway.soft.net/app-zuul/knowledge/app/authcenter/api/viewImage?attachid=${file.id}`)
+        ntkoBrowser.openWindow(`http://localhost:8080/static/editindex.html?cmd=2&url=http://localhost:8080/static/aboutus.docx`)
         // this.$info('文件格式暂不支持预览')
       } else if (this.videoTypes.indexOf(file.type) >= 0) {
         window.open(`/app-zuul/knowledge/app/authcenter/api/viewImage?attachid=${file.id}`)
