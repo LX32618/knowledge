@@ -80,6 +80,23 @@ const sidebar = {
                         path: "KnowledgeCount",
                         meta: {title:"知识数量统计"},
                         component:()=>import("@/views/bms/KnowledgeStatistics/KnowledgeCount")
+                    },
+                    {
+                        name: "ClickRate",
+                        path: "ClickRate",
+                        meta: {title:"知识点击率统计"},
+                        component:()=>import("@/views/bms/KnowledgeStatistics/ClickRate")
+                    },
+                    {
+                        name: "ReUseRate",
+                        path: "ReUseRate",
+                        meta: {title:"知识点重用率统计"},
+                        component:()=>import("@/views/bms/KnowledgeStatistics/ReUseRate")
+                    },{
+                        name: "IndividualContribution",
+                        path: "IndividualContribution",
+                        meta: {title:"个人贡献情况"},
+                        component:()=>import("@/views/bms/KnowledgeStatistics/IndividualContribution")
                     }
                 ]
             }]

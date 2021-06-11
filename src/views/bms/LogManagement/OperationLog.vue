@@ -44,6 +44,7 @@
                             <el-option label="全部" value="9999"></el-option>
                             <el-option label="知识目录" value="2"></el-option>
                             <el-option label="临时项目组" value="40"></el-option>
+                            <el-option label="字典树标签树" value="301"></el-option>
                         </el-select>
                     </el-form-item>
                 </el-col>

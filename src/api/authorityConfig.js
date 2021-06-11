@@ -10,10 +10,30 @@ export function fetchPermissionList (option) {
     })
 }
 
+//更新创建人相关权限
+export function updateCreatorPermission(option){
+    return request({
+        url: "/creatorPermission/update",
+        method: 'post',
+        data: option
+    })
+}
+
+
+
 //保存权限列表
 export function savePermission (option) {
     return request({
         url: "/permissionRules/save",
+        method: 'post',
+        data: option
+    })
+}
+
+//删除权限列表
+export function removePermission (option) {
+    return request({
+        url: "/permissionRules/delete",
         method: 'post',
         data: option
     })

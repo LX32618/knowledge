@@ -1,7 +1,7 @@
 <template>
     <div>
         <el-form :model="authorityData" style="margin-top:-5px">
-            <el-button type="primary" size="mini" icon="fa fa-save" @click.native="add">保存</el-button>
+            <el-button type="primary" size="mini" icon="fa fa-save" @click.native="saveCreatorPermission">保存</el-button>
             <el-divider></el-divider>
             <p><i class="el-icon-s-operation"></i>创建人相关</p>
             <el-form-item label="创建人权限">
@@ -13,7 +13,8 @@
             <el-divider></el-divider>
             <p><i class="el-icon-s-operation"></i>默认权限</p>
             <cs-table :settings="tableSettings"
-                      :table-data="authorityData.ruleData">
+                      :table-data="ruleData"
+                      @selectionChange = "selectionChange">
                 <template v-slot:horizontalSlot>
                     <el-button-group style="margin:5px">
                         <el-button type="primary" size="mini" icon="el-icon-circle-plus" @click.native="add">新增</el-button>
@@ -23,19 +24,16 @@
             </cs-table>
         </el-form>
         <el-dialog :visible.sync="dialogVisible"  title="添加共享规则" append-to-body :close-on-click-modal="false" :show-close="false">
-            <cs-people-select :priority="true" :form="addRuleForm">
-                <template v-slot:operationSlot>
-                    <div style="text-align: end">
-                        <el-button @click="dialogVisible = false">取 消</el-button>
-                        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-                    </div>
-                </template>
+            <cs-people-select ref="peopleSelect" :priority="true" :form-data="addRuleForm" @cancelSuccess="canCelSuccess" @submitSuccess="addRowSuccess">
             </cs-people-select>
         </el-dialog>
     </div>
 </template>
 
 <script>
+
+    import _ from "lodash"
+    import {updateCreatorPermission,savePermission,removePermission} from "@/api/authorityConfig.js"
 
     export default {
         name: "AuthorityConfig",
@@ -45,15 +43,14 @@
                 dialogVisible:false,
                 deptDialogVisible:false,
                 peopleDialogVisible:false,
-                addRuleForm:{
-                    object:"people",
-                    type:[],
-                    isDownload:false
-                },
+                selectRows:[],
+                addRuleForm:{},
+                ruleData:[],
                 tableSettings: {
                     radio:false,//是否单选
                     checkbox: true,//是否多选，单选和多选同一时间只能存在一个
                     pagination:false,//是否显示分页
+                    height:400,
                     fields: [
                         {prop: "id", label: "id", sortable: false, visible: false},
                         {prop: "ruleType", label: "规则",
@@ -90,17 +87,103 @@
         },
         methods:{
             add(){
+                this.addRuleForm={
+                    object:"1",
+                        type:[],
+                        group:[],
+                        download:"0"
+                };
                 this.dialogVisible = true;
             },
-            remove(){
+            selectionChange(selections) {
+                this.selectRows = selections;
+            },
+            async saveCreatorPermission(){
+                let option = {
+                    categoryId:this.authorityData.categoryId,
+                    rightlevel0:this.authorityData.ruleLevel
+                };
+                let resp = await updateCreatorPermission(option);
+                this.$success("保存成功");
 
             },
-            openPeopleDialog(){
-                this.peopleDialogVisible = true;
+            canCelSuccess(){
+                this.dialogVisible = false;
             },
-            openDeptDialog() {
+            async addRowSuccess({formData,selectList}){
+                let ruleType = formData.object;
+                let hrmId = [];
+                let orgId = [];
+                let groupId = [];
 
+                if("1" == ruleType)//指定人员
+                {
+                    hrmId = selectList.map(s=>{
+                        return {id:s.id,name:s.realName};
+                    });
+                }
+                else if("2" == ruleType){//指定部门
+                    orgId = selectList.map(s=>{
+                        return {id:s.id,name:s.departName}
+                    })
+                }
+                else if("3" == ruleType){//指定专业组
+                    groupId = formData.group.map(s=>{
+                        return {id:s.id,name:s.name}
+                    })
+                }
+
+                let option = {
+                    id:"",
+                    objId:this.authorityData.categoryId,
+                    ruleType:ruleType,
+                    hrmId:hrmId,
+                    orgId:orgId,
+                    groupId:groupId,
+                    permission:formData.type.join(","),
+                    download:formData.download
+                }
+                let resp = await savePermission(option);
+                this.ruleData = _.concat(this.ruleData,resp.content.ruleList);
+                this.$success("保存成功");
+                this.dialogVisible = false;
+            },
+            async remove(){
+                if(this.selectRows.length == 0) {
+                    this.$error("请选择要删除的行");
+                }
+                else{
+                    this.$confirm('是否确定删除数据?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(async ()=>{
+                        let ruleIds = this.selectRows.map(r=>{
+                            return r.id;
+                        }).join(",");
+                        let option = {
+                            objId:this.authorityData.categoryId,
+                            ruleIds:ruleIds
+                        };
+                        let resp = await removePermission(option);
+                        this.ruleData = _.differenceBy(this.ruleData,this.selectRows,"id");
+                        this.$success("数据已删除");
+                    }).catch()
+
+                }
             }
+        },
+        watch:{
+            authorityData:{
+                handler(newValue,oldValue){
+                    this.ruleData = _.cloneDeep(newValue.ruleData);
+                },
+                immediate:true,
+                deep:true
+            }
+        },
+        mounted() {
+
         }
     }
 </script>

@@ -143,7 +143,7 @@ export default {
           }
         }
         else if(genList[i].type === 'viewBtn'){
-          this.models[genList[i].model] = JSON.parse(this.value[genList[i].model]); 
+          this.models[genList[i].model] = JSON.parse(this.value[genList[i].model]);
         }
         else {
           if (this.value && Object.keys(this.value).indexOf(genList[i].model) >= 0) {

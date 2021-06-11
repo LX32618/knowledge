@@ -10,7 +10,7 @@
                       @selectionChange="selectionChange"
                       @pageSizeChange="pageSizeChange"
                       @sortChange="sortChange"
-                        style="width: 100%">
+                      style="width: 100%">
                 <template v-slot:horizontalSlot>
                     <div class="knowmgt operationNav">
                         <el-button-group>
@@ -115,13 +115,7 @@
             </div>
         </el-dialog>
         <el-dialog title="批量分享" :visible.sync="shareDialogVisible" :close-on-click-modal="false">
-            <cs-people-select :priority="false" :form="shareForm">
-                <template v-slot:operationSlot>
-                    <div style="text-align: end">
-                        <el-button @click="shareDialogVisible = false">取 消</el-button>
-                        <el-button type="primary" @click="shareDialogVisible = false">确 定</el-button>
-                    </div>
-                </template>
+            <cs-people-select :priority="false" :form-data="shareForm" @submitSuccess="submitSuccess" @cancelSuccess="cancelSuccess">
             </cs-people-select>
         </el-dialog>
     </div>
@@ -253,17 +247,19 @@
             },
             treeNodeClick({data,node})
             {
-                this.classificationid = data.id;
-                this.seniorKeyWords.labels = data.labelInfo;
-                let temp = {
-                    page:this.tableSettings.currentPage,
-                    rows:this.tableSettings.pageSize,
-                    sort:"CREATEDATE",//
-                    order:"desc",
-                    classification:data.id
-                };
-                this.loadTableData(temp);
-                this.$set(this, 'clickData', data);
+                if(data.categoryName != '知识目录'){
+                    this.classificationid = data.id;
+                    this.seniorKeyWords.labels = data.labelInfo;
+                    let temp = {
+                        page:this.tableSettings.currentPage,
+                        rows:this.tableSettings.pageSize,
+                        sort:"CREATEDATE",//
+                        order:"desc",
+                        classification:data.id
+                    };
+                    this.loadTableData(temp);
+                    this.$set(this, 'clickData', data);
+                }
             },
             loadTableData({page,rows,sort,order,classification}){
                 this.loading = true;
@@ -419,6 +415,12 @@
                     ids:""
                 };
                 exportKnowExcel(option);
+            },
+            submitSuccess({formData,selectList}){
+
+            },
+            cancelSuccess(){
+                this.shareDialogVisible = false;
             }
         },
         mounted() {

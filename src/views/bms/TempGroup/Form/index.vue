@@ -1,7 +1,7 @@
 <template>
     <div>
-        <el-form :model="formData" label-width="100px">
-            <el-form-item label="名称">
+        <el-form :model="formData" :rules="rules" label-width="100px">
+            <el-form-item label="名称" prop="name">
                 <el-input  v-model="formData.name" style="width:203px"></el-input>
             </el-form-item>
             <el-form-item label="人员">
@@ -16,6 +16,10 @@
                 </el-tag>
             </el-form-item>
         </el-form>
+        <div style="text-align:end">
+            <el-button type="primary" @click="submitForm">保存</el-button>
+            <el-button @click="cancelForm">取消</el-button>
+        </div>
         <el-dialog :visible.sync="dialogVisible"  title="选择人员" append-to-body :close-on-click-modal="false" append-to-body>
             <people-transfer :iniList="selectList" @cancel="peopleCancel" @certain="peopleCertain"></people-transfer>
         </el-dialog>
@@ -25,11 +29,12 @@
 <script>
     import _ from "lodash"
     import PeopleTransfer from "@/components/Transfer/PeopleTransfer";
+    import {saveGroupList} from "@/api/group.js"
 
     export default {
         name: "TempForm",
         props:{
-            type:{
+            actionType:{
                 type:String,
                 default:"add"
             },
@@ -42,6 +47,11 @@
             return {
                 dialogVisible:false,
                 selectList:[],
+                rules:{
+                    name: [
+                        { required: true, message: '请输入名称', trigger: 'blur' }
+                    ],
+                }
             }
         },
         methods:{
@@ -58,26 +68,31 @@
             peopleCertain(selectList){
                 this.selectList = selectList;
                 this.dialogVisible = false;
+            },
+            async submitForm(){
+                let user = this.selectList.map(item=>{
+                    return {id:item.id,name:item.realName};
+                })
+
+                let option = {
+                    id:this.formData.id,
+                    name:this.formData.name,
+                    user:user
+                };
+
+                let resp = await saveGroupList(option);
+                let row = _.pick(resp.content, ['id', 'name','userInfo']);
+
+                this.$emit("submitSuccess",{actionType:this.actionType,row:row});
+            },
+            cancelForm(){
+                this.$emit("cancelSuccess",{actionType:this.actionType});
             }
         },
         watch:{
             formData:{
                 handler(newValue,oldValue){
-                    let selects = [];
-                    if(newValue.userIds){
-                        let userIdArray = newValue.userIds.split(",");
-                        let userNameArray = newValue.userNames.split(",");
-
-                        for(let i = 0;i<userIdArray.length;i++)
-                        {
-                            let select = {};
-                            select.id = userIdArray[i];
-                            select.realName = userNameArray[i];
-                            selects.push(select);
-                        }
-                    }
-
-                    this.selectList = selects;
+                    this.selectList = newValue.userInfo;
                 },
                 immediate:true
             }

@@ -660,6 +660,7 @@ export default {
           tran.type = "viewBtn";
           tran.icon = "icon el-icon-collection-tag";
           tran.options.disabled = false;
+          tran.options.multiple = false;
           //tran.options.refId = d.fieldType;
           tran.options.refId = d.id;
         }

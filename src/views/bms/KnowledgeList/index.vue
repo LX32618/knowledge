@@ -45,6 +45,7 @@
     import {fetchTableConfig} from "@/api/knowledgeList.js"
     import {fetchFlowList} from "@/api/fmsBasic.js"
     import {fetchPermissionList} from "@/api/authorityConfig.js"
+    import {fetchProcessBindList} from "@/api/processBind.js"
 
     const treeUrl = '/app-zuul/knowledge/app/authcenter/api/categoryTree/';
     const rootUrl = '/categoryTree/';
@@ -138,25 +139,30 @@
                         rows: ""
                     };
                     this.tabLoading = true;
-                    fetchFlowList(option).then(resp => {
-                        if (resp.data.success) {
-                            this.flowData = JSON.parse(resp.data.obj).rows.filter(d => {
-                               return d.status == "已发布";
-                            });
-                            console.log(this.flowData);
-                            this.flowDefaultRow = JSON.parse(resp.data.obj).rows.filter(d => {
-                                //return d.id == "1b7e00c0-5e7c-4399-9a49-57281d8b2539";
-                                return d.id == "2cac4a22-aedd-4d2e-b9f1-86bdb9306e1f";
-                            })[0];
-                        }
-                        this.tabLoading = false;
-                    });
+                    let resp = await fetchFlowList(option);
+                    if (resp.data.success) {
+                        this.flowData = JSON.parse(resp.data.obj).rows.filter(d => {
+                            return d.status == "已发布";
+                        });
+                        /*         this.flowDefaultRow = JSON.parse(resp.data.obj).rows.filter(d => {
+                                     return d.id == "2cac4a22-aedd-4d2e-b9f1-86bdb9306e1f";
+                                 })[0];*/
+                    }
+
+                    let option1 = {
+                        id:this.basicFormData.id
+                    }
+                    let xx = await fetchProcessBindList(option1);
+                    console.log(xx);
+
+                    this.tabLoading = false;
                 } else if(tab.label == '权限配置'){
                     let option = {
                         id:this.basicFormData.id
                     };
                     let resp = await fetchPermissionList(option);
                     this.authorityData={
+                        categoryId:resp.content.docCategory.id,
                         ruleLevel:resp.content.rightlevel0,
                         ruleData:resp.content.ruleList
                     };
@@ -211,7 +217,6 @@
                         method: 'post',
                         data:{id:node.object.id}
                     }).then(data=>{
-                        console.log(data);
                         if(data.status == "success")
                         {
                             this.$success("删除成功");

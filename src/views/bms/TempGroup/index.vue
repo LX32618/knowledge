@@ -13,10 +13,10 @@
             </template>
         </cs-table>
         <el-dialog :visible.sync="addDialogVisible"  title="添加临时项目组" append-to-body :close-on-click-modal="false">
-            <temp-form type="add" :form-data="addFormdData"></temp-form>
+            <temp-form action-type="add" :form-data="addFormdData" @submitSuccess="submitSuccess" @cancelSuccess="cancelSuccess"></temp-form>
         </el-dialog>
         <el-dialog :visible.sync="editDialogVisible"  title="修改临时项目组" append-to-body :close-on-click-modal="false">
-            <temp-form type="edit" :form-data="editFormData"></temp-form>
+            <temp-form action-type="edit" :form-data="editFormData" @submitSuccess="submitSuccess" @cancelSuccess="cancelSuccess"></temp-form>
         </el-dialog>
     </div>
 
@@ -24,7 +24,7 @@
 
 <script>
     import tempForm from "./Form"
-    import {fetchGroupList} from "@/api/group.js"
+    import {fetchGroupList,removeGroup} from "@/api/group.js"
 
     export default {
         name: "index",
@@ -43,8 +43,13 @@
                     fields: [
                         {prop: "id", label: "id", sortable: false, visible: false},
                         {prop: "name", label: "名称", sortable: false},
-                        {prop: "userIds", label: "userIds", sortable: false,visible:false},
-                        {prop: "userNames", label: "人员", sortable: false}
+                        {prop: "userNames", label: "人员", sortable: false,
+                            formatter(index,row){
+                                return row.userInfo.map(u=>{
+                                    return u.realName;
+                                }).join(",");
+                            }
+                        }
                     ]
                 },
                 tableData:[],
@@ -52,8 +57,7 @@
                 addFormdData:{
                     id:"",
                     name:"",
-                    userIds:"",
-                    userNames:""
+                    userInfo:[]
                 },
                 editFormData:{
 
@@ -70,6 +74,7 @@
                     }
                 };
                 let resp = await fetchGroupList(option);
+                console.log(resp.content.datas);
                 this.tableData = resp.content.datas;
                 this.tableSettings.total = resp.content.total;
             },
@@ -81,12 +86,62 @@
                 this.addDialogVisible = true;
             },
             edit(){
-                this.editFormData = this.selectRow;
-                this.editDialogVisible = true;
+                if("{}" == JSON.stringify(this.selectRow)) {
+                    this.$error("请选择要编辑的行");
+                }
+                else{
+                    this.editFormData = this.selectRow;
+                    this.editDialogVisible = true;
+                }
+
             },
-            remove(){},
+            async remove(){
+                if("{}" == JSON.stringify(this.selectRow)) {
+                    this.$error("请选择要删除的行");
+                }
+                else{
+                    this.$confirm('是否确定删除该行数据?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(async ()=>{
+                        let id = this.selectRow.id;
+                        let name = this.selectRow.name;
+                        let resp = await removeGroup({id:id,name:name});
+                        let index = this.tableData.findIndex(t=>{
+                            return t.id == id;
+                        })
+                        this.tableData.splice(index,1);
+                        this.$success("数据已删除");
+                    }).catch()
+
+                }
+            },
             currentChange(currentRow, oldCurrentRow) {
                 this.selectRow = currentRow;
+            },
+            submitSuccess({actionType,row}){
+                if("add" == actionType){
+                    this.tableData.push(row);
+                    this.addDialogVisible = false;
+                    this.$success("新增成功");
+                }
+                else{
+                    let index = this.tableData.findIndex(d=>{
+                        return d.id == row.id;
+                    });
+                    this.tableData.splice(index,1,row);
+                    this.editDialogVisible = false;
+                    this.$success("修改成功");
+                }
+            },
+            cancelSuccess({actionType}){
+                if("add" == actionType){
+                    this.addDialogVisible = false;
+                }
+                else{
+                    this.editDialogVisible = false;
+                }
             }
         },
         mounted() {

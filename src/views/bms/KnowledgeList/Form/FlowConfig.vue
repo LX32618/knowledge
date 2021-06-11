@@ -1,21 +1,30 @@
 <template>
     <div>
-        <span>关联的流程：<el-button type="primary" icon="el-icon-s-platform" circle @click="dialogVisible = true"></el-button></span>
+        <span>入库审批流程：<el-button type="primary" icon="el-icon-s-platform" circle @click="dialogVisible = true"></el-button></span>
+        <el-divider></el-divider>
+        <span>更改审批流程：<el-button type="primary" icon="el-icon-s-platform" circle @click="dialogVisible = true"></el-button></span>
+        <el-divider></el-divider>
+        <span>删除审批流程：<el-button type="primary" icon="el-icon-s-platform" circle @click="dialogVisible = true"></el-button></span>
+        <el-divider></el-divider>
+        <span>下载/查看申请审批流程：<el-button type="primary" icon="el-icon-s-platform" circle @click="dialogVisible = true"></el-button></span>
         <el-divider></el-divider>
         <el-dialog :visible.sync="dialogVisible" :show-close="true" title="" @opened="dialogOpen" :close-on-click-modal="false">
             <cs-table ref="tb"
                       :settings="tableSettings"
-                      :table-data="flowData">
+                      :table-data="flowData"
+                      @currentChange="currentChange">
             </cs-table>
-        </el-dialog>
-        <el-button type="primary" icon="el-icon-s-platform" circle @click="dialogVisible1 = true"></el-button>
-        <el-dialog :visible.sync="dialogVisible1" :show-close="true" title="设置审核人" :close-on-click-modal="false">
-            <cs-processnode process-id="process1605080548130:10:22546"  process-key="process1605080548130"></cs-processnode>
+            <div style="text-align:end;margin-top: 10px">
+                <el-button @click="cancel">取消</el-button>
+                <el-button type="primary" @click="bindProcess">确定</el-button>
+            </div>
+
         </el-dialog>
     </div>
 </template>
 
 <script>
+    import {saveProcessBind} from "@/api/processBind.js"
 
     export default {
         name: "FlowConfig",
@@ -33,6 +42,7 @@
             return {
                 dialogVisible1:false,
                 dialogVisible:false,
+                selectRow:{},
                 tableSettings: {
                     radio:true,//是否单选
                     checkbox: false,//是否多选，单选和多选同一时间只能存在一个
@@ -60,6 +70,26 @@
                 if("{}" != JSON.stringify(this.defaultRow))
                 {
                     this.$refs.tb.$refs.tb.setCurrentRow(this.defaultRow);
+                }
+            },
+            currentChange(currentRow){
+                this.selectRow = currentRow;
+            },
+            cancel(){
+                this.dialogVisible = false;
+            },
+            async bindProcess(type){
+                console.log(this.selectRow);
+                let option = {
+                    id:"",
+                    categoryId:"",
+                    processId:this.selectRow.id,
+                    processKey:this.selectRow.key,
+                    processKindType:type,
+                    processDefId:this.selectRow.procDefId,
+                    processName:this.selectRow.name,
+                    processState:this.selectRow.status,
+                    processType:this.selectRow.type
                 }
             }
         }
