@@ -25,6 +25,7 @@ import { isCollect, deleteCollect } from '@/api/knowledgeCollect'
 import { passKnowledge } from '@/api/knowledgeBase'
 import { createKnowledgeVersion } from '@/api/knowledgeVersion'
 import { openNewWindows } from '@/utils/html'
+import { startFlow } from '@/api/flow'
 
 export default {
   name: 'ToolBar',
@@ -57,10 +58,12 @@ export default {
     }
   },
   methods: {
-    publish () {
+    async publish () {
       // console.log(this.baseData)
       // this.flowShow = true
-      window.open('http://glaway.soft.net/fms-basic/customWorkFlowFormConfigController.do?getDynamicFormByFormKey&processDefinitionId=process1621997049651:2:25030')
+      // window.open('http://glaway.soft.net/fms-basic/customWorkFlowFormConfigController.do?getDynamicFormByFormKey&processDefinitionId=process1621997049651:2:25030')
+      const res = await startFlow('process1621997049651:2:25030', this.knowledge.KNOWLEDGE_ID)
+      console.log(res)
     },
     async test () {
       await passKnowledge({
