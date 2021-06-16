@@ -17,3 +17,11 @@ export function solrSearch (option) {
     } 
   })
 }
+
+export function getHotWords () {
+  return request({
+    url: `${rootUrl}searchUserId`,
+    method: 'post',
+    data: {}
+  })
+}
