@@ -33,3 +33,13 @@ export function getAttachInfo (ids) {
     }
   })
 }
+
+export function getFileUrl (attachid) {
+  return request({
+    url: '/attachmentPreview',
+    method: 'get',
+    params: {
+      attachid
+    }
+  })
+}

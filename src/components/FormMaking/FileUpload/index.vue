@@ -57,7 +57,7 @@
 <script>
 import Viewer from 'viewerjs'
 import { ntkoBrowser } from '@/plugins/officePreview/ntkobackground.min.js'
-import { getAttachInfo, downloadFile } from '@/api/file'
+import { getAttachInfo, downloadFile, getFileUrl } from '@/api/file'
 
 require('viewerjs/dist/viewer.css')
 export default {
@@ -179,10 +179,14 @@ export default {
       this.fileList = content
       this.isLoading = false
     },
-    async handlePreview(file){
+    async handlePreview (file){
       if (this.officeTypes.indexOf(file.type) >= 0) {
-        ntkoBrowser.openWindow(`http://localhost:8080/static/editindex.html?cmd=2&url=http://localhost:8080/static/aboutus.docx`)
+        const res = await getFileUrl(file.id)
+        ntkoBrowser.openWindow(`http://localhost:8080/static/editindex.html?cmd=2&url=${res.content}`)
         // this.$info('文件格式暂不支持预览')
+      } else if (file.type === 'pdf') {
+        const res = await getFileUrl(file.id)
+        window.open(res.content)
       } else if (this.videoTypes.indexOf(file.type) >= 0) {
         window.open(`/app-zuul/knowledge/app/authcenter/api/viewImage?attachid=${file.id}`)
       } else if (this.imageTypes.indexOf(file.type) >= 0) {
