@@ -182,8 +182,7 @@ export default {
     async handlePreview (file){
       if (this.officeTypes.indexOf(file.type) >= 0) {
         const res = await getFileUrl(file.id)
-        // ntkoBrowser.openWindow(`http://localhost:8080/static/editindex.html?cmd=2&url=${res.content}`)
-        ntkoBrowser.openWindow(`http://192.168.4.110:8083/editindex.html?cmd=2&url=${res.content}`)
+        ntkoBrowser.openWindow(`${process.env.VUE_APP_FILE_URL}/editindex.html?cmd=2&url=${res.content}`)
         // this.$info('文件格式暂不支持预览')
       } else if (file.type === 'pdf') {
         const res = await getFileUrl(file.id)
