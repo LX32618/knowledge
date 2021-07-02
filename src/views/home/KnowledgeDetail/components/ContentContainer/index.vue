@@ -188,7 +188,6 @@ export default {
       }
       // 提交主表
       this.editFormData.main = await this.$refs.mainForm.getData()
-      console.log(this.editFormData)
       this.saveButtonLoading = true
       const knowledgeModel = this.createKnowledgeModel()
       // console.log(knowledgeModel)
