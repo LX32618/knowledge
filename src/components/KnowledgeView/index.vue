@@ -17,8 +17,9 @@
         <template v-slot:index="{ scope }">{{ scope.$index + 1 }}</template>
         <!-- 操作列 -->
         <template v-slot:option="{ scope }">
-          <el-button size="mini" icon="el-icon-view" @click="handleView(scope.row)" type="success">查看</el-button>
-          <el-button size="mini" @click="handleSubscribe(scope.row, scope.$index)" :type="scope.row.ISSUBSCRIBE ? 'warning' : 'primary'">
+          <el-button v-if="scope.row.HASPERMISSION" size="mini" icon="el-icon-view" @click="handleView(scope.row)" type="success">查看</el-button>
+          <el-button v-else size="mini" icon="el-icon-reading" @click="handleApply(scope.row)" type="danger">申请</el-button>
+          <el-button size="mini" @click="handleSubscribe(scope.row)" :type="scope.row.ISSUBSCRIBE ? 'warning' : 'primary'">
             <template v-if="scope.row.ISSUBSCRIBE">
               <i class="el-icon-s-release"></i> 取消订阅
             </template>
@@ -203,6 +204,9 @@ export default {
     handleSearch (searchOption) {
       this.searchOption = searchOption
       this.updateKnowledges()
+    },
+    handleApply (row) {
+      console.log(row)
     },
     // 查看知识详情
     handleView (row) {
