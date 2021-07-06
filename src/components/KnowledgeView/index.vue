@@ -7,6 +7,7 @@
       :currentKnowledgeBase="currentKnowledgeBase"
       :searchColumns="searchColumns"
       :preView="preView"
+      :hasCategoryPermission="hasCategoryPermission"
       @search="handleSearch"
       v-on="$listeners"
     ></search-area>
@@ -49,7 +50,6 @@ import { getKnowledgeByClassifications } from '@/api/docCategory'
 import { subscribe, cancelSubscribe } from '@/api/knowledgeSubscribe'
 import SearchArea from './components/SearchArea'
 import DynamicTable from './components/DynamicTable'
-import { dateTime } from '@/filters'
 
 export default {
   name: 'KnowledgeView',
@@ -86,7 +86,8 @@ export default {
         index: true
       },
       searchOption: {},
-      searchColumns: []
+      searchColumns: [],
+      hasCategoryPermission: false
     }
   },
   computed: {
@@ -127,6 +128,8 @@ export default {
         sort: this.sort,
         order: this.order
       }).then(res => {
+        // 知识库权限
+        this.hasCategoryPermission = res.content.hasCategoryPermission
         // 处理知识列表配置
         const model = res.content.model
         const fieldMap = {} // 字段映射关系

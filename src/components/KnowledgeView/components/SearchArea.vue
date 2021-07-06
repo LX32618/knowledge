@@ -6,7 +6,7 @@
         <el-button type="success" icon="el-icon-search" @click="handleSearch">查询</el-button>
         <el-button type="info" icon="el-icon-refresh" @click="handleReset">重置</el-button>
         <template v-if="selectedCategory.type === 2">
-          <el-button type="danger" icon="el-icon-circle-plus" @click="handleAdd">添加</el-button>
+          <el-button v-if="hasCategoryPermission" type="danger" icon="el-icon-circle-plus" @click="handleAdd">添加</el-button>
           <el-button @click="handleSubscribe" :type="isSubscribe ? 'warning' : 'primary'">
             <template v-if="isSubscribe">
               <i class="el-icon-s-release"></i> 取消订阅
@@ -45,6 +45,10 @@ export default {
       default: () => ({})
     },
     preView: {
+      type: Boolean,
+      default: false
+    },
+    hasCategoryPermission: {
       type: Boolean,
       default: false
     }
