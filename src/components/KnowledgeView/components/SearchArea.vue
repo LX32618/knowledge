@@ -96,11 +96,19 @@ export default {
     },
     searchColumns (val) {
       if (val && val.length > 0) {
-        let lastIndex = this.fields.findIndex(item => item.key === 'labels')
-        if (lastIndex = -1) {
-          lastIndex = 3
+        const lastIndex = this.fields.findIndex(item => item.key === 'labels')
+        let sliceIndex
+        const selectedCategory = this.selectedCategory
+        if (selectedCategory.type === 2 && selectedCategory.labelInfo && selectedCategory.labelInfo.length > 0) {
+          sliceIndex = lastIndex + 1
+        } else {
+          if (lastIndex === -1) {
+            sliceIndex = 3
+          } else {
+            sliceIndex = 4
+          }
         }
-        this.fields = this.fields.slice(0, lastIndex + 1)
+        this.fields = this.fields.slice(0, sliceIndex + 1)
         this.fields.push(...val.map(item => {
           return {
             ...item,
