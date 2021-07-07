@@ -1,14 +1,31 @@
 <template>
     <div>
-        <span>入库审批流程：<el-button type="primary" icon="el-icon-s-platform" circle @click="dialogVisible = true"></el-button></span>
+        <span>新建流程：<el-button type="primary" icon="el-icon-s-platform" circle @click="add"></el-button></span>
         <el-divider></el-divider>
-        <span>更改审批流程：<el-button type="primary" icon="el-icon-s-platform" circle @click="dialogVisible = true"></el-button></span>
+        <span>
+            入库审批流程：
+            <el-button type="primary" icon="el-icon-s-platform" circle @click="openDialog('inBound',inBoundTag)"></el-button>
+            <el-tag v-if="inBoundTag && inBoundTag.processId" type="danger" @close="handleClose(inBoundTag)" closable>{{inBoundTag.processName}}</el-tag>
+        </span>
         <el-divider></el-divider>
-        <span>删除审批流程：<el-button type="primary" icon="el-icon-s-platform" circle @click="dialogVisible = true"></el-button></span>
+        <span>
+            更改审批流程：
+            <el-button type="primary" icon="el-icon-s-platform" circle @click="openDialog('alter',alterTag)"></el-button>
+            <el-tag v-if="alterTag && alterTag.processId" type="danger" @close="handleClose(alterTag)" closable>{{alterTag.processName}}</el-tag>
+        </span>
         <el-divider></el-divider>
-        <span>下载/查看申请审批流程：<el-button type="primary" icon="el-icon-s-platform" circle @click="dialogVisible = true"></el-button></span>
+        <span>
+            删除审批流程：
+            <el-button type="primary" icon="el-icon-s-platform" circle @click="openDialog('remove',removeTag)"></el-button>
+            <el-tag v-if="removeTag && removeTag.processId" type="danger" @close="handleClose(removeTag)" closable>{{removeTag.processName}}</el-tag>
+        </span>
         <el-divider></el-divider>
-        <el-dialog :visible.sync="dialogVisible" :show-close="true" title="" @opened="dialogOpen" :close-on-click-modal="false">
+        <span>下载/查看申请审批流程：
+            <el-button type="primary" icon="el-icon-s-platform" circle @click="openDialog('downloadView',downloadViewTag)"></el-button>
+            <el-tag v-if="downloadViewTag && downloadViewTag.processId" type="danger" @close="handleClose(downloadViewTag)" closable>{{downloadViewTag.processName}}</el-tag>
+        </span>
+        <el-divider></el-divider>
+        <el-dialog :visible.sync="dialogVisible" :show-close="true" title="" @opened="dialogOpened" :close-on-click-modal="false">
             <cs-table ref="tb"
                       :settings="tableSettings"
                       :table-data="flowData"
@@ -24,24 +41,31 @@
 </template>
 
 <script>
-    import {saveProcessBind} from "@/api/processBind.js"
+    import {saveProcessBind,deleteProcessBind} from "@/api/processBind.js"
 
     export default {
         name: "FlowConfig",
         props:{
-            flowData:{
+            categoryId:{
+                type:String,
+                default:""
+            },
+            bindData:{
                 type:Array,
                 default:()=>[]
             },
-            defaultRow:{
-                type:Object,
-                default:()=>{}
+            flowData:{
+                type:Array,
+                default:()=>[]
             }
         },
         data(){
             return {
                 dialogVisible1:false,
                 dialogVisible:false,
+                processKindType:"",
+                clickTag:"",
+                defaultRow:{},
                 selectRow:{},
                 tableSettings: {
                     radio:true,//是否单选
@@ -65,12 +89,42 @@
                 },
             }
         },
+        computed:{
+            inBoundTag(){
+                return this.bindData.filter(d=>{
+                    return d.processKindType == "inBound"
+                })[0]
+            },
+            alterTag(){
+                return this.bindData.filter(d=>{
+                    return d.processKindType == "alter"
+                })[0]
+            },
+            removeTag(){
+                return this.bindData.filter(d=>{
+                    return d.processKindType == "remove"
+                })[0]
+            },
+            downloadViewTag() {
+                return this.bindData.filter(d => {
+                    return d.processKindType == "downloadView"
+                })[0]
+            }
+        },
         methods:{
-            dialogOpen(){
+            openDialog(type,tag){
+                this.processKindType = type;
+                this.clickTag = tag;
+                this.dialogVisible = true;
+            },
+            dialogOpened(){
                 if("{}" != JSON.stringify(this.defaultRow))
                 {
                     this.$refs.tb.$refs.tb.setCurrentRow(this.defaultRow);
                 }
+            },
+            add(){
+                window.open("/fms-basic/processDesignerController.do?init&oper=create&type=kes_29_type");
             },
             currentChange(currentRow){
                 this.selectRow = currentRow;
@@ -78,19 +132,25 @@
             cancel(){
                 this.dialogVisible = false;
             },
-            async bindProcess(type){
-                console.log(this.selectRow);
+            async bindProcess(){
                 let option = {
-                    id:"",
-                    categoryId:"",
+                    id:(this.clickTag)?this.clickTag.id:"",
+                    categoryId:this.categoryId,
                     processId:this.selectRow.id,
                     processKey:this.selectRow.key,
-                    processKindType:type,
+                    processKindType:this.processKindType,
                     processDefId:this.selectRow.procDefId,
                     processName:this.selectRow.name,
                     processState:this.selectRow.status,
                     processType:this.selectRow.type
-                }
+                };
+                let resp = await saveProcessBind(option);
+                this.$emit("saveSuccess",resp.content);
+                this.dialogVisible = false;
+            },
+            async handleClose(tag){
+                let resp = await deleteProcessBind({id:tag.id});
+                this.$emit("deleteSuccess",tag);
             }
         }
     }

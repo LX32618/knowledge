@@ -603,8 +603,8 @@ export default {
           tran.icon = "icon iconfont icon-radio-active";
           tran.options.width = "";
           tran.options.defaultValue = "";
-          //tran.options.dictId = d.fieldType;
-          tran.options.dictId = d.id;
+          tran.options.dictId = d.fieldType;
+          //tran.options.dictId = d.id;
           tran.options.required = false;
           tran.options.placeholder = "";
         }
@@ -670,8 +670,8 @@ export default {
           tran.options.width = "";
           tran.options.disabled = false;
           tran.options.required = false;
-          //tran.options.dictId = d.fieldType;
-          tran.options.dictId = d.id;
+          tran.options.dictId = d.fieldType;
+          //tran.options.dictId = d.id;
           tran.options.defaultValue = '';
         }
         else if(d.htmlType == 9){

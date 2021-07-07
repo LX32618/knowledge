@@ -11,7 +11,6 @@ export function fetchProcessBindList (option) {
     })
 }
 
-
 //保存流程模板绑定列表
 export function saveProcessBind (option) {
     return request({
