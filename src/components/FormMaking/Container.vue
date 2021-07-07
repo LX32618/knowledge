@@ -656,13 +656,12 @@ export default {
           //tran.options.action = 'https://jsonplaceholder.typicode.com/photos/';
         }
         else if(d.htmlType == 6 || d.htmlType == 7){
-          console.log(d);
           tran.type = "viewBtn";
           tran.icon = "icon el-icon-collection-tag";
           tran.options.disabled = false;
           tran.options.multiple = false;
-          //tran.options.refId = d.fieldType;
-          tran.options.refId = d.id;
+          tran.options.refId = d.fieldType;
+          //tran.options.refId = d.id;
         }
         else if(d.htmlType == 8){
           tran.type = "checkbox";

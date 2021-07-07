@@ -234,6 +234,7 @@
               :tagData.sync="dataModel"
               :ref-id="widget.options.refId"
               :multiple="widget.options.multiple"
+              :know-id="options.knowledgeId"
               :disabled="isDisabled"
               :edit="edit">
       </fm-view-btn>
@@ -363,7 +364,7 @@ export default {
         //.log(this.widget.model);
         //console.log(this.dataModel);
       }
-    }
+    },
   }
 }
 </script>

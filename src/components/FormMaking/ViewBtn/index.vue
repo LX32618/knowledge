@@ -42,6 +42,8 @@
     import _ from 'lodash'
     import {fetchViewBtns} from "@/api/formMaking.js"
     import {getKnowledgeFormFieldType} from "@/api/knowlegeModel.js"
+    import {fetchViewBtnDetail} from "@/api/viewBtn.js"
+
 
     export default {
         name: "ViewBtn",
@@ -50,7 +52,7 @@
                 type:String,
                 default: ""
             },
-            konwId:{//知识的id
+            knowId:{//知识的id
                 type:String,
                 default:""
             },
@@ -96,8 +98,11 @@
         methods:{
             toggle(){
                 let option = {
-                    id:this.refId,
-                    refName:this.searchKeyWord,
+                    condition:{
+                        refId:this.refId,
+                        refName:this.searchKeyWord,
+                        knowId:this.knowId
+                    },
                     page:this.tableSettings.currentPage,
                     rows:this.tableSettings.pageSize
                 };
@@ -121,8 +126,11 @@
             },
             searchClick(){
                 let option = {
-                    id:this.refId,
-                    refName:this.searchKeyWord,
+                    condition:{
+                        refId:this.refId,
+                        refName:this.searchKeyWord,
+                        knowId:this.knowId
+                    },
                     page:this.tableSettings.currentPage,
                     rows:this.tableSettings.pageSize,
                 };
@@ -151,15 +159,18 @@
             },
             pageSizeChange({page,rows}){
                 let option = {
-                    id:this.refId,
-                    refName:this.searchKeyWord,
+                    condition:{
+                        refId:this.refId,
+                        refName:this.searchKeyWord,
+                        knowId:this.knowId
+                    },
                     page:page,
                     rows:rows
                 };
                 this.loadData(option);
             },
             loadData(option){
-                getKnowledgeFormFieldType(option).then(resp=>{
+                fetchViewBtnDetail(option).then(resp=>{
                     if(resp.status == "success")
                     {
                         this.tableSettings.total = resp.content.total;
