@@ -38,3 +38,14 @@ export function removePermission (option) {
         data: option
     })
 }
+
+// 校验是否有单条知识的查看权限
+export function hasKnowledgePermission (knowledgeId) {
+    return request({
+        url: '/hasKnowledgePermission',
+        method: 'post',
+        data: {
+            knowledgeId
+        }
+    })
+}

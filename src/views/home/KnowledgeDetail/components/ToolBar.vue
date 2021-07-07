@@ -25,7 +25,6 @@ import { isCollect, deleteCollect } from '@/api/knowledgeCollect'
 import { passKnowledge } from '@/api/knowledgeBase'
 import { createKnowledgeVersion } from '@/api/knowledgeVersion'
 import { openNewWindows } from '@/utils/html'
-import { startFlow } from '@/api/flow'
 
 export default {
   name: 'ToolBar',
