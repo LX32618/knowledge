@@ -159,7 +159,6 @@
                 this.loadData(option);
             },
             loadData(option){
-                console.log(option);
                 getKnowledgeFormFieldType(option).then(resp=>{
                     if(resp.status == "success")
                     {
