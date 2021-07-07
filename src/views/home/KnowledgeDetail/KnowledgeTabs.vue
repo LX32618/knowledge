@@ -77,7 +77,8 @@ export default {
       handler (val) {
         this.setData(val)
       },
-      deep: true
+      deep: true,
+      immediate: true
     }
   },
   methods: {
