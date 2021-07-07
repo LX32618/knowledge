@@ -26,6 +26,7 @@
 
 <script>
     import RoleSelect from "./Form/index";
+    import {fetchRoleList} from "@/api/roleManagement.js"
 
     export default {
         name: "RoleManagement",
@@ -54,31 +55,7 @@
                     ]
                 },
                 tableData:[
-                    {
-                        id:"1",
-                        roleName:"安全保密员",
-                        userNames:"李书洋,夏添",
-                        userIds:"lisy1,xt",
-                        orgNames:"流程与信息化部,流程与信息化部",
-                        permissionNames:"安全保密,安全审计,知识管理",
-                        permissionIds:"aqbm,axsj,zsgl"
-                    },{
-                        id:"2",
-                        roleName:"SEPG审核组",
-                        userNames:"王夏冰",
-                        userIds:"wxb",
-                        orgNames:"流程与信息化部",
-                        permissionNames:"SEPG审核",
-                        permissionIds:"seg"
-                    },{
-                        id:"3",
-                        roleName:"SEPG审核组",
-                        userNames:"刘珏先",
-                        userIds:"ljx",
-                        orgNames:"流程与信息化部",
-                        permissionNames:"SEPG审核",
-                        permissionIds:"seg"
-                    }
+
                 ],
                 tableSelect:{},
                 addFormData:{
@@ -91,12 +68,24 @@
             }
         },
         methods:{
+            async loadTableData(option){
+                let resp = await fetchRoleList({});
+                let tableData = resp.content.datas.map(d=>{
+                    return {id:d.ROLEID,roleName:d.ROLENAME,userNames:d.USERNAMES,permissionNames:d.PERMISSIONNAMES}
+                });
+                this.tableSettings.total = resp.content.total;
+                this.tableData = tableData;
+            },
             currentChange(val){//行单选事件
                 this.tableSelect = val;
             },
             pageSizeChange({page,rows})//每页显示数量、页码变化
             {
-
+                let option = {
+                    page:page,
+                    rows:rows
+                }
+                this.loadTableData(option);
             },
             add(){
                 this.addDialogVisible = true;
@@ -151,6 +140,13 @@
                     this.editDialogVisible = false;
                 }
             }
+        },
+         mounted() {
+            let option = {
+                page:this.tableSettings.currentPage,
+                rows:this.tableSettings.pageSize
+            }
+            this.loadTableData(option);
         },
         components:{
             RoleSelect

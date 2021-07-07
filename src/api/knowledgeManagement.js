@@ -13,6 +13,17 @@ export function fetchCategoryByNodeId(option) {
     })
 }
 
+//删除
+export function deleteKnowledge(option) {
+    return request({
+        url: "/system/knowledge/delete",
+        method: 'post',
+        data: option
+    })
+}
+
+
+
 //获取列表配置
 export function exportKnowExcel(option) {
     axios({

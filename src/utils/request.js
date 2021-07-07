@@ -46,7 +46,6 @@ const responseInterceptor = response => {
     return response.data
   }
   else {
-    console.log(1234)
     response.data.message && errorMsg(response.data.message)
     return Promise.reject(response.data.message || 'error')
   }

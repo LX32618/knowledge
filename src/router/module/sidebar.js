@@ -94,13 +94,13 @@ const sidebar = {
                         component:()=>import("@/views/bms/KnowledgeStatistics/ReUseRate")
                     },{
                         name: "IndividualContribution",
-                        path: "IndividualContribution",
+                            path: "IndividualContribution",
                         meta: {title:"个人贡献情况"},
                         component:()=>import("@/views/bms/KnowledgeStatistics/IndividualContribution")
                     }
                 ]
             }]
-        }, {
+        },{
             name: "Administrator",
             meta:{title:"管理员设置"},
             children: [{
@@ -112,7 +112,7 @@ const sidebar = {
                 name: "KnowledgeAdministrator",
                 path: "KnowledgeAdministrator",
                 meta:{title:"知识管理员"},
-                component:()=>import('@/views/Home')
+                component:()=>import('@/views/bms/KnowledgeAdministrator')
             }]
         }]
     }, {

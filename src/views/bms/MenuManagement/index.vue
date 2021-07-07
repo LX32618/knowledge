@@ -20,6 +20,34 @@
                 </el-table-column>
             </template>
         </cs-table>
+
+
+
+        <el-table
+                :data="tableData1"
+                style="width: 100%;margin-bottom: 20px;"
+                row-key="id"
+                border
+                default-expand-all
+                :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
+            <el-table-column
+                    prop="date"
+                    label="日期"
+                    sortable
+                    width="180">
+            </el-table-column>
+            <el-table-column
+                    prop="name"
+                    label="姓名"
+                    sortable
+                    width="180">
+            </el-table-column>
+            <el-table-column
+                    prop="address"
+                    label="地址">
+            </el-table-column>
+        </el-table>
+
         <el-dialog :visible.sync="addDialogVisible"  title="添加导航菜单" append-to-body :close-on-click-modal="false" append-to-body>
             <menu-form type="add" :form-data="addFormData"  @submitSuccess="submitSuccess" @cancelSuccess="addDialogVisible=false"></menu-form>
         </el-dialog>
@@ -58,7 +86,7 @@
                     fields: [
                         {prop: "id", label: "id", visible: false},
                         {prop: "pid", label: "pid", visible: false},
-                        {prop: "name", label: "名称",width:"300"},
+                        {prop: "name", label: "名称",width:"180"},
                         {prop: "url", label: "链接"},
                         {prop: "sort", label: "sort",visible: false}
                     ],
@@ -67,96 +95,57 @@
                     default_expand_all:true
                 },
                 tableData:[
-              /*          {
-                            name:"设置中心",
-                            pid:null,
-                            id:"59454A2FAC9D4414AB2C35F5B6B26A8D",
-                            url:null,
-                            sort:1,
-                            children:[
-                                {
-                                    children:[
-                                        {
-                                        name:"全文检索关键字统计",
-                                        pid:"9E8044C57AB94EB7942CAF20E07417CC",
-                                        id:"42FA9858110C48DE93C717FFEC77A196",
-                                        url:"system/search/listSearchStatistics",
-                                        sort:1
-                                    },
-                                        {
-                                            name:"接口测试",
-                                            pid:"9E8044C57AB94EB7942CAF20E07417CC",
-                                            id:"49BA161DDEFE4467BC244C899A1CF49D",
-                                            url:"interfaceController/interfaceIndex",
-                                            sort:1
-                                        },
-                                        {
-                                            name:"字典数据",
-                                            pid:"9E8044C57AB94EB7942CAF20E07417CC",
-                                            id:"4846EBAE871746D6A70CAC2CD1CBC84A",
-                                            url:"sysDict/dictTree",
-                                            sort:1
-                                        }],
-                                    name:"基础设置",
-                                    pid:"59454A2FAC9D4414AB2C35F5B6B26A8D",
-                                    id:"9E8044C57AB94EB7942CAF20E07417CC",
-                                    url:null,
-                                    sort:1
-                                },{
-                                    children:[
-                                        {
-                                        name:"标准关系视图",
-                                        pid:"FC3FFCB2137A4FA4ABC5B9CFA4741D60",
-                                        id:"ABA4279500BD40BDB7FD9DBBDAE4B852",
-                                        url:"system/knowledge/listStandardRelationShip",
-                                        sort:1
-                                    },
-                                        {
-                                            name:"知识管理",
-                                            pid:"FC3FFCB2137A4FA4ABC5B9CFA4741D60",
-                                            id:"907A83FE6F384FA2BC132522AAD0D771",
-                                            url:"system/knowledge/knowledgeBase",
-                                            sort:1
-                                        }],
-                                    name:"知识库设置",
-                                    pid:"59454A2FAC9D4414AB2C35F5B6B26A8D",
-                                    id:"FC3FFCB2137A4FA4ABC5B9CFA4741D60",
-                                    url:null,
-                                    sort:1
-                                }
-                            ]
-                        },
-                        {
-                            name:"系统管理",
-                            pid:null,
-                            id:"95D1E34B182A4A6DBA29D3D581B57DEB",
-                            url:null,
-                            sort:1,
-                            children:[
-                                {
-                                    name:"导航菜单管理",
-                                    pid:"95D1E34B182A4A6DBA29D3D581B57DEB",
-                                    id:"3EFEA899E783422DA91DA5AD5B71D144",
-                                    url:"sysMenuInfoController/goMenuInfo",
-                                    sort:1
-                                },
-                                {
-                                    name:"权限管理",
-                                    pid:"95D1E34B182A4A6DBA29D3D581B57DEB",
-                                    id:"13368F96291D4E2083D71E18BF8AF2EE",
-                                    url:"sysPermissionsController/goPermissions",
-                                    sort:1
-                                },
-                                {
-                                    name:"角色管理",
-                                    pid:"95D1E34B182A4A6DBA29D3D581B57DEB",
-                                    id:"8E5F8B6F221E487A9A6DE214821474BE",
-                                    url:"sysRoleController/goRole",
-                                    sort:1
-                                }
-                            ],
-                        }*/
                 ],
+
+
+                tableData1: [{
+                    id: 1,
+                    date: '2016-05-02',
+                    name: '王小虎',
+                    address: '上海市普陀区金沙江路 1518 弄',
+                    children:[
+                        {
+                            id: 11,
+                            date: '2016-05-02',
+                            name: '王小虎',
+                            address: '上海市普陀区金沙江路 1518 弄'
+                        }, {
+                            id: 12,
+                            date: '2016-05-04',
+                            name: '王小虎',
+                            address: '上海市普陀区金沙江路 1517 弄'
+                        }, {
+                            id: 13,
+                            date: '2016-05-01',
+                            name: '王小虎',
+                            address: '上海市普陀区金沙江路 1519 弄',
+                            hasChildren: true
+                        }, {
+                            id: 14,
+                            date: '2016-05-03',
+                            name: '王小虎',
+                            address: '上海市普陀区金沙江路 1516 弄'
+                        }
+                    ]
+                }, {
+                    id: 2,
+                    date: '2016-05-04',
+                    name: '王小虎',
+                    address: '上海市普陀区金沙江路 1517 弄'
+                }, {
+                    id: 3,
+                    date: '2016-05-01',
+                    name: '王小虎',
+                    address: '上海市普陀区金沙江路 1519 弄',
+                    hasChildren: true
+                }, {
+                    id: 4,
+                    date: '2016-05-03',
+                    name: '王小虎',
+                    address: '上海市普陀区金沙江路 1516 弄'
+                }]
+
+
             }
         },
         computed: {

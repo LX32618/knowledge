@@ -1,5 +1,5 @@
 <template>
-    <div style="width: 100%">
+    <div style="width: 97%;margin:10px">
         <cs-table ref="tb"
                   :settings="tableSettings"
                   :table-data="tableData"
@@ -15,119 +15,219 @@
                 </div>
             </template>
         </cs-table>
-        <el-dialog :visible.sync="addDialogVisible" title="添加权限资源" append-to-body :close-on-click-modal="false" append-to-body>
-            <priority-select type="add" :form-data="addFormData" @submitSuccess="submitSuccess"></priority-select>
-        </el-dialog>
-        <el-dialog :visible.sync="editDialogVisible" title="修改权限资源" append-to-body :close-on-click-modal="false" append-to-body>
-            <priority-select type="edit" :form-data="editFormData" @submitSuccess="submitSuccess"></priority-select>
+        <el-dialog :visible.sync="dialogVisible" :title="dialogTitle" append-to-body :close-on-click-modal="false" append-to-body>
+            <div>
+                <el-form :model="formData" label-width="100px" :rules="rules" ref="priorityForm">
+                    <el-form-item label="权限名称" prop="name">
+                        <el-input v-model="formData.name" style="width:203px" :disabled="inputDisabled"></el-input>
+                    </el-form-item>
+                    <el-form-item label="选择资源">
+                        <div class="resource">
+                            <el-tree ref="resourceTree"
+                                 :data="treeData"
+                                 show-checkbox
+                                 node-key="id"
+                                 :default-expanded-keys="defaultCheckedKeys"
+                                 :default-checked-keys="defaultCheckedKeys"
+                                 :props="{children: 'children',label: 'name'}"
+                            >
+                            </el-tree>
+                        </div>
+                    </el-form-item>
+                </el-form>
+                <div style="text-align:end">
+                    <el-button type="primary" @click="submitForm">保存</el-button>
+                    <el-button @click="dialogVisible = false">取消</el-button>
+                </div>
+            </div>
         </el-dialog>
     </div>
 </template>
 
 <script>
-    import _ from "lodash"
-    import PrioritySelect from "./Form/index"
 
-    const treeSettings = {
-        check_strictly:false,
-        default_expand_all:false,
-        show_checkbox:true,
-        show_radio:false,
-        expand_on_click_node:true,
-        right_click:false,
-        default_checked_keys:[]
-    };
+    import _ from "lodash"
+    import {fetchPriorities,fetchPrioritiesSelected,savePriorities,removePriorities} from "@/api/priorityManagement.js"
 
     export default {
         name: "PriorityManagement",
         data(){
             return{
-                addDialogVisible:false,
-                editDialogVisible:false,
-                addFormData:{
-                    id:"",
-                    name:"",
-                    treeSettings:treeSettings
+                inputDisabled:false,
+                dialogTitle:"",
+                dialogVisible:false,
+                treeSettings:{
+                    check_strictly:false,
+                    default_expand_all:false,
+                    show_checkbox:true,
+                    show_radio:false,
+                    expand_on_click_node:true,
+                    right_click:false,
+                    default_checked_keys:[]
                 },
-                editFormData:{},
                 tableSettings: {
                     radio:true,//是否单选
                     checkbox: false,//是否多选，单选和多选同一时间只能存在一个
                     pagination:true,//是否显示分页
-                    total:50,//一共有多少条数据
+                    total:0,//一共有多少条数据
                     pageSize:10,//默认每页多少条数据
                     pageSizes:[10,20,50],//设置每页显示多少条数据
                     currentPage:1,//默认显示第几页
                     fields: [
                         {prop: "id", label: "id", sortable: false, visible: false},
-                        {prop: "name", label: "名称"},
-                        {prop: "resourceNames", label: "资源"},
-                        {prop: "resourceIds", label: "resourceIds",visible:false}
+                        {prop: "name", label: "名称",width:200},
+                        {prop: "resourceNames", label: "资源"}
                     ]
                 },
                 tableData:[
-                    {
-                        id:"1",
-                        name:"系统管理",
-                        resourceNames:"管理员设置,密级定期检查报告",
-                        resourceIds:"glysz,mjdqjcbg"
-                    },{
-                        id:"2",
-                        name:"知识管理",
-                        resourceNames:"知识审核,知识管理员",
-                        resourceIds:"zssh,zsgly"
-                    },{
-                        id:"3",
-                        name:"安全保密",
-                        resourceNames:"角色管理",
-                        resourceIds:"jsgl"
-                    },
                 ],
-                tableSelect:{},
+                selectRow:{},
+                treeData:[],
+                defaultCheckedKeys:[],
+                formData:{
+                    id:"",
+                    name:""
+                },
+                rules: {
+                    name: [
+                        {required: true, message: '请输入权限名称', trigger: 'blur'},
+                    ],
+                }
             }
         },
         methods:{
+            async loadTableData(option){
+                let resp = await fetchPriorities(option);
+                this.tableSettings.total = resp.content.total;
+                let tableData = resp.content.datas.map(d=>{
+                    return {id:d.ID,name:d.NAME,resourceNames:d.RESOURCENAMES}
+                });
+
+                this.tableData = tableData;
+            },
+            async loadTreeData(option){
+              let resp = await fetchPrioritiesSelected(option);
+              this.treeData = resp.content.resourceTree;
+              this.defaultCheckedKeys = resp.content.checkList;
+            },
             add(){
-                this.addDialogVisible = true;
+                this.inputDisabled = false;
+                this.dialogTitle = "添加权限资源";
+                this.formData.id = "";
+                this.formData.name = "";
+                let option = {roleID:""};
+                this.loadTreeData(option);
+                this.dialogVisible = true;
             },
             edit(){
-                if("{}" == JSON.stringify(this.tableSelect)){
+                if("{}" == JSON.stringify(this.selectRow)){
                     this.$error("请先选择一行数据");
                 }
                 else{
-                    let val = this.tableSelect;
-                    let temp = _.cloneDeep(treeSettings);
-                    temp.default_checked_keys = val.resourceIds.split(",");
-                    let data = {
-                        id:val.id,
-                        name:val.name,
-                        treeSettings:temp
-                    }
-                    console.log(data);
-                    this.$set(this,"editFormData",data);
-                    this.editDialogVisible = true;
+                    this.inputDisabled = true;
+                    this.dialogTitle = "修改权限资源";
+                    this.formData.id = this.selectRow.id;
+                    this.formData.name = this.selectRow.name;
+                    let option = {roleID:this.selectRow.id};
+                    this.loadTreeData(option);
+                    this.dialogVisible = true;
                 }
             },
-            remove(){
+            async remove(){
+                if("{}" == JSON.stringify(this.selectRow)){
+                    this.$error("请先选择一行数据");
+                }
+                else{
+
+                    let rowId = this.selectRow.id;
+                    let option = {id:rowId};
+                    this.$confirm('此操作将删除改行数据, 是否继续?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(async () => {
+                        await removePriorities(option);
+                        this.$success("删除成功");
+                        let index = this.tableData.findIndex(d=>{
+                            return d.id  == rowId;
+                        });
+                        this.tableData.splice(index,1);
+                    }).catch(() => {
+
+                    });
+                }
+
 
             },
             currentChange(val){//行单选事件
-                this.tableSelect = val;
+                this.selectRow = val;
             },
             pageSizeChange({page,rows})//每页显示数量、页码变化
             {
-
+                let option = {
+                    page:page,
+                    rows:rows
+                };
+                this.loadTableData(option);
             },
-            submitSuccess(){
+            async submitForm(){
+                this.$refs["priorityForm"].validate(async (valid) => {
+                    if (valid) {
+                        let option = {};
+                        option.id = this.formData.id;
+                        option.name = this.formData.name;
+                        let checkedNodes = this.$refs.resourceTree.getCheckedNodes();
+                        console.log(checkedNodes);
+                        option.resourceIds = checkedNodes.map(n=>{
+                            return n.id;
+                        }).join(",");
+                        let resp = await savePriorities(option);
+                        let newId = resp.content.id;
 
+                        let submitRow = {
+                            id:newId,
+                            name:this.formData.name,
+                            resourceNames:checkedNodes.map(n=>{return n.name}).join(",")
+                        }
+
+                        if("" == this.formData.id)//新增
+                        {
+                            this.tableData.push(submitRow);
+                        }
+                        else{
+                            let index = this.tableData.findIndex(td=>{
+                                return td.id == this.formData.id;
+                            })
+                            this.tableData.splice(index,1,submitRow);
+                        }
+
+                        this.$success("保存成功");
+                        this.dialogVisible = false;
+                    }
+                    else{
+                        return false;
+                    }
+                })
             }
         },
-        components:{
-            PrioritySelect
+        mounted() {
+            let option = {
+                page:this.tableSettings.currentPage,
+                rows:this.tableSettings.pageSize
+            };
+            this.loadTableData(option);
         }
     }
 </script>
 
 <style scoped>
+    .resource{
+        left:-1px;
+        z-index:999;
+        height: 200px;
+    }
+    .resource{
+        overflow: auto;
 
+    }
 </style>

@@ -19,6 +19,7 @@
                             <el-button type="primary" v-if="clickData.type == 2" icon="element-icons el-custom-import" size="mini" @click="batchImport()">批量导入</el-button>
                             <el-button type="primary" icon="element-icons el-custom-share" size="mini" @click="batchShare()">批量分享</el-button>
                             <el-button type="primary" icon="element-icons el-custom-export" size="mini" @click="batchExport()">导出</el-button>
+                            <el-button type="primary" icon="el-icon-delete"  @click="batchDelete()">删除</el-button>
                         </el-button-group>
                         <div style="font-size: 12px">
                             <el-switch v-model="exportAttach" :width="30"  active-value="true" inactive-value="false">
@@ -123,7 +124,7 @@
 
 <script>
     import _ from "lodash";
-    import {fetchCategoryByNodeId,exportKnowExcel} from "@/api/knowledgeManagement.js";
+    import {fetchCategoryByNodeId,deleteKnowledge,exportKnowExcel} from "@/api/knowledgeManagement.js";
     import KnowledgeLabelsInput from '@/components/Input/KnowledgeLabelsInput'
     import CatTreeSelect from "@/components/CatTreeSelect";
     import axios from "axios"
@@ -405,6 +406,32 @@
                 }
                 else{
                     this.$error("请先选择需要分享的知识");
+                }
+            },
+            async batchDelete(){
+                if(this.tableSelectData.length > 0){
+                    this.$confirm('是否删除选中的知识条目?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(async () => {
+                        let ids = this.tableSelectData.map(d=>{
+                            return d.id;
+                        }).join(",");
+                        let option = {id:ids};
+                        console.log(option);
+                        //let resp = await deleteKnowledge(option);
+
+                        this.$success("删除成功");
+                        this.tableData = _.differenceBy(this.tableData,this.tableSelectData,"id");
+                    }).catch(() => {
+
+                    });
+
+
+                }
+                else{
+                    this.$error("请先选择需要删除的知识条目");
                 }
             },
             downloadTemp(){

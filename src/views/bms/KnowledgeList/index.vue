@@ -20,10 +20,9 @@
                     <cs-authority-config :authority-data="authorityData" v-loading="tabLoading"></cs-authority-config>
                 </el-tab-pane>
                 <el-tab-pane :key="4" v-if="basicFormData.type==2 && clickData.formId" label="流程配置" name="interface">
-                    <cs-flow-config :flow-data="flowData" :default-row="flowDefaultRow" v-loading="tabLoading"></cs-flow-config>
+                    <cs-flow-config :flow-data="flowData" :category-id="categoryId" :bind-data="bindData" v-loading="tabLoading" @saveSuccess="saveFlowConfig" @deleteSuccess="deleteFlowConfig"></cs-flow-config>
                 </el-tab-pane>
             </el-tabs>
-      <!--      <cs-template :form-data="tempFormData"></cs-template>-->
         </div>
         <el-dialog title="新增知识目录" :visible.sync="appendFormVisible" :close-on-click-modal="false">
             <cs-basic :settings="appendFormSettings" :form-data="appendFormData" @submitSuccess="submitSuccess"></cs-basic>
@@ -54,6 +53,7 @@
         name: "KnowledgeList",
         data(){
             return {
+                categoryId:"",
                 activeName:'basic',
                 clickData:{},
                 appendFormVisible:false,
@@ -88,6 +88,7 @@
                 },
                 configData:{},
                 authorityData:{},
+                bindData:[],
                 flowData:[],
                 flowDefaultRow:{}
             }
@@ -144,17 +145,14 @@
                         this.flowData = JSON.parse(resp.data.obj).rows.filter(d => {
                             return d.status == "已发布";
                         });
-                        /*         this.flowDefaultRow = JSON.parse(resp.data.obj).rows.filter(d => {
-                                     return d.id == "2cac4a22-aedd-4d2e-b9f1-86bdb9306e1f";
-                                 })[0];*/
                     }
 
                     let option1 = {
                         id:this.basicFormData.id
                     }
-                    let xx = await fetchProcessBindList(option1);
-                    console.log(xx);
-
+                    let resp1 = await fetchProcessBindList(option1);
+                    this.categoryId = this.basicFormData.id;
+                    this.bindData = resp1.content;
                     this.tabLoading = false;
                 } else if(tab.label == '权限配置'){
                     let option = {
@@ -286,6 +284,28 @@
                     return item;
                 })
                 return formatData;
+            },
+            saveFlowConfig(data){
+                this.$nextTick(()=>{
+                    let index = this.bindData.findIndex(d=>{
+                        return d.processKindType == data.processKindType;
+                    });
+                    if(index > -1)
+                    {
+                        this.bindData.splice(index,1,data);
+                    }
+                    else {
+                        this.bindData.push(data);
+                    }
+                })
+            },
+            deleteFlowConfig(data){
+                this.$nextTick(()=>{
+                    let index = this.bindData.findIndex(d=>{
+                        return d.processKindType == data.processKindType;
+                    });
+                    this.bindData.splice(index,1);
+                });
             }
         },
         components:{
