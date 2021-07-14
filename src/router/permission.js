@@ -22,7 +22,8 @@ const routerGuide = async (to, from, next) => {
   await store.dispatch('user/getInfo')
   const hasMenu = Object.keys(store.getters.sidebar).length > 0 && Object.keys(store.getters.sidebarRouter).length > 0
   if (!hasMenu) {
-    await store.dispatch('routerMenu/getRouterMenu', 'F36A946243D34506A6BE625412739725')
+    console.log(store);
+    await store.dispatch('routerMenu/getRouterMenu',store.getters.userInfo.id)
   }
   next()
 
