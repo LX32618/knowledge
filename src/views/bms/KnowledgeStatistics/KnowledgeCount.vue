@@ -75,7 +75,6 @@
                     dataBak = _.cloneDeep(this.storeData);
                 }
 
-                console.log(dataBak);
                 dataBak.forEach(d=>{
                     keys.push(d.name);
                     values.push(d.y);
@@ -147,19 +146,34 @@
                         }
                     ]
                 };
+
                 // 使用刚指定的配置项和数据显示图表。
                 if("bar" == this.display)
                 {
-                    myChart.setOption(barOption,true);
+                    this.$nextTick(()=>{
+                        myChart.setOption(barOption,true);
+                    });
+
                 }
                 else {
-                    myChart.setOption(pieOption,true);
+                    this.$nextTick(()=>{
+                        myChart.setOption(pieOption,true);
+                    });
                 }
 
+                this.$nextTick(()=>{
+                    myChart.resize();
+                });
+
+/*                window.onresize = function () {
+                    myChart.resize();
+                };*/
             }
         },
         mounted() {
-            this.drawChart();
+             setTimeout(()=>{
+                 this.drawChart();
+             },400);
         }
     }
 </script>
