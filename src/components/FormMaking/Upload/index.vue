@@ -27,7 +27,7 @@
 
 <script>
 import Viewer from 'viewerjs'
-import { uploadFile, downloadFile } from '@/api/file'
+import { uploadFile, downloadFile, getFileUrl } from '@/api/file'
 
 require('viewerjs/dist/viewer.css')
 export default {
@@ -134,13 +134,15 @@ export default {
         }
       }
     },
-    handlePreview (file, index) {
-      this.viewer && this.viewer.destroy()
+    async handlePreview (file, index) {
+      const res = await getFileUrl(file.id)
+      window.open(res.content)
+      // this.viewer && this.viewer.destroy()
 
-      this.$nextTick(() => {
-        this.viewer = new Viewer(document.getElementById(file.id))
-        this.viewer.view(0)
-      })
+      // this.$nextTick(() => {
+      //   this.viewer = new Viewer(document.getElementById(file.id))
+      //   this.viewer.view(0)
+      // })
     },
     handleDownload (file) {},
     handleRemove (index) {

@@ -190,12 +190,14 @@ export default {
       } else if (this.videoTypes.indexOf(file.type) >= 0) {
         window.open(`/app-zuul/knowledge/app/authcenter/api/viewImage?attachid=${file.id}`)
       } else if (this.imageTypes.indexOf(file.type) >= 0) {
-        this.viewer && this.viewer.destroy()
+        const res = await getFileUrl(file.id)
+        window.open(res.content)
+        // this.viewer && this.viewer.destroy()
 
-        this.$nextTick(() => {
-          this.viewer = new Viewer(document.getElementById(file.id))
-          this.viewer.view(0)
-        })
+        // this.$nextTick(() => {
+        //   this.viewer = new Viewer(document.getElementById(file.id))
+        //   this.viewer.view(0)
+        // })
       } else {
         this.$info('文件格式不支持预览')
       }
