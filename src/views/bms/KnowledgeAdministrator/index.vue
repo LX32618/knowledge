@@ -1,11 +1,10 @@
 <template>
-    <div style="width: 100%;margin:5px">
+    <div style="margin: 5px">
         <cs-table ref="tb"
                   :settings="tableSettings"
                   :table-data="tableData"
                   @pageSizeChange="pageSizeChange"
-                  @currentChange="currentChange"
-                  style="width: 100%">
+                  @currentChange="currentChange">
             <template v-slot:horizontalSlot>
                 <div class="operationNav" style="margin-bottom: 5px">
                     <el-button-group>

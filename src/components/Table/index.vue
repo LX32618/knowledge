@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="width: 100%">
     <slot name="horizontalSlot"></slot>
     <el-table ref="tb"
               stripe
@@ -36,6 +36,7 @@
                 :prop="item.prop"
                 :label="item.label"
                 :min-width="item.width ? item.width : 50"
+                :fixed="item.fixed"
                 :width="item.width"
                 align="center">
           <template slot-scope="scope">

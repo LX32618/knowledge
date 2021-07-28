@@ -1,6 +1,16 @@
 import request from '@/utils/request'
 import _ from 'lodash'
 
+export function fetchCategoryTreeAll (option) {
+  return request({
+    url: '/categoryTreeWithoutPermission/get',
+    method: 'post',
+    data: {
+      id: option.id
+    }
+  })
+}
+
 export function fetchCategoryTree (option) {
   return request({
     url: '/categoryTree/get',
