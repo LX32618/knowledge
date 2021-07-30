@@ -94,9 +94,14 @@ const sidebar = {
                         component:()=>import("@/views/bms/KnowledgeStatistics/ReUseRate")
                     },{
                         name: "IndividualContribution",
-                            path: "IndividualContribution",
+                        path: "IndividualContribution",
                         meta: {title:"个人贡献情况"},
                         component:()=>import("@/views/bms/KnowledgeStatistics/IndividualContribution")
+                    },{
+                        name: "OrganizationContribution",
+                        path: "OrganizationContribution",
+                        meta: {title:"组织资产部门统计"},
+                        component:()=>import("@/views/bms/KnowledgeStatistics/OrganizationContribution")
                     }
                 ]
             }]

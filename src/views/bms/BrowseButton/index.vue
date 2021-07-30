@@ -1,5 +1,5 @@
 <template>
-    <div class="model box" style="width: 99%">
+    <div class="model box" style="width: 100%">
         <cs-table ref="tb"
                   :settings="tableSettings"
                   :table-data="tableData"

@@ -349,7 +349,7 @@
         flex-basis: 15%;
     }
     .knowlist.main{
-        flex-basis:81%;
+        flex-basis:85%;
     }
     .el-tabs--border-card{
         width:100%;

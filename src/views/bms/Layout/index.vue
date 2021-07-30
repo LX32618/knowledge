@@ -1,9 +1,9 @@
 <template>
-    <div class="box">
+<!--    <div class="box">
         <div class="top-nav">
             <v-header></v-header>
         </div>
-        <div class="body">
+        <div class="body" style="width: 100vw">
             <div class="sidebar">
                 <div class="sidebar-content">
                     <cs-sidebar :default-active="defaultActive" :items="items" :basePath="basePath"></cs-sidebar>
@@ -20,7 +20,28 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div>-->
+    <el-container>
+        <el-header style="background-color: #438EB9;">
+            <v-header></v-header>
+        </el-header>
+        <el-container>
+            <el-aside width="200px" style="border-right: 1px solid #DCDFE6;">
+                <cs-sidebar :default-active="defaultActive" :items="items" :basePath="basePath"></cs-sidebar>
+            </el-aside>
+            <el-container style="height: 100%; border-left: 1px solid #DCDFE6;">
+                <el-header style="height: 20px;background-color: #F5F5F5;border-bottom: 1px solid #DCDFE6;">
+                    <cs-breadcrumb></cs-breadcrumb>
+                </el-header>
+                <el-main style="padding: 0px;width: 100%">
+                    <transition name="el-fade-in">
+                        <router-view></router-view>
+                    </transition>
+                </el-main>
+            </el-container>
+        </el-container>
+    </el-container>
+
 </template>
 
 <script>
@@ -47,4 +68,15 @@
 
 <style scoped>
     @import './style.less';
+
+
+/*    .sidebar>div:first-child{
+        border-right: 1px solid #DCDFE6;
+        height:100%
+    }*/
+
+
+    .el-menu{
+        border-right:0px !important;
+    }
 </style>

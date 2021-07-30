@@ -5,18 +5,18 @@
         </div>
         <div class="clickrate main">
             <cs-table ref="tb"
+                      v-if="currentNodeId"
                       :settings="tableSettings"
                       :table-data="tableData"
                       @pageSizeChange="pageSizeChange"
-                      @sortChange="sortChange"
                       style="width: 100%">
                 <template v-slot:horizontalSlot>
                     <el-form :inline="true" :model="searchData" class="searchForm">
                         <el-form-item label="知识名称">
-                            <el-input  placeholder="请输入知识名称" style="width: 150px"  v-model="searchData.keyWord"></el-input>
+                            <el-input  placeholder="请输入知识名称" style="width: 150px"  v-model="searchData.name"></el-input>
                         </el-form-item>
                         <el-form-item label="发布人">
-                            <el-input  placeholder="请输入发布人名称" style="width: 150px"  v-model="searchData.keyWord"></el-input>
+                            <el-input  placeholder="请输入发布人名称" style="width: 150px"  v-model="searchData.userName"></el-input>
                         </el-form-item>
                         <el-form-item label="发布时间">
                             <el-date-picker
@@ -45,12 +45,16 @@
 <script>
 
     import _ from "lodash";
+    import {fetchIndClickRate} from "@/api/analysisController.js"
+    import moment from "moment"
+
     const treeUrl = '/app-zuul/knowledge/app/authcenter/api/categoryTree/';
 
     export default {
         name: "ClickRate",
         data(){
             return {
+                currentNodeId:"",
                 treeSettings:{
                     root_id:"0",//根节点id
                     expand_root:true,//是否默认展开根节点
@@ -84,11 +88,26 @@
                 },
                 tableData:[],
                 searchData:{
-                    keyWord:"",
+                    name:"",
+                    userName:"",
+                    date:[],
                 }
             }
         },
         methods:{
+            async loadTableData(option){
+                option.name = this.searchData.name;
+                option.userName = this.searchData.userName;
+                option.categoryId = "";//this.currentNodeId;
+                console.log(this.searchData);
+                option.beginTime = this.searchData.date[0]?moment(this.searchData.date[0]).format("YYYY-MM-DD"):"";
+                option.endTime = this.searchData.date[1]?moment(this.searchData.date[1]).format("YYYY-MM-DD"):"";
+                let resp = await fetchIndClickRate(option);
+                this.tableSettings.total = resp.content.total;
+                this.tableData = resp.content.datas.map(d=>{
+                    return {id:d.ID,name:d.NAME,categoryName:d.CATEGORYNAME,createDate:d.CREATEDATE,clickingRate:d.CLICKINGRATE}
+                });
+            },
             treeDataFormat({node,data}){
                 const temp = _.cloneDeep(data);
                 let formatData = temp.filter(item=>{
@@ -114,14 +133,24 @@
             },
             treeNodeClick({data,node})
             {
+                this.currentNodeId = node.key;
             },
             pageSizeChange({page,rows})//每页显示数量、页码变化
             {
-            },
-            sortChange({sort, order}) {
+                let option = {
+                    page:page,
+                    rows:rows
+                };
+                this.loadTableData(option);
             },
             tableExport(){},
-            search(){}
+            search(){
+                let option = {
+                    page:this.tableSettings.currentPage,
+                    rows:this.tableSettings.pageSize
+                };
+                this.loadTableData(option);
+            }
         }
     }
 </script>

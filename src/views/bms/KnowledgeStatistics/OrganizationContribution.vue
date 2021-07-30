@@ -40,10 +40,10 @@
 
     import _ from "lodash"
     import {fetchCategoryTreeAll} from "@/api/docCategory.js"
-    import {fetchIndContribution} from "@/api/analysisController.js"
+    import {fetchOrgContribution} from "@/api/analysisController.js"
 
     export default {
-        name: "IndividualContribution",
+        name: "OrganizationContribution",
         data(){
             return {
                 keyValue:0,
@@ -61,11 +61,10 @@
                     currentPage:1,//默认显示第几页
                     fields: [
                         {prop: "id", label: "id", sortable: false, visible: false},
-                        {prop: "userName", label: "用户名称",fixed:"left",width:100},
-                        {prop: "deptName", label: "所在部门",fixed:"left",width:100},
+                        {prop: "deptName", label: "部门名称",fixed:"left",width:100},
                         {prop: "gxTotal", label: "贡献总数量",fixed:"left",width:100,formatter:(index,row)=>{
                                 return _.reduce(row, function(result, value, key) {
-                                    if("id" != key && "deptName" != key && "userName" != key){
+                                    if("id" != key && "deptName" != key){
                                         result += parseInt(value);
                                     }
                                     return result;
@@ -85,7 +84,7 @@
         methods:{
             async loadTableData(option){
                 option.type = "1";
-                let resp = await fetchIndContribution(option);
+                let resp = await fetchOrgContribution(option);
                 this.tableSettings.total = resp.content.total;
                 let tableData = resp.content.datas.map(d=>{
                     let row = {};
@@ -95,7 +94,6 @@
                         row = _.zipObject(gxCategories, gxs);
                     }
                     row.id=d.ID;
-                    row.userName=d.USERNAME;
                     row.deptName=d.ORGNAME;
                     return row;
                 });
@@ -122,34 +120,34 @@
             }
         },
         async mounted() {
-            this.tableFieldsBak = _.cloneDeep(this.tableSettings.fields);
-            let rootResp = await fetchCategoryTreeAll({id:"0"});
-            let rootId = rootResp.content[0].id;
-            let rootName = rootResp.content[0].name;
-            let childrenResp = await fetchCategoryTreeAll({id:rootId});
-            let children = childrenResp.content.map(d=>{
-                return {prop:d.id,label:d.name,width:80,formatter:(index,row)=>{
-                        if(!row[d.id]){
-                            return 0;
-                        }
-                        return row[d.id];
-                    }
-                }
-            });
-            this.tableHeaders = [{
-                prop:rootId,
-                label:rootName,
-                children:children
-            }];
-            this.defaultCheckedHeaders = children.map(d=>{
-                return d.prop;
-            });
-            this.tableSettings.fields = _.concat(this.tableSettings.fields,children);
-            let option = {
-                page:this.tableSettings.currentPage,
-                rows:this.tableSettings.pageSize
-            };
-            this.loadTableData(option);
+          this.tableFieldsBak = _.cloneDeep(this.tableSettings.fields);
+          let rootResp = await fetchCategoryTreeAll({id:"0"});
+          let rootId = rootResp.content[0].id;
+          let rootName = rootResp.content[0].name;
+          let childrenResp = await fetchCategoryTreeAll({id:rootId});
+          let children = childrenResp.content.map(d=>{
+              return {prop:d.id,label:d.name,width:80,formatter:(index,row)=>{
+                      if(!row[d.id]){
+                          return 0;
+                      }
+                      return row[d.id];
+                  }
+              }
+          });
+          this.tableHeaders = [{
+                  prop:rootId,
+                  label:rootName,
+                  children:children
+          }];
+          this.defaultCheckedHeaders = children.map(d=>{
+              return d.prop;
+          });
+          this.tableSettings.fields = _.concat(this.tableSettings.fields,children);
+          let option = {
+              page:this.tableSettings.currentPage,
+              rows:this.tableSettings.pageSize
+          };
+          this.loadTableData(option);
         }
     }
 </script>

@@ -15,14 +15,10 @@
         </el-form-item>
         <el-form-item label="关联表单"  v-if="data.type==2"  >
             <div ref="associatedForm" style="width:203px;">
-                <el-input placeholder="请选择"
-                        v-model="data.formName"
-                        size="small"
-                        readonly="readonly"
-                        :suffix-icon="showAssociatedFormTable?'el-icon-arrow-up':'el-icon-arrow-down'"
-                        @click.native="toggleAssociatedFormTable()">
-                </el-input>
-                <div class="associatedFormTable" v-show="showAssociatedFormTable">
+                <el-popover
+                        v-model="showAssociatedFormTable"
+                        placement="bottom"
+                        trigger="click">
                     <cs-table :settings="tableSettings"
                               :table-data="tableData"
                               v-loading="associatedFormLoading"
@@ -41,25 +37,36 @@
                             </div>
                         </template>
                     </cs-table>
-                </div>
+                    <el-input slot="reference"
+                              placeholder="请选择"
+                              v-model="data.formName"
+                              size="small"
+                              readonly="readonly"
+                              :suffix-icon="showAssociatedFormTable?'el-icon-arrow-up':'el-icon-arrow-down'">
+                    </el-input>
+                </el-popover>
             </div>
         </el-form-item>
         <el-form-item label="标签分类选择" v-if="data.type==2">
-            <div ref="labelClassification">
-                <el-button type="primary" icon="el-icon-search" circle
-                           @click.native="toggleLabelClassification()"></el-button>
-                <el-tag v-for="tag in data.labelInfo"
-                        :key="tag.id"
-                        closable
-                        @close="tagClose(tag)"
-                        type="danger" size="mini" style="margin-left: 3px">
-                    {{tag.name}}
-                </el-tag>
-                <div class="labelClassification" v-show="showLabelClassification">
+            <el-popover
+                    v-model="showLabelClassification"
+                    width="300"
+                    placement="bottom"
+                    trigger="click">
+                <div>
                     <cs-lazytree  :settings="treeSettings" :dataFormat="treeDataFormat" @checkChange="labelCheckChange" style="overflow: auto;height: 250px;"></cs-lazytree>
                     <el-button type="primary" size="mini" style="float: right;margin:0px 3px 3px 0px" @click="certainLabel">确定</el-button>
                 </div>
-            </div>
+
+                <el-button type="primary" icon="el-icon-search" circle slot="reference"></el-button>
+            </el-popover>
+            <el-tag v-for="tag in data.labelInfo"
+                    :key="tag.id"
+                    closable
+                    @close="tagClose(tag)"
+                    type="danger" size="mini" style="margin-left: 3px">
+                {{tag.name}}
+            </el-tag>
         </el-form-item>
         <el-form-item label="密级">
             <el-select  placeholder="请选择密级" v-model="data.secretLevel">
@@ -290,10 +297,6 @@
                 };
                 this.loadAssociatedFormData(data);
             },
-            toggleAssociatedFormTable(){
-                this.showAssociatedFormTable = !this.showAssociatedFormTable;
-                //document.addEventListener('click', this.vanishAssociatedFormTable); // 给整个document添加监听鼠标事件，点击任何位置执行vanish方法
-            },
             certainAssociatedForm(){
                 this.$set(this.data,"formId",this.selectedAssociatedFormTable.formId);
                 this.$set(this.data,"formName", this.selectedAssociatedFormTable.formName);
@@ -334,9 +337,9 @@
             },
             //endregion
             //region 标签选择方法
-            toggleLabelClassification(){
+         /*   toggleLabelClassification(){
                 this.showLabelClassification = !this.showLabelClassification;
-            },
+            },*/
             certainLabel(){
                 let selection = _.concat(this.data.labelInfo,this.selectedLabel);//合并
                 this.data.labelInfo = _.uniqBy(selection,"id");//去重
@@ -367,19 +370,6 @@
 </script>
 
 <style scoped>
-    .associatedFormTable,.labelClassification{
-        position:absolute;
-        top:40px;
-        left:-1px;
-        z-index:999;
-        max-height: 500px;
-        border: 1px solid #E4E7ED;
-        background-color:#fff
-    }
-    .labelClassification{
-        overflow: auto;
-        width: 300px;
-    }
     .el-input{
         width: 203px;
     }
