@@ -48,13 +48,11 @@
             </div>
         </el-form-item>
         <el-form-item label="标签分类选择" v-if="data.type==2">
-
             <el-popover
                     v-model="showLabelClassification"
                     width="300"
                     placement="bottom"
                     trigger="click">
-
                 <div>
                     <cs-lazytree  :settings="treeSettings" :dataFormat="treeDataFormat" @checkChange="labelCheckChange" style="overflow: auto;height: 250px;"></cs-lazytree>
                     <el-button type="primary" size="mini" style="float: right;margin:0px 3px 3px 0px" @click="certainLabel">确定</el-button>
@@ -69,22 +67,6 @@
                     type="danger" size="mini" style="margin-left: 3px">
                 {{tag.name}}
             </el-tag>
-
-           <!-- <div ref="labelClassification">
-                <el-button type="primary" icon="el-icon-search" circle
-                           @click.native="toggleLabelClassification()"></el-button>
-                <el-tag v-for="tag in data.labelInfo"
-                        :key="tag.id"
-                        closable
-                        @close="tagClose(tag)"
-                        type="danger" size="mini" style="margin-left: 3px">
-                    {{tag.name}}
-                </el-tag>
-                <div class="labelClassification" v-show="showLabelClassification">
-                    <cs-lazytree  :settings="treeSettings" :dataFormat="treeDataFormat" @checkChange="labelCheckChange" style="overflow: auto;height: 250px;"></cs-lazytree>
-                    <el-button type="primary" size="mini" style="float: right;margin:0px 3px 3px 0px" @click="certainLabel">确定</el-button>
-                </div>
-            </div>-->
         </el-form-item>
         <el-form-item label="密级">
             <el-select  placeholder="请选择密级" v-model="data.secretLevel">
@@ -388,19 +370,6 @@
 </script>
 
 <style scoped>
-    .associatedFormTable,.labelClassification{
-        position:absolute;
-        top:40px;
-        left:-1px;
-        z-index:999;
-        max-height: 500px;
-        border: 1px solid #E4E7ED;
-        background-color:#fff
-    }
-    .labelClassification{
-        overflow: auto;
-        width: 300px;
-    }
     .el-input{
         width: 203px;
     }

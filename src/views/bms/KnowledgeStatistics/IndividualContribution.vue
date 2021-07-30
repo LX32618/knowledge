@@ -1,57 +1,59 @@
 <template>
-    <div class="individual box">
-        <div class="individual sidebar">
-            <cs-lazytree ref="lazytree" :settings="treeSettings" :dataFormat="treeDataFormat" @treeNodeClick="treeNodeClick"></cs-lazytree>
-        </div>
-        <div class="individual main">
-            <cs-table ref="tb"
-                      :settings="tableSettings"
-                      :table-data="tableData"
-                      @pageSizeChange="pageSizeChange"
-                      @sortChange="sortChange"
-                      style="width: 100%">
-                <template v-slot:horizontalSlot>
-                    <el-form :inline="true" :model="searchData" class="searchForm">
-                        <el-button type="primary" icon="el-icon-s-grid" circle></el-button>
-                        <el-form-item>
-                            <el-button-group>
-                                <el-button type="primary" size="mini" @click="search()">搜索</el-button>
-                                <el-button type="primary" size="mini" @click="tableExport()">导出</el-button>
-                            </el-button-group>
-                        </el-form-item>
-                    </el-form>
-                </template>
-            </cs-table>
-        </div>
+    <div>
+        <cs-table ref="tb"
+                  :key="keyValue"
+                  :settings="tableSettings"
+                  :table-data="tableData"
+                  @pageSizeChange="pageSizeChange">
+            <template v-slot:horizontalSlot>
+                <div class="toolBar">
+                    <el-popover
+                            v-model="headerVisible"
+                            placement="bottom"
+                            width="300"
+                            trigger="click">
+                        <div>
+                            <el-tree :data="tableHeaders"
+                                     ref="headerTree"
+                                     show-checkbox
+                                     default-expand-all
+                                     node-key="prop"
+                                     style="overflow: auto;height: 250px;"
+                                     :default-checked-keys="defaultCheckedHeaders"
+                                     :props="{children:'children',label:'label'}">
+                            </el-tree>
+                            <el-button type="primary" size="mini" style="float: right;margin:0px 3px 3px 0px" @click="chooseHeader">确定</el-button>
+                        </div>
+                        <el-button type="primary" icon="el-icon-s-grid" slot="reference" >设置表头</el-button>
+                    </el-popover>
+                    <el-button type="primary" icon="element-icons el-custom-export" style="margin-left:10px" size="mini"  @click="tableExport()">导出</el-button>
+                </div>
+            </template>
+        </cs-table>
+
+
+
     </div>
 </template>
 
 <script>
 
-    import _ from "lodash";
-    const treeUrl = '/app-zuul/knowledge/app/authcenter/api/categoryTree/';
+    import _ from "lodash"
+    import {fetchCategoryTreeAll} from "@/api/docCategory.js"
+    import {fetchIndContribution} from "@/api/analysisController.js"
 
     export default {
         name: "IndividualContribution",
         data(){
             return {
-                treeSettings:{
-                    root_id:"0",//根节点id
-                    expand_root:true,//是否默认展开根节点
-                    check_strictly:true,//在显示复选框的情况下，是否严格的遵循父子不互相关联的做法，默认为 false
-                    default_expand_all:false,//是否默认展开所层级
-                    show_checkbox:false,//是否有checkbox
-                    show_radio: false,//是否有单选radio
-                    expand_on_click_node:false,//点击接点是否进行展开收缩
-                    right_click:false,//是否具有右键功能
-                    request:{//访问路径设置
-                        url:`${treeUrl}get`,
-                        method:"post"
-                    }
-                },
+                keyValue:0,
+                headerVisible:false,
+                checkList:[],
+                tableHeaders:[],
                 tableSettings: {
                     radio:false,//是否单选
                     checkbox: false,//是否多选，单选和多选同一时间只能存在一个
+                    height:"500",
                     pagination:true,//是否显示分页
                     total:0,//一共有多少条数据
                     pageSize:10,//默认每页多少条数据
@@ -59,74 +61,119 @@
                     currentPage:1,//默认显示第几页
                     fields: [
                         {prop: "id", label: "id", sortable: false, visible: false},
-                        {prop: "name", label: "名称"},
-                        {prop: "categoryName", label: "知识库"},
-                        {prop: "createDate", label: "发布时间"},
-                        {prop: "userName", label: "发布人"},
-                        {prop: "reUseRation", label: "重用统计",sortable:true}
+                        {prop: "userName", label: "用户名称",fixed:"left",width:100},
+                        {prop: "deptName", label: "所在部门",fixed:"left",width:100},
+                        {prop: "gxTotal", label: "贡献总数量",fixed:"left",width:100,formatter:(index,row)=>{
+                                return _.reduce(row, function(result, value, key) {
+                                    if("id" != key && "deptName" != key && "userName" != key){
+                                        result += parseInt(value);
+                                    }
+                                    return result;
+                                }, 0);
+                            }
+                        }
                     ]
                 },
+                tableFieldsBak:[],
                 tableData:[],
-                searchData:{
-                    keyWord:"",
-                }
+                tableDataBak:[],
+                searchKey:"",
+                defaultCheckedHeaders:[],
+
             }
         },
         methods:{
-            treeDataFormat({node,data}){
-                const temp = _.cloneDeep(data);
-                let formatData = temp.filter(item=>{
-                    return !(item.type == 2 && item.enable != 0);
-                }).map((item,index,arr)=>{
-                    if(item.pid==this.treeSettings.root_id)
-                    {
-                        item.icon = "element-icons el-custom-book";
+            async loadTableData(option){
+                option.type = "1";
+                let resp = await fetchIndContribution(option);
+                this.tableSettings.total = resp.content.total;
+                let tableData = resp.content.datas.map(d=>{
+                    let row = {};
+                    if(d.GXCATEGORY){
+                        let gxs = d.GX.split(",");
+                        let gxCategories = d.GXCATEGORY.split(",");
+                        row = _.zipObject(gxCategories, gxs);
                     }
-                    else if(item.type==0){
-                        item.icon = "element-icons el-custom-db";
-                    }
-                    else if(item.type==1){
-                        item.icon = "element-icons el-custom-files";
-                    }
-                    else if(item.type==2){
-                        item.icon = "element-icons el-custom-file";
-                    }
-                    else{}
-                    return item;
-                })
-                return formatData;
+                    row.id=d.ID;
+                    row.userName=d.USERNAME;
+                    row.deptName=d.ORGNAME;
+                    return row;
+                });
+
+                this.tableData = tableData;
+                this.tableDataBak = _.cloneDeep(tableData);
             },
-            treeNodeClick({data,node})
-            {
-                console.log({data,node});
+            tableExport(){
+
+            },
+            chooseHeader(){
+                let headerChecked = this.$refs.headerTree.getCheckedNodes(true,false);
+                this.keyValue += 1;
+                this.$set(this.tableSettings,"fields",_.concat(this.tableFieldsBak,headerChecked));
+                let headerCheckedKeys = headerChecked.map(c=>{
+                    return c.prop;
+                });
+                this.$set(this,"defaultCheckedHeaders",headerCheckedKeys);
+                this.headerVisible = false;
             },
             pageSizeChange({page,rows})//每页显示数量、页码变化
             {
-            },
-            sortChange({sort, order}) {
-            },
-            tableExport(){},
-            search(){}
+                this.loadTableData({page:page,rows:rows});
+            }
+        },
+        async mounted() {
+            this.tableFieldsBak = _.cloneDeep(this.tableSettings.fields);
+            let rootResp = await fetchCategoryTreeAll({id:"0"});
+            let rootId = rootResp.content[0].id;
+            let rootName = rootResp.content[0].name;
+            let childrenResp = await fetchCategoryTreeAll({id:rootId});
+            let children = childrenResp.content.map(d=>{
+                return {prop:d.id,label:d.name,width:80,formatter:(index,row)=>{
+                        if(!row[d.id]){
+                            return 0;
+                        }
+                        return row[d.id];
+                    }
+                }
+            });
+            this.tableHeaders = [{
+                prop:rootId,
+                label:rootName,
+                children:children
+            }];
+            this.defaultCheckedHeaders = children.map(d=>{
+                return d.prop;
+            });
+            this.tableSettings.fields = _.concat(this.tableSettings.fields,children);
+            let option = {
+                page:this.tableSettings.currentPage,
+                rows:this.tableSettings.pageSize
+            };
+            this.loadTableData(option);
         }
     }
 </script>
 
 <style scoped>
-    .individual.box{
+    .toolBar{
         display: flex;
-        flex-direction: row;
-        height: 100%;
-        width: 99%;
+        align-items: center;
+        margin:5px;
+        justify-content: flex-start
     }
-    .individual.sidebar{
-        flex-basis: 15%;
+    .search{
+        display: flex;
+        justify-content: flex-end;
     }
-    .individual.main{
-        flex-basis:84%;
-    }
-    .searchForm{
-        margin-left: 20px;
-        margin-top: 10px;
-        margin-bottom: -10px;
+    .tableHeader{
+        position:absolute;
+        top:40px;
+        left:10px;
+        z-index:999;
+        max-height: 500px;
+        border: 1px solid #E4E7ED;
+        background-color:#fff;
+        overflow: auto;
+        width: 300px;
     }
 </style>

@@ -7,28 +7,27 @@
                   @pageSizeChange="pageSizeChange">
             <template v-slot:horizontalSlot>
                 <div class="toolBar">
-                    <el-button-group style="position: relative">
-                        <el-button type="primary" icon="el-icon-s-grid" @click="setTableHeader()">设置表头</el-button>
-                        <el-button type="primary" icon="element-icons el-custom-export" size="mini"  @click="tableExport()">导出</el-button>
-                        <div class="tableHeader" v-show="headerVisible">
-                                <el-tree :data="tableHeaders"
-                                         ref="headerTree"
-                                         show-checkbox
-                                         default-expand-all
-                                         node-key="prop"
-                                         style="overflow: auto;height: 250px;"
-                                         :default-checked-keys="defaultCheckedHeaders"
-                                         :props="{children:'children',label:'label'}">
-                                </el-tree>
-                                <el-button type="primary" size="mini" style="float: right;margin:0px 3px 3px 0px" @click="chooseHeader">确定</el-button>
-                            </div>
-                    </el-button-group>
-<!--                    <el-button-group class="search">
-                        <el-input  placeholder="请输入关键字" prefix-icon="el-icon-search" v-model="searchKey"></el-input>
-                        <el-button type="primary" size="mini" @click="search()">搜索</el-button>
-                    </el-button-group>-->
+                    <el-popover
+                            v-model="headerVisible"
+                            placement="bottom"
+                            width="300"
+                            trigger="click">
+                        <div>
+                            <el-tree :data="tableHeaders"
+                                     ref="headerTree"
+                                     show-checkbox
+                                     default-expand-all
+                                     node-key="prop"
+                                     style="overflow: auto;height: 250px;"
+                                     :default-checked-keys="defaultCheckedHeaders"
+                                     :props="{children:'children',label:'label'}">
+                            </el-tree>
+                            <el-button type="primary" size="mini" style="float: right;margin:0px 3px 3px 0px" @click="chooseHeader">确定</el-button>
+                        </div>
+                        <el-button type="primary" icon="el-icon-s-grid" slot="reference" >设置表头</el-button>
+                    </el-popover>
+                    <el-button type="primary" icon="element-icons el-custom-export" style="margin-left:10px" size="mini"  @click="tableExport()">导出</el-button>
                 </div>
-
             </template>
         </cs-table>
 
@@ -105,9 +104,6 @@
             tableExport(){
 
             },
-            setTableHeader(){
-                this.headerVisible = !this.headerVisible;
-            },
             chooseHeader(){
                 let headerChecked = this.$refs.headerTree.getCheckedNodes(true,false);
                 this.keyValue += 1;
@@ -159,9 +155,9 @@
 <style scoped>
     .toolBar{
         display: flex;
-        justify-content: space-between;
         align-items: center;
         margin:5px;
+        justify-content: flex-start
     }
     .search{
         display: flex;

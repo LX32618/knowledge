@@ -4,19 +4,22 @@
             <cs-lazytree ref="lazytree" :settings="treeSettings" :dataFormat="treeDataFormat" @treeNodeClick="treeNodeClick"></cs-lazytree>
         </div>
         <div class="reuserate main">
+
             <cs-table ref="tb"
                       :settings="tableSettings"
                       :table-data="tableData"
                       @pageSizeChange="pageSizeChange"
-                      @sortChange="sortChange"
                       style="width: 100%">
                 <template v-slot:horizontalSlot>
+                    <div style="width: 100%;text-align: center">
+                        <h4>{{currentNode.label}}</h4>
+                    </div>
                     <el-form :inline="true" :model="searchData" class="searchForm">
                         <el-form-item label="知识名称">
-                            <el-input  placeholder="请输入知识名称" style="width: 150px"  v-model="searchData.keyWord"></el-input>
+                            <el-input  placeholder="请输入知识名称" style="width: 150px"  v-model="searchData.name"></el-input>
                         </el-form-item>
                         <el-form-item label="发布人">
-                            <el-input  placeholder="请输入发布人名称" style="width: 150px"  v-model="searchData.keyWord"></el-input>
+                            <el-input  placeholder="请输入发布人名称" style="width: 150px"  v-model="searchData.userName"></el-input>
                         </el-form-item>
                         <el-form-item label="发布时间">
                             <el-date-picker
@@ -36,6 +39,8 @@
                             </el-button-group>
                         </el-form-item>
                     </el-form>
+
+
                 </template>
             </cs-table>
         </div>
@@ -45,12 +50,16 @@
 <script>
 
     import _ from "lodash";
+    import {fetchIndReuseRate} from "@/api/analysisController.js"
+    import moment from "moment"
+
     const treeUrl = '/app-zuul/knowledge/app/authcenter/api/categoryTree/';
 
     export default {
         name: "ReUseRate",
         data(){
             return {
+                currentNode:"",
                 treeSettings:{
                     root_id:"0",//根节点id
                     expand_root:true,//是否默认展开根节点
@@ -79,16 +88,30 @@
                         {prop: "categoryName", label: "知识库"},
                         {prop: "createDate", label: "发布时间"},
                         {prop: "userName", label: "发布人"},
-                        {prop: "reUseRation", label: "重用统计",sortable:true}
+                        {prop: "reUseRation", label: "重用统计"}
                     ]
                 },
                 tableData:[],
                 searchData:{
-                    keyWord:"",
+                    name:"",
+                    userName:"",
+                    date:[],
                 }
             }
         },
         methods:{
+            async loadTableData(option){
+                option.name = this.searchData.name;
+                option.userName = this.searchData.userName;
+                option.categoryId = this.currentNode.key;
+                option.beginTime = this.searchData.date[0]?moment(this.searchData.date[0]).format("YYYY-MM-DD"):"";
+                option.endTime = this.searchData.date[1]?moment(this.searchData.date[1]).format("YYYY-MM-DD"):"";
+                let resp = await fetchIndReuseRate(option);
+                this.tableSettings.total = resp.content.total;
+                this.tableData = resp.content.datas.map(d=>{
+                    return {id:d.ID,name:d.NAME,categoryName:d.CATEGORYNAME,createDate:d.CREATEDATE,reUseRation:d.REUSERATION}
+                });
+            },
             treeDataFormat({node,data}){
                 const temp = _.cloneDeep(data);
                 let formatData = temp.filter(item=>{
@@ -114,14 +137,25 @@
             },
             treeNodeClick({data,node})
             {
+                this.currentNode = node;
+                console.log(node)
             },
             pageSizeChange({page,rows})//每页显示数量、页码变化
             {
-            },
-            sortChange({sort, order}) {
+                let option = {
+                    page:page,
+                    rows:rows
+                };
+                this.loadTableData(option);
             },
             tableExport(){},
-            search(){}
+            search(){
+                let option = {
+                    page:this.tableSettings.currentPage,
+                    rows:this.tableSettings.pageSize
+                };
+                this.loadTableData(option);
+            }
         }
     }
 </script>
