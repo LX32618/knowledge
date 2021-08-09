@@ -15,7 +15,7 @@
                     <div class="knowmgt operationNav">
                         <el-button-group>
                             <!--<el-button type="primary" icon="el-icon-delete" @click.native="remove">删除</el-button>-->
-                            <el-button type="primary" v-if="clickData.type == 2" icon="element-icons el-custom-batchedit" size="mini">批量修改</el-button>
+                       <!--     <el-button type="primary" v-if="clickData.type == 2" icon="element-icons el-custom-batchedit" size="mini">批量修改</el-button>-->
                             <el-button type="primary" v-if="clickData.type == 2" icon="element-icons el-custom-import" size="mini" @click="batchImport()">批量导入</el-button>
                             <el-button type="primary" icon="element-icons el-custom-share" size="mini" @click="batchShare()">批量分享</el-button>
                             <el-button type="primary" icon="element-icons el-custom-export" size="mini" @click="batchExport()">导出</el-button>
@@ -124,6 +124,7 @@
 
 <script>
     import _ from "lodash";
+    import { saveShare } from '@/api/sysRole'
     import {fetchCategoryByNodeId,deleteKnowledge,exportKnowExcel} from "@/api/knowledgeManagement.js";
     import KnowledgeLabelsInput from '@/components/Input/KnowledgeLabelsInput'
     import CatTreeSelect from "@/components/CatTreeSelect";
@@ -419,16 +420,12 @@
                             return d.id;
                         }).join(",");
                         let option = {id:ids};
-                        console.log(option);
-                        //let resp = await deleteKnowledge(option);
-
+                        let resp = await deleteKnowledge(option);
                         this.$success("删除成功");
                         this.tableData = _.differenceBy(this.tableData,this.tableSelectData,"id");
                     }).catch(() => {
 
                     });
-
-
                 }
                 else{
                     this.$error("请先选择需要删除的知识条目");
@@ -443,8 +440,40 @@
                 };
                 exportKnowExcel(option);
             },
-            submitSuccess({formData,selectList}){
+            async submitSuccess({formData,selectList}){
+                console.log();
+                console.log({formData,selectList});
+                let docIds = this.tableSelectData.map(d=>{
+                    return d.id
+                }).join(",");
+                let objId = "";
 
+                if(formData.object == "3")//指定专业组
+                {
+                    objId = formData.group.id;
+                }
+                else if(formData.object == "1" || formData.object == "2"){
+                    objId = selectList.map(s=>{
+                        return s.id;
+                    }).join(",");
+                }
+
+                let option = {
+                    docIds:docIds,//知识id
+                    knowBaseIds:this.clickData.id,//库id
+                    objType:formData.object,//99全部人员，1指定人员，2指定部门，3指定专业组
+                    objId:objId,
+                    days: 1,
+                    desc: "分享",
+                    status: "99",
+                    share:"share"
+                };
+
+                let resp = await saveShare(option);
+
+                console.log(resp);
+                this.$success("分享成功");
+                this.shareDialogVisible = false;
             },
             cancelSuccess(){
                 this.shareDialogVisible = false;
