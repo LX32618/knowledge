@@ -1,7 +1,7 @@
 <template>
   <div v-if="viewPermission" class="container">
     <tool-bar :baseData="knowledge.baseData" />
-    <AreaInput v-model="test" /> {{ test }}
+    <!-- <AreaInput v-model="test" /> {{ test }} -->
     <KnowledgeTabs :id="id" :knowledge="knowledge" :editType="editType" />
   </div>
   <div v-loading="permissionLoading" class="no-permission" v-else>
