@@ -1,6 +1,7 @@
 <template>
   <div v-if="viewPermission" class="container">
     <tool-bar :baseData="knowledge.baseData" />
+    <AreaInput v-model="test" /> {{ test }}
     <KnowledgeTabs :id="id" :knowledge="knowledge" :editType="editType" />
   </div>
   <div v-loading="permissionLoading" class="no-permission" v-else>
@@ -15,6 +16,7 @@
 <script>
 import ToolBar from './components/ToolBar'
 import KnowledgeTabs from './KnowledgeTabs'
+import AreaInput from '@/components/Input/AreaInput'
 import { getModelAndData } from '@/api/knowledgeData'
 import { hasKnowledgePermission } from '@/api/authorityConfig'
 import { handleGetKnowledgeModelAndDataResponse } from '@/utils/responseHelper'
@@ -23,7 +25,8 @@ export default {
   name: 'KnowledgeDetail',
   components: {
     ToolBar,
-    KnowledgeTabs
+    KnowledgeTabs,
+    AreaInput
   },
   props: {
     id: String
@@ -35,7 +38,8 @@ export default {
       },
       editType: undefined,
       viewPermission: false,
-      permissionLoading: false
+      permissionLoading: false,
+      test: '河北省,秦皇岛市,北戴河区'
     }
   },
   methods: {
