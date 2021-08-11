@@ -1,4 +1,4 @@
-import { fetchCategoryTree } from '@/api/docCategory'
+import { fetchCategoryTreeAll } from '@/api/docCategory'
 
 const state = {
   docCategories: []
@@ -15,7 +15,7 @@ const actions = {
   fetchCategories ({ commit }) {
     return new Promise((resolve, reject) => {
       const id = 'E91AE12C441D468F875A236FFB034A98'
-      fetchCategoryTree({ id }).then(response => {
+      fetchCategoryTreeAll({ id }).then(response => {
         const data = response.content
         commit('FETCH_CATEGORIES', data)
         resolve()
