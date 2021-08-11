@@ -95,7 +95,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import { getCategoryTree, validateKnowledgeName } from '@/api/knowledge'
-import { fetchCategoryTreeAndNum } from '@/api/docCategory'
+import { fetchCategoryTreeWithUserPermission } from '@/api/docCategory'
 import { saveBaseData } from '@/api/knowledgeData'
 import { unflatTree, walkTree } from '@/utils/tree'
 import KnowledgeLabelsInput from '@/components/Input/KnowledgeLabelsInput'
@@ -169,9 +169,11 @@ export default {
       }
       // 更新知识目录选择集
       this.isLoading = true
-      fetchCategoryTreeAndNum({ id: this.category }).then(res => {
+      fetchCategoryTreeWithUserPermission({ id: this.category }).then(res => {
+        console.log(res)
         let data = res.content
         data = unflatTree(data, this.category) // 生成树
+        console.log(data)
         // 格式化节点
         walkTree(data, item => {
           item.label = item.name

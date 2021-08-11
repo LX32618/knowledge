@@ -3,6 +3,7 @@ const getters = {
   userInfo: state => state.user.userInfo,
   token: state => state.user.token,
   docCategories: state => state.docCategory.docCategories,
+  userDocCategories: state => state.docCategory.userDocCategories,
   secretLevels: state => state.utils.secretLevels,
   rootCategoryId: state => state.utils.rootCategoryId,
   baseFormConfig: state => state.utils.baseFormConfig,

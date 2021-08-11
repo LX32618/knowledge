@@ -11,6 +11,16 @@ export function fetchCategoryTreeAll (option) {
   })
 }
 
+export function fetchCategoryTreeWithUserPermission (option) {
+  return request({
+    url: '/categoryTreeWithUserPermission/get',
+    method: 'post',
+    data: {
+      id: option.id
+    }
+  })
+}
+
 export function fetchCategoryTree (option) {
   return request({
     url: '/categoryTree/get',
