@@ -25,6 +25,7 @@ import { isCollect, deleteCollect } from '@/api/knowledgeCollect'
 import { passKnowledge } from '@/api/knowledgeBase'
 import { createKnowledgeVersion } from '@/api/knowledgeVersion'
 import { openNewWindows } from '@/utils/html'
+import { startFlow, fetchProcessId } from '@/api/flow'
 
 export default {
   name: 'ToolBar',
@@ -41,6 +42,9 @@ export default {
       collectInfo: {},
       subscribeLoading: true,
       collectLoading: true,
+      publishLoading: true,
+      hasPublished: true,
+      processId: null,
       collectShow: false,
       flowShow: false
     }
@@ -60,9 +64,9 @@ export default {
     async publish () {
       // console.log(this.baseData)
       // this.flowShow = true
-      window.open(`http://glaway.soft.net/fms-basic/customWorkFlowFormConfigController.do?getDynamicFormByFormKey&processDefinitionId=process1621997049651:2:25030&oid=${this.knowledge.KNOWLEDGE_ID}`)
-      // const res = await startFlow('process1621997049651:2:25030', this.knowledge.KNOWLEDGE_ID)
-      // console.log(res)
+      // window.open(`http://glaway.soft.net/fms-basic/customWorkFlowFormConfigController.do?getDynamicFormByFormKey&processDefinitionId=process1628672392280&oid=${this.knowledge.KNOWLEDGE_ID}`)
+      const res = await startFlow(this.processId, this.knowledge.KNOWLEDGE_ID)
+      console.log(res)
     },
     async test () {
       await passKnowledge({
@@ -170,6 +174,9 @@ export default {
     }).then(res => {
       this.isSubscribe = res.content
       this.subscribeLoading = false
+    })
+    fetchProcessId(this.$route.params.id).then(res => {
+      this.processId = res.content.processDefId
     })
     this.updateCollect()
   }

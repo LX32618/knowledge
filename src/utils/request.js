@@ -67,6 +67,17 @@ const baseResponseInterceptor = response => {
   }
 }
 
+const fmsBasicResponseInterceptor = response => {
+  if (response.data.constructor === String && response.data.indexOf('登录') !== -1 && response.data.indexOf('<html>') !== -1) {
+    window.location.replace('/app-zuul/login')
+  } else if (response.status === 200 && response.data.success) {
+    return response.data
+  } else {
+    errorMsg(response.data.msg)
+    return Promise.reject(response.data.message || 'error')
+  }
+}
+
 baseRequest.interceptors.request.use(requestInterceptor, errorInterceptor)
 baseRequest.interceptors.response.use(baseResponseInterceptor, errorInterceptor)
 
@@ -77,7 +88,7 @@ knowledgeRequest.interceptors.request.use(requestInterceptor, errorInterceptor)
 knowledgeRequest.interceptors.response.use(responseInterceptor, errorInterceptor)
 
 fmsBasicRequest.interceptors.request.use(requestInterceptor, errorInterceptor)
-fmsBasicRequest.interceptors.response.use(baseResponseInterceptor, errorInterceptor)
+fmsBasicRequest.interceptors.response.use(fmsBasicResponseInterceptor, errorInterceptor)
 
 
 export default knowledgeRequest

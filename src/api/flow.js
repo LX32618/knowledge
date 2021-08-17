@@ -1,13 +1,24 @@
-import { fmsBasicRequest } from '@/utils/request'
+import request, { fmsBasicRequest } from '@/utils/request'
 
 export function startFlow (processDefinitionId, knowledgeId) {
   return fmsBasicRequest({
-    url: '/customWorkFlowFormConfigController.do',
+    url: '/customWorkFlowFormConfigController.do?startProcess',
     method: 'get',
     params: {
-      getDynamicFormByFormKey: '',
+      // startProcess: null,
       processDefinitionId,
-      knowledgeId
+      oid: knowledgeId
+    }
+  })
+}
+
+export function fetchProcessId (knowledgeId, processKindType = 'inBound') {
+  return request({
+    url: '/process-binding-by-knowledgeId/get',
+    method: 'post',
+    data: {
+      knowledgeId,
+      processKindType
     }
   })
 }
