@@ -3,7 +3,7 @@
     <!-- 分享知识列表 -->
     <dynamic-table v-loading="isLoading" :data="sharedKnowledge" :columns="columns">
       <template v-slot:docName="{ scope }">
-        <router-link :to="{ path: `/knowledgeDetail/${scope.row.id}`}">{{ scope.row.docName }}</router-link>
+        <el-link class="table-knowledge-link" type="primary" size="sm" @click="viewDetail(scope.row.id)">{{ scope.row.docName }}</el-link>
       </template>
     </dynamic-table>
     <el-pagination
@@ -79,6 +79,15 @@ export default {
         this.sharedKnowledge = res.content.datas
         this.total = res.content.total
       })
+    },
+    viewDetail (id) {
+      const routeData = this.$router.resolve({
+        name: 'knowledgeDetail',
+        params: {
+          id
+        }
+      })
+      window.open(routeData.href, '_blank')
     }
   },
   mounted () {

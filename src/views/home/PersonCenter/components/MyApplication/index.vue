@@ -6,7 +6,7 @@
     <!-- 申请知识列表 -->
     <dynamic-table v-loading="isLoading" :data="applicationKnowledge" :columns="columns">
       <template v-slot:docName="{ scope }">
-        <router-link :to="{ path: `/knowledgeDetail/${scope.row.id}`}">{{ scope.row.docName }}</router-link>
+        <el-link class="table-knowledge-link" type="primary" size="sm" @click="viewDetail(scope.row.id)">{{ scope.row.docName }}</el-link>
       </template>
     </dynamic-table>
     <el-pagination
@@ -106,6 +106,16 @@ export default {
     },
     handleTab () {
       this.updateApplicationKnowledge()
+    },
+    viewDetail (id) {
+      console.log(id)
+      const routeData = this.$router.resolve({
+        name: 'knowledgeDetail',
+        params: {
+          id
+        }
+      })
+      window.open(routeData.href, '_blank')
     }
   },
   mounted () {

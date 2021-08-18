@@ -173,7 +173,6 @@ export default {
         console.log(res)
         let data = res.content
         data = unflatTree(data, this.category) // 生成树
-        console.log(data)
         // 格式化节点
         walkTree(data, item => {
           item.label = item.name
