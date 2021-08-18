@@ -18,7 +18,7 @@
           <el-button type="primary" icon="el-icon-s-promotion" v-if="selectedTab === 'toPublish'" @click="handlePublishAll" :loading="isLoading">发布</el-button>
           <dynamic-table ref="dynamicTable" :data="knowledges" :columns="columns" :props="tableProps">
             <template v-slot:NAME="{ scope }">
-              <router-link :to="{ path: `/knowledgeDetail/${scope.row.ID}`}">{{ scope.row.NAME }}</router-link>
+              <el-link class="table-knowledge-link" type="primary" size="sm" @click="viewDetail(scope.row.ID)">{{ scope.row.NAME }}</el-link>
             </template>
             <template v-slot:reason="{ scope }">
               <el-tooltip effect="light" :content="scope.row.reason" placement="bottom" popper-class="popper-tip">
@@ -29,6 +29,7 @@
               <el-button v-if="selectedTab === 'published'" size="mini" type="primary" icon="el-icon-delete" :loading="isLoading" @click="applyDelete(scope.row)">删除</el-button>
               <el-button v-if="selectedTab === 'toAudit'" size="mini" type="primary" icon="el-icon-view" :loading="isLoading" @click="handleAudit(scope.row)">审核</el-button>
               <el-button v-if="selectedTab === 'toPublish'" size="mini" type="primary" icon="el-icon-s-promotion" :loading="isLoading" @click="handlePublish(scope.row.ID)">发布</el-button>
+              <el-button v-if="selectedTab !== 'toPublish'" size="mini" type="success" icon="el-icon-document" :loading="isLoading" @click="viewFlow(scope.row.PROCESS_INS_ID)">查看</el-button>
             </template>
           </dynamic-table>
           <el-pagination
@@ -124,7 +125,8 @@ export default {
           },
           {
             key: 'option',
-            label: '操作'
+            label: '操作',
+            width: 200
           }
         ],
         toAudit: [
@@ -170,6 +172,10 @@ export default {
           {
             key: 'CREATORNAME',
             label: '创建人'
+          },
+          {
+            key: 'option',
+            label: '操作'
           }
         ],
         toPublish: [
@@ -254,6 +260,18 @@ export default {
     handlePublishAll () {
       const ids = this.$refs.dynamicTable.getSelection().map(item => item.ID)
       this.handlePublish(ids.join(','))
+    },
+    viewFlow (procInstId) {
+      window.open(`http://glaway.soft.net/fms-basic/generateFlowDiagramController.do?initDrowFlowActivitiDiagram&procInstId=${procInstId}&_=1629189773611`)
+    },
+    viewDetail (id) {
+      const routeData = this.$router.resolve({
+        name: 'knowledgeDetail',
+        params: {
+          id
+        }
+      })
+      window.open(routeData.href, '_blank')
     }
   },
   async mounted () {

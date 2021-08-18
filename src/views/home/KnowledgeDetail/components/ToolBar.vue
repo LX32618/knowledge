@@ -8,7 +8,7 @@
       <el-button type="primary" icon="el-icon-s-claim" @click="handleSubscribe" :loading="subscribeLoading">{{ isSubscribe ? '取消订阅' : '订阅'}}</el-button>
       <el-button type="danger" icon="el-icon-document-add" @click="addVersion">新建版本</el-button>
       <el-button type="info" icon="el-icon-document-copy" @click="viewHistoryVersion">历史版本 V{{ baseData.ver }}</el-button>
-      <el-button type="success" icon="el-icon-view" @click="publish">发布</el-button>
+      <el-button v-if="!hasPublished" type="success" icon="el-icon-view" @click="publish" :loading="publishLoading">发布</el-button>
     </el-button-group>
     <collect-dialog :show.sync="collectShow" :knowledge="knowledge" @success="collectSuccess"></collect-dialog>
     <!-- <el-dialog :visible.sync="flowShow" title="知识发布" fullscreen>
@@ -42,8 +42,8 @@ export default {
       collectInfo: {},
       subscribeLoading: true,
       collectLoading: true,
-      publishLoading: true,
-      hasPublished: true,
+      publishLoading: false,
+      hasPublished: false,
       processId: null,
       collectShow: false,
       flowShow: false
@@ -62,11 +62,19 @@ export default {
   },
   methods: {
     async publish () {
-      // console.log(this.baseData)
-      // this.flowShow = true
-      // window.open(`http://glaway.soft.net/fms-basic/customWorkFlowFormConfigController.do?getDynamicFormByFormKey&processDefinitionId=process1628672392280&oid=${this.knowledge.KNOWLEDGE_ID}`)
-      const res = await startFlow(this.processId, this.knowledge.KNOWLEDGE_ID)
-      console.log(res)
+      this.publishLoading = true
+      try {
+        const res = await startFlow(this.processId, this.knowledge.KNOWLEDGE_ID)
+        const { success, msg } = res
+        if (success) {
+          this.$success(msg)
+          this.hasPublished = true
+        }
+      } catch(err) {
+        this.$error(err)
+      } finally {
+        this.publishLoading = false
+      }
     },
     async test () {
       await passKnowledge({
