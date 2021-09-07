@@ -2,10 +2,9 @@
   <div class="generateForm">
     <el-form ref="generateForm"
       label-suffix=":"
-      :size="data.config.size"
+      :size="data.config && data.config.size"
       :model="models" :rules="rules" :label-position="data.config.labelPosition" :label-width="data.config.labelWidth + 'px'">
       <template v-for="item in data.list">
-
         <template v-if="item.type == 'grid'">
           <el-row
             :key="item.key"
@@ -123,6 +122,9 @@ export default {
   },
   methods: {
     generateModle (genList) {
+      this.options.classification = this.value.classification
+      this.options.knowledgeId = this.value.knowledgeId
+      if (!genList) return
       for (let i = 0; i < genList.length; i++) {
         if (genList[i].type === 'grid') {
           genList[i].columns.forEach(item => {
@@ -183,8 +185,6 @@ export default {
       //   console.log(1)
       //   this.models.classification = this.value.classification
       // }
-      this.options.classification = this.value.classification
-      this.options.knowledgeId = this.value.knowledgeId
     },
     getData () {
       return new Promise((resolve, reject) => {

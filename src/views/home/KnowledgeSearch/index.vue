@@ -71,15 +71,15 @@
                   <span v-else v-html="item.showName"></span>
                 </el-link>
                 <el-row class="item-bottom">
-                  <el-col :span="4">
+                  <el-col :span="8">
                     <i class="fa fa-clock-o"></i>
                     {{ isCodeSearch ? item.CREATEDATE : item.createDate }}
                   </el-col>
-                  <el-col :span="4">
+                  <el-col :span="8">
                     <i class="fa fa-user-o"></i>
                     {{ isCodeSearch ? item.CREATORNAME : item.creatorName }}
                   </el-col>
-                  <el-col :span="4">
+                  <el-col :span="8">
                     <i class="fa fa-book"></i>
                     {{ isCodeSearch ? item.BASELIBRARY : item.baseLibrary }}
                   </el-col>
