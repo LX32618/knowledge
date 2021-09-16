@@ -213,12 +213,13 @@ export default {
     },
     // 查看知识详情
     handleView (row) {
-      this.$router.push({
-        name: "knowledgeDetail",
+      const routeData = this.$router.resolve({
+        name: 'knowledgeDetail',
         params: {
-          id: row.ID,
+          id: row.ID
         }
       })
+      window.open(routeData.href, '_blank')
     },
     // 订阅 / 取消订阅知识
     handleSubscribe (row, index) {
