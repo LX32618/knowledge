@@ -10,6 +10,7 @@
       <el-button type="success" icon="el-icon-s-home" @click="handleHomeClick">返回首页</el-button>
       <el-button type="primary" icon="el-icon-reading" @click="handleApply">申请权限</el-button>
     </div>
+    <ApplyDialog :visible.sync="applyDialogShow" :oid="id" />
   </div>
 </template>
 
@@ -20,13 +21,16 @@ import AreaInput from '@/components/Input/AreaInput'
 import { getModelAndData } from '@/api/knowledgeData'
 import { hasKnowledgePermission } from '@/api/authorityConfig'
 import { handleGetKnowledgeModelAndDataResponse } from '@/utils/responseHelper'
+import ApplyDialog from '@/components/Input/ApplyDialog'
+import { isApply } from '@/api/sysRole'
 
 export default {
   name: 'KnowledgeDetail',
   components: {
     ToolBar,
     KnowledgeTabs,
-    AreaInput
+    AreaInput,
+    ApplyDialog
   },
   props: {
     id: String
@@ -39,28 +43,32 @@ export default {
       editType: undefined,
       viewPermission: false,
       permissionLoading: false,
-      test: '河北省,秦皇岛市,北戴河区'
+      applyDialogShow: false
     }
   },
   methods: {
-    handleApply () {
-      this.$info('申请已提交，请等待管理员审批')
+    async handleApply () {
+      let res = await isApply(this.id)
+      if (res.content) {
+        this.$info(res.message)
+        return
+      }
+      this.applyDialogShow = true
     },
     handleHomeClick () {
       this.$router.push('/')
     }
   },
-  mounted () {
+  async mounted () {
+    this.permissionLoading = true
+    let res = await hasKnowledgePermission(this.id)
+    this.viewPermission = res.content.hasPermission
+    this.permissionLoading = false
+    if (!this.viewPermission) return
     const { editType } = this.$route.query
     this.editType = parseInt(editType)
-    getModelAndData({ id: this.id }).then(res => {
-      this.knowledge = handleGetKnowledgeModelAndDataResponse(res.content)
-    })
-    this.permissionLoading = true
-    hasKnowledgePermission(this.id).then(res => {
-      this.viewPermission = res.content.hasPermission
-      this.permissionLoading = false
-    })
+    res = await getModelAndData({ id: this.id })
+    this.knowledge = handleGetKnowledgeModelAndDataResponse(res.content)
   }
 }
 </script>

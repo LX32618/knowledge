@@ -29,3 +29,14 @@ export function saveShare (data) {
     data
   })
 }
+
+// 是否已经申请查看知识
+export function isApply (docId) {
+  return request({
+    url: `${rootUrl}PermissionAppliedController/isApply`,
+    method: 'post',
+    data: {
+      docId
+    }
+  })
+}

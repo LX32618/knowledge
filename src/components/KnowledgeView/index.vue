@@ -41,6 +41,7 @@
       >
       </el-pagination>
     </div>
+    <ApplyDialog :visible.sync="applyDialogShow" :oid="oid" />
   </el-card>
 </template>
 
@@ -50,13 +51,16 @@ import { getKnowledgeByClassifications } from '@/api/docCategory'
 import { subscribe, cancelSubscribe } from '@/api/knowledgeSubscribe'
 import SearchArea from './components/SearchArea'
 import DynamicTable from './components/DynamicTable'
+import ApplyDialog from '../Input/ApplyDialog'
+import { isApply } from '@/api/sysRole'
 
 export default {
   name: 'KnowledgeView',
   inheritAttrs: false,
   components: {
     DynamicTable,
-    SearchArea
+    SearchArea,
+    ApplyDialog
   },
   props: {
     selectedCategory: {
@@ -87,7 +91,9 @@ export default {
       },
       searchOption: {},
       searchColumns: [],
-      hasCategoryPermission: false
+      hasCategoryPermission: false,
+      applyDialogShow: false,
+      oid: ''
     }
   },
   computed: {
@@ -208,8 +214,14 @@ export default {
       this.searchOption = searchOption
       this.updateKnowledges()
     },
-    handleApply (row) {
-      console.log(row)
+    async handleApply (row) {
+      const res = await isApply(row.ID)
+      if (res.content) {
+        this.$info(res.message)
+        return
+      }
+      this.oid = row.ID
+      this.applyDialogShow = true
     },
     // 查看知识详情
     handleView (row) {
