@@ -49,6 +49,7 @@
 import DynamicTable from '@/components/KnowledgeView/components/DynamicTable'
 import { fetchCategoryTreeAndNum } from '@/api/docCategory'
 import { findKnowledges, passKnowledge, releaseKnowledge, deleteKnowledge } from '@/api/knowledgeBase'
+import { knowledgeDelete } from '@/api/flow'
 import { unflatCategoryTree } from '@/utils/tree'
 import { mapGetters } from 'vuex'
 
@@ -229,17 +230,20 @@ export default {
     },
     async applyDelete (row) {
       this.isLoading = true
-      const res = await deleteKnowledge({
-        id: row.ID,
-        // userId: 'AF91641D39A848B2838351A892EA7C89'
-      })
-      if (!res.content) {
-        this.$error(res.message)
+      try {
+        const res = await knowledgeDelete({
+          oid: row.ID
+        })
+        const { success, msg } = res
+        if (success) {
+          this.$success(msg)
+          this.updateKnowledge()
+        }
+      } catch(err) {
+        this.$error(err)
+      } finally {
         this.isLoading = false
-        return
       }
-      this.$success('知识已放入回收站')
-      this.updateKnowledge()
     },
     async handleAudit (row) {
       this.isLoading = true

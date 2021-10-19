@@ -25,7 +25,15 @@ export function fetchProcessId (knowledgeId, processKindType = 'inBound') {
 
 export function applyView (data) {
   return fmsBasicRequest({
-    url: 'http://glaway.soft.net/fms-basic/customWorkFlowFormConfigController.do?knowledgeApply',
+    url: '/customWorkFlowFormConfigController.do?knowledgeApply',
+    method: 'post',
+    data
+  })
+}
+
+export function knowledgeDelete (data) {
+  return fmsBasicRequest({
+    url: '/customWorkFlowFormConfigController.do?knowledgeDelete',
     method: 'post',
     data
   })
