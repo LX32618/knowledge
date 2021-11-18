@@ -49,3 +49,15 @@ export function unflatCategoryTree (nodes, rootId, makeRoot = false) {
   }
   return data
 }
+
+export function  flatTree(arr) {
+  let result = []
+  arr.forEach(item=>{
+    let res = JSON.parse(JSON.stringify(item)) // 先克隆一份数据作为第一层级的填充
+    result.push(res)
+    if (item.children instanceof Array && item.children.length > 0) { // 如果当前child为数组并且长度大于0，才可进入flag()方法
+      result = result.concat(flatTree(item.children))
+    }
+  })
+  return result
+}

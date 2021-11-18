@@ -56,7 +56,7 @@
 
     import _ from "lodash"
     import {fetchKnowledgeAdministrator,fetchKnowledgeAdministratorList,fetchCategoryTreeSync,saveKnowledgeAdministrator,removeKnowledgeAdministrator} from "@/api/knowledgeAdministrator.js"
-
+    import {flatTree} from "@/utils/tree.js"
 
     export default {
         name: "KnowledgeAdministrator",
@@ -114,7 +114,23 @@
             async loadtTreeData(option){
                 let resp = await fetchCategoryTreeSync(option);
                 this.treeData = [resp.content.docCategory];
-                this.defaultCheckedKeys = resp.content.checkedIds;
+                let flatCategoryTree = flatTree([resp.content.docCategory]);
+                let checkedIds = _.cloneDeep(resp.content.checkedIds);
+                checkedIds = checkedIds.filter(cId=>{
+                    let filterNode = flatCategoryTree.filter(tree=>{
+                        return tree.id == cId;
+                    });
+
+                    if(!filterNode[0].children)
+                        return true;
+
+                    if(filterNode[0].children.length==0)
+                        return true;
+
+                    return false;
+
+                })
+                this.defaultCheckedKeys = checkedIds;
             },
             currentChange(currentRow){
                 this.selectRow = currentRow;
@@ -178,14 +194,14 @@
                         option.hrmId = hrmId;
 
                         let checkedNodes = this.$refs.categoryTree.getCheckedNodes();
-                        //let halfCheckedNodes = this.$refs.categoryTree.getHalfCheckedNodes();
-                        //let allSelectedNodes = _.concat(checkedNodes,halfCheckedNodes);
+                        let halfCheckedNodes = this.$refs.categoryTree.getHalfCheckedNodes();
+                        let allSelectedNodes = _.concat(checkedNodes,halfCheckedNodes);
 
-                        option.categoryIds = checkedNodes.map(n=>{
+                        option.categoryIds = allSelectedNodes.map(n=>{
                             return n.id;
                         }).join(",");
 
-                        let category = checkedNodes.map(n=>{
+                        let category = allSelectedNodes.map(n=>{
                             return n.name;
                         }).join(",");
 

@@ -22,6 +22,17 @@ export function deleteKnowledge(option) {
     })
 }
 
+//http://glaway.soft.net/knowledgeApi/knowledgeUpload/post
+
+export function knowledgeUpload(option)
+{
+    return request({
+        url: "/knowledgeUpload/post",
+        method: 'post',
+        data: option
+    })
+}
+
 
 
 //获取列表配置
