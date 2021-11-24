@@ -125,7 +125,7 @@
 <script>
     import _ from "lodash";
     import { saveShare } from '@/api/sysRole'
-    import {fetchCategoryByNodeId,deleteKnowledge,exportKnowExcel} from "@/api/knowledgeManagement.js";
+    import {fetchCategoryByNodeId,deleteKnowledge,exportKnowExcel,knowledgeUpload} from "@/api/knowledgeManagement.js";
     import KnowledgeLabelsInput from '@/components/Input/KnowledgeLabelsInput'
     import CatTreeSelect from "@/components/CatTreeSelect";
     import axios from "axios"
@@ -374,11 +374,19 @@
                     spinner: 'el-icon-loading',
                     background: 'rgba(255, 255, 255, 0.9)'
                 })
-                axios.post('/knowledgeApi/knowledgeUpload/post', formData).then((resp) => {
+            /*    axios.post('/knowledgeApi/knowledgeUpload/post', formData).then((resp) => {
                     if (resp.data.status === "success") {
                         this.$message('上传文件成功' )
                     } else {
                         this.$message('上传文件失败:' + resp.data.message)
+                    }
+                    loading.close()
+                })*/
+                knowledgeUpload(formData).then((resp)=>{
+                    if (resp.status === "success") {
+                        this.$message('上传文件成功' )
+                    } else {
+                        this.$message('上传文件失败:' + resp.message)
                     }
                     loading.close()
                 })

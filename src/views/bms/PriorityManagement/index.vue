@@ -47,6 +47,7 @@
 <script>
 
     import _ from "lodash"
+    import {flatTree} from "@/utils/tree.js"
     import {fetchPriorities,fetchPrioritiesSelected,savePriorities,removePriorities} from "@/api/priorityManagement.js"
 
     export default {
@@ -108,7 +109,23 @@
             async loadTreeData(option){
               let resp = await fetchPrioritiesSelected(option);
               this.treeData = resp.content.resourceTree;
-              this.defaultCheckedKeys = resp.content.checkList;
+              let flatResourceTree = flatTree(resp.content.resourceTree);
+              let checkedIds = _.cloneDeep(resp.content.checkList);
+              checkedIds = checkedIds.filter(cId=>{
+                  let filterNode = flatResourceTree.filter(tree=>{
+                      return tree.id == cId;
+                  });
+
+                  if(!filterNode[0].children)
+                      return true;
+
+                  if(filterNode[0].children.length==0)
+                      return true;
+
+                  return false;
+              });
+
+              this.defaultCheckedKeys = checkedIds;
             },
             add(){
                 this.inputDisabled = false;
@@ -177,8 +194,10 @@
                         option.id = this.formData.id;
                         option.name = this.formData.name;
                         let checkedNodes = this.$refs.resourceTree.getCheckedNodes();
-                        console.log(checkedNodes);
-                        option.resourceIds = checkedNodes.map(n=>{
+                        let halfCheckedNodes = this.$refs.resourceTree.getHalfCheckedNodes();
+                        let allSelectedNodes = _.concat(checkedNodes,halfCheckedNodes);
+
+                        option.resourceIds = allSelectedNodes.map(n=>{
                             return n.id;
                         }).join(",");
                         let resp = await savePriorities(option);
@@ -187,7 +206,7 @@
                         let submitRow = {
                             id:newId,
                             name:this.formData.name,
-                            resourceNames:checkedNodes.map(n=>{return n.name}).join(",")
+                            resourceNames:allSelectedNodes.map(n=>{return n.name}).join(",")
                         }
 
                         if("" == this.formData.id)//新增

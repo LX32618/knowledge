@@ -100,12 +100,36 @@
                     })
                 }
             },
+            getFlowList(option){
+                fetchFlowList(option).then(resp=>{
+                    if(resp.data.success)
+                    {
+                        let result = JSON.parse(resp.data.obj);
+                        console.log(result);
+                        this.tableSettings.total = result.total;
+                        this.tableData = result.rows;
+                    }
+                    else
+                    {
+                        this.$error(resp.data.msg);
+                    }
+                }).catch((msg)=>{
+                    this.$error(msg);
+                })
+            },
             currentChange(val){//行单选事件
                 this.selectRow = val;
             },
             pageSizeChange({page,rows})//每页显示数量、页码变化
             {
-
+                let option = {
+                    searchName: '',
+                    searchKey: '',
+                    ifPage: 'true',
+                    page: page,
+                    rows: rows
+                };
+                this.getFlowList(option);
             }
         },
         mounted() {
@@ -116,21 +140,7 @@
                 page: this.tableSettings.currentPage.toString(),
                 rows: this.tableSettings.pageSize.toString()
             };
-            fetchFlowList(option).then(resp=>{
-                if(resp.data.success)
-                {
-                    let result = JSON.parse(resp.data.obj);
-                    console.log(result);
-                    this.tableSettings.total = result.total;
-                    this.tableData = result.rows;
-                }
-                else
-                {
-                    this.$error(resp.data.msg);
-                }
-            }).catch((msg)=>{
-                this.$error(msg);
-            })
+            this.getFlowList(option);
         }
     }
 </script>
