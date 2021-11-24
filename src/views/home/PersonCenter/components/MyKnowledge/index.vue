@@ -26,7 +26,13 @@
               </el-tooltip>
             </template>
             <template v-slot:option=" { scope }">
-              <el-button v-if="selectedTab === 'published'" size="mini" type="primary" icon="el-icon-delete" :loading="isLoading" @click="applyDelete(scope.row)">删除</el-button>
+              <el-button
+                v-if="selectedTab === 'published' || (selectedTab === 'toPublish' && scope.row.CREATORID === userInfo.id)"
+                size="mini" type="danger" icon="el-icon-delete"
+                :loading="isLoading"
+                @click="applyDelete(scope.row)">
+                删除
+              </el-button>
               <!-- <el-button v-if="selectedTab === 'toAudit'" size="mini" type="primary" icon="el-icon-view" :loading="isLoading" @click="handleAudit(scope.row)">审核</el-button> -->
               <el-button v-if="selectedTab === 'toPublish'" size="mini" type="primary" icon="el-icon-s-promotion" :loading="isLoading" @click="handlePublish(scope.row.ID)">发布</el-button>
               <el-button v-if="selectedTab !== 'toPublish'" size="mini" type="success" icon="el-icon-document" :loading="isLoading" @click="viewFlow(scope.row.PROCESS_INS_ID)">查看</el-button>
@@ -49,7 +55,7 @@
 import DynamicTable from '@/components/KnowledgeView/components/DynamicTable'
 import { fetchCategoryTreeAndNum } from '@/api/docCategory'
 import { findKnowledges, passKnowledge, releaseKnowledge, deleteKnowledge } from '@/api/knowledgeBase'
-import { knowledgeDelete } from '@/api/flow'
+import { knowledgeDelete, fetchProcessId } from '@/api/flow'
 import { unflatCategoryTree } from '@/utils/tree'
 import { mapGetters } from 'vuex'
 
@@ -193,7 +199,8 @@ export default {
             label: '创建人'
           },{
             key: 'option',
-            label: '操作'
+            label: '操作',
+            width: 200
           }
         ]
       }
@@ -231,9 +238,24 @@ export default {
     async applyDelete (row) {
       this.isLoading = true
       try {
-        const res = await knowledgeDelete({
-          oid: row.ID
-        })
+        if (this.selectedTab === 'toPublish') {
+          const { content, message } = await deleteKnowledge({id: row.ID})
+          if (content) {
+            this.$success(message)
+            this.updateKnowledge()
+          }
+          return
+        }
+        const { content } = await fetchProcessId(row.ID, 'remove')
+        if (!content) {
+          const { content, message } = await deleteKnowledge({id: row.ID})
+          if (content) {
+            this.$success(message)
+            this.updateKnowledge()
+          }
+          return
+        }
+        const res = await knowledgeDelete(content.processDefId, row.ID)
         const { success, msg } = res
         if (success) {
           this.$success(msg)

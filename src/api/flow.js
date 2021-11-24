@@ -31,10 +31,13 @@ export function applyView (data) {
   })
 }
 
-export function knowledgeDelete (data) {
+export function knowledgeDelete (processDefinitionId, oid) {
   return fmsBasicRequest({
     url: '/customWorkFlowFormConfigController.do?knowledgeDelete',
     method: 'post',
-    data
+    data: {
+      processDefinitionId,
+      oid
+    }
   })
 }
