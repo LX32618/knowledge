@@ -100,7 +100,7 @@ export default {
       this.groupLoading = false
     },
     async shareKnowledge () {
-      const { id, baseId} = this.contentContainer._props.baseData
+      const { id, baseId } = this.contentContainer._props.baseData
       const tmp = [
         this.peopleValue.map(item => item.id).join(','),
         this.departmentValue.map(item => item.id).join(','),

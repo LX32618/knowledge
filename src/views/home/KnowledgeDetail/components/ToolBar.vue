@@ -8,7 +8,7 @@
       <el-button type="primary" icon="el-icon-s-claim" @click="handleSubscribe" :loading="subscribeLoading">{{ isSubscribe ? '取消订阅' : '订阅'}}</el-button>
       <el-button type="danger" icon="el-icon-document-add" @click="addVersion">新建版本</el-button>
       <el-button type="info" icon="el-icon-document-copy" @click="viewHistoryVersion">历史版本 V{{ baseData.ver }}</el-button>
-      <el-button v-if="!hasPublished" type="success" icon="el-icon-view" @click="publish" :loading="publishLoading">发布</el-button>
+      <el-button v-if="auditStatus === '-3'" type="success" icon="el-icon-view" @click="publish" :loading="publishLoading">发布</el-button>
     </el-button-group>
     <collect-dialog :show.sync="collectShow" :knowledge="knowledge" @success="collectSuccess"></collect-dialog>
     <!-- <el-dialog :visible.sync="flowShow" title="知识发布" fullscreen>
@@ -47,7 +47,8 @@ export default {
       hasPublished: false,
       processId: null,
       collectShow: false,
-      flowShow: false
+      flowShow: false,
+      auditStatus: null
     }
   },
   computed: {
@@ -61,6 +62,14 @@ export default {
       }
     }
   },
+  watch: {
+    'baseData.auditStatus': {
+      handler (val) {
+        this.auditStatus = val
+      },
+      immediate: true
+    }
+  },
   methods: {
     async publish () {
       this.publishLoading = true
@@ -69,13 +78,13 @@ export default {
         if (!this.processId) {
           await releaseKnowledge(id)
           this.$success('知识发布成功')
-          this.hasPublished = true
+          this.auditStatus = '1'
         }
         const res = await startFlow(this.processId, this.knowledge.KNOWLEDGE_ID)
         const { success, msg } = res
         if (success) {
           this.$success(msg)
-          this.hasPublished = true
+          this.auditStatus = '-1'
         }
       } catch(err) {
         this.$error(err)
