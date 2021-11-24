@@ -6,20 +6,13 @@
         <el-button-group>
           <template v-if="!isHistory">
             <template v-if="isViewMode">
-              <el-button type="primary" icon="el-icon-share" @click="share"
-                >分享</el-button
-              >
-              <el-button type="warning" icon="el-icon-edit" @click="edit"
-                >编辑</el-button
-              >
+              <el-button type="primary" icon="el-icon-share" @click="share">分享</el-button>
+              <el-button type="warning" icon="el-icon-edit" @click="edit">编辑</el-button>
+              <el-button v-if="baseData.creator === userInfo.id" type="danger" icon="el-icon-delete" @click="handleDelete" :loading="deleteLoading">删除</el-button>
             </template>
             <template v-else>
-              <el-button type="success" icon="fa fa-save" @click="save" :loading="saveButtonLoading"
-                >&nbsp;保存</el-button
-              >
-              <el-button type="danger" icon="el-icon-share" @click="cancel"
-                >取消</el-button
-              >
+              <el-button type="success" icon="fa fa-save" @click="save" :loading="saveButtonLoading">&nbsp;保存</el-button>
+              <el-button type="danger" icon="el-icon-share" @click="cancel">取消</el-button>
             </template>
           </template>
         </el-button-group>
@@ -54,6 +47,8 @@ import { mapGetters } from 'vuex'
 import { saveData, saveFormData } from '@/api/knowledgeData'
 import KnowledgePush from './components/KnowledgePush'
 import KnowledgeShareForm from './components/KnowledgeShareForm'
+import { knowledgeDelete, fetchProcessId } from '@/api/flow'
+import { deleteKnowledge } from '@/api/knowledgeBase'
 import _ from 'lodash'
 
 export default {
@@ -95,7 +90,8 @@ export default {
           size: 'small'
         },
       },
-      mainValue: {}
+      mainValue: {},
+      deleteLoading: false
     }
   },
   computed: {
@@ -141,6 +137,30 @@ export default {
     edit () {
       this.editFormData = {} // 将所有表单验证状态设置为 false
       this.isViewMode = false
+    },
+    async handleDelete () {
+      const id = this.$route.params.id
+      this.deleteLoading = true
+      try {
+        const { content } = await fetchProcessId(id, 'remove')
+        if (!content) {
+          const { content, message } = await deleteKnowledge({ id })
+          if (content) {
+            this.$success(message)
+            this.$router.push('/')
+          }
+          return
+        }
+        const res = await knowledgeDelete(content.processDefId, id)
+        const { success, msg } = res
+        if (success) {
+          this.$success(msg)
+        }
+      } catch(err) {
+        this.$error(err)
+      } finally {
+        this.deleteLoading = false
+      }
     },
     createKnowledgeModel () {
       const knowledgeModel = {
