@@ -3,6 +3,7 @@
         <el-tree2 ref="tree"
                   node-key="id"
                   lazy
+                  highlight-current
                   :props="treeProps"
                   :load="loadNodes"
                   :default-expanded-keys="defaultExpandedKey"

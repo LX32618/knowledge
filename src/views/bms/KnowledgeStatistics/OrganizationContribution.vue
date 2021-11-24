@@ -30,9 +30,6 @@
                 </div>
             </template>
         </cs-table>
-
-
-
     </div>
 </template>
 
@@ -53,7 +50,7 @@
                 tableSettings: {
                     radio:false,//是否单选
                     checkbox: false,//是否多选，单选和多选同一时间只能存在一个
-                    height:"500",
+                    height:window.innerHeight-180,
                     pagination:true,//是否显示分页
                     total:0,//一共有多少条数据
                     pageSize:10,//默认每页多少条数据

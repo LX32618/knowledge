@@ -1,16 +1,18 @@
 <template>
-    <div class="clickrate box">
+<!--    <div class="clickrate box">
         <div class="clickrate sidebar">
             <cs-lazytree ref="lazytree" :settings="treeSettings" :dataFormat="treeDataFormat" @treeNodeClick="treeNodeClick"></cs-lazytree>
         </div>
         <div class="clickrate main">
             <cs-table ref="tb"
-                      v-if="currentNodeId"
                       :settings="tableSettings"
                       :table-data="tableData"
                       @pageSizeChange="pageSizeChange"
                       style="width: 100%">
                 <template v-slot:horizontalSlot>
+                    <div style="width: 100%;text-align: center">
+                        <h4>{{currentNode.label}}</h4>
+                    </div>
                     <el-form :inline="true" :model="searchData" class="searchForm">
                         <el-form-item label="知识名称">
                             <el-input  placeholder="请输入知识名称" style="width: 150px"  v-model="searchData.name"></el-input>
@@ -39,7 +41,52 @@
                 </template>
             </cs-table>
         </div>
-    </div>
+    </div>-->
+    <el-container>
+        <el-aside width="210px" style="min-height:100vh;border-right: 1px solid #DCDFE6;">
+            <cs-lazytree ref="lazytree" :settings="treeSettings" :dataFormat="treeDataFormat" @treeNodeClick="treeNodeClick"></cs-lazytree>
+        </el-aside>
+        <el-container>
+            <el-main>
+                <cs-table ref="tb"
+                          :settings="tableSettings"
+                          :table-data="tableData"
+                          @pageSizeChange="pageSizeChange"
+                          style="width: 100%">
+                    <template v-slot:horizontalSlot>
+                        <div style="width: 100%;text-align: center;margin-top: -20px">
+                            <h4>{{currentNode.label}}</h4>
+                        </div>
+                        <el-form :inline="true" :model="searchData" class="searchForm">
+                            <el-form-item label="知识名称">
+                                <el-input  placeholder="请输入知识名称" style="width: 150px"  v-model="searchData.name"></el-input>
+                            </el-form-item>
+                            <el-form-item label="发布人">
+                                <el-input  placeholder="请输入发布人名称" style="width: 150px"  v-model="searchData.userName"></el-input>
+                            </el-form-item>
+                            <el-form-item label="发布时间">
+                                <el-date-picker
+                                        v-model="searchData.date"
+                                        type="daterange"
+                                        align="right"
+                                        unlink-panels
+                                        range-separator="~"
+                                        start-placeholder="开始日期"
+                                        end-placeholder="结束日期">
+                                </el-date-picker>
+                            </el-form-item>
+                            <el-form-item>
+                                <el-button-group>
+                                    <el-button type="primary" size="mini" @click="search()">搜索</el-button>
+                                    <el-button type="primary" size="mini" @click="tableExport()">导出</el-button>
+                                </el-button-group>
+                            </el-form-item>
+                        </el-form>
+                    </template>
+                </cs-table>
+            </el-main>
+        </el-container>
+    </el-container>
 </template>
 
 <script>
@@ -54,7 +101,7 @@
         name: "ClickRate",
         data(){
             return {
-                currentNodeId:"",
+                currentNode:{key:"",label:"知识目录"},
                 treeSettings:{
                     root_id:"0",//根节点id
                     expand_root:true,//是否默认展开根节点
@@ -98,8 +145,7 @@
             async loadTableData(option){
                 option.name = this.searchData.name;
                 option.userName = this.searchData.userName;
-                option.categoryId = "";//this.currentNodeId;
-                console.log(this.searchData);
+                option.categoryId = this.currentNode.key;//this.currentNodeId;
                 option.beginTime = this.searchData.date[0]?moment(this.searchData.date[0]).format("YYYY-MM-DD"):"";
                 option.endTime = this.searchData.date[1]?moment(this.searchData.date[1]).format("YYYY-MM-DD"):"";
                 let resp = await fetchIndClickRate(option);
@@ -133,7 +179,12 @@
             },
             treeNodeClick({data,node})
             {
-                this.currentNodeId = node.key;
+                this.currentNode = node;
+                let option = {
+                    page:this.tableSettings.currentPage,
+                    rows:this.tableSettings.pageSize
+                };
+                this.loadTableData(option);
             },
             pageSizeChange({page,rows})//每页显示数量、页码变化
             {
@@ -151,6 +202,13 @@
                 };
                 this.loadTableData(option);
             }
+        },
+        mounted() {
+            let option = {
+                page:this.tableSettings.currentPage,
+                rows:this.tableSettings.pageSize
+            };
+            this.loadTableData(option);
         }
     }
 </script>
@@ -164,6 +222,7 @@
     }
     .clickrate.sidebar{
         flex-basis: 15%;
+        height: 100vh;
     }
     .clickrate.main{
         flex-basis:84%;

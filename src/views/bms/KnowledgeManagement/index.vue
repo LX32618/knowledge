@@ -1,5 +1,5 @@
 <template>
-    <div class="knowmgtbox" v-loading="loading">
+<!--    <div class="knowmgtbox" v-loading="loading">
         <div class="knowmgtsidebar" style="border-right: 1px solid #DCDFE6">
             <cs-lazytree ref="lazytree" :settings="treeSettings" :dataFormat="treeDataFormat" @treeNodeClick="treeNodeClick"></cs-lazytree>
         </div>
@@ -14,8 +14,8 @@
                 <template v-slot:horizontalSlot>
                     <div class="knowmgt operationNav">
                         <el-button-group>
-                            <!--<el-button type="primary" icon="el-icon-delete" @click.native="remove">删除</el-button>-->
-                       <!--     <el-button type="primary" v-if="clickData.type == 2" icon="element-icons el-custom-batchedit" size="mini">批量修改</el-button>-->
+                            &lt;!&ndash;<el-button type="primary" icon="el-icon-delete" @click.native="remove">删除</el-button>&ndash;&gt;
+                       &lt;!&ndash;     <el-button type="primary" v-if="clickData.type == 2" icon="element-icons el-custom-batchedit" size="mini">批量修改</el-button>&ndash;&gt;
                             <el-button type="primary" v-if="clickData.type == 2" icon="element-icons el-custom-import" size="mini" @click="batchImport()">批量导入</el-button>
                             <el-button type="primary" icon="element-icons el-custom-share" size="mini" @click="batchShare()">批量分享</el-button>
                             <el-button type="primary" icon="element-icons el-custom-export" size="mini" @click="batchExport()">导出</el-button>
@@ -119,7 +119,128 @@
             <cs-people-select :priority="false" :form-data="shareForm" @submitSuccess="submitSuccess" @cancelSuccess="cancelSuccess">
             </cs-people-select>
         </el-dialog>
-    </div>
+    </div>-->
+    <el-container>
+        <el-aside width="210px" style="min-height:100vh;border-right: 1px solid #DCDFE6;">
+            <cs-lazytree ref="lazytree" :settings="treeSettings" :dataFormat="treeDataFormat" @treeNodeClick="treeNodeClick"></cs-lazytree>
+        </el-aside>
+        <el-main style="padding: 1px">
+            <cs-table ref="tb"
+                      :settings="tableSettings"
+                      :table-data="tableData"
+                      @selectionChange="selectionChange"
+                      @pageSizeChange="pageSizeChange"
+                      @sortChange="sortChange"
+                      style="width: 100%">
+                <template v-slot:horizontalSlot>
+                    <div class="knowmgt operationNav">
+                        <el-button-group>
+                            <!--<el-button type="primary" icon="el-icon-delete" @click.native="remove">删除</el-button>-->
+                            <!--     <el-button type="primary" v-if="clickData.type == 2" icon="element-icons el-custom-batchedit" size="mini">批量修改</el-button>-->
+                            <el-button type="primary" v-if="clickData.type == 2" icon="element-icons el-custom-import" size="mini" @click="batchImport()">批量导入</el-button>
+                            <el-button type="primary" icon="element-icons el-custom-share" size="mini" @click="batchShare()">批量分享</el-button>
+                            <el-button type="primary" icon="element-icons el-custom-export" size="mini" @click="batchExport()">导出</el-button>
+                            <el-button type="primary" icon="el-icon-delete"  @click="batchDelete()">删除</el-button>
+                        </el-button-group>
+                        <div style="font-size: 12px">
+                            <el-switch v-model="exportAttach" :width="30"  active-value="true" inactive-value="false">
+                            </el-switch>
+                            导出附件
+                        </div>
+                        <el-button-group class="knowmgt search">
+                            <el-input  placeholder="请输入关键字" prefix-icon="el-icon-search" v-model="seniorKeyWords.keyWord"></el-input>
+                            <el-button type="primary" @click="search()">搜索</el-button>
+                            <el-button type="primary" @click="drawer = true">高级搜索</el-button>
+                        </el-button-group>
+                    </div>
+                </template>
+            </cs-table>
+        </el-main>
+        <el-drawer title="高级搜索"
+                   :visible.sync="drawer"
+                   direction="rtl">
+            <div>
+                <el-form  :model="seniorKeyWords" label-width="80px" style="text-align: center">
+                    <el-form-item label="知识名称">
+                        <el-input v-model="seniorKeyWords.knowName" style="width:90%"></el-input>
+                    </el-form-item>
+                    <el-form-item label="知识编号">
+                        <el-input v-model="seniorKeyWords.knowCode" style="width:90%"></el-input>
+                    </el-form-item>
+                    <el-form-item label="关键字">
+                        <el-input v-model="seniorKeyWords.keyWord" style="width:90%"></el-input>
+                    </el-form-item>
+                    <el-form-item label="创建人">
+                        <el-input v-model="seniorKeyWords.creator" style="width:90%"></el-input>
+                    </el-form-item>
+                    <el-form-item label="创建时间">
+                        <el-date-picker
+                                v-model="seniorKeyWords.dateRange"
+                                value-format="yyyy-MM-dd"
+                                type="daterange"
+                                :picker-options="pickerOptions"
+                                range-separator="-"
+                                start-placeholder="开始日期"
+                                end-placeholder="结束日期"
+                                align="right">
+                        </el-date-picker>
+                    </el-form-item>
+                    <el-form-item style="float: right;margin-right: 20px">
+                        <el-button @click="drawer = false">取 消</el-button>
+                        <el-button type="primary" @click="seniorSearch()">确 定</el-button>
+                    </el-form-item>
+                </el-form>
+            </div>
+        </el-drawer>
+        <el-dialog title="批量导入" :visible.sync="importDialogVisible" :close-on-click-modal="false">
+            <el-form label-width="80px">
+                <el-form-item label="1.下载模板">
+                    <el-link type="primary" :underline="false" @click.native.prevent="downloadTemp()">点击下载知识导入模板</el-link>
+                </el-form-item>
+                <el-form-item label="2.上传文件">
+                    <el-upload  ref="upload"
+                                class="upload-demo"
+                                action
+                                drag
+                                :multiple="false"
+                                :auto-upload="false"
+                                accept=".zip"
+                                :limit="1"
+                                :http-request="handleUploadForm"
+                                :on-exceed="handleExceed">
+                        <i class="el-icon-upload"></i>
+                        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+                        <div class="el-upload__tip" slot="tip">只能上传zip文件</div>
+                    </el-upload>
+                </el-form-item>
+                <el-form-item label="3.导入">
+                    <el-button type="primary" icon="element-icons el-custom-import" size="mini" @click="submitUpload()">开始导入</el-button>
+                </el-form-item>
+            </el-form>
+            <el-divider></el-divider>
+            <div class="importDesciption">
+                <h3>操作步骤:</h3>
+                <p>1）下载知识导入模版，下载的zip包解压后有一个excel文件和一个content文件夹。</p>
+                <p>2）填写excel文件，将附件放入content文件夹中；填写完毕后重新压缩的zip包。</p>
+                <p>3）点击【开始导入】。</p>
+                <h3>使用注意事项：</h3>
+                <p>1）模版zip压缩包解压后有一个excel文件和一个content文件夹。</p>
+                <p>2）excel第一行为表单字段，从第二行开始填写需要导入的数据。</p>
+                <p>3）excel列顺序<span style="color:red">不允许</span>添加、删除和调整顺序。</p>
+                <p>4）附件放到content文件夹下，在excel中只需要填写名称（包括附件后缀）。</p>
+                <p>5）多个附件用<span style="color: red">英文分号【;】</span>隔开。</p>
+                <p>6）数据之间<span style="color: red">不能有空行</span>。</p>
+                <p>7）更新操作：如果要<span style="color: red">更新为空</span>，则在对应值<span style="color: red">填写【/】</span>,不填则表示不更新此字段。</p>
+                <p>8）知识创建人填写该用户的<span style="color: red">邮箱或系统登陆名</span>。</p>
+                <p>9）<span style="color: red">标准关系</span>在标准模版的第二个sheet，关联标准多个用英文【,】隔开，导入的关联标准只做添加不做修改和删除。</p>
+                <p>10）上传必须重新压缩，<span style="color: red">必须为zip格式的压缩包</span>，请保证根目录<span style="color: red">必须只有一个</span>excel文件和一个content文件夹。</p>
+            </div>
+        </el-dialog>
+        <el-dialog title="批量分享" :visible.sync="shareDialogVisible" :close-on-click-modal="false">
+            <cs-people-select :priority="false" :form-data="shareForm" @submitSuccess="submitSuccess" @cancelSuccess="cancelSuccess">
+            </cs-people-select>
+        </el-dialog>
+    </el-container>
 </template>
 
 <script>

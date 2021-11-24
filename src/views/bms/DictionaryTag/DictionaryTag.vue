@@ -1,5 +1,5 @@
 <template>
-    <div class="dict box">
+<!--    <div class="dict box">
         <div class="dict sidebar">
             <cs-lazytree ref="lazytree" :settings="treeSettings" :dataFormat="treeDataFormat" @treeNodeClick="treeNodeClick" @appendTreeNode="appendTreeNode" @editTreeNode="editTreeNode" @removeTreeNode="removeTreeNode"></cs-lazytree>
         </div>
@@ -20,7 +20,29 @@
                 </template>
             </dic-form>
         </el-dialog>
-    </div>
+    </div>-->
+    <el-container>
+        <el-aside width="210px" style="min-height:100vh;border-right: 1px solid #DCDFE6;">
+            <cs-lazytree ref="lazytree" :settings="treeSettings" :dataFormat="treeDataFormat" @treeNodeClick="treeNodeClick" @appendTreeNode="appendTreeNode" @editTreeNode="editTreeNode" @removeTreeNode="removeTreeNode"></cs-lazytree>
+        </el-aside>
+        <el-main>
+            <dic-form :settings="viewFormSettings" :form-data="viewFormData" v-if="isNodeClick"></dic-form>
+        </el-main>
+        <el-dialog title="新增" :visible.sync="appendFormVisible" :close-on-click-modal="false">
+            <dic-form :settings="appendFormSettings" :form-data="appendFormData"  ref="append" @submitSuccess="submitSuccess">
+                <template v-slot:operation>
+                    <el-button type="primary" :style="{float:'right',marginTop:'-10px'}" :loading="submitBtnLoading" @click="submitForm('append')">保存</el-button>
+                </template>
+            </dic-form>
+        </el-dialog>
+        <el-dialog title="编辑" :visible.sync="editFormVisible" :close-on-click-modal="false">
+            <dic-form :settings="editFormSettings" :form-data="editFormData" ref="edit" @submitSuccess="submitSuccess">
+                <template v-slot:operation>
+                    <el-button type="primary" :style="{float:'right',marginTop:'-10px'}" :loading="submitBtnLoading" @click="submitForm('edit')">保存</el-button>
+                </template>
+            </dic-form>
+        </el-dialog>
+    </el-container>
 </template>
 
 <script>
