@@ -1,10 +1,11 @@
 import { getToken, setToken, removeToken } from '@/utils/auth'
-import { getInfo, logout } from '@/api/user'
+import { getInfo, logout, isIpValid } from '@/api/user'
 import { getUserInfoByLoginName } from '@/api/sysUserDbServer'
 
 const state = {
   token: getToken(),
-  userInfo: undefined
+  userInfo: undefined,
+  ipValid: false
 }
 
 const mutations = {
@@ -13,6 +14,9 @@ const mutations = {
   },
   SET_INFO: (state, info) => {
     state.userInfo = info
+  },
+  SET_IP_VALID: (state, ipValid) => {
+    state.ipValid = ipValid
   },
   REMOVE_TOKEN: (state) => {
     removeToken()
@@ -51,24 +55,28 @@ const actions = {
   },
   // 获取用户个人信息
   getInfo ({ commit, state }) {
-    return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const response = await getInfo(state.token)
         let data = response
         if (!response.token) {
           reject(new Error('用户登录已过期'))
         }
-        const [username] = response.token.split('###')
-        getUserInfoByLoginName(username).then(res => {
-          if (!res.content) {
-            reject(new Error('未找到用户'))
-          }
-          data = res.content
-          commit('SET_INFO', data)
-          resolve(data)
-        })
-      }).catch(error => {
+        const [username, , , ip] = response.token.split('###')
+        let res = await isIpValid(ip)
+        if (!res.content) {
+          reject(new Error('ip'))
+        }
+        res = await getUserInfoByLoginName(username)
+        if (!res.content) {
+          reject(new Error('未找到用户'))
+        }
+        data = res.content
+        commit('SET_INFO', data)
+        resolve(data)
+      } catch (error) {
         reject(error)
-      })
+      }
     })
   }
 }

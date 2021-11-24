@@ -15,17 +15,30 @@ import store from '@/store'
 //   }
 // }
 
+// 不进行拦截的页面
+const whiteList = ['NoPermission']
+
 const routerGuide = async (to, from, next) => {
   // 设置网站title
   document.title = `${to.meta.title} | 信息资源库`
-
-  await store.dispatch('user/getInfo')
-  const hasMenu = Object.keys(store.getters.sidebar).length > 0 && Object.keys(store.getters.sidebarRouter).length > 0
-  if (!hasMenu) {
-    console.log(store);
-    await store.dispatch('routerMenu/getRouterMenu',store.getters.userInfo.id)
+  if (whiteList.indexOf(to.name) >= 0) {
+    next()
   }
-  next()
+
+  try {
+    await store.dispatch('user/getInfo')
+    const hasMenu = Object.keys(store.getters.sidebar).length > 0 && Object.keys(store.getters.sidebarRouter).length > 0
+    if (!hasMenu) {
+      await store.dispatch('routerMenu/getRouterMenu',store.getters.userInfo.id)
+    }
+    next()
+  } catch (error) {
+    if (error.message === 'ip') {
+      next({ name: 'NoPermission' })
+      // next()
+    }
+  }
+  
 
   // const hasMenu = Object.keys(store.getters.sidebar).length > 0 && Object.keys(store.getters.sidebarRouter).length > 0
   // if (hasMenu) {

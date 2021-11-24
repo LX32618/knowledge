@@ -7,6 +7,14 @@ const errorRouter = [
       title: '页面施工中'
     }
   },
+  {
+    path: '/noPermission',
+    name: 'NoPermission',
+    component: () => import('@/views/error/NoPermission'),
+    meta: {
+      title: '无权访问'
+    }
+  },
   // 404 页面必须放最后
   {
     path: '/*',

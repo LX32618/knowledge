@@ -16,11 +16,21 @@ export function logout () {
   })
 }
 
-export function fetchUserByDeptUser (option) {
+export function fetchUserByDeptUser (data) {
   return request({
     url: '/sys-user-info-by-name/get',
     method: 'post',
-    data:option
+    data
+  })
+}
+
+export function isIpValid (ip) {
+  return request({
+    url: '/isMatch/get',
+    method: 'post',
+    data: {
+      ip
+    }
   })
 }
 

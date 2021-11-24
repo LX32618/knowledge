@@ -2,6 +2,7 @@
 const getters = {
   userInfo: state => state.user.userInfo,
   token: state => state.user.token,
+  // ip: state => state.user.ip,
   docCategories: state => state.docCategory.docCategories,
   userDocCategories: state => state.docCategory.userDocCategories,
   secretLevels: state => state.utils.secretLevels,
