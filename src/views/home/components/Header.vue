@@ -82,9 +82,9 @@
             {{ userInfo.realName }}<i class="el-icon-caret-bottom"></i>
           </span>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item command="manage"
-              ><i class="el-icon-menu"></i>后台管理</el-dropdown-item
-            >
+            <el-dropdown-item v-if="userInfo.hasAdminPermission" command="manage">
+              <i class="el-icon-menu"></i>后台管理
+            </el-dropdown-item>
             <el-dropdown-item command="center"
               ><i class="el-icon-user" />个人中心</el-dropdown-item
             >
