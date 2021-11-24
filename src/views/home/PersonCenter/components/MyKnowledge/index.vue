@@ -15,7 +15,7 @@
           </cs-tree
         ></el-col>
         <el-col :span="18">
-          <el-button type="primary" icon="el-icon-s-promotion" v-if="selectedTab === 'toPublish'" @click="handlePublishAll" :loading="isLoading">发布</el-button>
+          <!-- <el-button type="primary" icon="el-icon-s-promotion" v-if="selectedTab === 'toPublish'" @click="handlePublishAll" :loading="isLoading">发布</el-button> -->
           <dynamic-table ref="dynamicTable" :data="knowledges" :columns="columns" :props="tableProps">
             <template v-slot:NAME="{ scope }">
               <el-link class="table-knowledge-link" type="primary" size="sm" @click="viewDetail(scope.row.ID)">{{ scope.row.NAME }}</el-link>
@@ -55,7 +55,7 @@
 import DynamicTable from '@/components/KnowledgeView/components/DynamicTable'
 import { fetchCategoryTreeAndNum } from '@/api/docCategory'
 import { findKnowledges, passKnowledge, releaseKnowledge, deleteKnowledge } from '@/api/knowledgeBase'
-import { knowledgeDelete, fetchProcessId } from '@/api/flow'
+import { startFlow, knowledgeDelete, fetchProcessId } from '@/api/flow'
 import { unflatCategoryTree } from '@/utils/tree'
 import { mapGetters } from 'vuex'
 
@@ -91,7 +91,7 @@ export default {
     ]),
     tableProps () {
       return {
-        checkbox: this.selectedTab === 'toPublish'
+        // checkbox: this.selectedTab === 'toPublish'
       }
     },
     condition () {
@@ -239,7 +239,7 @@ export default {
       this.isLoading = true
       try {
         if (this.selectedTab === 'toPublish') {
-          const { content, message } = await deleteKnowledge({id: row.ID})
+          const { content, message } = await deleteKnowledge({ id: row.ID })
           if (content) {
             this.$success(message)
             this.updateKnowledge()
@@ -279,9 +279,28 @@ export default {
     },
     async handlePublish (id) {
       this.isLoading = true
-      await releaseKnowledge(id)
-      this.$success('知识发布成功')
-      this.updateKnowledge()
+      try {
+        const { content } = await fetchProcessId(id)
+        if (!content) {
+          const { content, message } = await releaseKnowledge({ id })
+          if (content) {
+            this.$success(message)
+            this.updateKnowledge()
+          }
+          return
+        }
+        const res = await startFlow(content.processDefId, id)
+        const { success, msg } = res
+        if (success) {
+          this.$success(msg)
+          this.updateKnowledge()
+          this.hasPublished = true
+        }
+      } catch(err) {
+        this.$error(err)
+      } finally {
+        this.isLoading = false
+      }
     },
     handlePublishAll () {
       const ids = this.$refs.dynamicTable.getSelection().map(item => item.ID)
