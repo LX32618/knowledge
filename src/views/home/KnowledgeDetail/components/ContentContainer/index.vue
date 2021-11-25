@@ -182,7 +182,8 @@ export default {
         if (key === 'base') {
           knowledgeModel.knowledgeBase = {
             id: this.$route.params.id,
-            creator: this.userInfo.id,
+            creator: this.baseData.creator,
+            lastupdUser: this.userInfo.id,
             ...value
           }
         } else {
@@ -219,7 +220,7 @@ export default {
       this.editFormData.main = await this.$refs.mainForm.getData()
       this.saveButtonLoading = true
       const knowledgeModel = this.createKnowledgeModel()
-      // console.log(knowledgeModel)
+      console.log(knowledgeModel)
       // const saveHandler = this.showBase ? saveData : saveFormData
       const saveHandler = saveData
       saveHandler(knowledgeModel).then(res => {
