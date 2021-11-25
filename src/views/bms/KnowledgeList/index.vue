@@ -1,5 +1,5 @@
 <template>
-    <div class="knowlist box">
+<!--    <div class="knowlist box">
         <div class="knowlist sidebar">
             <cs-lazytree ref="lazytree" :settings="treeSettings" :dataFormat="treeDataFormat" @treeNodeClick="treeNodeClick" @appendTreeNode="appendTreeNode"  @removeTreeNode="removeTreeNode"></cs-lazytree>
         </div>
@@ -27,7 +27,36 @@
         <el-dialog title="新增知识目录" :visible.sync="appendFormVisible" :close-on-click-modal="false">
             <cs-basic :settings="appendFormSettings" :form-data="appendFormData" @submitSuccess="submitSuccess"></cs-basic>
         </el-dialog>
-    </div>
+    </div>-->
+    <el-container>
+        <el-aside width="210px" style="min-height:100vh;border-right: 1px solid #DCDFE6;">
+            <cs-lazytree ref="lazytree" :settings="treeSettings" :dataFormat="treeDataFormat" @treeNodeClick="treeNodeClick" @appendTreeNode="appendTreeNode"  @removeTreeNode="removeTreeNode"></cs-lazytree>
+        </el-aside>
+        <el-main style="padding:1px">
+            <el-tabs v-model="activeName" type="border-card" v-if="basicFormData.pid!='0' && Object.keys(basicFormData).length != 0" @tab-click="tabClick" :style="{height:'100%'}">
+                <el-tab-pane :key="0" label="基本信息" name="basic">
+                    <div>
+                        <cs-basic :settings="basicFormSettings" :form-data="basicFormData" @submitSuccess="submitSuccess"></cs-basic>
+                    </div>
+                </el-tab-pane>
+                <el-tab-pane :key="1" v-if="basicFormData.type==2 && clickData.formId" label="模板配置" name="template" >
+                    <cs-template :form-data="tempFormData" :category-id="basicFormData.id" v-loading="tabLoading"></cs-template>
+                </el-tab-pane>
+                <el-tab-pane :key="2" v-if="basicFormData.type==2 && clickData.formId" label="列表配置" name="list" >
+                    <cs-table-config :config-data="configData" v-loading="tabLoading"></cs-table-config>
+                </el-tab-pane>
+                <el-tab-pane :key="3" v-if="basicFormData.type!=0" label="权限配置" name="permission">
+                    <cs-authority-config :authority-data="authorityData" v-loading="tabLoading"></cs-authority-config>
+                </el-tab-pane>
+                <el-tab-pane :key="4" v-if="basicFormData.type==2 && clickData.formId" label="流程配置" name="interface">
+                    <cs-flow-config :flow-data="flowData" :category-id="categoryId" :bind-data="bindData" v-loading="tabLoading" @saveSuccess="saveFlowConfig" @deleteSuccess="deleteFlowConfig"></cs-flow-config>
+                </el-tab-pane>
+            </el-tabs>
+        </el-main>
+        <el-dialog title="新增知识目录" :visible.sync="appendFormVisible" :close-on-click-modal="false">
+            <cs-basic :settings="appendFormSettings" :form-data="appendFormData" @submitSuccess="submitSuccess"></cs-basic>
+        </el-dialog>
+    </el-container>
 </template>
 
 

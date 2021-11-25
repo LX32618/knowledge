@@ -1,19 +1,19 @@
 <template>
     <div>
-        <span>新建流程：<el-button type="primary" icon="el-icon-s-platform" circle @click="add"></el-button></span>
-        <el-divider></el-divider>
+     <!--   <span>新建流程：<el-button type="primary" icon="el-icon-s-platform" circle @click="add"></el-button></span>
+        <el-divider></el-divider>-->
         <span>
             入库审批流程：
             <el-button type="primary" icon="el-icon-s-platform" circle @click="openDialog('inBound',inBoundTag)"></el-button>
             <el-tag v-if="inBoundTag && inBoundTag.processId" type="danger" @close="handleClose(inBoundTag)" closable>{{inBoundTag.processName}}</el-tag>
         </span>
         <el-divider></el-divider>
-        <span>
+<!--        <span>
             更改审批流程：
             <el-button type="primary" icon="el-icon-s-platform" circle @click="openDialog('alter',alterTag)"></el-button>
             <el-tag v-if="alterTag && alterTag.processId" type="danger" @close="handleClose(alterTag)" closable>{{alterTag.processName}}</el-tag>
         </span>
-        <el-divider></el-divider>
+        <el-divider></el-divider>-->
         <span>
             删除审批流程：
             <el-button type="primary" icon="el-icon-s-platform" circle @click="openDialog('remove',removeTag)"></el-button>

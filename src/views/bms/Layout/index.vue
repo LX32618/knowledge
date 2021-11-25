@@ -29,7 +29,7 @@
             <el-aside width="250px" style="border-right: 1px solid #DCDFE6;">
                 <cs-sidebar :default-active="defaultActive" :items="items" :basePath="basePath"></cs-sidebar>
             </el-aside>
-            <el-container style="height: 100vh; border-left: 1px solid #DCDFE6;">
+            <el-container>
                 <el-header style="height: 20px;background-color: #F5F5F5;border-bottom: 1px solid #DCDFE6;">
                     <cs-breadcrumb></cs-breadcrumb>
                 </el-header>
