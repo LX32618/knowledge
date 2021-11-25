@@ -42,7 +42,7 @@
             </cs-table>
         </div>
     </div>-->
-    <el-container>
+    <el-container v-loading="loading"  :element-loading-text="loadingText">
         <el-aside width="210px" style="min-height:100vh;border-right: 1px solid #DCDFE6;">
             <cs-lazytree ref="lazytree" :settings="treeSettings" :dataFormat="treeDataFormat" @treeNodeClick="treeNodeClick"></cs-lazytree>
         </el-aside>
@@ -92,8 +92,10 @@
 <script>
 
     import _ from "lodash";
-    import {fetchIndClickRate} from "@/api/analysisController.js"
     import moment from "moment"
+    import {fetchClickRate} from "@/api/analysisController.js"
+    import {export_json_to_excel} from "@/plugins/Export2Excel";
+
 
     const treeUrl = '/app-zuul/knowledge/app/authcenter/api/categoryTree/';
 
@@ -101,6 +103,8 @@
         name: "ClickRate",
         data(){
             return {
+                loading:false,
+                loadingText:"",
                 currentNode:{key:"",label:"知识目录"},
                 treeSettings:{
                     root_id:"0",//根节点id
@@ -148,11 +152,13 @@
                 option.categoryId = this.currentNode.key;//this.currentNodeId;
                 option.beginTime = this.searchData.date[0]?moment(this.searchData.date[0]).format("YYYY-MM-DD"):"";
                 option.endTime = this.searchData.date[1]?moment(this.searchData.date[1]).format("YYYY-MM-DD"):"";
-                let resp = await fetchIndClickRate(option);
+                this.loading = true;
+                let resp = await fetchClickRate(option);
                 this.tableSettings.total = resp.content.total;
                 this.tableData = resp.content.datas.map(d=>{
                     return {id:d.ID,name:d.NAME,categoryName:d.CATEGORYNAME,createDate:d.CREATEDATE,clickingRate:d.CLICKINGRATE}
                 });
+                this.loading = false;
             },
             treeDataFormat({node,data}){
                 const temp = _.cloneDeep(data);
@@ -194,7 +200,47 @@
                 };
                 this.loadTableData(option);
             },
-            tableExport(){},
+            formatExcelData(filterVal, jsonData) {
+                return  jsonData.map(v =>
+                    filterVal.map(
+                        j => v[j]
+                    )
+                );
+            },
+            async tableExport(){
+                this.loading = true;
+                this.loadingText = "下载中";
+                let option = {
+                    page:1,
+                    rows:this.tableSettings.total
+                };
+                option.name = this.searchData.name;
+                option.userName = this.searchData.userName;
+                option.categoryId = this.currentNode.key;//this.currentNodeId;
+                option.beginTime = this.searchData.date[0]?moment(this.searchData.date[0]).format("YYYY-MM-DD"):"";
+                option.endTime = this.searchData.date[1]?moment(this.searchData.date[1]).format("YYYY-MM-DD"):"";
+                const tHeader = this.tableSettings.fields.filter(c => {
+                    return c.visible != false;
+                }).map(c => {
+                    return c.label;
+                });
+                const filterVal = this.tableSettings.fields.filter(c=>{
+                    return c.visible != false;
+                }).map(c => {
+                    return c.prop;
+                });
+                let resp = await fetchClickRate(option);
+                const list = resp.content.datas.map(d=>{
+                    return {id:d.ID,name:d.NAME,categoryName:d.CATEGORYNAME,createDate:d.CREATEDATE,clickingRate:d.CLICKINGRATE}
+                });
+                const data = this.formatExcelData(filterVal, list);
+                export_json_to_excel({
+                    header: tHeader,
+                    data,
+                    filename:"知识点击率统计"
+                });
+                this.loading = false;
+            },
             search(){
                 let option = {
                     page:this.tableSettings.currentPage,

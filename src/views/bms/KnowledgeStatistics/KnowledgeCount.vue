@@ -30,6 +30,8 @@
 <script>
     import _ from "lodash"
     import * as echarts from "echarts"
+    import {fetchIndKnowledgeCount} from "@/api/analysisController.js"
+
 
     export default {
         name: "KnowledgeCount",
@@ -38,22 +40,11 @@
                 dimension:"store",
                 display:"bar",
                 deptData:[{name:"测试部",y:9},{name:"艺术部",y:66},{name:"计划部",y:2}],
-                storeData:[{name:"作战需求知识库",y:3},
-                    {name:"软件工程化组织资产库",y:25},
-                    {name:"liujx-test-1",y:1},
-                    {name:"试验方案库",y:1},
-                    {name:"机载产品知识库",y:3},
-                    {name:"制造技术知识库","y":13},
-                    {name:"试验阵地库",y:1},
-                    {name:"xiat-test",y:3},
-                    {name:"标准规范知识库",y:26},
-                    {name:"装备模型库",y:11},
-                    {name:"技术体质库",y:10}
-                    ]
+                storeData:[]
             }
         },
         methods:{
-            drawChart(){
+            async drawChart(){
                 // 基于准备好的dom，初始化echarts实例
                 let myChart = echarts.init(document.getElementById('main'));
                 let title = {
@@ -69,9 +60,21 @@
                 let datas = [];
                 let dataBak;
                 if("dept" == this.dimension) {
+                    let option = {
+                        sql:"select so.DEPARTNAME as \"name\",count(1) as \"y\" from knowledge_base k,T_S_DEPART so ,fd_org_userrel re where k.creator = re.userid and  re.deptid = so.id and k.classification not in (SELECT ID FROM DOC_CATEGORY START WITH ID in ('','') CONNECT BY PRIOR ID = PID) and k.isdel = 0 and so.ORGTYPEID='4028e4667598521a01759860b1e30009' and k.audit_status = 1 group by so.DEPARTNAME,so.DEPTCODE order by so.DEPTCODE",
+                        sqlwhere:""
+                    };
+                    let resp = await fetchIndKnowledgeCount(option);
+                    this.deptData = resp.content;
                     dataBak = _.cloneDeep(this.deptData);
                 }
                 else{
+                    let option = {
+                        sql:"select d.categoryname as \"name\",count(1) as \"y\" from knowledge_base k ,doc_category d where k.baseid = d.id and k.isdel = 0 and k.audit_status = 1 group by d.categoryname",
+                        sqlwhere:""
+                    };
+                    let resp = await fetchIndKnowledgeCount(option);
+                    this.storeData = resp.content;
                     dataBak = _.cloneDeep(this.storeData);
                 }
 
@@ -80,6 +83,8 @@
                     values.push(d.y);
                     datas.push({name:d.name,value:d.y});
                 })
+
+
 
                 // 指定图表的配置项和数据
                 let barOption = {

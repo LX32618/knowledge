@@ -23,7 +23,7 @@ export function fetchIndContribution (option) {
 }
 
 //获取点击率
-export function fetchIndClickRate (option) {
+export function fetchClickRate (option) {
     return request({
         url: `${rootUrl}findKnowledgeCount`,
         method: 'post',
@@ -32,10 +32,20 @@ export function fetchIndClickRate (option) {
 }
 
 //获取重用率
-export function fetchIndReuseRate (option) {
+export function fetchReuseRate (option) {
     return request({
         url: `${rootUrl}findKnowledgeReuseCount`,
         method: 'post',
         data: option
     })
 }
+
+//获取知识数量统计
+export function fetchIndKnowledgeCount (option) {
+    return request({
+        url: `${rootUrl}getData`,
+        method: 'post',
+        data: option
+    })
+}
+

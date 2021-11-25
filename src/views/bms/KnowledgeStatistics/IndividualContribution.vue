@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div v-loading="loading"  :element-loading-text="loadingText">
         <cs-table ref="tb"
                   :key="keyValue"
                   :settings="tableSettings"
@@ -41,11 +41,14 @@
     import _ from "lodash"
     import {fetchCategoryTreeAll} from "@/api/docCategory.js"
     import {fetchIndContribution} from "@/api/analysisController.js"
+    import {export_json_to_excel} from "@/plugins/Export2Excel";
 
     export default {
         name: "IndividualContribution",
         data(){
             return {
+                loading:false,
+                loadingText:"",
                 keyValue:0,
                 headerVisible:false,
                 checkList:[],
@@ -79,12 +82,12 @@
                 tableDataBak:[],
                 searchKey:"",
                 defaultCheckedHeaders:[],
-
             }
         },
         methods:{
             async loadTableData(option){
                 option.type = "1";
+                this.loading = true;
                 let resp = await fetchIndContribution(option);
                 this.tableSettings.total = resp.content.total;
                 let tableData = resp.content.datas.map(d=>{
@@ -99,12 +102,55 @@
                     row.deptName=d.ORGNAME;
                     return row;
                 });
-
                 this.tableData = tableData;
                 this.tableDataBak = _.cloneDeep(tableData);
+                this.loading = false;
             },
-            tableExport(){
-
+            formatExcelData(filterVal, jsonData) {
+                return  jsonData.map(v =>
+                    filterVal.map(
+                        j => v[j]
+                    )
+                );
+            },
+            async tableExport(){
+                this.loading = true;
+                this.loadingText = "下载中";
+                let option = {
+                    type:"1",
+                    page:1,
+                    rows:this.tableSettings.total
+                };
+                const tHeader = this.tableSettings.fields.filter(c => {
+                    return c.visible != false;
+                }).map(c => {
+                    return c.label;
+                });
+                const filterVal = this.tableSettings.fields.filter(c=>{
+                    return c.visible != false;
+                }).map(c => {
+                    return c.prop;
+                });
+                let resp = await fetchIndContribution(option);
+                const list = resp.content.datas.map(d=>{
+                    let row = {};
+                    if(d.GXCATEGORY){
+                        let gxs = d.GX.split(",");
+                        let gxCategories = d.GXCATEGORY.split(",");
+                        row = _.zipObject(gxCategories, gxs);
+                    }
+                    row.id=d.ID;
+                    row.userName=d.USERNAME;
+                    row.deptName=d.ORGNAME;
+                    return row;
+                });
+                const data = this.formatExcelData(filterVal, list);
+                export_json_to_excel({
+                    header: tHeader,
+                    data,
+                    filename:"个人贡献情况统计"
+                });
+                this.loading = false;
             },
             chooseHeader(){
                 let headerChecked = this.$refs.headerTree.getCheckedNodes(true,false);

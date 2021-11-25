@@ -42,9 +42,7 @@
             </cs-table>
         </div>
     </div>-->
-
-
-    <el-container>
+    <el-container v-loading="loading"  :element-loading-text="loadingText">
         <el-aside width="210px" style="min-height:100vh;border-right: 1px solid #DCDFE6;">
             <cs-lazytree ref="lazytree" :settings="treeSettings" :dataFormat="treeDataFormat" @treeNodeClick="treeNodeClick"></cs-lazytree>
         </el-aside>
@@ -95,8 +93,9 @@
 <script>
 
     import _ from "lodash";
-    import {fetchIndReuseRate} from "@/api/analysisController.js"
     import moment from "moment"
+    import {fetchReuseRate} from "@/api/analysisController.js"
+    import {export_json_to_excel} from "@/plugins/Export2Excel";
 
     const treeUrl = '/app-zuul/knowledge/app/authcenter/api/categoryTree/';
 
@@ -104,6 +103,8 @@
         name: "ReUseRate",
         data(){
             return {
+                loading:false,
+                loadingText:"",
                 currentNode:{key:"",label:"知识目录"},
                 treeSettings:{
                     root_id:"0",//根节点id
@@ -151,11 +152,13 @@
                 option.categoryId = this.currentNode.key;
                 option.beginTime = this.searchData.date[0]?moment(this.searchData.date[0]).format("YYYY-MM-DD"):"";
                 option.endTime = this.searchData.date[1]?moment(this.searchData.date[1]).format("YYYY-MM-DD"):"";
-                let resp = await fetchIndReuseRate(option);
+                this.loading = true;
+                let resp = await fetchReuseRate(option);
                 this.tableSettings.total = resp.content.total;
                 this.tableData = resp.content.datas.map(d=>{
                     return {id:d.ID,name:d.NAME,categoryName:d.CATEGORYNAME,createDate:d.CREATEDATE,reUseRation:d.REUSERATION}
                 });
+                this.loading = false;
             },
             treeDataFormat({node,data}){
                 const temp = _.cloneDeep(data);
@@ -195,7 +198,47 @@
                 };
                 this.loadTableData(option);
             },
-            tableExport(){},
+            formatExcelData(filterVal, jsonData) {
+                return  jsonData.map(v =>
+                    filterVal.map(
+                        j => v[j]
+                    )
+                );
+            },
+            async tableExport(){
+                this.loading = true;
+                this.loadingText = "下载中";
+                let option = {
+                    page:1,
+                    rows:this.tableSettings.total
+                };
+                option.name = this.searchData.name;
+                option.userName = this.searchData.userName;
+                option.categoryId = this.currentNode.key;
+                option.beginTime = this.searchData.date[0]?moment(this.searchData.date[0]).format("YYYY-MM-DD"):"";
+                option.endTime = this.searchData.date[1]?moment(this.searchData.date[1]).format("YYYY-MM-DD"):"";
+                const tHeader = this.tableSettings.fields.filter(c => {
+                    return c.visible != false;
+                }).map(c => {
+                    return c.label;
+                });
+                const filterVal = this.tableSettings.fields.filter(c=>{
+                    return c.visible != false;
+                }).map(c => {
+                    return c.prop;
+                });
+                let resp = await fetchReuseRate(option);
+                let list = resp.content.datas.map(d=>{
+                    return {id:d.ID,name:d.NAME,categoryName:d.CATEGORYNAME,createDate:d.CREATEDATE,reUseRation:d.REUSERATION}
+                });
+                const data = this.formatExcelData(filterVal, list);
+                export_json_to_excel({
+                    header: tHeader,
+                    data,
+                    filename:"知识重用率统计"
+                });
+                this.loading = false;
+            },
             search(){
                 let option = {
                     page:this.tableSettings.currentPage,
