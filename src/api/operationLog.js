@@ -52,11 +52,13 @@ export function exportOpertionLog(option) {
             }
             console.log(2);
             // 挂载a标签
-            document.body.appendChild(tempLink)
-            tempLink.click()
-            document.body.removeChild(tempLink)
-            // 释放blob URL地址
-            window.URL.revokeObjectURL(blobURL)
+            document.body.appendChild(tempLink);
+            tempLink.click();
+            setTimeout(()=>{
+                document.body.removeChild(tempLink);
+                // 释放blob URL地址
+                window.URL.revokeObjectURL(blobURL);
+            },300);
         }
     })
 }
