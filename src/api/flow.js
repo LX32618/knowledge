@@ -26,16 +26,16 @@ export function fetchProcessId (knowledgeId, processKindType = 'inBound') {
 export function applyView (data) {
   return fmsBasicRequest({
     url: '/customWorkFlowFormConfigController.do?knowledgeApply',
-    method: 'post',
-    data
+    method: 'get',
+    params: data
   })
 }
 
 export function knowledgeDelete (processDefinitionId, oid) {
   return fmsBasicRequest({
     url: '/customWorkFlowFormConfigController.do?knowledgeDelete',
-    method: 'post',
-    data: {
+    method: 'get',
+    params: {
       processDefinitionId,
       oid
     }
