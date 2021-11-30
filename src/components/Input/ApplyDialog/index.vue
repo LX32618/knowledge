@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import { applyView } from '@/api/flow'
+import { fetchProcessId, applyView } from '@/api/flow'
 
 export default {
   name: 'ApplyDialog',
@@ -51,6 +51,11 @@ export default {
     async handleApply () {
       this.loading = true
       try {
+        const { content } = await fetchProcessId(this.oid, 'downloadView')
+        if (!content) {
+          this.$error('目录未配置申请查看流程，请联系管理员配置后再申请')
+          return
+        }
         const res = await applyView({
           oid: this.oid,
           reason: this.reason
