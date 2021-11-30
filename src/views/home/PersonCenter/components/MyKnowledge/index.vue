@@ -54,7 +54,7 @@
 <script>
 import DynamicTable from '@/components/KnowledgeView/components/DynamicTable'
 import { fetchCategoryTreeAndNum } from '@/api/docCategory'
-import { findKnowledges, passKnowledge, releaseKnowledge, deleteKnowledge } from '@/api/knowledgeBase'
+import { findKnowledges, passKnowledge, updateDataLifeCycle, deleteKnowledge } from '@/api/knowledgeBase'
 import { startFlow, knowledgeDelete, fetchProcessId } from '@/api/flow'
 import { unflatCategoryTree } from '@/utils/tree'
 import { mapGetters } from 'vuex'
@@ -282,7 +282,7 @@ export default {
       try {
         const { content } = await fetchProcessId(id)
         if (!content) {
-          const { content, message } = await releaseKnowledge({ id })
+          const { content, message } = await updateDataLifeCycle(id)
           if (content) {
             this.$success(message)
             this.updateKnowledge()
