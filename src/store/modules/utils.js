@@ -175,7 +175,7 @@ const state = {
     {
       label: '操作',
       key: 'option',
-      width: 200,
+      width: 220,
     },
     {
       label: '知识名称',

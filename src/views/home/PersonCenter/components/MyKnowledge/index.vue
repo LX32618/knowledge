@@ -26,13 +26,16 @@
               </el-tooltip>
             </template>
             <template v-slot:option=" { scope }">
-              <el-button
-                v-if="selectedTab === 'published' || (selectedTab === 'toPublish' && scope.row.CREATORID === userInfo.id)"
-                size="mini" type="danger" icon="el-icon-delete"
-                :loading="isLoading"
-                @click="applyDelete(scope.row)">
-                删除
-              </el-button>
+              <el-popconfirm title="确定要删除知识?" @onConfirm="applyDelete(scope.row)">
+                <el-button
+                  class="btn-delete"
+                  slot="reference"
+                  v-if="selectedTab === 'published' || (selectedTab === 'toPublish' && scope.row.CREATORID === userInfo.id)"
+                  size="mini" type="danger" icon="el-icon-delete"
+                  :loading="isLoading">
+                  删除
+                </el-button>
+              </el-popconfirm>
               <!-- <el-button v-if="selectedTab === 'toAudit'" size="mini" type="primary" icon="el-icon-view" :loading="isLoading" @click="handleAudit(scope.row)">审核</el-button> -->
               <el-button v-if="selectedTab === 'toPublish'" size="mini" type="primary" icon="el-icon-s-promotion" :loading="isLoading" @click="handlePublish(scope.row.ID)">发布</el-button>
               <el-button v-if="selectedTab !== 'toPublish'" size="mini" type="success" icon="el-icon-document" :loading="isLoading" @click="viewFlow(scope.row.PROCESS_INS_ID)">查看</el-button>
@@ -54,7 +57,7 @@
 <script>
 import DynamicTable from '@/components/KnowledgeView/components/DynamicTable'
 import { fetchCategoryTreeAndNum } from '@/api/docCategory'
-import { findKnowledges, passKnowledge, releaseKnowledge, deleteKnowledge } from '@/api/knowledgeBase'
+import { findKnowledges, passKnowledge, updateDataLifeCycle, deleteKnowledge } from '@/api/knowledgeBase'
 import { startFlow, knowledgeDelete, fetchProcessId } from '@/api/flow'
 import { unflatCategoryTree } from '@/utils/tree'
 import { mapGetters } from 'vuex'
@@ -282,7 +285,7 @@ export default {
       try {
         const { content } = await fetchProcessId(id)
         if (!content) {
-          const { content, message } = await releaseKnowledge({ id })
+          const { content, message } = await updateDataLifeCycle(id)
           if (content) {
             this.$success(message)
             this.updateKnowledge()
@@ -339,5 +342,8 @@ export default {
 }
 .popper-tip {
   width: 200px;
+}
+.btn-delete {
+  margin-right: 5px;
 }
 </style>

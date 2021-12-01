@@ -103,7 +103,7 @@ export default {
         {
           key: 'option',
           label: '操作',
-          width: 200
+          width: 220
         }
       ],
       dialogShow: false,

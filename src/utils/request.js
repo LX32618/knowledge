@@ -34,8 +34,16 @@ const requestInterceptor = config => {
   if (userInfo) {
     config.headers['User-Id'] = userInfo.id
   }
+  // config.headers['System-Type'] = 'own'
+  if (config.data) {
+    config.data.systemType = 'own'
+  }
   return config
 }
+
+// const fmsRequestInterceptor = config => {
+//   return config
+// }
 
 const responseInterceptor = response => {
   if (response.data.constructor === String && response.data.indexOf('登录') !== -1 && response.data.indexOf('<html>') !== -1) {

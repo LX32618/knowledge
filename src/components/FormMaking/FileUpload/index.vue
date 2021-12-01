@@ -251,8 +251,10 @@ export default {
         downloadElement.download = fileConfig.name
         document.body.appendChild(downloadElement)
         downloadElement.click()
-        document.body.removeChild(downloadElement)
-        URL.revokeObjectURL(url)
+        setTimeout(() => {
+          document.body.removeChild(downloadElement)
+          URL.revokeObjectURL(url)
+        }, 300)
         this.isLoading = false
       } catch (err) {
         this.$error('文件下载失败')

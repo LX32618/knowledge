@@ -115,3 +115,15 @@ export function releaseKnowledge (ids) {
     }
   })
 }
+
+// 更新知识生命周期状态
+export function updateDataLifeCycle (ids, auditing = '1') {
+  return request({
+    url: `${rootUrl}dataLifeCycle`,
+    method: 'post',
+    data: {
+      ids,
+      auditing
+    }
+  })
+}

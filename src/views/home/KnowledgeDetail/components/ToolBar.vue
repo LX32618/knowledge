@@ -26,7 +26,7 @@ import { passKnowledge } from '@/api/knowledgeBase'
 import { createKnowledgeVersion } from '@/api/knowledgeVersion'
 import { openNewWindows } from '@/utils/html'
 import { startFlow, fetchProcessId } from '@/api/flow'
-import { releaseKnowledge } from '@/api/knowledgeBase'
+import { updateDataLifeCycle } from '@/api/knowledgeBase'
 
 export default {
   name: 'ToolBar',
@@ -76,9 +76,10 @@ export default {
       const id = this.knowledge.KNOWLEDGE_ID
       try {
         if (!this.processId) {
-          await releaseKnowledge(id)
+          await updateDataLifeCycle(id)
           this.$success('知识发布成功')
           this.auditStatus = '1'
+          return
         }
         const res = await startFlow(this.processId, this.knowledge.KNOWLEDGE_ID)
         const { success, msg } = res
