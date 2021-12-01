@@ -29,8 +29,11 @@
         </el-col>
         <el-col :span="18">
           <dynamic-table :data="knowledges" :columns="columns">
-            <template v-slot:name="{ scope }">
+            <!-- <template v-slot:name="{ scope }">
               <router-link :to="{ path: `/knowledgeDetail/${scope.row.id}`}">{{ scope.row.name }}</router-link>
+            </template> -->
+            <template v-slot:NAME="{ scope }">
+              <el-link class="table-knowledge-link" type="primary" size="sm" @click="viewDetail(scope.row.KNOWLEDGE_ID)">{{ scope.row.NAME }}</el-link>
             </template>
             <template v-slot:option=" { scope }">
               <el-button type="primary" icon="el-icon-remove" @click="cancelCollect(scope.row)">取消收藏</el-button>
@@ -277,6 +280,15 @@ export default {
     moveSuccess () {
       this.updateKnowledge()
       this.$success('移动知识收藏成功')
+    },
+    viewDetail (id) {
+      const routeData = this.$router.resolve({
+        name: 'knowledgeDetail',
+        params: {
+          id
+        }
+      })
+      window.open(routeData.href, '_blank')
     }
   },
   mounted () {
