@@ -118,7 +118,8 @@ export default {
         orgId: tmp[1],
         groupId: tmp[2],
         days: 1,
-        desc: '分享'
+        desc: '分享',
+        status: '1'
       })
       this.shareLoading = false
     }

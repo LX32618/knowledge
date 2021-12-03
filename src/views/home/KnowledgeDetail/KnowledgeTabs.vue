@@ -35,10 +35,10 @@
       </el-tab-pane>
     </template>
     <!-- 知识评论 -->
-    <!-- <el-tab-pane>
+    <el-tab-pane>
       <span slot="label">知识评论</span>
       <knowledge-comment></knowledge-comment>
-    </el-tab-pane> -->
+    </el-tab-pane>
   </el-tabs>
 </template>
 
@@ -46,11 +46,13 @@
 import { getModelAndData } from '@/api/knowledgeData'
 import ContentContainer from './components/ContentContainer'
 import { handleGetKnowledgeModelAndDataResponse } from '@/utils/responseHelper'
+import KnowledgeComment from './components/KnowledgeComment.vue'
 
 export default {
   name: 'KnowledgeTabs',
   components: {
-    ContentContainer
+    ContentContainer,
+    KnowledgeComment
   },
   props: {
     id: String,
