@@ -144,6 +144,11 @@ const sidebar = {
             path: "FlowManagement",
             meta:{title:"流程管理"},
             component:()=>import('@/views/bms/FlowManagement')
+        },{
+            name: "PushManagement",
+            path: "PushManagement",
+            meta:{title:"推送管理"},
+            component:()=>import('@/views/bms/PushManagement')
         }]
     }, {
         name: 'SecurityAudit',

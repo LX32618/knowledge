@@ -37,7 +37,6 @@ export function exportOpertionLog(option) {
         if (typeof window.navigator.msSaveBlob !== 'undefined') {
             // 兼容IE，window.navigator.msSaveBlob：以本地方式保存文件
             window.navigator.msSaveBlob(blob, decodeURI(fileName))
-            console.log(1);
         } else {
             // 创建新的URL并指向File对象或者Blob对象的地址
             const blobURL = window.URL.createObjectURL(blob)
@@ -50,13 +49,14 @@ export function exportOpertionLog(option) {
             if (typeof tempLink.download === 'undefined') {
                 tempLink.setAttribute('target', '_blank')
             }
-            console.log(2);
             // 挂载a标签
-            document.body.appendChild(tempLink)
-            tempLink.click()
-            document.body.removeChild(tempLink)
-            // 释放blob URL地址
-            window.URL.revokeObjectURL(blobURL)
+            document.body.appendChild(tempLink);
+            tempLink.click();
+            setTimeout(()=>{
+                document.body.removeChild(tempLink);
+                // 释放blob URL地址
+                window.URL.revokeObjectURL(blobURL);
+            },300);
         }
     })
 }
