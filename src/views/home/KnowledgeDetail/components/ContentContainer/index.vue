@@ -9,7 +9,7 @@
               <el-button type="primary" icon="el-icon-share" @click="share">分享</el-button>
               <el-button v-if="auditStatus !== '-1'" type="warning" icon="el-icon-edit" @click="edit">编辑</el-button>
               <el-popconfirm title="确定要删除知识?" @onConfirm="handleDelete">
-                <el-button slot="reference" v-if="auditStatus !== '-1' && baseData.creator === userInfo.id" type="danger" icon="el-icon-delete" :loading="deleteLoading">删除</el-button>
+                <el-button slot="reference" v-if="auditStatus !== '-1' && auditStatus !== '-2' && baseData.creator === userInfo.id" type="danger" icon="el-icon-delete" :loading="deleteLoading">删除</el-button>
               </el-popconfirm>
             </template>
             <template v-else>
@@ -165,6 +165,7 @@ export default {
         const res = await knowledgeDelete(content.processDefId, id)
         const { success, msg } = res
         if (success) {
+          this.auditStatus = '-2'
           this.$success(msg)
         }
       } catch(err) {
