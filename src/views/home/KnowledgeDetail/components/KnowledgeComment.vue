@@ -6,7 +6,7 @@
         <!-- 评论列表 -->
         <a-comment
           v-for="comment of pagedComments" :key="comment.id"
-          :author="`${comment.userName}${comment.replayId ? ' 回复 ' + comment.replayName : ''}`"
+          :author="`${comment.userName}${comment.replayName ? ' 回复 ' + comment.replayName : ''}`"
           :content="comment.comment"
           :datetime="comment.createTime">
           <span slot="avatar">
