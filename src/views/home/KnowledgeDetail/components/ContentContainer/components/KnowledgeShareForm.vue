@@ -121,6 +121,7 @@ export default {
         desc: '分享',
         status: '1'
       })
+      this.$success('分享成功')
       this.shareLoading = false
     }
   }
