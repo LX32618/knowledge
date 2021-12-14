@@ -11,7 +11,7 @@ export function getSharedKnowledge (option) {
       page: option.page || 1,
       rows: option.rows || 10,
       condition: {
-        sort: 'CREATEDATE',
+        sort: 'APP_TIME',
         order: 'desc',
         status: option.status,
         share: option.share,
