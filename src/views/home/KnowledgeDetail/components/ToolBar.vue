@@ -4,13 +4,47 @@
       <el-button type="success" icon="el-icon-s-home" @click="handleHomeClick"
         >首页</el-button
       >
-      <el-button type="warning" icon="el-icon-star-off" @click="handleCollect" :loading="collectLoading">{{ isCollect ? '取消收藏' : '收藏'}}</el-button>
-      <el-button type="primary" icon="el-icon-s-claim" @click="handleSubscribe" :loading="subscribeLoading">{{ isSubscribe ? '取消订阅' : '订阅'}}</el-button>
-      <el-button type="danger" icon="el-icon-document-add" @click="addVersion">新建版本</el-button>
-      <el-button type="info" icon="el-icon-document-copy" @click="viewHistoryVersion">历史版本 V{{ baseData.ver }}</el-button>
-      <el-button v-if="auditStatus === '-3'" type="success" icon="el-icon-view" @click="publish" :loading="publishLoading">发布</el-button>
+      <el-button
+        type="warning"
+        icon="el-icon-star-off"
+        @click="handleCollect"
+        :loading="collectLoading"
+        >{{ isCollect ? '取消收藏' : '收藏' }}</el-button
+      >
+      <el-button
+        type="primary"
+        icon="el-icon-s-claim"
+        @click="handleSubscribe"
+        :loading="subscribeLoading"
+        >{{ isSubscribe ? '取消订阅' : '订阅' }}</el-button
+      >
+      <el-button
+        v-if="auditStatus !== '-1'"
+        type="danger"
+        icon="el-icon-document-add"
+        @click="addVersion"
+        >新建版本</el-button
+      >
+      <el-button
+        type="info"
+        icon="el-icon-document-copy"
+        @click="viewHistoryVersion"
+        >历史版本 V{{ baseData.ver }}</el-button
+      >
+      <el-button
+        v-if="auditStatus === '-3'"
+        type="success"
+        icon="el-icon-view"
+        @click="publish"
+        :loading="publishLoading"
+        >发布</el-button
+      >
     </el-button-group>
-    <collect-dialog :show.sync="collectShow" :knowledge="knowledge" @success="collectSuccess"></collect-dialog>
+    <collect-dialog
+      :show.sync="collectShow"
+      :knowledge="knowledge"
+      @success="collectSuccess"
+    ></collect-dialog>
     <!-- <el-dialog :visible.sync="flowShow" title="知识发布" fullscreen>
       <iframe v-if="flowShow" class="flow-iframe" src="http://glaway.soft.net/fms-basic/customWorkFlowFormConfigController.do?getDynamicFormByFormKey&processDefinitionId=process1621997049651:2:25030"></iframe>
     </el-dialog> -->
@@ -20,7 +54,11 @@
 <script>
 import CollectDialog from '@/components/Input/CollectDialog'
 import { mapGetters } from 'vuex'
-import { isSubscribe, subscribe, cancelSubscribe } from '@/api/knowledgeSubscribe'
+import {
+  isSubscribe,
+  subscribe,
+  cancelSubscribe
+} from '@/api/knowledgeSubscribe'
 import { isCollect, deleteCollect } from '@/api/knowledgeCollect'
 import { passKnowledge } from '@/api/knowledgeBase'
 import { createKnowledgeVersion } from '@/api/knowledgeVersion'
@@ -36,7 +74,7 @@ export default {
   props: {
     baseData: Object
   },
-  data () {
+  data() {
     return {
       isSubscribe: false,
       isCollect: false,
@@ -52,10 +90,8 @@ export default {
     }
   },
   computed: {
-    ...mapGetters([
-      'userInfo'
-    ]),
-    knowledge () {
+    ...mapGetters(['userInfo']),
+    knowledge() {
       return {
         NAME: this.baseData.name,
         KNOWLEDGE_ID: this.baseData.id
@@ -64,14 +100,14 @@ export default {
   },
   watch: {
     'baseData.auditStatus': {
-      handler (val) {
+      handler(val) {
         this.auditStatus = val
       },
       immediate: true
     }
   },
   methods: {
-    async publish () {
+    async publish() {
       this.publishLoading = true
       const id = this.knowledge.KNOWLEDGE_ID
       try {
@@ -87,13 +123,13 @@ export default {
           this.$success(msg)
           this.auditStatus = '-1'
         }
-      } catch(err) {
+      } catch (err) {
         this.$error(err)
       } finally {
         this.publishLoading = false
       }
     },
-    async test () {
+    async test() {
       await passKnowledge({
         id: this.knowledge.KNOWLEDGE_ID,
         auditor: 'songyg',
@@ -101,11 +137,11 @@ export default {
       })
       this.$success('知识发布成功')
     },
-    handleHomeClick () {
+    handleHomeClick() {
       this.$router.push('/')
     },
     // 订阅 / 取消订阅知识
-    handleSubscribe () {
+    handleSubscribe() {
       const id = this.$route.params.id
       const userId = this.userInfo.id
       const text = `${this.isSubscribe ? '取消' : ''}订阅`
@@ -114,32 +150,36 @@ export default {
         cancelSubscribe({
           ids: `${id}-0`,
           userId
-        }).then(() => {
-          this.isSubscribe = false
-          // this.$emit('update:isSubscribe', false)
-          this.$success(`${text}成功`)
-          this.subscribeLoading = false
-        }).catch(() => {
-          this.$error(`${text}失败`)
-          this.subscribeLoading = false
         })
+          .then(() => {
+            this.isSubscribe = false
+            // this.$emit('update:isSubscribe', false)
+            this.$success(`${text}成功`)
+            this.subscribeLoading = false
+          })
+          .catch(() => {
+            this.$error(`${text}失败`)
+            this.subscribeLoading = false
+          })
       } else {
         subscribe({
           id,
-          userId,
-        }).then(() => {
-          this.isSubscribe = true
-          // this.$emit('update:isSubscribe', true)
-          this.$success(`${text}成功`)
-          this.subscribeLoading = false
-        }).catch(() => {
-          this.$error(`${text}失败`)
-          this.subscribeLoading = false
+          userId
         })
+          .then(() => {
+            this.isSubscribe = true
+            // this.$emit('update:isSubscribe', true)
+            this.$success(`${text}成功`)
+            this.subscribeLoading = false
+          })
+          .catch(() => {
+            this.$error(`${text}失败`)
+            this.subscribeLoading = false
+          })
       }
     },
     // 收藏 / 取消收藏知识
-    handleCollect () {
+    handleCollect() {
       if (this.isCollect) {
         deleteCollect({
           knowledgeId: this.collectInfo.id,
@@ -152,11 +192,11 @@ export default {
         this.collectShow = true
       }
     },
-    collectSuccess () {
+    collectSuccess() {
       this.updateCollect()
       this.$success('收藏成功')
     },
-    updateCollect () {
+    updateCollect() {
       isCollect({
         knowledgeId: this.$route.params.id,
         userId: this.userInfo.id
@@ -169,11 +209,15 @@ export default {
       })
     },
     // 新建版本
-    async addVersion () {
+    async addVersion() {
       try {
-        await this.$confirm('新建版本后当前版本将进入历史版本中，新版本数据为待发布状态', '提示', {
-          type: 'info'
-        })
+        await this.$confirm(
+          '新建版本后当前版本将进入历史版本中，新版本数据为待发布状态',
+          '提示',
+          {
+            type: 'info'
+          }
+        )
         await createKnowledgeVersion(this.baseData.id)
         const url = this.$router.resolve({
           path: this.$route.path,
@@ -188,11 +232,11 @@ export default {
       }
     },
     // 查看历史版本
-    viewHistoryVersion () {
+    viewHistoryVersion() {
       openNewWindows(this.$router, `/knowledgeVersion/${this.baseData.id}`)
     }
   },
-  mounted () {
+  mounted() {
     isSubscribe({
       id: this.$route.params.id,
       userId: this.userInfo.id
