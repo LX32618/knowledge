@@ -12,26 +12,82 @@
         </el-select>
       </el-form-item>
       <el-form-item v-show="shareType === 0" label="选择人员">
-        <el-dialog title="选择人员" :visible.sync="peopleTransferVisible" append-to-body>
-          <PeopleTransfer :iniList="peopleValue" @cancel="peopleTransferVisible = false" @certain="handlePeopleSelect" />
+        <el-dialog
+          title="选择人员"
+          :visible.sync="peopleTransferVisible"
+          append-to-body
+        >
+          <PeopleTransfer
+            :iniList="peopleValue"
+            @cancel="peopleTransferVisible = false"
+            @certain="handlePeopleSelect"
+          />
         </el-dialog>
-        <el-button type="primary" icon="el-icon-search" circle @click="peopleTransferVisible=true"></el-button>
-        <el-tag v-for="(people, index) of peopleValue" :key="people.id" type="danger" closable @close="handlePeopleRemove(index)">{{ people.realName }}</el-tag>
+        <el-button
+          type="primary"
+          icon="el-icon-search"
+          circle
+          @click="peopleTransferVisible = true"
+        ></el-button>
+        <el-tag
+          v-for="(people, index) of peopleValue"
+          :key="people.id"
+          type="danger"
+          closable
+          @close="handlePeopleRemove(index)"
+          >{{ people.realName }}</el-tag
+        >
       </el-form-item>
       <el-form-item v-show="shareType === 1" label="选择组织单元">
-        <el-dialog title="选择组织单元" :visible.sync="departmentTransferVisible" append-to-body>
-          <DeptTransfer :iniList="departmentValue" @cancel="departmentTransferVisible = false" @certain="handleDepartmentSelect" />
+        <el-dialog
+          title="选择组织单元"
+          :visible.sync="departmentTransferVisible"
+          append-to-body
+        >
+          <DeptTransfer
+            :iniList="departmentValue"
+            @cancel="departmentTransferVisible = false"
+            @certain="handleDepartmentSelect"
+          />
         </el-dialog>
-        <el-button type="primary" icon="el-icon-search" circle @click="departmentTransferVisible=true"></el-button>
-        <el-tag v-for="(department, index) of departmentValue" :key="department.id" type="danger" closable @close="handleDepartmentRemove(index)">{{ department.departName }}</el-tag>
+        <el-button
+          type="primary"
+          icon="el-icon-search"
+          circle
+          @click="departmentTransferVisible = true"
+        ></el-button>
+        <el-tag
+          v-for="(department, index) of departmentValue"
+          :key="department.id"
+          type="danger"
+          closable
+          @close="handleDepartmentRemove(index)"
+          >{{ department.departName }}</el-tag
+        >
       </el-form-item>
-      <el-form-item v-show="shareType === 2" v-loading="groupLoading" label="选择专业组">
+      <el-form-item
+        v-show="shareType === 2"
+        v-loading="groupLoading"
+        label="选择专业组"
+      >
         <el-select v-model="groupValue">
-          <el-option v-for="group of groups" :key="group.id" :value="group.id" :label="group.name"></el-option>
+          <el-option
+            v-for="group of groups"
+            :key="group.id"
+            :value="group.id"
+            :label="group.name"
+          ></el-option>
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" icon="fa fa-save" @click="shareKnowledge" :loading="shareLoading"> 保存</el-button>
+        <el-button
+          type="primary"
+          icon="fa fa-save"
+          @click="shareKnowledge"
+          :loading="shareLoading"
+        >
+          保存</el-button
+        >
       </el-form-item>
     </el-form>
   </div>
@@ -50,7 +106,7 @@ export default {
     DeptTransfer
   },
   inject: ['contentContainer'],
-  data () {
+  data() {
     return {
       shareTypes: ['指定人员', '指定部门', '指定专业组', '全部人员'],
       shareType: 0,
@@ -65,7 +121,7 @@ export default {
     }
   },
   watch: {
-    shareType (val) {
+    shareType(val) {
       this.peopleValue = []
       this.departmentValue = []
       this.groupValue = ''
@@ -75,23 +131,25 @@ export default {
     }
   },
   methods: {
-    handlePeopleSelect (val) {
+    handlePeopleSelect(val) {
       this.peopleValue = val
       this.peopleTransferVisible = false
     },
-    handlePeopleRemove (index) {
+    handlePeopleRemove(index) {
       this.peopleValue.splice(index, 1)
     },
-    handleDepartmentSelect (val) {
+    handleDepartmentSelect(val) {
       this.departmentValue = val
       this.departmentTransferVisible = false
     },
-    handleDepartmentRemove (index) {
+    handleDepartmentRemove(index) {
       this.departmentValue.splice(index, 1)
     },
-    async getGroups () {
+    async getGroups() {
       this.groupLoading = true
-      const { content: { datas } } = await fetchGroupList({
+      const {
+        content: { datas }
+      } = await fetchGroupList({
         page: 1,
         rows: 9999,
         condition: { name: '' }
@@ -99,7 +157,7 @@ export default {
       this.groups = datas
       this.groupLoading = false
     },
-    async shareKnowledge () {
+    async shareKnowledge() {
       const { id, baseId } = this.contentContainer._props.baseData
       const tmp = [
         this.peopleValue.map(item => item.id).join(','),
@@ -119,7 +177,7 @@ export default {
         groupId: tmp[2],
         days: 1,
         desc: '分享',
-        status: '1'
+        status: '99'
       })
       this.$success('分享成功')
       this.shareLoading = false
@@ -128,5 +186,4 @@ export default {
 }
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>
