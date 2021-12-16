@@ -49,7 +49,9 @@ export function getSubscribedKnowledge (option) {
       page: option.page || 1,
       rows: option.rows || 10,
       condition: {
-        userId: option.userId
+        userId: option.userId,
+        sort: 'CREATEDATE',
+        order: 'desc'
       }
     } 
   })
