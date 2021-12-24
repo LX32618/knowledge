@@ -117,7 +117,7 @@ export default {
       default: '0'
     }
   },
-  data () {
+  data() {
     // 知识名称校验
     const checkName = (rule, value, callback) => {
       if (!value) {
@@ -143,21 +143,20 @@ export default {
       rules: {
         name: [
           // { validator: checkName, trigger: 'blur' },
-          { required: true, message: '请输入知识名称', trigger: 'change' }],
-        classification: [{ required: true, message: '请选择知识目录', trigger: 'change' }]
+          { required: true, message: '请输入知识名称', trigger: 'change' }
+        ],
+        classification: [
+          { required: true, message: '请选择知识目录', trigger: 'change' }
+        ]
       },
       saveButtonLoading: false
     }
   },
   computed: {
-    ...mapGetters([
-      'userInfo',
-      'docCategories',
-      'secretLevels'
-    ]),
+    ...mapGetters(['userInfo', 'docCategories', 'secretLevels'])
   },
   watch: {
-    category () {
+    category() {
       // 重置已选择知识目录与知识标签
       this.$set(this.knowledge, 'classification', undefined)
       this.$set(this.knowledge, 'labels', [])
@@ -185,14 +184,18 @@ export default {
           }
           return item
         })
-        if (this.category === this.id && !this.knowledge.classification && this.classification !== '0') {
+        if (
+          this.category === this.id &&
+          !this.knowledge.classification &&
+          this.classification !== '0'
+        ) {
           this.knowledge.classification = this.classification
         }
         this.subCategories = data
         this.isLoading = false
       })
     },
-    'knowledge.classification': function (val) {
+    'knowledge.classification': function(val) {
       // 重置已选择知识标签
       this.$set(this.knowledge, 'labels', [])
       if (!val) {
@@ -207,37 +210,42 @@ export default {
     }
   },
   methods: {
-    save () {
+    save() {
       this.$refs.knowledgeBaseForm.validate(valid => {
         if (!valid) return
         this.saveButtonLoading = true
-        saveBaseData(this.knowledge, this.userInfo.id, this.category).then(res => {
-          const knowledgeId = res.content
-          this.$router.push(`/knowledgeDetail/${knowledgeId}`)
-        }).catch(() => {
-          this.saveButtonLoading = false
-        })
+        saveBaseData(this.knowledge, this.userInfo.id, this.category)
+          .then(res => {
+            const knowledgeId = res.content
+            this.$router.push({
+              path: `/knowledgeDetail/${knowledgeId}`,
+              query: { edit: '1' }
+            })
+          })
+          .catch(() => {
+            this.saveButtonLoading = false
+          })
       })
     },
-    close () {
+    close() {
       this.$router.go(-1)
     },
     // 重置表单
-    reset () {
+    reset() {
       this.knowledge = {
         secretLevel: 10,
         labels: []
       }
     },
     // 知识目录选择树图标显示
-    baseIdIconClass (node) {
+    baseIdIconClass(node) {
       if (node.raw.type < 2) {
         return node.isExpanded ? 'fa-folder-open' : 'fa-folder'
       }
       return 'fa-book'
     }
   },
-  async mounted () {
+  async mounted() {
     this.reset()
     this.pageLoading = true
     // 加载知识库

@@ -1,5 +1,9 @@
 <template>
-  <el-tabs v-loading="isLoading" v-if="formConfig && !isLoading" :type="isHistory ? 'border-card' : 'card'">
+  <el-tabs
+    v-loading="isLoading"
+    v-if="formConfig && !isLoading"
+    :type="isHistory ? 'border-card' : 'card'"
+  >
     <!-- 实体表单 -->
     <template v-if="formConfig.formType === 0">
       <el-tab-pane>
@@ -35,7 +39,7 @@
       </el-tab-pane>
     </template>
     <!-- 知识评论 -->
-    <el-tab-pane>
+    <el-tab-pane v-if="!isHistory">
       <span slot="label">知识评论</span>
       <knowledge-comment></knowledge-comment>
     </el-tab-pane>
@@ -65,7 +69,7 @@ export default {
       type: Object
     }
   },
-  data () {
+  data() {
     return {
       isLoading: false,
       baseData: {},
@@ -76,7 +80,7 @@ export default {
   },
   watch: {
     knowledge: {
-      handler (val) {
+      handler(val) {
         this.setData(val)
       },
       deep: true,
@@ -84,18 +88,18 @@ export default {
     }
   },
   methods: {
-    handleSaveSuccess () {
+    handleSaveSuccess() {
       // location.reload()
       this.update()
     },
-    update (ver) {
+    update(ver) {
       this.isLoading = true
       getModelAndData({ id: this.id, ver }).then(res => {
         this.setData(handleGetKnowledgeModelAndDataResponse(res.content))
         this.isLoading = false
       })
     },
-    setData (val) {
+    setData(val) {
       const { baseData, formData, formConfig } = val
       this.baseData = baseData
       this.formData = formData
