@@ -1,9 +1,14 @@
 <template>
   <div class="generateForm">
-    <el-form ref="generateForm"
+    <el-form
+      ref="generateForm"
       label-suffix=":"
       :size="data.config && data.config.size"
-      :model="models" :rules="rules" :label-position="data.config.labelPosition" :label-width="data.config.labelWidth + 'px'">
+      :model="models"
+      :rules="rules"
+      :label-position="data.config.labelPosition"
+      :label-width="data.config.labelWidth + 'px'"
+    >
       <template v-for="item in data.list">
         <template v-if="item.type == 'grid'">
           <el-row
@@ -13,13 +18,23 @@
             :justify="item.options.justify"
             :align="item.options.align"
           >
-            <el-col v-for="(col, colIndex) in item.columns" :key="colIndex" :span="item.options.rowConfig=='span'?col.span:undefined"
-                    :style="{width:rowPercent(item,col.scale)}">
-              <template v-for="citem in col.list" >
-                <el-form-item v-if="citem.type=='blank'" :label="citem.name" :prop="citem.model" :key="citem.key">
+            <el-col
+              v-for="(col, colIndex) in item.columns"
+              :key="colIndex"
+              :span="item.options.rowConfig == 'span' ? col.span : undefined"
+              :style="{ width: rowPercent(item, col.scale) }"
+            >
+              <template v-for="citem in col.list">
+                <el-form-item
+                  v-if="citem.type == 'blank'"
+                  :label="citem.name"
+                  :prop="citem.model"
+                  :key="citem.key"
+                >
                   <slot :name="citem.model" :model="models"></slot>
                 </el-form-item>
-                <genetate-form-item v-else
+                <genetate-form-item
+                  v-else
                   :key="citem.key"
                   :models.sync="models"
                   :remote="remote"
@@ -28,7 +43,8 @@
                   :edit="edit"
                   :preview="preview"
                   @input-change="onInputChange"
-                  :options="options">
+                  :options="options"
+                >
                 </genetate-form-item>
               </template>
             </el-col>
@@ -45,10 +61,13 @@
                     <div
                       @mouseenter="hoverIndex = item.key + $index"
                       @mouseleave="hoverIndex = ''"
-                      style="width: 100%;">
-                      <i v-if="hoverIndex === item.key + $index"
+                      style="width: 100%;"
+                    >
+                      <i
+                        v-if="hoverIndex === item.key + $index"
                         class="el-icon-remove delete-icon"
-                        @click="models[item.model].splice($index, 1)"></i>
+                        @click="models[item.model].splice($index, 1)"
+                      ></i>
                       <span v-else>{{ $index + 1 }}</span>
                     </div>
                   </template>
@@ -58,17 +77,25 @@
                   :key="column.key"
                   :label="column.name"
                   :prop="column.model"
-                  :width="column.options.width">
+                  :width="column.options.width"
+                >
                   <template slot-scope="{ row }">
                     <genetate-form-item
                       :table="true"
                       :models.sync="row"
                       :widget="column"
-                      :edit="edit"></genetate-form-item>
+                      :edit="edit"
+                    ></genetate-form-item>
                   </template>
                 </el-table-column>
               </el-table>
-              <el-button v-if="edit" type="text" icon="el-icon-plus" @click="handleRowAppend(item)">添加</el-button>
+              <el-button
+                v-if="edit"
+                type="text"
+                icon="el-icon-plus"
+                @click="handleRowAppend(item)"
+                >添加</el-button
+              >
             </div>
           </el-form-item>
         </template>
@@ -89,10 +116,10 @@
             :preview="preview"
             @input-change="onInputChange"
             :remote="remote"
-            :options="options">
+            :options="options"
+          >
           </genetate-form-item>
         </template>
-
       </template>
     </el-form>
   </div>
@@ -107,7 +134,7 @@ export default {
     GenetateFormItem
   },
   props: ['data', 'remote', 'value', 'insite', 'edit', 'preview'],
-  data () {
+  data() {
     return {
       models: {},
       rules: {},
@@ -115,13 +142,12 @@ export default {
       hoverIndex: ''
     }
   },
-  created () {
-    this.generateModle(this.data.list);
+  created() {
+    this.generateModle(this.data.list)
   },
-  mounted () {
-  },
+  mounted() {},
   methods: {
-    generateModle (genList) {
+    generateModle(genList) {
       this.options.classification = this.value.classification
       this.options.knowledgeId = this.value.knowledgeId
       if (!genList) return
@@ -130,52 +156,67 @@ export default {
           genList[i].columns.forEach(item => {
             this.generateModle(item.list)
           })
-        }
-        else if (genList[i].type === 'text') {
+        } else if (genList[i].type === 'text') {
           continue
-        }
-        else if (genList[i].type === 'imgupload' || genList[i].type === 'upload') {
+        } else if (
+          genList[i].type === 'imgupload' ||
+          genList[i].type === 'upload'
+        ) {
           this.models[genList[i].model] = this.value[genList[i].model] || ''
-        }
-        else if (genList[i].type === 'table') {
-          if (this.value && Object.keys(this.value).indexOf(genList[i].model) >= 0) {
+        } else if (genList[i].type === 'table') {
+          if (
+            this.value &&
+            Object.keys(this.value).indexOf(genList[i].model) >= 0
+          ) {
             this.models[genList[i].model] = this.value[genList[i].model]
           } else {
             this.models[genList[i].model] = []
           }
-        }
-        else if(genList[i].type === 'viewBtn'){
-          this.models[genList[i].model] = JSON.parse(this.value[genList[i].model]);
-        }
-        else {
-          if (this.value && Object.keys(this.value).indexOf(genList[i].model) >= 0) {
+        } else if (genList[i].type === 'viewBtn') {
+          const value = this.value[genList[i].model]
+          this.models[genList[i].model] = value ? JSON.parse(value) : null
+        } else {
+          if (
+            this.value &&
+            Object.keys(this.value).indexOf(genList[i].model) >= 0
+          ) {
             this.models[genList[i].model] = this.value[genList[i].model]
-          }
-          else {
+          } else {
             if (genList[i].type === 'blank') {
-              this.$set(this.models, genList[i].model, genList[i].options.defaultType === 'String' ? '' : (genList[i].options.defaultType === 'Object' ? {} : []))
-            }
-            else {
+              this.$set(
+                this.models,
+                genList[i].model,
+                genList[i].options.defaultType === 'String'
+                  ? ''
+                  : genList[i].options.defaultType === 'Object'
+                  ? {}
+                  : []
+              )
+            } else {
               this.models[genList[i].model] = genList[i].options.defaultValue
             }
           }
           if (this.rules[genList[i].model]) {
-            this.rules[genList[i].model] = [...this.rules[genList[i].model], ...genList[i].rules.map(item => {
-              if (item.pattern) {
-                return {...item, pattern: eval(item.pattern)}
-              } else {
-                return {...item}
-              }
-            })]
-          }
-          else {
-            this.rules[genList[i].model] = [...genList[i].rules.map(item => {
-              if (item.pattern) {
-                return {...item, pattern: eval(item.pattern)}
-              } else {
-                return {...item}
-              }
-            })]
+            this.rules[genList[i].model] = [
+              ...this.rules[genList[i].model],
+              ...genList[i].rules.map(item => {
+                if (item.pattern) {
+                  return { ...item, pattern: eval(item.pattern) }
+                } else {
+                  return { ...item }
+                }
+              })
+            ]
+          } else {
+            this.rules[genList[i].model] = [
+              ...genList[i].rules.map(item => {
+                if (item.pattern) {
+                  return { ...item, pattern: eval(item.pattern) }
+                } else {
+                  return { ...item }
+                }
+              })
+            ]
           }
         }
       }
@@ -186,7 +227,7 @@ export default {
       //   this.models.classification = this.value.classification
       // }
     },
-    getData () {
+    getData() {
       return new Promise((resolve, reject) => {
         this.$refs.generateForm.validate(valid => {
           if (valid) {
@@ -197,17 +238,15 @@ export default {
         })
       })
     },
-    reset () {
+    reset() {
       this.$refs.generateForm.resetFields()
       this.generateModle(this.data.list)
     },
-    onInputChange (value, field) {
+    onInputChange(value, field) {
       this.$emit('on-change', field, value, this.models)
     },
-    refresh () {
-
-    },
-    handleRowAppend (config) {
+    refresh() {},
+    handleRowAppend(config) {
       const row = {}
       for (let i = 0; i < config.tableColumns.length; ++i) {
         const key = config.tableColumns[i].model
@@ -219,32 +258,31 @@ export default {
   watch: {
     data: {
       deep: true,
-      handler (val) {
+      handler(val) {
         this.generateModle(val.list)
       }
     },
     value: {
       deep: true,
-      handler (val) {
+      handler(val) {
         // console.log(JSON.stringify(val))
-        this.models = {...this.models, ...val}
+        this.models = { ...this.models, ...val }
       }
     }
   },
   computed: {
-    rowPercent(element, scale){
-      return function(element, scale){
-        if(element.type=='grid')
-        {
-          if(element.options.rowConfig == 'scale')
-          {
-            let total = element.options.blank + element.columns.reduce((s, d) => {
-              return s + d.scale;
-            }, 0);
-            return (scale / total) * 100 + "%";
-          }
-          else{
-            return undefined;
+    rowPercent(element, scale) {
+      return function(element, scale) {
+        if (element.type == 'grid') {
+          if (element.options.rowConfig == 'scale') {
+            let total =
+              element.options.blank +
+              element.columns.reduce((s, d) => {
+                return s + d.scale
+              }, 0)
+            return (scale / total) * 100 + '%'
+          } else {
+            return undefined
           }
         }
       }
@@ -256,7 +294,7 @@ export default {
 <style lang="scss" scoped>
 // @import '../styles/cover.scss';
 .delete-icon {
-  color: #F56C6C;
+  color: #f56c6c;
   font-size: 20px;
 }
 </style>
@@ -267,12 +305,12 @@ export default {
 }
 .generateForm .el-input.is-disabled .el-input__inner {
   background-color: white;
-  border-color: #DCDFE6;
+  border-color: #dcdfe6;
   color: #606266;
 }
 .generateForm .el-textarea.is-disabled .el-textarea__inner {
   background-color: white;
-  border-color: #DCDFE6;
+  border-color: #dcdfe6;
   color: #606266;
 }
 .generateForm .is-disabled {
