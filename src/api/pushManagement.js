@@ -1,11 +1,11 @@
 import request from '@/utils/request'
 
-const rootUrl = '/pushSwitch/'
+const rootUrl = '/'
 
 //获取推送开关状态
 export function fetchPushSwitch (option) {
     return request({
-        url: `${rootUrl}get`,
+        url: `${rootUrl}batchGetPushSwitch/get`,
         method: 'post',
         data: option
     })
@@ -14,7 +14,7 @@ export function fetchPushSwitch (option) {
 //更新推送开关状态
 export function updatePushSwitch (option) {
     return request({
-        url: `${rootUrl}post`,
+        url: `${rootUrl}batchUpdatePushSwitch`,
         method: 'post',
         data: option
     })
