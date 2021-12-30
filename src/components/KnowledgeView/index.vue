@@ -13,20 +13,43 @@
     ></search-area>
     <!-- 知识显示列表 -->
     <div>
-      <dynamic-table ref="dynamicTable" :data="knowledges" :columns="columns" :props="props" border @sort-change="handleSort">
+      <dynamic-table
+        ref="dynamicTable"
+        :data="knowledges"
+        :columns="columns"
+        :props="props"
+        border
+        @sort-change="handleSort"
+      >
         <!-- 序号列 -->
         <template v-slot:index="{ scope }">{{ scope.$index + 1 }}</template>
         <!-- 操作列 -->
         <template v-slot:option="{ scope }">
-          <el-button v-if="scope.row.HASPERMISSION" size="mini" icon="el-icon-view" @click="handleView(scope.row)" type="success">查看</el-button>
-          <el-button v-else size="mini" icon="el-icon-reading" @click="handleApply(scope.row)" type="danger">申请</el-button>
-          <el-button size="mini" @click="handleSubscribe(scope.row, scope.$index)" :type="scope.row.ISSUBSCRIBE ? 'warning' : 'primary'">
+          <el-button
+            v-if="scope.row.HASPERMISSION"
+            size="mini"
+            icon="el-icon-view"
+            @click="handleView(scope.row)"
+            type="success"
+            >查看</el-button
+          >
+          <el-button
+            v-else
+            size="mini"
+            icon="el-icon-reading"
+            @click="handleApply(scope.row)"
+            type="danger"
+            >申请</el-button
+          >
+          <el-button
+            size="mini"
+            @click="handleSubscribe(scope.row, scope.$index)"
+            :type="scope.row.ISSUBSCRIBE ? 'warning' : 'primary'"
+          >
             <template v-if="scope.row.ISSUBSCRIBE">
               <i class="el-icon-s-release"></i> 取消订阅
             </template>
-            <template v-else>
-              <i class="el-icon-s-claim"></i> 订阅
-            </template>
+            <template v-else> <i class="el-icon-s-claim"></i> 订阅 </template>
           </el-button>
         </template>
       </dynamic-table>
@@ -76,7 +99,7 @@ export default {
       default: false
     }
   },
-  data () {
+  data() {
     return {
       knowledges: [], // 知识列表
       isLoading: false,
@@ -97,14 +120,11 @@ export default {
     }
   },
   computed: {
-    ...mapGetters([
-      'userInfo',
-      'baseColumnsConfig'
-    ])
+    ...mapGetters(['userInfo', 'baseColumnsConfig'])
   },
   watch: {
     selectedCategory: {
-      handler (newValue) {
+      handler(newValue) {
         if (!newValue || !newValue.id) {
           return
         }
@@ -123,7 +143,7 @@ export default {
   },
   methods: {
     // 更新知识
-    updateKnowledges () {
+    updateKnowledges() {
       this.isLoading = true
       getKnowledgeByClassifications({
         id: this.selectedCategory.id,
@@ -149,34 +169,43 @@ export default {
           const sortedBaseConfig = model.base
             .filter(item => item.isShow)
             .sort((a, b) => a.pOrder - b.pOrder)
-          this.columns.push(...sortedBaseConfig.map(this.handleBaseColumnConfig))
+          this.columns.push(
+            ...sortedBaseConfig.map(this.handleBaseColumnConfig)
+          )
           // 主表知识配置生成
           const formData = model.formData
           formData.forEach(mainForm => {
             fieldMap[mainForm.formId] = []
-            this.columns.push(...mainForm.fieldData.filter(item => item.isShow).map(item => {
-              let key = `${mainForm.tableName}${item.fieldInfo.fieldName}`.toUpperCase()
-              if (item.fieldInfo.htmlType !== 0 && item.fieldInfo.htmlType !== 9) {
-                key += 'TEXT'
-              }
-              const result = {
-                ...item,
-                key,
-                label: item.showName,
-                width: item.colWidth
-              }
-              fieldMap[mainForm.formId].push(item.fieldInfo.fieldName)
-              if (item.isSearch) {
-                this.searchColumns.push({
-                  key: `FIELD_${item.fieldId}`,
-                  name: item.showName,
-                  fieldInfo: {
-                    ...item.fieldInfo
+            this.columns.push(
+              ...mainForm.fieldData
+                .filter(item => item.isShow)
+                .map(item => {
+                  let key = `${mainForm.tableName}${item.fieldInfo.fieldName}`.toUpperCase()
+                  if (
+                    item.fieldInfo.htmlType !== 0 &&
+                    item.fieldInfo.htmlType !== 9
+                  ) {
+                    key += 'TEXT'
                   }
+                  const result = {
+                    ...item,
+                    key,
+                    label: item.showName,
+                    width: item.colWidth
+                  }
+                  fieldMap[mainForm.formId].push(item.fieldInfo.fieldName)
+                  if (item.isSearch) {
+                    this.searchColumns.push({
+                      key: `FIELD_${item.fieldId}`,
+                      name: item.showName,
+                      fieldInfo: {
+                        ...item.fieldInfo
+                      }
+                    })
+                  }
+                  return result
                 })
-              }
-              return result
-            }))
+            )
           })
         }
         // 预览状态不处理列表数据
@@ -187,12 +216,12 @@ export default {
         }
         // 处理知识列表数据
         this.knowledges = res.content.page.datas
-        this.total = res.content.total
+        this.total = res.content.page.total
         this.isLoading = false
       })
     },
     // 转化基础知识配置
-    handleBaseColumnConfig (item) {
+    handleBaseColumnConfig(item) {
       const result = {
         ...item,
         key: item.fieldName.toUpperCase(),
@@ -210,11 +239,11 @@ export default {
       return result
     },
     // 查询知识
-    handleSearch (searchOption) {
+    handleSearch(searchOption) {
       this.searchOption = searchOption
       this.updateKnowledges()
     },
-    async handleApply (row) {
+    async handleApply(row) {
       const res = await isApply(row.ID)
       if (res.content) {
         this.$info(res.message)
@@ -224,7 +253,7 @@ export default {
       this.applyDialogShow = true
     },
     // 查看知识详情
-    handleView (row) {
+    handleView(row) {
       const routeData = this.$router.resolve({
         name: 'knowledgeDetail',
         params: {
@@ -234,7 +263,7 @@ export default {
       window.open(routeData.href, '_blank')
     },
     // 订阅 / 取消订阅知识
-    handleSubscribe (row, index) {
+    handleSubscribe(row, index) {
       const id = row.ID
       const userId = this.userInfo.id
       const text = `${row.ISSUBSCRIBE ? '取消' : ''}订阅`
@@ -242,38 +271,42 @@ export default {
         cancelSubscribe({
           ids: `${row.ID}-1`,
           userId
-        }).then(() => {
-          row.ISSUBSCRIBE = false
-          this.knowledges.splice(index, 1, row)
-          this.$success(`${text}成功`)
-        }).catch(() => {
-          this.$error(`${text}失败`)
         })
+          .then(() => {
+            row.ISSUBSCRIBE = false
+            this.knowledges.splice(index, 1, row)
+            this.$success(`${text}成功`)
+          })
+          .catch(() => {
+            this.$error(`${text}失败`)
+          })
       } else {
         subscribe({
           id,
           userId
-        }).then(() => {
-          row.ISSUBSCRIBE = true
-          this.knowledges.splice(index, 1, row)
-          this.$success(`${text}成功`)
-        }).catch(() => {
-          this.$error(`${text}失败`)
         })
+          .then(() => {
+            row.ISSUBSCRIBE = true
+            this.knowledges.splice(index, 1, row)
+            this.$success(`${text}成功`)
+          })
+          .catch(() => {
+            this.$error(`${text}失败`)
+          })
       }
     },
     // 每页数量变化
-    sizeChange (rows) {
+    sizeChange(rows) {
       this.rows = rows
       this.updateKnowledges()
     },
     // 当前页面变化
-    pageChange (page) {
+    pageChange(page) {
       this.page = page
       this.updateKnowledges()
     },
     // 处理排序
-    handleSort ({ column, prop, order }) {
+    handleSort({ column, prop, order }) {
       this.sort = prop
       this.order = order === 'descending' ? 'desc' : 'asc'
       this.updateKnowledges()

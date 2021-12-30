@@ -265,7 +265,6 @@ export default {
       this.editFormData.main = await this.$refs.mainForm.getData()
       this.saveButtonLoading = true
       const knowledgeModel = this.createKnowledgeModel()
-      console.log(knowledgeModel)
       // const saveHandler = this.showBase ? saveData : saveFormData
       const saveHandler = saveData
       saveHandler(knowledgeModel)
