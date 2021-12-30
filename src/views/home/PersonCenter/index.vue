@@ -119,5 +119,6 @@ export default {
 }
 .main-card {
   height: 665px;
+  overflow-y: auto;
 }
 </style>

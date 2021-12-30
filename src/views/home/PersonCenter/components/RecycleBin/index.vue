@@ -3,20 +3,39 @@
     <!-- 按钮工具条 -->
     <el-form inline>
       <el-form-item>
-        <el-button type="primary" icon="el-icon-refresh-right" @click="handleBack" :loading="isLoading">还原</el-button>
+        <el-button
+          type="primary"
+          icon="el-icon-refresh-right"
+          @click="handleBack"
+          :loading="isLoading"
+          >还原</el-button
+        >
       </el-form-item>
       <el-form-item>
-        <el-button type="danger" icon="el-icon-delete" @click="handleDelete" :loading="isLoading">删除</el-button>
+        <el-button
+          type="danger"
+          icon="el-icon-delete"
+          @click="handleDelete"
+          :loading="isLoading"
+          >删除</el-button
+        >
       </el-form-item>
     </el-form>
     <!-- 删除知识列表 -->
-    <dynamic-table v-loading="isLoading" ref="table" :props="{ checkbox: true }" :data="recycleKnowledge" :columns="columns"></dynamic-table>
+    <dynamic-table
+      v-loading="isLoading"
+      ref="table"
+      :props="{ checkbox: true }"
+      :data="recycleKnowledge"
+      :columns="columns"
+    ></dynamic-table>
     <el-pagination
       :page-size="rows"
       :total="total"
       :current-page.sync="page"
       @current-change="pageChange"
-      layout="total, prev, pager, next, jumper">
+      layout="total, prev, pager, next, jumper"
+    >
     </el-pagination>
   </div>
 </template>
@@ -24,14 +43,18 @@
 <script>
 import DynamicTable from '@/components/KnowledgeView/components/DynamicTable'
 import { mapGetters } from 'vuex'
-import { getRecycleKnowledge, revertKnowledge, reDeleteKnowledge } from '@/api/knowledgeBase'
+import {
+  getRecycleKnowledge,
+  revertKnowledge,
+  reDeleteKnowledge
+} from '@/api/knowledgeBase'
 
 export default {
   name: 'RecycleBin',
   components: {
     DynamicTable
   },
-  data () {
+  data() {
     return {
       recycleKnowledge: [],
       columns: [
@@ -59,15 +82,13 @@ export default {
     }
   },
   computed: {
-    ...mapGetters([
-      'userInfo'
-    ])
+    ...mapGetters(['userInfo'])
   },
   methods: {
-    pageChange () {
+    pageChange() {
       this.updateRecycleKnowledge()
     },
-    updateRecycleKnowledge () {
+    updateRecycleKnowledge() {
       this.isLoading = true
       getRecycleKnowledge({
         rows: this.rows,
@@ -79,7 +100,7 @@ export default {
         this.isLoading = false
       })
     },
-    handleBack () {
+    handleBack() {
       const selection = this.$refs.table.getSelection()
       const id = selection.map(item => item.id).join(',')
       this.isLoading = true
@@ -90,25 +111,26 @@ export default {
         this.updateRecycleKnowledge()
       })
     },
-    handleDelete () {
+    handleDelete() {
       const selection = this.$refs.table.getSelection()
       const id = selection.map(item => item.id).join(',')
       this.isLoading = true
       reDeleteKnowledge({
         id,
         userId: this.userInfo.id
-      }).then(() => {
-        this.updateRecycleKnowledge()
-      }).catch(() => {
-        this.isLoading = false
       })
+        .then(() => {
+          this.updateRecycleKnowledge()
+        })
+        .catch(() => {
+          this.isLoading = false
+        })
     }
   },
-  mounted () {
+  mounted() {
     this.updateRecycleKnowledge()
   }
 }
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>
