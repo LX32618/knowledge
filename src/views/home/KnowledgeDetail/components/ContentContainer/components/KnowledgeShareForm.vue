@@ -165,22 +165,26 @@ export default {
         this.groupValue
       ]
       this.shareLoading = true
-      await saveShare({
-        docId: id,
-        knowbaseId: baseId,
-        docIds: '',
-        knowBaseIds: '',
-        objId: tmp[this.shareType],
-        objType: this.shareType + 1,
-        hrmId: tmp[0],
-        orgId: tmp[1],
-        groupId: tmp[2],
-        days: 1,
-        desc: '分享',
-        status: '99'
-      })
-      this.$success('分享成功')
-      this.shareLoading = false
+      try {
+        await saveShare({
+          docId: id,
+          knowbaseId: baseId,
+          docIds: '',
+          knowBaseIds: '',
+          objId: tmp[this.shareType],
+          objType: this.shareType + 1,
+          hrmId: tmp[0],
+          orgId: tmp[1],
+          groupId: tmp[2],
+          days: 1,
+          desc: '分享',
+          status: '99'
+        })
+        this.$success('分享成功')
+      } catch {
+      } finally {
+        this.shareLoading = false
+      }
     }
   }
 }
