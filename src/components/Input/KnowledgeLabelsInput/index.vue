@@ -30,7 +30,7 @@ export default {
   props: {
     value: {
       type: Array,
-      default () {
+      default() {
         return []
       }
     },
@@ -49,7 +49,7 @@ export default {
       default: () => ({})
     }
   },
-  data () {
+  data() {
     return {
       model: this.convertStringToIdArray(this.value),
       labels: this.convertLabelTree(this.data),
@@ -57,31 +57,31 @@ export default {
     }
   },
   watch: {
-    value (val) {
+    value(val) {
       this.model = val
     },
     model: {
-      handler (val) {
+      handler(val) {
         this.$emit('input', val)
       },
       immediate: true
     },
     // 根据知识库目录生成可选标签集
     classificationid: {
-      handler (val) {
+      handler(val) {
         if (!val || val === '0') {
           return
         }
-        this.isLoading = true;
+        this.isLoading = true
         getLabelesTree({ id: this.classificationid }).then(res => {
           this.labels = this.convertLabelTree(res.content.labelInfo)
-          this.$emit('loadingSuccess', this.labels)// 向上发出加载成功事件
+          this.$emit('loadingSuccess', this.labels) // 向上发出加载成功事件
           this.isLoading = false
         })
       },
       immediate: true
     },
-    data () {
+    data() {
       if (this.classificationid) {
         return
       }
@@ -90,28 +90,28 @@ export default {
   },
   methods: {
     // 转化为id数组
-    convertStringToIdArray (objArray) {
+    convertStringToIdArray(objArray) {
       if (!objArray || objArray.length === 0) {
         return []
       }
       return objArray.map(item => item.id)
     },
     // 知识标签选择树图标显示
-    labelIconClass (node) {
+    labelIconClass(node) {
       if (node.isBranch) {
         return node.isExpanded ? 'fa-folder-open' : 'fa-folder'
       }
       return 'fa-bookmark'
     },
     // 转化标签树
-    convertLabelTree (data) {
+    convertLabelTree(data) {
       if (data.length === 0) {
         return data
       }
       const result = data.slice(0)
       result.forEach(item => {
         item.label = item.name
-        item.children = item.data
+        item.children = item.datas
         if (item.children) {
           item.children.forEach(subItem => {
             subItem.label = subItem.name
