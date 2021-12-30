@@ -57,16 +57,14 @@ import { personCenterRouter } from '@/router/module/home'
 
 export default {
   name: 'PersonCenter',
-  data () {
+  data() {
     return {
       headUrl: require('../../../assets/img/home/head.jpg'),
       routes: personCenterRouter
     }
   },
   computed: {
-    ...mapGetters([
-      'userInfo'
-    ])
+    ...mapGetters(['userInfo'])
   }
 }
 </script>
@@ -86,7 +84,7 @@ export default {
   padding: 10px 0;
   font-size: 14px;
   line-height: 1;
-  font-family: "PingFang SC";
+  font-family: 'PingFang SC';
 }
 .el-breadcrumb {
   display: inline-block;

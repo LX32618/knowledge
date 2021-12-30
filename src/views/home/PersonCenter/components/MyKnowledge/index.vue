@@ -2,7 +2,12 @@
   <el-container>
     <el-header height="50">
       <el-tabs type="card" v-model="selectedTab" @tab-click="handleTab">
-        <el-tab-pane v-for="tab of tabs" :key="tab.name" :name="tab.name" :label="tab.label"></el-tab-pane>
+        <el-tab-pane
+          v-for="tab of tabs"
+          :key="tab.name"
+          :name="tab.name"
+          :label="tab.label"
+        ></el-tab-pane>
       </el-tabs>
     </el-header>
     <el-main>
@@ -11,34 +16,77 @@
           <cs-tree
             :data="treeData"
             :treeOptions="{}"
-            @treeNodeClick="handleTreeNodeClick">
+            @treeNodeClick="handleTreeNodeClick"
+          >
           </cs-tree
         ></el-col>
-        <el-col :span="18">
+        <el-col :span="18" class="table-area">
           <!-- <el-button type="primary" icon="el-icon-s-promotion" v-if="selectedTab === 'toPublish'" @click="handlePublishAll" :loading="isLoading">发布</el-button> -->
-          <dynamic-table ref="dynamicTable" :data="knowledges" :columns="columns" :props="tableProps">
+          <dynamic-table
+            ref="dynamicTable"
+            :data="knowledges"
+            :columns="columns"
+            :props="tableProps"
+          >
             <template v-slot:NAME="{ scope }">
-              <el-link class="table-knowledge-link" type="primary" size="sm" @click="viewDetail(scope.row.ID)">{{ scope.row.NAME }}</el-link>
+              <el-link
+                class="table-knowledge-link"
+                type="primary"
+                size="sm"
+                @click="viewDetail(scope.row.ID)"
+                >{{ scope.row.NAME }}</el-link
+              >
             </template>
             <template v-slot:reason="{ scope }">
-              <el-tooltip effect="light" :content="scope.row.reason" placement="bottom" popper-class="popper-tip">
+              <el-tooltip
+                effect="light"
+                :content="scope.row.reason"
+                placement="bottom"
+                popper-class="popper-tip"
+              >
                 <div>{{ sliceReason(scope.row.reason) }}</div>
               </el-tooltip>
             </template>
-            <template v-slot:option=" { scope }">
-              <el-popconfirm title="确定要删除知识?" @onConfirm="applyDelete(scope.row)">
+            <template v-slot:option="{ scope }">
+              <el-popconfirm
+                title="确定要删除知识?"
+                @onConfirm="applyDelete(scope.row)"
+              >
                 <el-button
                   class="btn-delete"
                   slot="reference"
-                  v-if="selectedTab === 'published' || (selectedTab === 'toPublish' && scope.row.CREATORID === userInfo.id)"
-                  size="mini" type="danger" icon="el-icon-delete"
-                  :loading="isLoading">
+                  v-if="
+                    selectedTab === 'published' ||
+                      (selectedTab === 'toPublish' &&
+                        scope.row.CREATORID === userInfo.id)
+                  "
+                  size="mini"
+                  type="danger"
+                  icon="el-icon-delete"
+                  :loading="isLoading"
+                >
                   删除
                 </el-button>
               </el-popconfirm>
               <!-- <el-button v-if="selectedTab === 'toAudit'" size="mini" type="primary" icon="el-icon-view" :loading="isLoading" @click="handleAudit(scope.row)">审核</el-button> -->
-              <el-button v-if="selectedTab === 'toPublish'" size="mini" type="primary" icon="el-icon-s-promotion" :loading="isLoading" @click="handlePublish(scope.row.ID)">发布</el-button>
-              <el-button v-if="selectedTab !== 'toPublish'" size="mini" type="success" icon="el-icon-document" :loading="isLoading" @click="viewFlow(scope.row.PROCESS_INS_ID)">查看</el-button>
+              <el-button
+                v-if="selectedTab === 'toPublish'"
+                size="mini"
+                type="primary"
+                icon="el-icon-s-promotion"
+                :loading="isLoading"
+                @click="handlePublish(scope.row.ID)"
+                >发布</el-button
+              >
+              <el-button
+                v-if="selectedTab !== 'toPublish'"
+                size="mini"
+                type="success"
+                icon="el-icon-document"
+                :loading="isLoading"
+                @click="viewFlow(scope.row.PROCESS_INS_ID)"
+                >查看</el-button
+              >
             </template>
           </dynamic-table>
           <el-pagination
@@ -46,7 +94,8 @@
             :total="total"
             :current-page.sync="page"
             @current-change="pageChange"
-            layout="total, prev, pager, next, jumper">
+            layout="total, prev, pager, next, jumper"
+          >
           </el-pagination>
         </el-col>
       </el-row>
@@ -57,7 +106,12 @@
 <script>
 import DynamicTable from '@/components/KnowledgeView/components/DynamicTable'
 import { fetchCategoryTreeAndNum } from '@/api/docCategory'
-import { findKnowledges, passKnowledge, updateDataLifeCycle, deleteKnowledge } from '@/api/knowledgeBase'
+import {
+  findKnowledges,
+  passKnowledge,
+  updateDataLifeCycle,
+  deleteKnowledge
+} from '@/api/knowledgeBase'
 import { startFlow, knowledgeDelete, fetchProcessId } from '@/api/flow'
 import { unflatCategoryTree } from '@/utils/tree'
 import { mapGetters } from 'vuex'
@@ -67,7 +121,7 @@ export default {
   components: {
     DynamicTable
   },
-  data () {
+  data() {
     return {
       page: 1,
       rows: 10,
@@ -88,16 +142,13 @@ export default {
     }
   },
   computed: {
-    ...mapGetters([
-      'userInfo',
-      'rootCategoryId'
-    ]),
-    tableProps () {
+    ...mapGetters(['userInfo', 'rootCategoryId']),
+    tableProps() {
       return {
         // checkbox: this.selectedTab === 'toPublish'
       }
     },
-    condition () {
+    condition() {
       const conditionConfig = {
         published: {
           auditing: '1',
@@ -118,7 +169,7 @@ export default {
       }
       return conditionConfig[this.selectedTab]
     },
-    columns () {
+    columns() {
       const columnConfig = {
         published: [
           {
@@ -200,7 +251,8 @@ export default {
           {
             key: 'CREATORNAME',
             label: '创建人'
-          },{
+          },
+          {
             key: 'option',
             label: '操作',
             width: 200
@@ -211,14 +263,14 @@ export default {
     }
   },
   methods: {
-    pageChange () {
+    pageChange() {
       this.updateKnowledge()
     },
-    handleTreeNodeClick ({ data }) {
+    handleTreeNodeClick({ data }) {
       this.selectedCategoryId = data.id
       this.updateKnowledge()
     },
-    updateKnowledge () {
+    updateKnowledge() {
       this.isLoading = true
       findKnowledges({
         page: this.page,
@@ -232,13 +284,14 @@ export default {
         this.isLoading = false
       })
     },
-    handleTab () {
+    handleTab() {
       this.updateKnowledge()
+      this.page = 1
     },
-    sliceReason (text) {
-      return (!text || text.length < 10) ? text : `${text.slice(0, 8)}...`
+    sliceReason(text) {
+      return !text || text.length < 10 ? text : `${text.slice(0, 8)}...`
     },
-    async applyDelete (row) {
+    async applyDelete(row) {
       this.isLoading = true
       try {
         if (this.selectedTab === 'toPublish') {
@@ -251,7 +304,7 @@ export default {
         }
         const { content } = await fetchProcessId(row.ID, 'remove')
         if (!content) {
-          const { content, message } = await deleteKnowledge({id: row.ID})
+          const { content, message } = await deleteKnowledge({ id: row.ID })
           if (content) {
             this.$success(message)
             this.updateKnowledge()
@@ -264,13 +317,13 @@ export default {
           this.$success(msg)
           this.updateKnowledge()
         }
-      } catch(err) {
+      } catch (err) {
         this.$error(err)
       } finally {
         this.isLoading = false
       }
     },
-    async handleAudit (row) {
+    async handleAudit(row) {
       this.isLoading = true
       await passKnowledge({
         id: row.ID,
@@ -280,7 +333,7 @@ export default {
       this.$success('知识审核成功')
       this.updateKnowledge()
     },
-    async handlePublish (id) {
+    async handlePublish(id) {
       this.isLoading = true
       try {
         const { content } = await fetchProcessId(id)
@@ -299,20 +352,22 @@ export default {
           this.updateKnowledge()
           this.hasPublished = true
         }
-      } catch(err) {
+      } catch (err) {
         this.$error(err)
       } finally {
         this.isLoading = false
       }
     },
-    handlePublishAll () {
+    handlePublishAll() {
       const ids = this.$refs.dynamicTable.getSelection().map(item => item.ID)
       this.handlePublish(ids.join(','))
     },
-    viewFlow (procInstId) {
-      window.open(`http://glaway.soft.net/fms-basic/generateFlowDiagramController.do?initDrowFlowActivitiDiagram&procInstId=${procInstId}&_=1629189773611`)
+    viewFlow(procInstId) {
+      window.open(
+        `http://glaway.soft.net/fms-basic/generateFlowDiagramController.do?initDrowFlowActivitiDiagram&procInstId=${procInstId}&_=1629189773611`
+      )
     },
-    viewDetail (id) {
+    viewDetail(id) {
       const routeData = this.$router.resolve({
         name: 'knowledgeDetail',
         params: {
@@ -322,7 +377,7 @@ export default {
       window.open(routeData.href, '_blank')
     }
   },
-  async mounted () {
+  async mounted() {
     this.isLoading = true
     const data = await fetchCategoryTreeAndNum({
       id: this.rootCategoryId,
@@ -345,5 +400,9 @@ export default {
 }
 .btn-delete {
   margin-right: 5px;
+}
+.table-area {
+  height: 570px;
+  overflow-y: auto;
 }
 </style>
