@@ -33,16 +33,13 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'KnowledgeCatalog',
   computed: {
-    ...mapGetters([
-      'docCategories',
-      'defaultIcon',
-      'icons'
-    ]),
-    slicedCategories () {
+    ...mapGetters(['docCategories', 'defaultIcon', 'icons']),
+    slicedCategories() {
       const result = []
       let tmp = []
-      for (let i = 0; i < this.docCategories.length; ++i) {
-        tmp.push(this.docCategories[i])
+      const docCategories = this.docCategories.filter(item => item.enable === 0)
+      for (let i = 0; i < docCategories.length; ++i) {
+        tmp.push(docCategories[i])
         if (i % 12 === 11) {
           result.push(tmp)
           tmp = []
@@ -55,7 +52,7 @@ export default {
     }
   },
   methods: {
-    iconClass (picture) {
+    iconClass(picture) {
       return this.icons.indexOf(picture) > -1 ? picture : this.defaultIcon
     }
   }

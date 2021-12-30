@@ -1,4 +1,7 @@
-import { fetchCategoryTreeAll, fetchCategoryTreeWithUserPermission } from '@/api/docCategory'
+import {
+  fetchCategoryTreeAll,
+  fetchCategoryTreeWithUserPermission
+} from '@/api/docCategory'
 
 const state = {
   docCategories: [],
@@ -16,29 +19,33 @@ const mutations = {
 
 const actions = {
   // 获取所有知识库根目录
-  fetchCategories ({ commit }) {
+  fetchCategories({ commit }) {
     return new Promise((resolve, reject) => {
       const id = 'E91AE12C441D468F875A236FFB034A98'
-      fetchCategoryTreeAll({ id }).then(response => {
-        const data = response.content
-        commit('FETCH_CATEGORIES', data)
-        resolve()
-      }).catch(error => {
-        reject(error)
-      })
+      fetchCategoryTreeAll({ id })
+        .then(response => {
+          const data = response.content
+          commit('FETCH_CATEGORIES', data)
+          resolve()
+        })
+        .catch(error => {
+          reject(error)
+        })
     })
   },
   // 获取有权限的知识库目录
-  fetchUserCategories ({ commit }) {
+  fetchUserCategories({ commit }) {
     return new Promise((resolve, reject) => {
       const id = 'E91AE12C441D468F875A236FFB034A98'
-      fetchCategoryTreeWithUserPermission({ id }).then(response => {
-        const data = response.content
-        commit('FETCH_USER_CATEGORIES', data)
-        resolve()
-      }).catch(error => {
-        reject(error)
-      })
+      fetchCategoryTreeWithUserPermission({ id })
+        .then(response => {
+          const data = response.content
+          commit('FETCH_USER_CATEGORIES', data)
+          resolve()
+        })
+        .catch(error => {
+          reject(error)
+        })
     })
   }
 }
