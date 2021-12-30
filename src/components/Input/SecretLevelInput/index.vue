@@ -1,7 +1,7 @@
 <template>
   <el-select v-model="model" value-key="value" v-bind="$attrs">
     <el-option
-      v-for="item of secretLevels"
+      v-for="item of levels"
       :key="item.value"
       :value="item.value"
       :label="item.label"
@@ -15,23 +15,28 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'SecretLevelInput',
   props: {
-    value: Number
+    value: Number,
+    maxLevel: {
+      type: Number,
+      default: 40
+    }
   },
-  data () {
+  data() {
     return {
       model: this.value
     }
   },
   computed: {
-    ...mapGetters([
-      'secretLevels'
-    ]),
+    ...mapGetters(['secretLevels']),
+    levels() {
+      return this.secretLevels.filter(item => item.value <= this.maxLevel)
+    }
   },
   watch: {
-    value (val) {
+    value(val) {
       this.model = val
     },
-    model (val) {
+    model(val) {
       this.$emit('input', val)
     }
   }

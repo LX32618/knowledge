@@ -69,8 +69,13 @@
       </el-form-item>
       <el-form-item label="密级" prop="secretLevel">
         <secret-level-input
+          v-if="knowledge.classification"
           v-model="knowledge.secretLevel"
+          :maxLevel="categorySecretLevel"
         ></secret-level-input>
+        <span v-if="!knowledge.classification" class="form-tip-danger"
+          >请先选择知识库与知识目录</span
+        >
       </el-form-item>
       <el-form-item label="描述" prop="describe">
         <el-input
@@ -140,6 +145,7 @@ export default {
       category: '', // 选中知识库
       subCategories: [], // 知识目录选择集
       labels: [], // 知识标签选择集
+      categorySecretLevel: 40,
       rules: {
         name: [
           // { validator: checkName, trigger: 'blur' },
@@ -169,7 +175,6 @@ export default {
       // 更新知识目录选择集
       this.isLoading = true
       fetchCategoryTreeWithUserPermission({ id: this.category }).then(res => {
-        console.log(res)
         let data = res.content
         data = unflatTree(data, this.category) // 生成树
         // 格式化节点
@@ -196,15 +201,18 @@ export default {
       })
     },
     'knowledge.classification': function(val) {
-      // 重置已选择知识标签
+      // 重置已选择知识标签与密级
       this.$set(this.knowledge, 'labels', [])
+      this.$set(this.knowledge, 'secretLevel', 10)
       if (!val) {
         this.labels = []
+        this.categorySecretLevel = 40
         return
       }
       walkTree(this.subCategories, item => {
         if (item.id === val) {
           this.labels = item.labelInfo
+          this.categorySecretLevel = item.secretLevel
         }
       })
     }
