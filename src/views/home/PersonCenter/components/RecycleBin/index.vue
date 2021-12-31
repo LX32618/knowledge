@@ -102,6 +102,10 @@ export default {
     },
     handleBack() {
       const selection = this.$refs.table.getSelection()
+      if (selection.length === 0) {
+        this.$warning('未选择任何知识!')
+        return
+      }
       const id = selection.map(item => item.id).join(',')
       this.isLoading = true
       revertKnowledge({
@@ -113,6 +117,10 @@ export default {
     },
     handleDelete() {
       const selection = this.$refs.table.getSelection()
+      if (selection.length === 0) {
+        this.$warning('未选择任何知识!')
+        return
+      }
       const id = selection.map(item => item.id).join(',')
       this.isLoading = true
       reDeleteKnowledge({
