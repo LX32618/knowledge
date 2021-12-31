@@ -46,26 +46,38 @@ const requestInterceptor = config => {
 // }
 
 const responseInterceptor = response => {
-  if (response.data.constructor === String && response.data.indexOf('登录') !== -1 && response.data.indexOf('<html>') !== -1) {
+  if (
+    response.data.constructor === String &&
+    response.data.indexOf('登录') !== -1 &&
+    response.data.indexOf('<html>') !== -1
+  ) {
     window.location.replace('/app-zuul/login')
   } else if (response.status === 200 && response.data.status === 'success') {
     return response.data
-  } else if (response.headers["content-type"] === 'application/x-msdownload;charset=UTF-8') {
+  } else if (
+    response.headers['content-type'] ===
+    'application/x-msdownload;charset=UTF-8'
+  ) {
     return response.data
-  }
-  else {
+  } else {
     response.data.message && errorMsg(response.data.message)
     return Promise.reject(response.data.message || 'error')
   }
 }
 
 const errorInterceptor = error => {
-  errorMsg(error.message)
+  console.log(error.response)
+  // errorMsg(error.message)
+  errorMsg('系统错误，请联系管理员处理')
   return Promise.reject(error)
 }
 
 const baseResponseInterceptor = response => {
-  if (response.data.constructor === String && response.data.indexOf('登录') !== -1 && response.data.indexOf('<html>') !== -1) {
+  if (
+    response.data.constructor === String &&
+    response.data.indexOf('登录') !== -1 &&
+    response.data.indexOf('<html>') !== -1
+  ) {
     window.location.replace('/app-zuul/login')
   } else if (response.status === 200) {
     return response.data
@@ -76,7 +88,11 @@ const baseResponseInterceptor = response => {
 }
 
 const fmsBasicResponseInterceptor = response => {
-  if (response.data.constructor === String && response.data.indexOf('登录') !== -1 && response.data.indexOf('<html>') !== -1) {
+  if (
+    response.data.constructor === String &&
+    response.data.indexOf('登录') !== -1 &&
+    response.data.indexOf('<html>') !== -1
+  ) {
     window.location.replace('/app-zuul/login')
   } else if (response.status === 200 && response.data.success) {
     return response.data
@@ -93,10 +109,15 @@ treeRequest.interceptors.request.use(requestInterceptor, errorInterceptor)
 treeRequest.interceptors.response.use(responseInterceptor, errorInterceptor)
 
 knowledgeRequest.interceptors.request.use(requestInterceptor, errorInterceptor)
-knowledgeRequest.interceptors.response.use(responseInterceptor, errorInterceptor)
+knowledgeRequest.interceptors.response.use(
+  responseInterceptor,
+  errorInterceptor
+)
 
 fmsBasicRequest.interceptors.request.use(requestInterceptor, errorInterceptor)
-fmsBasicRequest.interceptors.response.use(fmsBasicResponseInterceptor, errorInterceptor)
-
+fmsBasicRequest.interceptors.response.use(
+  fmsBasicResponseInterceptor,
+  errorInterceptor
+)
 
 export default knowledgeRequest
