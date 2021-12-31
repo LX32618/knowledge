@@ -4,7 +4,7 @@
             <el-input autocomplete="off" placeholder="请输入名称" v-model="data.refName"></el-input>
         </el-form-item>
         <el-form-item label="类型">
-            <el-select placeholder="--请选择--" v-model="data.refType"  value-key="value" :disabled="data.id != ''" @change="refTypeChange">
+            <el-select placeholder="--请选择--" v-model="data.refType"  value-key="value" :disabled="data.id != ''" @change="refTypeChange" style="width: 300px;">
                 <el-option label="知识目录" :value = 0></el-option>
                 <el-option label="自定义SQL" :value = 1></el-option>
             </el-select>
@@ -39,11 +39,17 @@
             <el-input autocomplete="off" placeholder="请输入导入标识" v-model="data.importField"></el-input>
             &nbsp;<span style="color:red">默认和显示字段一样</span>
         </el-form-item>
+
+        <el-form-item label="过滤条件">
+            <!--<el-input type="textarea"  :autosize="{ minRows: 3, maxRows: 6}" autocomplete="off" placeholder="请输入过滤条件" v-model="data.filter"></el-input>-->
+            <el-select v-model="data.filter" clearable placeholder="请选择过滤条件" style="width: 300px;">
+                <el-option key="baseId" label="baseId" value="baseId"></el-option>
+                <el-option key="knowId" label="knowId" value="knowId"></el-option>
+            </el-select>
+        </el-form-item>
+
         <el-form-item label="链接地址">
             <el-input type="textarea"  :autosize="{ minRows: 3, maxRows: 6}" autocomplete="off" placeholder="请输入链接地址" v-model="data.viewUrl"></el-input>
-        </el-form-item>
-        <el-form-item label="过滤条件">
-            <el-input type="textarea"  :autosize="{ minRows: 3, maxRows: 6}" autocomplete="off" placeholder="请输入过滤条件" v-model="data.filter"></el-input>
         </el-form-item>
      <!--   <el-form-item label="是否多选">
             <el-switch v-model="data.isMulti" :active-value=1 :inactive-value=0></el-switch>

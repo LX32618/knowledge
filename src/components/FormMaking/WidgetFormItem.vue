@@ -6,12 +6,30 @@
       @click.native.stop="handleSelectWidget(index)"
     >
         <template v-if="element.type == 'input'">
-          <el-input
+       <!--   <el-input
             v-model="element.options.defaultValue"
             :style="{width: element.options.width}"
             :placeholder="element.options.placeholder"
             :disabled="element.options.disabled"
-          ></el-input>
+          ></el-input>-->
+            <el-input-number
+                    v-if="element.options.dataType == 'number' || element.options.dataType == 'integer' || element.options.dataType == 'float'"
+                    v-model="element.options.defaultValue"
+                    :placeholder="element.options.placeholder"
+                    :style="{width: element.options.width}"
+                    :disabled="element.options.disabled">
+            </el-input-number>
+            <el-input
+                    v-else
+                    type="text"
+                    show-word-limit
+                    v-model="element.options.defaultValue"
+                    :placeholder="element.options.placeholder"
+                    :style="{width: element.options.width}"
+                    :disabled="element.options.disabled"
+                    :maxlength="element.options.maxlength"
+            >
+            </el-input>
         </template>
 
         <template v-if="element.type == 'textarea'">

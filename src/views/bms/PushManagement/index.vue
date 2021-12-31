@@ -48,7 +48,7 @@
                     {id:"attach_text",pushValue:attach_text},
                     {id:"keyword",pushValue:keyword},
                 ];
-                
+
                 let resp = await updatePushSwitch(option);
                 if(resp.status == "success")
                 {

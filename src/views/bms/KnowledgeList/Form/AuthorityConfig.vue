@@ -168,6 +168,7 @@
                         let resp = await removePermission(option);
                         this.ruleData = _.differenceBy(this.ruleData,this.selectRows,"id");
                         this.$success("数据已删除");
+                        this.selectRows = [];
                     }).catch()
 
                 }

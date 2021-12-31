@@ -181,6 +181,8 @@
                             return d.id  == hrmId;
                         });
                         this.tableData.splice(index,1);
+                        this.selectRow = {};
+                        this.$set(this.tableSettings,"total",this.tableSettings.total-1);
                     }).catch(() => {
 
                     });
@@ -216,11 +218,13 @@
                             return d.id == hrmId;
                         });
 
+
                         if(index >= 0){//如果保存的数据现在的table中有，则保存
                             this.tableData.splice(index,1,submitRow);
                         }
                         else{//没有则新增
                             this.tableData.push(submitRow);
+                            this.$set(this.tableSettings,"total",this.tableSettings.total+1);
                         }
 
                         this.$success("保存成功");

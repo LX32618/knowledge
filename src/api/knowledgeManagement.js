@@ -46,14 +46,11 @@ export function exportKnowExcel(option) {
         responseType:"blob",
     }).then(function (response) {
 
-/*        let fileName = response.headers['content-disposition'].match(
+        let fileName1 = response.headers['content-disposition'].match(
             /fileName=(.*)/
         )[1]
 
-        fileName = decodeURIComponent(fileName).split(".")[0]+".zip";*/
-
-        let fileName = "知识条目.zip";
-
+         let fileName = decodeURIComponent(fileName1).split(".")[0]+".zip";
 
         // 将二进制流转为blob
         const blob = new Blob([response.data], { type: 'application/octet-stream' });

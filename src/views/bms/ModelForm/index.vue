@@ -142,6 +142,7 @@
                 {
                     this.$set(this,"appendFormData",data);
                     this.tableData.unshift(data);
+                    this.$set(this.tableSettings,"total",this.tableSettings.total+1);
                 }
                 else if(type=="edit"){
                     this.editFormVisible = false;
