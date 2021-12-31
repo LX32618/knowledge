@@ -10,7 +10,7 @@
                 >分享</el-button
               >
               <el-button
-                v-if="auditStatus !== '-1'"
+                v-if="auditStatus !== '-1' && editPermission"
                 type="warning"
                 icon="el-icon-edit"
                 @click="edit"
@@ -110,6 +110,10 @@ export default {
     },
     isEdit: {
       type: Boolean, // ture: 查看视图  false：编辑视图
+      default: false
+    },
+    editPermission: {
+      type: Boolean,
       default: false
     }
   },

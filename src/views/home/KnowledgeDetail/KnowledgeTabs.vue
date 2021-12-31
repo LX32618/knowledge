@@ -18,6 +18,7 @@
           :isEdit="isEdit"
           @saveSuccess="handleSaveSuccess"
           @updateEditStatus="updateEditStatus"
+          v-bind="$attrs"
         />
       </el-tab-pane>
     </template>
@@ -39,6 +40,7 @@
           :isEdit="isEdit"
           @saveSuccess="handleSaveSuccess"
           @updateEditStatus="updateEditStatus"
+          v-bind="$attrs"
         />
       </el-tab-pane>
     </template>

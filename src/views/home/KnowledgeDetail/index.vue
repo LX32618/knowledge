@@ -7,6 +7,7 @@
       :knowledge="knowledge"
       :isEdit.sync="isEdit"
       :editType="editType"
+      :editPermission="editPermission"
     />
   </div>
   <div v-loading="permissionLoading" class="no-permission" v-else>
@@ -51,6 +52,7 @@ export default {
       },
       editType: undefined,
       viewPermission: false,
+      editPermission: false,
       permissionLoading: false,
       applyDialogShow: false,
       isEdit: false
@@ -72,7 +74,8 @@ export default {
   async mounted() {
     this.permissionLoading = true
     let res = await hasKnowledgePermission(this.id)
-    this.viewPermission = res.content.hasPermission
+    this.viewPermission = res.content.hasPermission.create
+    this.editPermission = res.content.hasPermission.edit
     this.permissionLoading = false
     if (!this.viewPermission) return
     const { editType } = this.$route.query
