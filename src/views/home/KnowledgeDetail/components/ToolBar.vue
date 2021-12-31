@@ -32,7 +32,7 @@
         >历史版本 V{{ baseData.ver }}</el-button
       >
       <el-button
-        v-if="auditStatus === '-3'"
+        v-if="auditStatus === '-3' && !isEdit"
         type="success"
         icon="el-icon-view"
         @click="publish"
@@ -72,7 +72,11 @@ export default {
     CollectDialog
   },
   props: {
-    baseData: Object
+    baseData: Object,
+    isEdit: {
+      type: Boolean,
+      default: false
+    }
   },
   data() {
     return {

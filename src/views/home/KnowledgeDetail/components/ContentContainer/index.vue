@@ -5,7 +5,7 @@
         <!-- 功能按钮 -->
         <el-button-group>
           <template v-if="!isHistory">
-            <template v-if="isViewMode">
+            <template v-if="!isEdit">
               <el-button type="primary" icon="el-icon-share" @click="share"
                 >分享</el-button
               >
@@ -51,14 +51,14 @@
           ref="baseForm"
           :data="widgetForm"
           :value="baseData"
-          :edit="!isViewMode"
+          :edit="isEdit"
         ></form-generate>
         <!-- 实体表单 -->
         <form-generate
           ref="mainForm"
           :data="mainFormConfig"
           :value="formModel"
-          :edit="!isViewMode"
+          :edit="isEdit"
         >
         </form-generate>
       </el-card>
@@ -107,11 +107,14 @@ export default {
     isHistory: {
       type: Boolean,
       default: false
+    },
+    isEdit: {
+      type: Boolean, // ture: 查看视图  false：编辑视图
+      default: false
     }
   },
   data() {
     return {
-      isViewMode: true, // ture: 查看视图  false：编辑视图
       dialogShow: false,
       editFormData: {},
       saveButtonLoading: false,
@@ -189,7 +192,7 @@ export default {
     },
     edit() {
       this.editFormData = {} // 将所有表单验证状态设置为 false
-      this.isViewMode = false
+      this.updateEditStatus(true)
     },
     async handleDelete() {
       const id = this.$route.params.id
@@ -270,7 +273,7 @@ export default {
       saveHandler(knowledgeModel)
         .then(res => {
           this.$success('保存成功')
-          this.isViewMode = true
+          this.updateEditStatus(false)
           this.saveButtonLoading = false
           this.$emit('saveSuccess')
         })
@@ -285,22 +288,25 @@ export default {
       }
       // 重置主表
       this.$refs.mainForm.reset()
-      this.isViewMode = true
+      this.updateEditStatus(false)
     },
     share() {
       this.dialogShow = true
     },
     handleSubFormSave(data) {
       this.editFormData[data.key] = data.value
+    },
+    updateEditStatus(status) {
+      this.$emit('updateEditStatus', status)
     }
   },
   mounted() {
     this.widgetForm.list = this.baseFormConfig
     if (this.editType) {
-      this.isViewMode = false
+      this.updateEditStatus(true)
     }
     if (this.$route.query.edit) {
-      this.isViewMode = false
+      this.updateEditStatus(true)
     }
   }
 }

@@ -15,7 +15,9 @@
           :baseData="baseData"
           :formData="formData[0]"
           :editType="editType"
+          :isEdit="isEdit"
           @saveSuccess="handleSaveSuccess"
+          @updateEditStatus="updateEditStatus"
         />
       </el-tab-pane>
     </template>
@@ -34,7 +36,9 @@
           :baseData="baseData"
           :formData="formData[index]"
           :editType="editType"
+          :isEdit="isEdit"
           @saveSuccess="handleSaveSuccess"
+          @updateEditStatus="updateEditStatus"
         />
       </el-tab-pane>
     </template>
@@ -67,6 +71,10 @@ export default {
     },
     knowledge: {
       type: Object
+    },
+    isEdit: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -104,6 +112,9 @@ export default {
       this.baseData = baseData
       this.formData = formData
       this.formConfig = formConfig
+    },
+    updateEditStatus(status) {
+      this.$emit('update:isEdit', status)
     }
   }
 }

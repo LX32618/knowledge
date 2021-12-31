@@ -1,14 +1,23 @@
 <template>
   <div v-if="viewPermission" class="container">
-    <tool-bar :baseData="knowledge.baseData" />
+    <tool-bar :baseData="knowledge.baseData" :isEdit="isEdit" />
     <!-- <AreaInput v-model="test" /> {{ test }} -->
-    <KnowledgeTabs :id="id" :knowledge="knowledge" :editType="editType" />
+    <KnowledgeTabs
+      :id="id"
+      :knowledge="knowledge"
+      :isEdit.sync="isEdit"
+      :editType="editType"
+    />
   </div>
   <div v-loading="permissionLoading" class="no-permission" v-else>
     <div v-show="!permissionLoading" class="box">
       <h2>没有权限浏览该知识</h2>
-      <el-button type="success" icon="el-icon-s-home" @click="handleHomeClick">返回首页</el-button>
-      <el-button type="primary" icon="el-icon-reading" @click="handleApply">申请权限</el-button>
+      <el-button type="success" icon="el-icon-s-home" @click="handleHomeClick"
+        >返回首页</el-button
+      >
+      <el-button type="primary" icon="el-icon-reading" @click="handleApply"
+        >申请权限</el-button
+      >
     </div>
     <ApplyDialog :visible.sync="applyDialogShow" :oid="id" />
   </div>
@@ -35,7 +44,7 @@ export default {
   props: {
     id: String
   },
-  data () {
+  data() {
     return {
       knowledge: {
         baseData: {}
@@ -43,11 +52,12 @@ export default {
       editType: undefined,
       viewPermission: false,
       permissionLoading: false,
-      applyDialogShow: false
+      applyDialogShow: false,
+      isEdit: false
     }
   },
   methods: {
-    async handleApply () {
+    async handleApply() {
       let res = await isApply(this.id)
       if (res.content) {
         this.$info(res.message)
@@ -55,11 +65,11 @@ export default {
       }
       this.applyDialogShow = true
     },
-    handleHomeClick () {
+    handleHomeClick() {
       this.$router.push('/')
     }
   },
-  async mounted () {
+  async mounted() {
     this.permissionLoading = true
     let res = await hasKnowledgePermission(this.id)
     this.viewPermission = res.content.hasPermission
