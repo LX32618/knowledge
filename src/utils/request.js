@@ -66,7 +66,6 @@ const responseInterceptor = response => {
 }
 
 const errorInterceptor = error => {
-  console.log(error.response)
   // errorMsg(error.message)
   errorMsg('系统错误，请联系管理员处理')
   return Promise.reject(error)

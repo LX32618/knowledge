@@ -31,12 +31,14 @@
 </template>
 
 <script>
-import { fetchDictTree } from '@/api/treeRest'
+// import { fetchDictTree } from '@/api/treeRest'
+import { getKnowledgeFormFieldType } from '@/api/knowlegeModel'
+
 export default {
   name: 'DictSelect',
   name: 'DictSelect',
   props: ['dictId', 'value', 'type'],
-  data () {
+  data() {
     return {
       model: this.value,
       options: [],
@@ -44,28 +46,31 @@ export default {
     }
   },
   watch: {
-    value (val) {
+    value(val) {
       this.model = this.type === 'checkbox' ? val.split(',') : val
     },
-    model (val) {
+    model(val) {
       const value = this.type === 'checkbox' ? val.join(',') : val
       this.$emit('input', value)
     }
   },
-  created () {
+  created() {
     if (this.type === 'checkbox') {
-      const model = (this.value) ? this.value.split(',') : []
+      const model = this.value ? this.value.split(',') : []
       this.model = Array.isArray(model) ? model : [model]
     } else {
       this.model = this.value
     }
   },
-  mounted () {
+  mounted() {
     this.isLoading = true
-    fetchDictTree({ id: this.dictId }).then(res => {
-      this.options = res.content
-      this.isLoading = false
-    })
+    getKnowledgeFormFieldType({ id: this.dictId })
+      .then(res => {
+        console.log(res)
+        this.options = res.content
+        this.isLoading = false
+      })
+      .catch(_ => {})
   }
 }
 </script>
