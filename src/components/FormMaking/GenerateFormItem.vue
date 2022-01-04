@@ -7,29 +7,38 @@
       'margin-bottom': table ? 0 : '18px'
     }">
     <template v-if="widget.type == 'input'" >
-      <el-input
+<!--      <el-input
         v-if="widget.options.dataType == 'number' || widget.options.dataType == 'integer' || widget.options.dataType == 'float'"
         type="number"
         v-model.number="dataModel"
         :placeholder="widget.options.placeholder"
         :style="{width: widgetWidth}"
         :disabled="isDisabled"
-      ></el-input>
+      ></el-input>-->
+      <el-input-number
+        v-if="widget.options.dataType == 'number' || widget.options.dataType == 'integer' || widget.options.dataType == 'float'"
+        v-model="dataModel" :placeholder="widget.options.placeholder"
+        :style="{width: widgetWidth}"
+        :disabled="isDisabled">
+      </el-input-number>
       <el-input
         v-else
-        :type="widget.options.dataType"
+        type="text"
         v-model="dataModel"
+        show-word-limit
         :disabled="isDisabled"
+        :maxlength="widget.options.maxlength"
         :placeholder="widget.options.placeholder"
         :style="{width: widgetWidth}"
       ></el-input>
     </template>
-
     <template v-if="widget.type == 'textarea'">
       <el-input type="textarea" :rows="2"
         v-model="dataModel"
+                show-word-limit
         :disabled="isDisabled"
         :placeholder="widget.options.placeholder"
+        :maxlength="widget.options.maxlength"
         :style="{width: widgetWidth}"
       ></el-input>
     </template>

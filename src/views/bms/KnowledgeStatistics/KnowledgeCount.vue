@@ -39,7 +39,7 @@
             return{
                 dimension:"store",
                 display:"bar",
-                deptData:[{name:"测试部",y:9},{name:"艺术部",y:66},{name:"计划部",y:2}],
+                deptData:[],
                 storeData:[]
             }
         },
@@ -83,9 +83,6 @@
                     values.push(d.y);
                     datas.push({name:d.name,value:d.y});
                 })
-
-
-
                 // 指定图表的配置项和数据
                 let barOption = {
                     title:title,
@@ -104,7 +101,11 @@
                             data: keys,
                             axisTick: {
                                 alignWithLabel: true
-                            }
+                            },
+                            axisLabel:{
+                                interval:0,
+                                rotate:"45"
+                            },
                         }
                     ],
                     yAxis: [

@@ -32,8 +32,9 @@
                 this.dialogVisible = false;
             },
             openModel(id){
-              this.modelData =  _.cloneDeep(this.formData.find(f=>f.id==id));
-              this.dialogVisible = true;
+
+                this.modelData =  _.cloneDeep(this.formData.find(f=>f.id==id));
+                this.dialogVisible = true;
             }
         },
         components:{
@@ -42,7 +43,7 @@
         watch:{
             dialogVisible(val){
                 this.$nextTick(()=>{
-                    if(val)
+                    if(val){}
                         this.$refs.formMaking.initialModelData();
                 })
             }

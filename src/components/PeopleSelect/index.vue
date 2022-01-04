@@ -54,7 +54,7 @@
                     <el-option label="创建" value="999"></el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="可下载" v-if="priority && data.type.indexOf('4')!=-1">
+            <el-form-item label="可下载" v-if="false"><!--v-if="priority && data.type.indexOf('4')!=-1"-->
                 <el-switch v-model="data.download" active-value="1" inactive-value="0">
                 </el-switch>
             </el-form-item>

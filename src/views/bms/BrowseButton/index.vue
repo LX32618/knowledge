@@ -206,6 +206,7 @@
                 {
                     this.tableData.unshift(data);
                     this.appendFormVisible = false;
+                    this.$set(this.tableSettings,"total",this.tableSettings.total+1);
                 }
                 else{
 

@@ -385,6 +385,7 @@ export default {
         formId:this.modelData.id
       };
       fetchTemplate(option).then(resp=>{
+        console.log(resp);
         if(resp.status == "success")
         {
           if(resp.content.length){
@@ -594,8 +595,9 @@ export default {
           tran.icon = "icon iconfont icon-input";
           tran.options.width = "100%";
           tran.options.defaultValue = "";
-          tran.options.dataType = "";
+          tran.options.dataType = "string";
           tran.options.required = false;
+          tran.options.maxlength = 100;
           tran.options.placeholder = "";
         }
         else if(d.htmlType == 1){
@@ -678,6 +680,7 @@ export default {
           tran.icon = "icon iconfont icon-diy-com-textarea";
           tran.options.defaultValue = "";
           tran.options.width = "100%";
+          tran.options.maxlength = 500;
           tran.options.required = false;
           tran.options.disabled = false;
           tran.options.pattern = "";

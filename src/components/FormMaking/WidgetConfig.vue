@@ -366,12 +366,12 @@
         <el-select v-if="Object.keys(data.options).indexOf('dataType')>=0" v-model="data.options.dataType" size="mini" >
           <el-option value="string" label="字符串"></el-option>
           <el-option value="number" label="数字"></el-option>
-          <el-option value="boolean" label="布尔值"></el-option>
           <el-option value="integer" label="整数"></el-option>
           <el-option value="float" label="浮点数"></el-option>
+<!--          <el-option value="boolean" label="布尔值"></el-option>
           <el-option value="url" label="URL地址"></el-option>
           <el-option value="email" label="邮箱地址"></el-option>
-          <el-option value="hex" label="十六进制"></el-option>
+          <el-option value="hex" label="十六进制"></el-option>-->
         </el-select>
         <!--          <div v-if="Object.keys(data.options).indexOf('pattern')>=0">
             <el-input size="mini" v-model.lazy="data.options.pattern"  style=" width: 240px;" placeholder="填写正则表达式"></el-input>
@@ -394,6 +394,13 @@
           <el-checkbox v-model="data.options.arrowControl" v-if="Object.keys(data.options).indexOf('arrowControl')>=0">使用箭头进行时间选择</el-checkbox>
           <el-checkbox v-model="data.options.isDelete" v-if="Object.keys(data.options).indexOf('isDelete')>=0">删除</el-checkbox>
           <el-checkbox v-model="data.options.isEdit" v-if="Object.keys(data.options).indexOf('isEdit')>=0">编辑</el-checkbox>
+          <div v-if="data.type =='input' && data.options.dataType == 'string'">
+            输入长度限制：<el-input-number v-model="data.options.maxlength"  :min="1" :max="100"></el-input-number>
+          </div>
+          <div v-if=" data.type =='textarea'">
+            输入长度限制：<el-input-number v-model="data.options.maxlength"  :min="1" :max="1000"></el-input-number>
+          </div>
+
 <!--          <el-checkbox v-model="data.options.visible" v-if="Object.keys(data.options).indexOf('visible')>=0">显示是否可见</el-checkbox>-->
 
         </el-form-item>

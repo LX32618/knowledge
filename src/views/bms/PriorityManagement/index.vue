@@ -15,7 +15,7 @@
                 </div>
             </template>
         </cs-table>
-        <el-dialog :visible.sync="dialogVisible" :title="dialogTitle" append-to-body :close-on-click-modal="false" append-to-body>
+        <el-dialog :visible.sync="dialogVisible" :title="dialogTitle" append-to-body :close-on-click-modal="false">
             <div>
                 <el-form :model="formData" label-width="100px" :rules="rules" ref="priorityForm">
                     <el-form-item label="权限名称" prop="name">
@@ -158,23 +158,23 @@
 
                     let rowId = this.selectRow.id;
                     let option = {id:rowId};
-                    this.$confirm('此操作将删除改行数据, 是否继续?', '提示', {
+                    this.$confirm('此操作将删除该行数据, 是否继续?', '提示', {
                         confirmButtonText: '确定',
                         cancelButtonText: '取消',
                         type: 'warning'
                     }).then(async () => {
                         await removePriorities(option);
-                        this.$success("删除成功");
                         let index = this.tableData.findIndex(d=>{
                             return d.id  == rowId;
                         });
                         this.tableData.splice(index,1);
+                        this.$success("删除成功");
+                        this.selectRow = {};
+                        this.$set(this.tableSettings,"total",this.tableSettings.total - 1);
                     }).catch(() => {
 
                     });
                 }
-
-
             },
             currentChange(val){//行单选事件
                 this.selectRow = val;
@@ -212,15 +212,17 @@
                         if("" == this.formData.id)//新增
                         {
                             this.tableData.push(submitRow);
+                            this.$success("新增成功");
+                            this.$set(this.tableSettings,"total",this.tableSettings.total +1);
                         }
                         else{
                             let index = this.tableData.findIndex(td=>{
                                 return td.id == this.formData.id;
                             })
                             this.tableData.splice(index,1,submitRow);
+                            this.$success("编辑成功");
                         }
 
-                        this.$success("保存成功");
                         this.dialogVisible = false;
                     }
                     else{

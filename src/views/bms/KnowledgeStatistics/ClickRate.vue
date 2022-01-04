@@ -150,13 +150,15 @@
                 option.name = this.searchData.name;
                 option.userName = this.searchData.userName;
                 option.categoryId = this.currentNode.key;//this.currentNodeId;
-                option.beginTime = this.searchData.date[0]?moment(this.searchData.date[0]).format("YYYY-MM-DD"):"";
-                option.endTime = this.searchData.date[1]?moment(this.searchData.date[1]).format("YYYY-MM-DD"):"";
+
+                option.beginTime = this.searchData.date?moment(this.searchData.date[0]).format("YYYY-MM-DD"):"";
+                option.endTime = this.searchData.date?moment(this.searchData.date[1]).format("YYYY-MM-DD"):"";
+
                 this.loading = true;
                 let resp = await fetchClickRate(option);
                 this.tableSettings.total = resp.content.total;
                 this.tableData = resp.content.datas.map(d=>{
-                    return {id:d.ID,name:d.NAME,categoryName:d.CATEGORYNAME,createDate:d.CREATEDATE,clickingRate:d.CLICKINGRATE}
+                    return {id:d.ID,name:d.NAME,categoryName:d.CATEGORYNAME,createDate:d.CREATEDATE,clickingRate:d.CLICKINGRATE,userName:d.USERNAME}
                 });
                 this.loading = false;
             },
@@ -217,8 +219,8 @@
                 option.name = this.searchData.name;
                 option.userName = this.searchData.userName;
                 option.categoryId = this.currentNode.key;//this.currentNodeId;
-                option.beginTime = this.searchData.date[0]?moment(this.searchData.date[0]).format("YYYY-MM-DD"):"";
-                option.endTime = this.searchData.date[1]?moment(this.searchData.date[1]).format("YYYY-MM-DD"):"";
+                option.beginTime = this.searchData.date?moment(this.searchData.date[0]).format("YYYY-MM-DD"):"";
+                option.endTime = this.searchData.date?moment(this.searchData.date[1]).format("YYYY-MM-DD"):"";
                 const tHeader = this.tableSettings.fields.filter(c => {
                     return c.visible != false;
                 }).map(c => {
@@ -242,6 +244,7 @@
                 this.loading = false;
             },
             search(){
+
                 let option = {
                     page:this.tableSettings.currentPage,
                     rows:this.tableSettings.pageSize

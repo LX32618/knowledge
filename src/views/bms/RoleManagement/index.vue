@@ -15,13 +15,13 @@
                 </div>
             </template>
         </cs-table>
-        <el-dialog :visible.sync="dialogVisible"  title="角色信息" append-to-body :close-on-click-modal="false" append-to-body>
+        <el-dialog :visible.sync="dialogVisible"  title="角色信息" append-to-body :close-on-click-modal="false" @close="dialogCloseEvent">
             <div>
-                <el-form :model="formData" label-width="100px"  ref="roleForm">
+                <el-form :model="formData" label-width="100px"  ref="roleForm" :rules="roleFormRules">
                     <el-form-item label="角色名称" prop="roleName">
                         <el-input v-model="formData.roleName" style="width:203px"></el-input>
                     </el-form-item>
-                    <el-form-item label="角色人员">
+                    <el-form-item label="角色人员" prop="roles">
                         <el-button type="primary" icon="el-icon-search" circle @click.native="peopleDialogVisible=true"></el-button>
                         <el-tag
                                 v-for="tag in formData.roles"
@@ -33,7 +33,7 @@
                             {{tag.realName}}
                         </el-tag>
                     </el-form-item>
-                    <el-form-item label="角色权限">
+                    <el-form-item label="角色权限" prop="permissionChecked">
                         <el-select v-model="formData.permissionChecked" multiple placeholder="请选择" ref="selection" value-key="id">
                             <el-option v-for="p in formData.permissionList" :label="p.name" :value="p" :key="p.id"></el-option>
                         </el-select>
@@ -43,7 +43,7 @@
                     <el-button type="primary" @click="saveClick">保存</el-button>
                     <el-button @click="dialogVisible = false">取消</el-button>
                 </div>
-                <el-dialog :visible.sync="peopleDialogVisible"  title="选择人员" append-to-body :close-on-click-modal="false" append-to-body>
+                <el-dialog :visible.sync="peopleDialogVisible"  title="选择人员"  :close-on-click-modal="false" append-to-body>
                     <people-transfer :iniList="formData.roles" @cancel="peopleCancel" @certain="peopleCertain"></people-transfer>
                 </el-dialog>
             </div>
@@ -62,18 +62,19 @@
     export default {
         name: "RoleManagement",
         data(){
-            return{
-                form:{},
-                dialogVisible:false,
-                peopleDialogVisible:false,
+            return {
+                form: {},
+                dialogVisible: false,
+                peopleDialogVisible: false,
                 tableSettings: {
-                    radio:true,//是否单选
+                    rowKey:"id",
+                    radio: true,//是否单选
                     checkbox: false,//是否多选，单选和多选同一时间只能存在一个
-                    pagination:true,//是否显示分页
-                    total:50,//一共有多少条数据
-                    pageSize:10,//默认每页多少条数据
-                    pageSizes:[10,20,50],//设置每页显示多少条数据
-                    currentPage:1,//默认显示第几页
+                    pagination: true,//是否显示分页
+                    total: 50,//一共有多少条数据
+                    pageSize: 10,//默认每页多少条数据
+                    pageSizes: [10, 20, 50],//设置每页显示多少条数据
+                    currentPage: 1,//默认显示第几页
                     fields: [
                         {prop: "id", label: "id", sortable: false, visible: false},
                         {prop: "roleName", label: "角色名称"},
@@ -81,20 +82,32 @@
                         {prop: "permissionNames", label: "权限资源"},
                     ]
                 },
-                tableData:[
-
-                ],
-                tableSelect:{},
-                formData:{
-                    id:"",
-                    roleName:"",
-                    roles:[],
-                    permissionList:[],
-                    permissionChecked:[]
+                tableData: [],
+                tableSelect: {},
+                formData: {
+                    id: "",
+                    roleName: "",
+                    roles: [],
+                    permissionList: [],
+                    permissionChecked: []
+                },
+                roleFormRules: {
+                    roleName:[{required: true, message: '角色名称不能为空', trigger: 'change'}],
+                    roles:[{required: true,
+                        validator:(rule,value,callback)=>{
+                        if(value && value.length>0){
+                            return callback();
+                        }
+                        callback(new Error("请至少选择一个角色人员"));
+                    },trigger:'change'}],
+                    permissionChecked:[{type:"array",required: true, message: '请至少选择一个角色权限', trigger: 'change'}]
                 }
             }
         },
         methods:{
+             dialogCloseEvent(){
+                 this.$refs['roleForm'].resetFields();
+             },
              loadFormData(val){
                  let rowOption = {
                      roleId:val.id
@@ -172,17 +185,28 @@
                 }
             },
             async remove(){
+                console.log(this.tableSelect)
                 if("{}" == JSON.stringify(this.tableSelect)){
                     this.$error("请先选择一行数据");
                 }
                 else{
-                    let id = this.tableSelect.id;
-                    let resp = await removeRole({roleId:id});
-                    let index = this.tableData.findIndex(t=>{
-                        return t.id == id;
+                    this.$confirm('此操作将删除该行数据, 是否继续?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(async () => {
+                        let id = this.tableSelect.id;
+                        let resp = await removeRole({roleId:id});
+                        let index = this.tableData.findIndex(t=>{
+                            return t.id == id;
+                        });
+                        this.tableData.splice(index,1);
+                        this.$success("删除成功");
+                        this.$set(this.tableSettings,"total",this.tableSettings.total - 1);
+                        this.tableSelect = {};
+                    }).catch(() => {
+
                     });
-                    this.tableData.splice(index,1);
-                    this.$success("删除成功");
                 }
             },
             peopleCancel(){
@@ -199,50 +223,58 @@
                 this.formData.roles.splice(index,1);
             },
             async saveClick(){
-                let roleId = this.formData.id;
-                let roleName = this.formData.roleName;
-                let userIds =this.formData.roles.map(r=>{
-                    return r.id;
-                }).join(",");
-                let permissionIds = this.formData.permissionChecked.map(p=>{
-                    return p.id;
-                }).join(",");
-                let permissionNames = this.formData.permissionChecked.map(p=>{
-                    return p.name;
-                }).join(",");
+                this.$refs["roleForm"].validate(async (valid) => {
+                    if (valid) {
+                        let roleId = this.formData.id;
+                        let roleName = this.formData.roleName;
+                        let userIds =this.formData.roles.map(r=>{
+                            return r.id;
+                        }).join(",");
+                        let permissionIds = this.formData.permissionChecked.map(p=>{
+                            return p.id;
+                        }).join(",");
+                        let permissionNames = this.formData.permissionChecked.map(p=>{
+                            return p.name;
+                        }).join(",");
 
-                let option = {
-                    roleId:roleId,
-                    roleName:roleName,
-                    hrmId:userIds,
-                    permissionsIds:permissionIds,
-                    permissionsNames:permissionNames,
-                }
+                        let option = {
+                            roleId:roleId,
+                            roleName:roleName,
+                            hrmId:userIds,
+                            permissionsIds:permissionIds,
+                            permissionsNames:permissionNames,
+                        }
 
-                let resp = await saveRoleList(option);
-                let saveRow = {
-                    roleName:roleName,
-                    userNames:this.formData.roles.map(r=>{
-                        return r.realName;
-                    }).join(","),
-                    permissionNames:permissionNames
-                };
+                        let resp = await saveRoleList(option);
+                        let saveRow = {
+                            roleName:roleName,
+                            userNames:this.formData.roles.map(r=>{
+                                return r.realName;
+                            }).join(","),
+                            permissionNames:permissionNames
+                        };
 
-                if("" == roleId)//新增
-                {
-                    saveRow.roleId = resp.content.roleId;
-                    this.tableData.push(saveRow);
-                    this.$success("新增成功");
-                }
-                else{
-                    saveRow.roleId = roleId;
-                    let index = this.tableData.findIndex(d=>{
-                        return d.id == roleId;
-                    });
-                    this.tableData.splice(index,1,saveRow);
-                    this.$success("编辑成功");
-                }
-                this.dialogVisible = false;
+                        if("" == roleId)//新增
+                        {
+                            saveRow.id = resp.content.roleId;
+                            this.tableData.push(saveRow);
+                            this.$success("新增成功");
+                            this.$set(this.tableSettings,"total",this.tableSettings.total +1);
+                        }
+                        else{
+                            saveRow.id = roleId;
+                            let index = this.tableData.findIndex(d=>{
+                                return d.id == roleId;
+                            });
+                            this.tableData.splice(index,1,saveRow);
+                            this.$success("编辑成功");
+                        }
+                        this.dialogVisible = false;
+                    }
+                    else {
+                        return false;
+                    }
+                });
             }
         },
          mounted() {

@@ -1,7 +1,7 @@
 <template>
     <el-form :model="data" :rules="rules" ref="basicForm" :label-width="settings.lableWidth">
         <el-form-item label="名称"   prop="categoryName">
-            <el-input autocomplete="off" v-model="data.categoryName" placeholder="请输入名称"></el-input>
+            <el-input autocomplete="off" v-model="data.categoryName" placeholder="请输入名称" maxlength="20" show-word-limit></el-input>
         </el-form-item>
         <el-form-item label="目录类型" v-if="data.pid!=''" >
             <el-select  placeholder="请选择目录类型" v-model="data.type" :disabled="settings.formType=='basic'">
@@ -91,7 +91,7 @@
             <el-switch v-model="data.isSentMail" :active-value=1 :inactive-value=0></el-switch>
         </el-form-item>
         <el-form-item label="说明">
-            <el-input type="textarea" :autosize="{ minRows: 2}" v-model="data.remark"></el-input>
+            <el-input type="textarea" :autosize="{ minRows: 5}" v-model="data.remark" maxlength="500" show-word-limit></el-input>
         </el-form-item>
         <el-divider></el-divider>
         <p :style="{textIndent:'2em'}"><i class="element-icons el-custom-files"></i>(分类)：表示该目录类型下还可以添加子分类和目录，不能挂知识文档</p>

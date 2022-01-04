@@ -139,7 +139,7 @@
                             <!--     <el-button type="primary" v-if="clickData.type == 2" icon="element-icons el-custom-batchedit" size="mini">批量修改</el-button>-->
                             <el-button type="primary" v-if="clickData.type == 2" icon="element-icons el-custom-import" size="mini" @click="batchImport()">批量导入</el-button>
                             <el-button type="primary" icon="element-icons el-custom-share" size="mini" @click="batchShare()">批量分享</el-button>
-                            <el-button type="primary" icon="element-icons el-custom-export" size="mini" @click="batchExport()">导出</el-button>
+                            <el-button type="primary" v-if="clickData.type == 2" icon="element-icons el-custom-export" size="mini" @click="batchExport()">导出</el-button>
                             <el-button type="primary" icon="el-icon-delete"  @click="batchDelete()">删除</el-button>
                         </el-button-group>
                         <div style="font-size: 12px">
@@ -409,16 +409,19 @@
                     let datas = [];
                     resp.content.datas.forEach(d=>{
                         let data = {};
-                        data.id = d.knowledgeBase.id;
-                        data.name = d.knowledgeBase.name;
-                        data.code = d.knowledgeBase.code;
-                        data.keyWord = d.knowledgeBase.keyword;
-                        data.tag = _.map(d.knowledgeBase.labelsEnt, 'name').join();
-                        data.categoryname = d.knowledgeBase.classificationEnt.categoryname;
-                        data.description = d.knowledgeBase.describe;
-                        data.createDate = d.knowledgeBase.createDate;
-                        data.creator = d.knowledgeBase.creatorEnt?d.knowledgeBase.creatorEnt.username:"";
-                        datas.push(data);
+                        if(d.knowledgeBase)
+                        {
+                            data.id = d.knowledgeBase.id;
+                            data.name = d.knowledgeBase.name;
+                            data.code = d.knowledgeBase.code;
+                            data.keyWord = d.knowledgeBase.keyword;
+                            data.tag = _.map(d.knowledgeBase.labelsEnt, 'name').join();
+                            data.categoryname = d.knowledgeBase.classificationEnt.categoryname;
+                            data.description = d.knowledgeBase.describe;
+                            data.createDate = d.knowledgeBase.createDate;
+                            data.creator = d.knowledgeBase.creatorEnt?d.knowledgeBase.creatorEnt.username:"";
+                            datas.push(data);
+                        }
                     })
                     this.$set(this,"tableData",datas);
                     this.loading = false;
@@ -495,14 +498,6 @@
                     spinner: 'el-icon-loading',
                     background: 'rgba(255, 255, 255, 0.9)'
                 })
-            /*    axios.post('/knowledgeApi/knowledgeUpload/post', formData).then((resp) => {
-                    if (resp.data.status === "success") {
-                        this.$message('上传文件成功' )
-                    } else {
-                        this.$message('上传文件失败:' + resp.data.message)
-                    }
-                    loading.close()
-                })*/
                 knowledgeUpload(formData).then((resp)=>{
                     if (resp.status === "success") {
                         this.$message('上传文件成功' )
@@ -552,6 +547,8 @@
                         let resp = await deleteKnowledge(option);
                         this.$success("删除成功");
                         this.tableData = _.differenceBy(this.tableData,this.tableSelectData,"id");
+                        this.$set(this.tableSettings,"total",this.tableSettings.total-this.tableSelectData.length);
+                        this.tableSelectData = [];
                     }).catch(() => {
 
                     });
@@ -570,8 +567,6 @@
                 exportKnowExcel(option);
             },
             async submitSuccess({formData,selectList}){
-                console.log();
-                console.log({formData,selectList});
                 let docIds = this.tableSelectData.map(d=>{
                     return d.id
                 }).join(",");

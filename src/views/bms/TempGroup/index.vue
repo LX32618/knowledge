@@ -112,6 +112,8 @@
                             return t.id == id;
                         })
                         this.tableData.splice(index,1);
+                        this.selectRow = {};
+                        this.$set(this.tableSettings,"total",this.tableSettings.total-1)
                         this.$success("数据已删除");
                     }).catch()
 
@@ -125,6 +127,7 @@
                     this.tableData.push(row);
                     this.addDialogVisible = false;
                     this.$success("新增成功");
+                    this.$set(this.tableSettings,"total",this.tableSettings.total+1)
                 }
                 else{
                     let index = this.tableData.findIndex(d=>{
