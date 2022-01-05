@@ -118,6 +118,11 @@ export default {
     updateEditStatus(status) {
       this.$emit('update:isEdit', status)
     }
+  },
+  mounted() {
+    if (this.$route.query.edit) {
+      this.updateEditStatus(true)
+    }
   }
 }
 </script>

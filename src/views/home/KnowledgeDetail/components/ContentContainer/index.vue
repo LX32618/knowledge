@@ -309,9 +309,6 @@ export default {
     if (this.editType) {
       this.updateEditStatus(true)
     }
-    if (this.$route.query.edit) {
-      this.updateEditStatus(true)
-    }
   }
 }
 </script>
