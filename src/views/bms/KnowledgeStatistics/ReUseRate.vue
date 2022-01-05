@@ -150,8 +150,8 @@
                 option.name = this.searchData.name;
                 option.userName = this.searchData.userName;
                 option.categoryId = this.currentNode.key;
-                option.beginTime = this.searchData.date?moment(this.searchData.date[0]).format("YYYY-MM-DD"):"";
-                option.endTime = this.searchData.date?moment(this.searchData.date[1]).format("YYYY-MM-DD"):"";
+                option.beginTime = (this.searchData.date && this.searchData.date[0])?moment(this.searchData.date[0]).format("YYYY-MM-DD"):"";
+                option.endTime = (this.searchData.date && this.searchData.date[1])?moment(this.searchData.date[1]).format("YYYY-MM-DD"):"";
                 this.loading = true;
                 let resp = await fetchReuseRate(option);
                 this.tableSettings.total = resp.content.total;
