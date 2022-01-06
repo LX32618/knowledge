@@ -172,7 +172,10 @@ export default {
           docIds: '',
           knowBaseIds: '',
           objId: tmp[this.shareType],
-          objType: this.shareType + 1,
+          objType:
+            this.shareType === this.shareTypes.length - 1
+              ? 99
+              : this.shareType + 1,
           hrmId: tmp[0],
           orgId: tmp[1],
           groupId: tmp[2],
