@@ -74,7 +74,7 @@ export default {
   async mounted() {
     this.permissionLoading = true
     let res = await hasKnowledgePermission(this.id)
-    this.viewPermission = res.content.hasPermission.create
+    this.viewPermission = res.content.hasPermission.view
     this.editPermission = res.content.hasPermission.edit
     this.permissionLoading = false
     if (!this.viewPermission) return
