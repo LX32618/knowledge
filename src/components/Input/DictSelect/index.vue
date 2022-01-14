@@ -66,7 +66,6 @@ export default {
     this.isLoading = true
     getKnowledgeFormFieldType({ id: this.dictId })
       .then(res => {
-        console.log(res)
         this.options = res.content
         this.isLoading = false
       })
