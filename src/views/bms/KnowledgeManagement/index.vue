@@ -124,7 +124,7 @@
         <el-aside width="210px" style="min-height:100vh;border-right: 1px solid #DCDFE6;">
             <cs-lazytree ref="lazytree" :settings="treeSettings" :dataFormat="treeDataFormat" @treeNodeClick="treeNodeClick"></cs-lazytree>
         </el-aside>
-        <el-main style="padding: 1px">
+        <el-main style="padding: 1px"v-if="clickData.id && clickData.pid != '0'">
             <cs-table ref="tb"
                       :settings="tableSettings"
                       :table-data="tableData"
@@ -316,7 +316,7 @@
                     radio:false,//是否单选
                     checkbox: true,//是否多选，单选和多选同一时间只能存在一个
                     pagination:true,//是否显示分页
-                    total:50,//一共有多少条数据
+                    total:0,//一共有多少条数据
                     pageSize:10,//默认每页多少条数据
                     pageSizes:[10,20,50],//设置每页显示多少条数据
                     currentPage:1,//默认显示第几页
@@ -381,8 +381,8 @@
                         classification:data.id
                     };
                     this.loadTableData(temp);
-                    this.$set(this, 'clickData', data);
                 }
+                this.$set(this, 'clickData', data);
             },
             loadTableData({page,rows,sort,order,classification}){
                 this.loading = true;
@@ -512,7 +512,6 @@
             },
             batchExport(){
                 if(this.tableSelectData.length > 0){
-                    //console.log(this.tableSelectData);
                     let option = {
                         categoryId:this.clickData.id,
                         exp:"exp",
@@ -594,8 +593,6 @@
                 };
 
                 let resp = await saveShare(option);
-
-                console.log(resp);
                 this.$success("分享成功");
                 this.shareDialogVisible = false;
             },

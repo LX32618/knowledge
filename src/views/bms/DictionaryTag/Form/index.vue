@@ -9,14 +9,14 @@
         <el-form-item label="排序">
             <el-input autocomplete="off" v-model.number="data.data.sort" :disabled="!settings.request"></el-input>
         </el-form-item>
-        <el-form-item label="预留字段一">
-            <el-input autocomplete="off" v-model="data.data.field_900" :disabled="!settings.request"></el-input>
+        <el-form-item label="预留字段一" v-show="false">
+            <el-input autocomplete="off"  v-model="data.data.field_900" :disabled="!settings.request"></el-input>
         </el-form-item>
-        <el-form-item label="预留字段二">
+        <el-form-item label="预留字段二" v-show="false">
             <el-input autocomplete="off" v-model="data.data.field_901" :disabled="!settings.request"></el-input>
         </el-form-item>
-        <el-form-item label="预留字段三">
-            <el-input autocomplete="off" v-model="data.data.field_902" :disabled="!settings.request"></el-input>
+        <el-form-item label="预留字段三" v-show="false">
+            <el-input autocomplete="off"  v-model="data.data.field_902" :disabled="!settings.request"></el-input>
         </el-form-item>
         <slot name="operation"></slot>
     </el-form>

@@ -87,7 +87,7 @@
         <el-form-item label="是否启用">
             <el-switch v-model="data.enable" :active-value=0 :inactive-value=-1></el-switch>
         </el-form-item>
-        <el-form-item label="是否开启邮件" v-if="data.type==2">
+        <el-form-item label="是否开启邮件" v-if="data.type==2" v-show="false">
             <el-switch v-model="data.isSentMail" :active-value=1 :inactive-value=0></el-switch>
         </el-form-item>
         <el-form-item label="说明">
