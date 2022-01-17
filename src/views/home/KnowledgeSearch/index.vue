@@ -9,13 +9,15 @@
           placeholder="知识库"
           size="large"
           v-loading="isLoading"
-          value-key="id">
+          value-key="id"
+        >
           <el-option label="知识库" :value="''"></el-option>
           <el-option
             v-for="category of docCategories"
             :key="category.id"
             :label="category.categoryName"
-            :value="category.id"></el-option>
+            :value="category.id"
+          ></el-option>
         </el-select>
       </div>
       <!-- 搜索框 -->
@@ -24,8 +26,13 @@
           v-model="searchText"
           placeholder="请输入你想搜索的内容"
           size="large"
-          @keyup.enter.native="updateSearch">
-          <el-button slot="append" icon="el-icon-search" @click="updateSearch"></el-button>
+          @keyup.enter.native="handleTypeChange"
+        >
+          <el-button
+            slot="append"
+            icon="el-icon-search"
+            @click="handleTypeChange"
+          ></el-button>
         </el-input>
       </div>
     </home-header>
@@ -39,21 +46,40 @@
               <el-breadcrumb-item :to="{ path: '/' }" class="breadcurmb-text"
                 >首页</el-breadcrumb-item
               >
-              <el-breadcrumb-item class="breadcurmb-text">搜索列表</el-breadcrumb-item>
+              <el-breadcrumb-item class="breadcurmb-text"
+                >搜索列表</el-breadcrumb-item
+              >
             </el-breadcrumb>
           </div>
           <!-- 搜索类型选择框 -->
-          <el-radio-group v-model="searchType" @change="updateSearch" v-loading="searchLoading">
-            <el-radio v-for="item of searchTypes" :key="item.name" :label="item.value">{{ item.label }}</el-radio>
+          <el-radio-group
+            v-model="searchType"
+            @change="handleTypeChange"
+            v-loading="searchLoading"
+          >
+            <el-radio
+              v-for="item of searchTypes"
+              :key="item.name"
+              :label="item.value"
+              >{{ item.label }}</el-radio
+            >
           </el-radio-group>
           <!-- 查询结构列表 -->
           <div v-loading="searchLoading">
             <div v-if="searchResults.length === 0" class="empty-text">
               没有搜索到记录
             </div>
-            <div class="knowledge-item" v-for="item of searchResults" :key="item.id">
+            <div
+              class="knowledge-item"
+              v-for="item of searchResults"
+              :key="item.id"
+            >
               <template v-if="searchType === 'category'">
-                <el-link type="primary" @click="handleCategoryLinkClick(item)">{{ item.CATEGORYNAME }}</el-link>
+                <el-link
+                  type="primary"
+                  @click="handleCategoryLinkClick(item)"
+                  >{{ item.CATEGORYNAME }}</el-link
+                >
                 <el-row class="item-bottom">
                   <el-col :span="4">
                     <i class="fa fa-database"></i>
@@ -95,7 +121,8 @@
             :page-sizes="[5, 10, 15, 20]"
             @current-change="updateSearch"
             @size-change="updateSearch"
-            layout="total, sizes, prev, pager, next, jumper">
+            layout="total, sizes, prev, pager, next, jumper"
+          >
           </el-pagination>
         </el-col>
         <el-col class="hot-words" :span="6">
@@ -105,7 +132,8 @@
                 class="hot-word"
                 v-for="item of hotWords"
                 :key="item.SEARCH_TEXT"
-                @click="handleHotWordClick(item.SEARCH_TEXT)">
+                @click="handleHotWordClick(item.SEARCH_TEXT)"
+              >
                 {{ item.SEARCH_TEXT }}
               </div>
             </div>
@@ -129,7 +157,7 @@ export default {
   props: {
     query: [Object, String]
   },
-  data () {
+  data() {
     return {
       isLoading: false,
       searchLoading: false,
@@ -153,15 +181,13 @@ export default {
     }
   },
   computed: {
-    ...mapGetters([
-      'docCategories'
-    ]),
-    isCodeSearch () {
+    ...mapGetters(['docCategories']),
+    isCodeSearch() {
       return this.searchType === 'knowcode_text'
     }
   },
   methods: {
-    updateSearch () {
+    updateSearch() {
       if (!this.searchText.trim()) {
         this.$warning('请输入搜索内容')
         this.searchResults = []
@@ -174,16 +200,22 @@ export default {
         searchText: this.searchText,
         searchLibrary: this.searchCategory,
         searchType: this.searchType
-      }).then(res => {
-        this.searchResults = res.content.datas
-        this.total = res.content.total
-        this.searchLoading = false
-      }).catch(_  => {
-        this.searchResults = []
-        this.searchLoading = false
       })
+        .then(res => {
+          this.searchResults = res.content.datas
+          this.total = res.content.total
+          this.searchLoading = false
+        })
+        .catch(_ => {
+          this.searchResults = []
+          this.searchLoading = false
+        })
     },
-    handleLinkClick (id) {
+    handleTypeChange() {
+      this.page = 1
+      this.updateSearch()
+    },
+    handleLinkClick(id) {
       const url = this.$router.resolve({
         name: 'knowledgeDetail',
         params: {
@@ -192,7 +224,7 @@ export default {
       })
       window.open(url.href)
     },
-    handleCategoryLinkClick (item) {
+    handleCategoryLinkClick(item) {
       const url = this.$router.resolve({
         name: 'knowledgeBase',
         params: {
@@ -202,12 +234,12 @@ export default {
       })
       window.open(url.href)
     },
-    handleHotWordClick (text) {
+    handleHotWordClick(text) {
       this.searchText = text
       this.updateSearch()
     }
   },
-  async mounted () {
+  async mounted() {
     this.searchText = this.$route.query.search
     if (this.docCategories.length === 0) {
       this.isLoading = true
@@ -236,7 +268,7 @@ export default {
   padding: 10px 0;
   font-size: 14px;
   line-height: 1;
-  font-family: "PingFang SC";
+  font-family: 'PingFang SC';
 }
 .el-breadcrumb {
   display: inline-block;
