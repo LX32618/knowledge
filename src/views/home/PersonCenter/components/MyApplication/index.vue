@@ -76,10 +76,10 @@ export default {
             return dateTime(row.time)
           }
         },
-        {
-          label: '申请天数',
-          key: 'days'
-        },
+        // {
+        //   label: '申请天数',
+        //   key: 'days'
+        // },
         {
           label: '审批人',
           key: 'auditperson'
