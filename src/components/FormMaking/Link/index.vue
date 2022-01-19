@@ -1,7 +1,7 @@
 <template>
     <div>
         <el-button type="primary" icon="el-icon-edit" circle @click="open" v-if="edit" :disabled="disabled"></el-button>
-        <el-link :type="type" :href="linkData.url" :target="target" :underline="underline" :disabled="disabled">{{linkData.title}}</el-link>
+        <el-link :type="type" :href="linkData.url" :target="target" :underline="underline">{{linkData.title}}</el-link>
         <el-dialog title="超链接信息" :visible.sync="dialogFormVisible"  @open="dialogOpen" :close-on-click-modal="false" append-to-body>
             <el-form :rules="rules" :model="data" ref="linkForm">
                 <el-form-item label="链接名称" label-width="120px" prop="title">
@@ -91,7 +91,6 @@
             certainClick(){
                 this.$refs['linkForm'].validate((valid) => {
                     if (valid) {
-                        console.log(this.data);
                         this.$emit("update:linkData",this.data);
                         this.dialogFormVisible = false;
                     } else {

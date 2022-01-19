@@ -100,7 +100,7 @@ const sidebar = {
                     },{
                         name: "OrganizationContribution",
                         path: "OrganizationContribution",
-                        meta: {title:"组织资产部门统计"},
+                        meta: {title:"部门贡献统计"},
                         component:()=>import("@/views/bms/KnowledgeStatistics/OrganizationContribution")
                     }
                 ]
