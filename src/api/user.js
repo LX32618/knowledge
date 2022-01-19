@@ -23,12 +23,13 @@ export function fetchUserByDeptUser(data) {
   })
 }
 
-export function isIpValid(ip) {
+export function isIpValid(ip, userName) {
   return request({
     url: '/isMatch/get',
     method: 'post',
     data: {
-      ip
+      ip,
+      userName
     }
   })
 }
