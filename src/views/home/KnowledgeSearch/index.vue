@@ -170,7 +170,8 @@ export default {
         { label: '知识属性', value: 'knowbase_text' },
         { label: '知识编号', value: 'knowcode_text' },
         { label: '附件', value: 'attach_text' },
-        { label: '目录', value: 'category' }
+        { label: '自定义', value: 'ZDY' }
+        // { label: '目录', value: 'category' }
       ],
       searchResults: [],
       hotWordsLoading: false,
