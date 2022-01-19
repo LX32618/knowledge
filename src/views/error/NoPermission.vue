@@ -1,7 +1,7 @@
 <template>
   <div class="page">
     <div class="message-box">
-      <h3>设备秘级验证失败：无法访问信息资源库系统</h3>
+      <h3>设备或人员秘级验证失败：无法访问信息资源库系统</h3>
     </div>
   </div>
 </template>
