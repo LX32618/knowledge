@@ -92,7 +92,7 @@
                 </el-row>
               </template>
               <template v-else>
-                <el-link type="primary" @click="handleLinkClick(item.id)">
+                <el-link type="primary" @click="handleLinkClick(item.ID)">
                   <span v-if="isCodeSearch">{{ item.NAME }}</span>
                   <span v-else v-html="item.showName"></span>
                 </el-link>
