@@ -107,10 +107,8 @@ export default {
       getModelAndData({ id: this.id, ver }).then(res => {
         const data = handleGetKnowledgeModelAndDataResponse(res.content)
         this.setData(data)
-        const {
-          baseData: { auditStatus }
-        } = data
-        this.$emit('updateStatus', auditStatus)
+        const { baseData } = data
+        this.$emit('updateBaseData', baseData)
         this.isLoading = false
       })
     },
