@@ -91,6 +91,9 @@ export default {
   watch: {
     knowledge: {
       handler(val) {
+        if (!val) {
+          return
+        }
         this.setData(val)
       },
       deep: true,
@@ -105,7 +108,10 @@ export default {
     update(ver) {
       this.isLoading = true
       getModelAndData({ id: this.id, ver }).then(res => {
-        this.setData(handleGetKnowledgeModelAndDataResponse(res.content))
+        const data = handleGetKnowledgeModelAndDataResponse(res.content)
+        this.setData(data)
+        // const { baseData } = data
+        this.$emit('updateBaseData', data)
         this.isLoading = false
       })
     },
@@ -121,6 +127,9 @@ export default {
   },
   mounted() {
     if (this.$route.query.edit) {
+      this.updateEditStatus(true)
+    }
+    if (this.editType) {
       this.updateEditStatus(true)
     }
   }

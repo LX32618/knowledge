@@ -1,4 +1,4 @@
-export function handleGetKnowledgeModelAndDataResponse (res) {
+export function handleGetKnowledgeModelAndDataResponse(res) {
   const baseData = res.knowledgeData.knowledgeBase
   baseData.classificationName = baseData.classificationEnt.categoryname
   // if (baseData.creatorEnt) {
@@ -6,10 +6,12 @@ export function handleGetKnowledgeModelAndDataResponse (res) {
   // }
   const formData = res.knowledgeData.formData
   let formConfig = res.knowledgeModel.formModel
-  formConfig = Array.isArray(formConfig) ? {
-    formType: 1,
-    relationForms: formConfig
-  } : formConfig
+  formConfig = Array.isArray(formConfig)
+    ? {
+        formType: 1,
+        relationForms: formConfig
+      }
+    : formConfig
 
   return {
     baseData,

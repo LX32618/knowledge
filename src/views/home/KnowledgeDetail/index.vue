@@ -1,6 +1,10 @@
 <template>
   <div v-if="viewPermission" class="container">
-    <tool-bar :baseData="knowledge.baseData" :isEdit="isEdit" />
+    <tool-bar
+      :baseData="knowledge.baseData"
+      :isEdit="isEdit"
+      @updateStauts="handleStatusChange"
+    />
     <!-- <AreaInput v-model="test" /> {{ test }} -->
     <KnowledgeTabs
       :id="id"
@@ -8,6 +12,7 @@
       :isEdit.sync="isEdit"
       :editType="editType"
       :editPermission="editPermission"
+      @updateBaseData="handleBaseDataChange"
     />
   </div>
   <div v-loading="permissionLoading" class="no-permission" v-else>
@@ -69,6 +74,17 @@ export default {
     },
     handleHomeClick() {
       this.$router.push('/')
+    },
+    handleBaseDataChange(baseData) {
+      // this.$nextTick(() => {
+      //   this.knowledge.baseData = baseData
+      // })
+      this.knowledge = baseData
+      // this.knowledge.baseData.auditStatus = baseData.auditStatus
+      // this.knowledge.baseData.ver = baseData.ver
+    },
+    handleStatusChange(auditStatus) {
+      this.knowledge.baseData.auditStatus = auditStatus
     }
   },
   async mounted() {

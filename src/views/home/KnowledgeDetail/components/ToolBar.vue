@@ -118,14 +118,16 @@ export default {
         if (!this.processId) {
           await updateDataLifeCycle(id)
           this.$success('知识发布成功')
-          this.auditStatus = '1'
+          // this.auditStatus = '1'
+          this.$emit('updateStauts', '1')
           return
         }
         const res = await startFlow(this.processId, this.knowledge.KNOWLEDGE_ID)
         const { success, msg } = res
         if (success) {
           this.$success(msg)
-          this.auditStatus = '-1'
+          // this.auditStatus = '-1'
+          this.$emit('updateStauts', '-1')
         }
       } catch (err) {
         this.$error(err)
@@ -229,7 +231,9 @@ export default {
             editType: 1
           }
         })
-        window.location.href = url.href
+        // window.location.href = url.href
+        window.open(url.href)
+        window.close()
       } catch (err) {
         if (err === 'cancel') return
         this.$error('新建版本失败')
