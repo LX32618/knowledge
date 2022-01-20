@@ -87,7 +87,6 @@
                 this.editDialogVisible = true;
             },
             remove(index,row){
-                console.log(row);
                 this.$confirm('是否确认删除该条数据?', '提示', {
                     closeOnClickModal: false,
                     confirmButtonText: '确定',

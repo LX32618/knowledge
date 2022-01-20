@@ -28,7 +28,7 @@
                     <div  v-for="tag in selectList" :key="tag.id"
                           class="tag" style="cursor: pointer">
                         <el-tag  type="danger" @dblclick.native="closeTag(tag)">
-                            <i class="el-icon-s-flag"/>{{tag.departName}}
+                            <i class="el-icon-s-flag"/>{{tag.fullPath}}
                         </el-tag>
                     </div>
                     <br/>
