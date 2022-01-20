@@ -306,9 +306,6 @@ export default {
   },
   mounted() {
     this.widgetForm.list = this.baseFormConfig
-    if (this.editType) {
-      this.updateEditStatus(true)
-    }
   }
 }
 </script>

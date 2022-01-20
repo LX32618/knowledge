@@ -110,7 +110,6 @@ export default {
         const {
           baseData: { auditStatus }
         } = data
-        console.log(auditStatus)
         this.$emit('updateStatus', auditStatus)
         this.isLoading = false
       })
@@ -127,6 +126,9 @@ export default {
   },
   mounted() {
     if (this.$route.query.edit) {
+      this.updateEditStatus(true)
+    }
+    if (this.editType) {
       this.updateEditStatus(true)
     }
   }
