@@ -66,9 +66,16 @@
                         },
                         {prop: "object", label: "对象",
                             formatter(index,row){
-                                return  row.linkList.map(l=>{
-                                    return l.resourceText;
-                                }).join(",");
+                                if(row.ruleType == 3)
+                                {
+                                    return row.resourceText;
+                                }
+                                else {
+                                    return  row.linkList.map(l=>{
+                                        return l.resourceText;
+                                    }).join(",");
+                                }
+
                             }},
                         {prop: "permissionType", label: "权限",
                             formatter(index,row){
@@ -128,9 +135,10 @@
                     })
                 }
                 else if("3" == ruleType){//指定专业组
-                    groupId = formData.group.map(s=>{
+                    groupId = [{id:formData.group.id,name:formData.group.name}];
+                 /*   groupId = formData.group.map(s=>{
                         return {id:s.id,name:s.name}
-                    })
+                    })*/
                 }
 
                 let option = {
