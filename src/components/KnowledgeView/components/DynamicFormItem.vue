@@ -10,16 +10,17 @@ export default {
     DictSelect,
     KnowledgeLabelsInput
   },
-  render (h) {
+  render(h) {
     return (
       <el-form-item
-        vLoading={ this.isLoading }
+        vLoading={this.isLoading}
         class={{
           'dynamic-form-item': true
         }}
-        label={ this.field.name }
-        prop={ this.field.key }>
-        { this.renderComponent(h) }
+        label={this.field.name}
+        prop={this.field.key}
+      >
+        {this.renderComponent(h)}
       </el-form-item>
     )
   },
@@ -27,7 +28,7 @@ export default {
     data: Object,
     field: Object
   },
-  data () {
+  data() {
     return {
       dataModel: this.data[this.field.key],
       isLoading: false,
@@ -37,7 +38,7 @@ export default {
   computed: {},
   watch: {
     dataModel: {
-      handler (val) {
+      handler(val) {
         this.data[this.field.key] = val
         this.$emit('update:data', {
           ...this.data,
@@ -47,14 +48,14 @@ export default {
       deep: true
     },
     data: {
-      handler (val) {
+      handler(val) {
         this.dataModel = val[this.field.key]
       },
       deep: true
     }
   },
   methods: {
-    renderComponent (h) {
+    renderComponent(h) {
       switch (this.field.type) {
         case 0:
           return this.renderInput(h)
@@ -76,103 +77,92 @@ export default {
           return this.renderKnowledgeLabelsInput(h)
       }
     },
-    renderInput (h) {
-      return (
-        <el-input
-          vModel={ this.dataModel }></el-input>
-      )
+    renderInput(h) {
+      return <el-input vModel={this.dataModel}></el-input>
     },
-    renderTextArea (h) {
-      return (
-        <el-input
-          vModel={ this.dataModel }
-          type="textarea"></el-input>
-      )
+    renderTextArea(h) {
+      return <el-input vModel={this.dataModel} type="textarea"></el-input>
     },
-    renderInputNumber (h) {
+    renderInputNumber(h) {
       return (
         <el-input-number
-          vModel={ this.dataModel }
-          controls={ this.field.options.controls !== 'none' }
-          controls-position= { this.field.options.controls }></el-input-number>
+          vModel={this.dataModel}
+          controls={this.field.options.controls !== 'none'}
+          controls-position={this.field.options.controls}
+        ></el-input-number>
       )
     },
-    renderSwitch (h) {
-      return (
-        <el-switch
-          vModel={ this.dataModel }></el-switch>
-      )
+    renderSwitch(h) {
+      return <el-switch vModel={this.dataModel}></el-switch>
     },
-    renderRadio (h) {
+    renderRadio(h) {
       return (
-        <el-radio-group
-          vModel={ this.dataModel }>
-          {
-            this.options.map(option => {
-              return <el-radio label={ option.value }>{ option.label }</el-radio>
-            })
-          }
+        <el-radio-group vModel={this.dataModel}>
+          {this.options.map(option => {
+            return <el-radio label={option.value}>{option.label}</el-radio>
+          })}
         </el-radio-group>
       )
     },
-    renderCheckbox (h) {
+    renderCheckbox(h) {
       return (
-        <el-checkbox-group
-          vModel={ this.dataModel }>
-          {
-            this.options.map(option => {
-              return <el-checkbox label={ option.value }>{ option.label }</el-checkbox>
-            })
-          }
+        <el-checkbox-group vModel={this.dataModel}>
+          {this.options.map(option => {
+            return (
+              <el-checkbox label={option.value}>{option.label}</el-checkbox>
+            )
+          })}
         </el-checkbox-group>
       )
     },
-    renderDictSelect (h) {
+    renderDictSelect(h) {
       let type
       if (this.field.type === 1) {
         type = 'radio'
-      }
-      else if (this.field.type === 8) {
+      } else if (this.field.type === 8) {
         type = 'checkbox'
       }
       return (
         <dict-select
-          vModel={ this.dataModel }
-          dictId={ this.field.options.fieldType }
-          type={ type }></dict-select>
+          vModel={this.dataModel}
+          dictId={this.field.fieldInfo.id}
+          type={type}
+        ></dict-select>
       )
     },
-    renderTimePicker (h) {
-      return (
-        <el-time-picker
-          vModel={ this.dataModel }></el-time-picker>
-      )
+    renderTimePicker(h) {
+      return <el-time-picker vModel={this.dataModel}></el-time-picker>
     },
-    renderDatePicker (h) {
+    renderDatePicker(h) {
       return (
         <el-date-picker
-          vModel={ this.dataModel }
-          type={ this.field.options.type }
-          style="width: 100%"></el-date-picker>
+          vModel={this.dataModel}
+          type={this.field.options.type}
+          style="width: 100%"
+        ></el-date-picker>
       )
     },
-    renderKnowledgeLabelsInput (h) {
+    renderKnowledgeLabelsInput(h) {
       return (
         <knowledge-labels-input
-          vModel={ this.dataModel }
-          data={ this.field.options.options }>
-        </knowledge-labels-input>
+          vModel={this.dataModel}
+          data={this.field.options.options}
+        ></knowledge-labels-input>
       )
     }
   },
-  created () {
-    if (this.field.type === 'radio' || this.field.type === 'checkbox' || this.field.type === 'select') {
+  created() {
+    if (
+      this.field.type === 'radio' ||
+      this.field.type === 'checkbox' ||
+      this.field.type === 'select'
+    ) {
       // 远程获取选项数据
       if (this.field.options.remote) {
         const options = this.field.options
         const params = {}
         options.requestParams.forEach(item => {
-        // 提出键值为空的参数
+          // 提出键值为空的参数
           if (item.key && (item.value !== null || item.value !== undefined)) {
             params[item.key] = item.value
           }
@@ -204,5 +194,4 @@ export default {
 }
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>
