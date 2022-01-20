@@ -5,7 +5,7 @@
                 <cs-table :settings="tableSettings" :table-data="unSelectList" @rowDbClick="rowDbClick" @pageSizeChange="pageSizeChange">
                     <template v-slot:horizontalSlot>
                         部门列表
-                        <div class="search oper">
+                        <div class="search oper" v-show="false">
                             <el-button-group class="oper">
                                 <el-input  placeholder="请输入关键字" prefix-icon="el-icon-search" v-model="keyWord"></el-input>
                                 <el-button type="primary" size="mini" @click="search">搜索</el-button>
@@ -45,7 +45,7 @@
 
 <script>
 
-    import {fetchDepartmentInfoById} from "@/api/department"
+    import {fetchDepartmentInfoById,fetchDepartmentInfoById1} from "@/api/department"
 
 
     export default {
@@ -63,7 +63,7 @@
                     height:280,
                     fields: [
                         {prop: "id", label: "id", sortable: false, visible: false},
-                        {prop: "departName", label: "部门"}
+                        {prop: "fullPath", label: "部门"}
                     ]
                 },
                 selectList: [],
@@ -77,11 +77,11 @@
                     page:page,
                     rows:rows,
                     condition:{
-                        orgId: "4028840e7e23e028017e246a27a3001b",//"4028e4667598521a017598612215000b",
-                        departName:departmentName
+                        //orgId: "4028840e7e23e028017e246a27a3001b",//"4028e4667598521a017598612215000b",
+                        //departName:departmentName
                     }
                 };
-                let resp = await fetchDepartmentInfoById(option);
+                let resp = await fetchDepartmentInfoById1(option);
                 this.unSelectList = resp.content.datas;
                 this.tableSettings.total = resp.content.total;
             },

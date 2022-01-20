@@ -19,7 +19,6 @@ export function fetchKnowledgeAdministratorList(option) {
     })
 }
 
-
 export function fetchCategoryTreeSync(option) {
     return request({
         url: `${rootUrl}getCategoryTreeSync`,

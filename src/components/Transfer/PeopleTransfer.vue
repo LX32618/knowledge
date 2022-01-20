@@ -52,7 +52,7 @@
 </template>
 <script>
     import CatTreeSelect from "../CatTreeSelect/index";
-    import {fetchDepartmentInfoById} from "@/api/department"
+    import {fetchDepartmentInfoById,fetchDepartmentInfoById1} from "@/api/department"
     import {fetchUserByDeptUser} from "@/api/user"
 
     export default {
@@ -79,13 +79,13 @@
                         {prop: "id", label: "id", visible: false},
                         {prop: "userName", label: "userName", visible: false},
                         {prop: "realName", label: "用户名"},
-                        {prop: "departName", label: "部门"}
+                        {prop: "fullPath", label: "部门"}
                     ]
                 },
                 deptSelect:"",
                 treeSelectSettings:{
                     key:"id",
-                    label:"departName",
+                    label:"fullPath",
                     children:"children"
                 },
                 treeSelectData: [],
@@ -113,11 +113,14 @@
                     page:page,
                     rows:rows,
                     condition:{
-                        orgId:"4028840e7e23e028017e246a27a3001b"//"4028e4667598521a017598612215000b"
+                        //orgId:"4028840e7e23e028017e246a27a3001b"//"4028e4667598521a017598612215000b"
                     }
                 };
-                let resp = await fetchDepartmentInfoById(option);
+                let resp = await fetchDepartmentInfoById1(option);
+
                 this.treeSelectData= resp.content.datas;
+
+                console.log(this.treeSelectData);
             },
             rowDbClick({row, column, cell, event}){
                 let index = this.selectList.findIndex(s=>{
