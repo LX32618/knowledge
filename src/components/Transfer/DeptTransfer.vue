@@ -77,7 +77,7 @@
                     page:page,
                     rows:rows,
                     condition:{
-                        orgId: "4028e4667598521a017598612215000b",
+                        orgId: "4028840e7e23e028017e246a27a3001b",//"4028e4667598521a017598612215000b",
                         departName:departmentName
                     }
                 };

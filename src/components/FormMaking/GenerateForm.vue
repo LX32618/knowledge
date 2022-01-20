@@ -179,7 +179,12 @@ export default {
         } else if (genList[i].type === 'viewBtn') {
           const value = this.value[genList[i].model]
           this.models[genList[i].model] = value ? JSON.parse(value) : null
-        } else {
+        } else if(genList[i].type === 'link')
+        {
+          const value = this.value[genList[i].model];
+          this.models[genList[i].model] = value ? JSON.parse(value) : {url:"",title:""};
+        }
+        else {
           if (
             this.value &&
             Object.keys(this.value).indexOf(genList[i].model) >= 0
@@ -196,7 +201,8 @@ export default {
                   ? {}
                   : []
               )
-            } else {
+            }
+            else {
               this.models[genList[i].model] = genList[i].options.defaultValue
             }
           }
