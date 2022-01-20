@@ -8,6 +8,7 @@
       :isEdit.sync="isEdit"
       :editType="editType"
       :editPermission="editPermission"
+      @updateStatus="handleStatusChange"
     />
   </div>
   <div v-loading="permissionLoading" class="no-permission" v-else>
@@ -69,6 +70,9 @@ export default {
     },
     handleHomeClick() {
       this.$router.push('/')
+    },
+    handleStatusChange(auditStatus) {
+      this.knowledge.baseData.auditStatus = auditStatus
     }
   },
   async mounted() {

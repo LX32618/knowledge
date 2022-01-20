@@ -105,7 +105,13 @@ export default {
     update(ver) {
       this.isLoading = true
       getModelAndData({ id: this.id, ver }).then(res => {
-        this.setData(handleGetKnowledgeModelAndDataResponse(res.content))
+        const data = handleGetKnowledgeModelAndDataResponse(res.content)
+        this.setData(data)
+        const {
+          baseData: { auditStatus }
+        } = data
+        console.log(auditStatus)
+        this.$emit('updateStatus', auditStatus)
         this.isLoading = false
       })
     },

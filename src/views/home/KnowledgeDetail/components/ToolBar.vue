@@ -229,7 +229,9 @@ export default {
             editType: 1
           }
         })
-        window.location.href = url.href
+        // window.location.href = url.href
+        window.open(url.href)
+        window.close()
       } catch (err) {
         if (err === 'cancel') return
         this.$error('新建版本失败')
