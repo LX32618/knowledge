@@ -91,6 +91,9 @@ export default {
   watch: {
     knowledge: {
       handler(val) {
+        if (!val) {
+          return
+        }
         this.setData(val)
       },
       deep: true,
@@ -107,8 +110,8 @@ export default {
       getModelAndData({ id: this.id, ver }).then(res => {
         const data = handleGetKnowledgeModelAndDataResponse(res.content)
         this.setData(data)
-        const { baseData } = data
-        this.$emit('updateBaseData', baseData)
+        // const { baseData } = data
+        this.$emit('updateBaseData', data)
         this.isLoading = false
       })
     },

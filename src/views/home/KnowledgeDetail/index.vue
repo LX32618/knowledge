@@ -79,8 +79,9 @@ export default {
       // this.$nextTick(() => {
       //   this.knowledge.baseData = baseData
       // })
-      this.knowledge.baseData.auditStatus = baseData.auditStatus
-      this.knowledge.baseData.ver = baseData.ver
+      this.knowledge = baseData
+      // this.knowledge.baseData.auditStatus = baseData.auditStatus
+      // this.knowledge.baseData.ver = baseData.ver
     },
     handleStatusChange(auditStatus) {
       this.knowledge.baseData.auditStatus = auditStatus

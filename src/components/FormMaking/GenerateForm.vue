@@ -148,6 +148,10 @@ export default {
   mounted() {},
   methods: {
     generateModle(genList) {
+      const { ver } = this.value
+      if (ver) {
+        this.models.ver = ver
+      }
       this.options.classification = this.value.classification
       this.options.knowledgeId = this.value.knowledgeId
       if (!genList) return
