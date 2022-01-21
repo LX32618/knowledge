@@ -53,7 +53,7 @@
                 </el-tab-pane>
             </el-tabs>
         </el-main>
-        <el-dialog title="新增知识目录" :visible.sync="appendFormVisible" :close-on-click-modal="false">
+        <el-dialog :title="title" :visible.sync="appendFormVisible" :close-on-click-modal="false">
             <cs-basic :settings="appendFormSettings" :form-data="appendFormData" @submitSuccess="submitSuccess"></cs-basic>
         </el-dialog>
     </el-container>
@@ -82,6 +82,7 @@
         name: "KnowledgeList",
         data(){
             return {
+                title:"",
                 categoryId:"",
                 activeName:'basic',
                 clickData:{},
@@ -230,6 +231,15 @@
                     isRoot:node.object.pid=="0"?true:false
                 };
                 this.$set(this, 'appendFormData', data);
+                let type = node.object.type;
+                if(type == -1)
+                {
+                    this.title = "新增知识库";
+                }
+                else{
+                    this.title = "新增知识分类/目录";
+                }
+
                 this.appendFormVisible = true;
             },
             removeTreeNode(node)
@@ -281,7 +291,7 @@
                             append:true,
                             edit:false,
                             remove:false,
-                            appendLabel:"添加知识目录"
+                            appendLabel:"添加知识库"
                         };
                     }
                     else if(item.type==0){
