@@ -140,7 +140,7 @@ export default {
   data() {
     return {
       fileList: [],
-      videoTypes: ['mp4'],
+      videoTypes: ['mp4', 'ogg', 'webm'],
       officeTypes: ['doc', 'docx', 'xlx', 'xlsx'],
       imageTypes: ['png', 'jpg', 'jpeg', 'gif'],
       isLoading: false,
