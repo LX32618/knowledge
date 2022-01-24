@@ -137,7 +137,7 @@
                 this.loadData(option);
             },
             certainClick(){
-                let temp = _.cloneDeep(this.tagData);
+                let temp = this.tagData?_.cloneDeep(this.tagData):[];
                 if(!this.multiple)
                 {
                     temp = _.cloneDeep(this.selectedTag);
@@ -148,10 +148,12 @@
                     })
                     temp = _.uniqBy(temp,"id");
                 }
+                
                 this.$emit("update:tagData",temp);
                 this.showTable = false;
             },
             selectionChange(row){
+                console.log(row);
                 this.selectedTag = row;
             },
             currentChange(currentRow){
