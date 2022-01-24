@@ -3,7 +3,7 @@
         <el-form-item label="名称"   prop="categoryName">
             <el-input autocomplete="off" v-model="data.categoryName" placeholder="请输入名称" maxlength="20" show-word-limit></el-input>
         </el-form-item>
-        <el-form-item label="目录类型" v-if="data.pid!=''" >
+        <el-form-item label="类型" v-if="data.pid!=''" >
             <el-select  placeholder="请选择目录类型" v-model="data.type" :disabled="settings.formType=='basic'">
                 <el-option label="知识库" :value=0 v-if="settings.formType=='basic' || data.isRoot"></el-option>
                 <el-option label="分类" :value=1 v-if="!data.isRoot"></el-option>
