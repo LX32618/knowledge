@@ -10,6 +10,12 @@
                 >分享</el-button
               >
               <el-button
+                type="success"
+                icon="el-icon-document"
+                @click="exportKnowledge"
+                >导出</el-button
+              >
+              <el-button
                 v-if="auditStatus !== '-1' && editPermission"
                 type="warning"
                 icon="el-icon-edit"
@@ -80,6 +86,7 @@ import KnowledgePush from './components/KnowledgePush'
 import KnowledgeShareForm from './components/KnowledgeShareForm'
 import { knowledgeDelete, fetchProcessId } from '@/api/flow'
 import { deleteKnowledge } from '@/api/knowledgeBase'
+import { exportKnowExcel } from '@/api/knowledgeManagement'
 import _ from 'lodash'
 
 export default {
@@ -197,6 +204,14 @@ export default {
     edit() {
       this.editFormData = {} // 将所有表单验证状态设置为 false
       this.updateEditStatus(true)
+    },
+    exportKnowledge() {
+      exportKnowExcel({
+        categoryId: this.baseData.classification,
+        exp: 'exp',
+        isExpAttach: 'true',
+        ids: this.$route.params.id
+      })
     },
     async handleDelete() {
       const id = this.$route.params.id
