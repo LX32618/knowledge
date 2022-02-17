@@ -181,7 +181,8 @@ export default {
           groupId: tmp[2],
           days: 1,
           desc: '分享',
-          status: '99'
+          status: '99',
+          share: 'share'
         })
         this.$success('分享成功')
       } catch {
