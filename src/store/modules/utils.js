@@ -1,10 +1,10 @@
 import { dateTime } from '@/filters'
 
 const secretLevels = [
-  { value: 10, label: '非密' },
+  // { value: 10, label: '非密' },
   { value: 20, label: '内部' },
   { value: 30, label: '秘密' },
-  { value: 40, label: '机密' },
+  { value: 40, label: '机密' }
 ]
 
 const state = {
@@ -175,28 +175,34 @@ const state = {
     {
       label: '操作',
       key: 'option',
-      width: 220,
+      width: 220
     },
     {
       label: '知识名称',
       key: 'NAME'
-    }, {
+    },
+    {
       label: '知识编号',
       key: 'CODE'
-    }, {
+    },
+    {
       label: '目录',
       key: 'CLASSIFICATIONTEXT'
-    }, {
+    },
+    {
       label: '创建人',
       key: 'CREATORNAME'
-    }, {
+    },
+    {
       label: '创建时间',
       key: 'CREATEDATE',
-      width: 100,
-    }, {
+      width: 100
+    },
+    {
       label: '关键字',
       key: 'KEYWORD'
-    }, {
+    },
+    {
       label: '标签',
       key: 'LABELSTEXT'
     }
@@ -233,33 +239,33 @@ const state = {
   defaultIcon: 'fa fa-book',
   icons: [
     'fa fa-book',
-    "fa fa-microchip",
-    "fa fa-tv",
-    "fa fa-anchor",
-    "fa fa-bar-chart-o",
-    "fa fa-fighter-jet",
-    "fa fa-feed",
-    "fa fa-plane",
-    "fa fa-rocket",
-    "fa fa-random",
-    "fa fa-gears",
-    "fa fa-wifi",
-    "fa fa-magnet",
-    "fa fa-motorcycle",
-    "fa fa-envira",
-    "fa fa-keyboard-o",
-    "fa fa-cubes",
-    "fa fa-car",
-    "fa fa-mobile-phone",
-    "fa fa-bolt",
-    "fa fa-bluetooth",
-    "fa fa-diamond",
-    "fa fa-fax",
-    "fa fa-recycle",
-    "fa fa-subway",
-    "fa fa-usb",
-    "fa fa-database",
-    "fa fa-dashboard"
+    'fa fa-microchip',
+    'fa fa-tv',
+    'fa fa-anchor',
+    'fa fa-bar-chart-o',
+    'fa fa-fighter-jet',
+    'fa fa-feed',
+    'fa fa-plane',
+    'fa fa-rocket',
+    'fa fa-random',
+    'fa fa-gears',
+    'fa fa-wifi',
+    'fa fa-magnet',
+    'fa fa-motorcycle',
+    'fa fa-envira',
+    'fa fa-keyboard-o',
+    'fa fa-cubes',
+    'fa fa-car',
+    'fa fa-mobile-phone',
+    'fa fa-bolt',
+    'fa fa-bluetooth',
+    'fa fa-diamond',
+    'fa fa-fax',
+    'fa fa-recycle',
+    'fa fa-subway',
+    'fa fa-usb',
+    'fa fa-database',
+    'fa fa-dashboard'
   ]
 }
 

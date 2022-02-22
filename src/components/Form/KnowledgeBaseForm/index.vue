@@ -203,7 +203,7 @@ export default {
     'knowledge.classification': function(val) {
       // 重置已选择知识标签与密级
       this.$set(this.knowledge, 'labels', [])
-      this.$set(this.knowledge, 'secretLevel', 10)
+      this.$set(this.knowledge, 'secretLevel', 20)
       if (!val) {
         this.labels = []
         this.categorySecretLevel = 40
@@ -241,7 +241,7 @@ export default {
     // 重置表单
     reset() {
       this.knowledge = {
-        secretLevel: 10,
+        secretLevel: 20,
         labels: []
       }
     },
