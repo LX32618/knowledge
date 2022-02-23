@@ -1,8 +1,16 @@
 <template>
-  <el-dialog title="申请查看知识" :visible.sync="show" width="400px">
+  <el-dialog title="申请查看/出库" :visible.sync="show" width="400px">
     <el-form>
       <el-form-item label="申请理由">
         <el-input v-model="reason" type="textarea" />
+      </el-form-item>
+      <el-form-item label="申请天数">
+        <el-input-number
+          v-model="days"
+          controls-position="right"
+          :precision="0"
+          :min="1"
+        />
       </el-form-item>
       <el-form-item>
         <el-button
@@ -40,6 +48,7 @@ export default {
     return {
       show: this.visible,
       reason: '',
+      days: 30,
       loading: false
     }
   },
@@ -54,6 +63,10 @@ export default {
   },
   methods: {
     async handleApply() {
+      if (!this.days) {
+        this.$error('申请天数不能为空')
+        return
+      }
       this.loading = true
       try {
         const { content } = await fetchProcessId(this.oid, 'downloadView')
@@ -64,6 +77,7 @@ export default {
         const res = await applyView({
           oid: this.oid,
           reason: this.reason,
+          applyDay: this.days.toString(),
           processDefinitionId: content.processDefId
         })
         const { success, msg } = res
