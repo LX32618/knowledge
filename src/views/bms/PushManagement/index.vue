@@ -8,7 +8,7 @@
         <div>
             <el-row type="flex" class="row-bg">
                 <el-col :span="6">知识名称：<el-input-number v-model="name" :step="0.01" :min="0"></el-input-number></el-col>
-                <el-col :span="6">知识描述：<el-input-number v-model="describe" :step="0.01" :min="0"></el-input-number></el-col>
+                <el-col :span="6">属性：<el-input-number v-model="describe" :step="0.01" :min="0"></el-input-number></el-col>
                 <el-col :span="6">附件：<el-input-number v-model="attach_text" :step="0.01" :min="0"></el-input-number></el-col>
                 <el-col :span="6">知识编码：<el-input-number v-model="keyword" :step="0.01" :min="0"></el-input-number></el-col>
             </el-row>
