@@ -1,7 +1,7 @@
 import { dateTime } from '@/filters'
 
 const secretLevels = [
-  { value: 10, label: '非密' },
+  // { value: 10, label: '非密' },
   { value: 20, label: '内部' },
   { value: 30, label: '秘密' },
   { value: 40, label: '机密' }
