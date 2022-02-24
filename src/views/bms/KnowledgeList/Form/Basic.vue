@@ -70,9 +70,9 @@
         </el-form-item>
         <el-form-item label="密级">
             <el-select  placeholder="请选择密级" v-model="data.secretLevel">
-                <el-option label="非密" :value=10></el-option>
                 <el-option label="内部" :value=20></el-option>
                 <el-option label="秘密" :value=30></el-option>
+                <el-option label="机密" :value=40></el-option>
             </el-select>
         </el-form-item>
         <el-form-item label="知识库图片" v-if="data.pid=='' || data.type==0">

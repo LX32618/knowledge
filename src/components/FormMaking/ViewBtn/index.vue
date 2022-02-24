@@ -148,12 +148,11 @@
                     })
                     temp = _.uniqBy(temp,"id");
                 }
-                
+
                 this.$emit("update:tagData",temp);
                 this.showTable = false;
             },
             selectionChange(row){
-                console.log(row);
                 this.selectedTag = row;
             },
             currentChange(currentRow){

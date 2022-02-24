@@ -30,9 +30,6 @@
                 </div>
             </template>
         </cs-table>
-
-
-
     </div>
 </template>
 
@@ -154,6 +151,7 @@
             },
             chooseHeader(){
                 let headerChecked = this.$refs.headerTree.getCheckedNodes(true,false);
+                console.log(headerChecked);
                 this.keyValue += 1;
                 this.$set(this.tableSettings,"fields",_.concat(this.tableFieldsBak,headerChecked));
                 let headerCheckedKeys = headerChecked.map(c=>{
