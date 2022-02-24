@@ -31,7 +31,7 @@
 
                 </div>
             </el-row>
-            <el-row v-else  style="margin-top:-35px">
+            <el-row v-else>
                 <cs-table ref="tb"
                           :settings="tableSettings"
                           :table-data="tableData">
